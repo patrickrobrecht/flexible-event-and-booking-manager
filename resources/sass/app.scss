@@ -1,0 +1,11 @@
+/**
+ * Frontend styles via Bootstrap Framework.
+ */
+@import 'node_modules/bootstrap/scss/bootstrap';
+
+/**
+ * Icons via Font Awesome.
+ */
+$fa-font-path: '/lib';
+@import 'node_modules/@fortawesome/fontawesome-free/scss/fontawesome';
+@import 'node_modules/@fortawesome/fontawesome-free/scss/solid';

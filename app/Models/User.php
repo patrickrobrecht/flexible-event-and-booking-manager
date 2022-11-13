@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Traits\Filterable;
+use App\Models\Traits\HasAddress;
 use App\Models\Traits\Searchable;
 use App\Notifications\ResetPasswordNotification;
 use App\Notifications\VerifyEmailNotification;
@@ -41,6 +42,7 @@ use Spatie\QueryBuilder\AllowedFilter;
 class User extends Authenticatable implements MustVerifyEmail
 {
     use Filterable;
+    use HasAddress;
     use HasApiTokens;
     use HasFactory;
     use Notifiable;
@@ -54,8 +56,12 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $fillable = [
         'first_name',
         'last_name',
+        'street',
+        'house_number',
+        'postal_code',
+        'city',
+        'country',
         'email',
-        'role',
         'status',
     ];
 

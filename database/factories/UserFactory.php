@@ -27,6 +27,11 @@ class UserFactory extends Factory
         return [
             'first_name' => $firstName,
             'last_name' => $lastName,
+            'street' => fake()->streetName(),
+            'house_number' => fake()->buildingNumber(),
+            'postal_code' => fake()->postcode(),
+            'city' => fake()->city(),
+            'country' => fake()->country(),
             'email' => sprintf('%s.%s@%s', $firstName, $lastName, fake()->unique()->domainName()),
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password

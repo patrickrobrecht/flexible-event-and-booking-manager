@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Traits;
 
+use Illuminate\Validation\Rule;
+
 trait FiltersList
 {
     abstract public function rules(): array;
@@ -42,6 +44,14 @@ trait FiltersList
         }
 
         return $rules;
+    }
+
+    public function ruleForForeignId(string $table): array
+    {
+        return [
+            'nullable',
+            Rule::exists($table, 'id')
+        ];
     }
 
     public function ruleForText(int $maxLength = 255): array

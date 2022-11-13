@@ -36,9 +36,9 @@
                     </x-form.label>
                     <x-form.input name="expires_at" aria-describedby="expireHelpBlock"
                                   type="datetime-local"
-                                  :value="$token->expires_at?->format('Y-m-d\TH:i') ?? null" />
+                                  :value="isset($token->expires_at) ? $token->expires_at->format('Y-m-d\TH:i') : null" />
                     <div id="expireHelpBlock" class="form-text">
-                        {{ __('Last used') }}: {{ $token->last_used_at ? formatDateTime($token->last_used_at) : __('never') }}
+                        {{ __('Last used') }}: {{ isset($token->last_used_at) ? formatDateTime($token->last_used_at) : __('never') }}
                     </div>
                 </x-form.row>
             </div>

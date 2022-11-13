@@ -32,9 +32,15 @@
                             /** @var \App\Models\User $loggedInUser */
                             $loggedInUser = \Illuminate\Support\Facades\Auth::user();
 
+                            $canViewEvents = $loggedInUser->can('viewAny', App\Models\Event::class);
+                            $canViewOrganizations = $loggedInUser->can('viewAny', App\Models\Organization::class);
+                            $canViewLocations = $loggedInUser->can('viewAny', App\Models\Location::class);
+
                             $canViewUsers = $loggedInUser->can('viewAny', App\Models\User::class);
                             $canViewUserRoles = $loggedInUser->can('viewAny', App\Models\UserRole::class);
-                            $canAdmin = $canViewUsers || $canViewUserRoles;
+
+                            $canAdmin = $canViewEvents || $canViewOrganizations || $canViewLocations
+                                || $canViewUsers || $canViewUserRoles;
                         @endphp
                         @if($canAdmin)
                             <li class="nav-item dropdown">
@@ -44,6 +50,24 @@
                                     {{ __('Administration') }}
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarAdminDropdown">
+                                    @if($canViewEvents)
+                                        <x-nav.dropdown-item href="{{ route('events.index') }}">
+                                            <i class="fa fa-fw fa-calendar-days"></i>
+                                            {{ __('Events') }}
+                                        </x-nav.dropdown-item>
+                                    @endif
+                                    @if($canViewOrganizations)
+                                        <x-nav.dropdown-item href="{{ route('organizations.index') }}">
+                                            <i class="fa fa-fw fa-sitemap"></i>
+                                            {{ __('Organizations') }}
+                                        </x-nav.dropdown-item>
+                                    @endif
+                                    @if($canViewLocations)
+                                        <x-nav.dropdown-item href="{{ route('locations.index') }}">
+                                            <i class="fa fa-fw fa-location-pin"></i>
+                                            {{ __('Locations') }}
+                                        </x-nav.dropdown-item>
+                                    @endif
                                     @if($canViewUsers)
                                         <x-nav.dropdown-item href="{{ route('users.index') }}">
                                             <i class="fa fa-fw fa-users"></i>

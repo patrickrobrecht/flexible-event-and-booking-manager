@@ -2,9 +2,15 @@
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EventController;
+use App\Http\Controllers\LocationController;
+use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\PersonalAccessTokenController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserRoleController;
+use App\Models\Event;
+use App\Models\Location;
+use App\Models\Organization;
 use App\Models\PersonalAccessToken;
 use App\Models\User;
 use App\Models\UserRole;
@@ -23,6 +29,18 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth')->group(static function () {
     Route::get('/', [DashboardController::class, 'index'])
         ->name('dashboard');
+
+    Route::model('event', Event::class);
+    Route::resource('events', EventController::class)
+         ->only(['index', 'show', 'create', 'store', 'edit', 'update']);
+
+    Route::model('location', Location::class);
+    Route::resource('locations', LocationController::class)
+         ->only(['index', 'create', 'store', 'edit', 'update']);
+
+    Route::model('organization', Organization::class);
+    Route::resource('organizations', OrganizationController::class)
+         ->only(['index', 'create', 'store', 'edit', 'update']);
 
     Route::model('personal_access_token', PersonalAccessToken::class);
     Route::resource('personal-access-tokens', PersonalAccessTokenController::class)

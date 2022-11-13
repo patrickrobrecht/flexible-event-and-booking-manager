@@ -49,8 +49,6 @@
                         {{ __('The e-mail address has not been verified yet.') }}
                     </p>
                 @endisset
-            </div>
-            <div class="col-12 col-md-6">
                 <x-form.row>
                     <x-form.label for="password">{{ __('New password') }}</x-form.label>
                     <x-form.input name="password" type="password"
@@ -74,7 +72,7 @@
                     <x-form.input id="user_role_id" name="user_role_id[]"
                                   type="checkbox"
                                   :options="$userRoles->pluck('name', 'id')"
-                                  :value="$editedUser?->userRoles?->pluck('id')->toArray()"
+                                  :value="isset($editedUser) ? $editedUser->userRoles->pluck('id')->toArray() : []"
                                   :valuesToInt="true" />
                 </x-form.row>
                 <x-form.row>
@@ -83,6 +81,11 @@
                                    :options="\App\Options\ActiveStatus::keysWithNames()"
                                    :value="$editedUser->status->value ?? null" />
                 </x-form.row>
+            </div>
+            <div class="col-12 col-md-6">
+                @include('_shared.address_fields_form', [
+                    'address' => $editedUser ?? null,
+                ])
             </div>
         </div>
 

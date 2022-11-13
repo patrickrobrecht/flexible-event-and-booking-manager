@@ -40,8 +40,6 @@
                         <a class="alert-link" href="{{ route('verification.notice') }}">{{ __('Verify e-mail address') }}</a>
                     </p>
                 @endisset
-            </div>
-            <div class="col-12 col-md-6">
                 <x-form.row>
                     <x-form.label for="password">{{ __('New password') }}</x-form.label>
                     <x-form.input name="password" type="password"
@@ -56,6 +54,11 @@
                     <x-form.input name="password_confirmation" type="password"
                                   autocomplete="new-password" />
                 </x-form.row>
+            </div>
+            <div class="col-12 col-md-6">
+                @include('_shared.address_fields_form', [
+                    'address' => $user,
+                ])
             </div>
         </div>
 

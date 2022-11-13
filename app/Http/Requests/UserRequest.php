@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Controllers\UserController;
 use App\Http\Requests\Traits\AuthorizationViaController;
+use App\Http\Requests\Traits\ValidatesAddressFields;
 use App\Models\User;
 use App\Options\ActiveStatus;
 use App\Policies\UserPolicy;
@@ -19,6 +20,7 @@ class UserRequest extends FormRequest
 {
     /** {@see UserPolicy} in {@see UserController} */
     use AuthorizationViaController;
+    use ValidatesAddressFields;
 
     protected function prepareForValidation(): void
     {
@@ -64,6 +66,8 @@ class UserRequest extends FormRequest
                 Password::defaults(),
             ],
         ];
+
+        $rules = array_replace($rules, $this->rulesForAddressFields());
 
         if ($this->routeIs('users.store', 'users.update')) {
             $rules = array_replace($rules, [

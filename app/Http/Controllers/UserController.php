@@ -20,6 +20,8 @@ class UserController extends Controller
 
         return view('users.user_index', $this->formValues([
             'users' => User::filter()
+                ->orderBy('last_name')
+                ->orderBy('first_name')
                 ->with([
                     'userRoles',
                 ])

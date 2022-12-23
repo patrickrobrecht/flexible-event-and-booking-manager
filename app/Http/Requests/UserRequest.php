@@ -54,6 +54,12 @@ class UserRequest extends FormRequest
                 'string',
                 'max:255',
             ],
+            'phone' => [
+                'nullable',
+                'string',
+                'max:255',
+                'regex:/^([0-9\s\ \+\(\)]*)$/'
+            ],
             'email' => [
                 'required',
                 'email',

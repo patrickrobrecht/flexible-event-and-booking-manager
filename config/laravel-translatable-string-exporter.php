@@ -4,6 +4,7 @@ return [
     // Directories to search in.
     'directories' => [
         'app',
+        'database',
         'resources',
     ],
 

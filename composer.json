@@ -1,15 +1,15 @@
 {
-    "name": "patrickrobrecht/flexible-event-bookings",
+    "name": "patrickrobrecht/flexible-event-and-booking-manager",
     "type": "project",
     "description": "Manage events, their booking forms and bookings via a web-based platform.",
     "license": "proprietary",
     "require": {
         "php": "^8.1",
         "guzzlehttp/guzzle": "^7.5",
-        "laravel/framework": "^9.39",
+        "laravel/framework": "^9.45",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
-        "spatie/laravel-query-builder": "^5.0",
+        "spatie/laravel-query-builder": "^5.1",
         "spatie/laravel-sluggable": "^3.4"
     },
     "require-dev": {

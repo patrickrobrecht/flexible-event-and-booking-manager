@@ -62,7 +62,8 @@ class Event extends Model
 
     public function organizations(): BelongsToMany
     {
-        return $this->belongsToMany(Organization::class);
+        return $this->belongsToMany(Organization::class)
+            ->withTimestamps();
     }
 
     public function fillAndSave(array $validatedData): bool

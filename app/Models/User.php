@@ -27,6 +27,7 @@ use Spatie\QueryBuilder\AllowedFilter;
  * @property-read int $id
  * @property string $first_name
  * @property string $last_name
+ * @property ?string $phone
  * @property string $email
  * @property-read ?Carbon $email_verified_at
  * @property ?string $password
@@ -56,6 +57,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $fillable = [
         'first_name',
         'last_name',
+        'phone',
         'street',
         'house_number',
         'postal_code',
@@ -85,6 +87,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'status' => ActiveStatus::class,
         'last_login_at' => 'datetime',
     ];
+
+    protected $perPage = 12;
 
     public function greeting(): Attribute
     {
@@ -120,11 +124,18 @@ class User extends Authenticatable implements MustVerifyEmail
             $this->password = Hash::make($validatedData['password']);
         }
 
-        return $this->save()
-            && (
-                !isset($validatedData['user_role_id'])
-                || $this->userRoles()->sync($validatedData['user_role_id'])
-            );
+        if (!$this->save()) {
+            return false;
+        }
+
+        if (isset($validatedData['user_role_id'])) {
+            $changes = $this->userRoles()->sync($validatedData['user_role_id']);
+            if (count($changes['attached']) > 0 || count($changes['updated']) > 0 || count($changes['detached']) > 0) {
+                $this->touch();
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -146,12 +157,13 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function hasAbility(Ability $ability): bool
     {
-        foreach ($this->userRoles as $userRole) {
-            if ($userRole->hasAbility($ability)) {
-                return true;
+        if ($this->status === ActiveStatus::Active) {
+            foreach ($this->userRoles as $userRole) {
+                if ($userRole->hasAbility($ability)) {
+                    return true;
+                }
             }
         }
-
         return false;
     }
 

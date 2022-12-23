@@ -33,34 +33,37 @@ class PersonalAccessTokenController extends Controller
         Session::flash('success', __('Your personal access token is :token. Please make a note of it (e.g. in your password safe) - you will not be able to view it again.', [
             'token' => $newAccessToken->plainTextToken,
         ]));
+
         return redirect(route('personal-access-tokens.edit', $newAccessToken->accessToken));
     }
 
-    public function edit(PersonalAccessToken $token): View
+    public function edit(PersonalAccessToken $personalAccessToken): View
     {
-        $this->authorize('update', $token);
+        $this->authorize('update', $personalAccessToken);
 
         return view('personal_access_tokens.personal_access_token_form', [
-            'token' => $token,
+            'token' => $personalAccessToken,
         ]);
     }
 
-    public function update(PersonalAccessToken $token, PersonalAccessTokenRequest $request): RedirectResponse
-    {
-        $this->authorize('update', $token);
+    public function update(
+        PersonalAccessToken $personalAccessToken,
+        PersonalAccessTokenRequest $request
+    ): RedirectResponse {
+        $this->authorize('update', $personalAccessToken);
 
-        if ($token->fillAndSave($request->validated())) {
+        if ($personalAccessToken->fillAndSave($request->validated())) {
             Session::flash('success', __('Saved successfully.'));
         }
 
         return back();
     }
 
-    public function destroy(PersonalAccessToken $token): RedirectResponse
+    public function destroy(PersonalAccessToken $personalAccessToken): RedirectResponse
     {
-        $this->authorize('forceDelete', $token);
+        $this->authorize('forceDelete', $personalAccessToken);
 
-        if ($token->forceDelete()) {
+        if ($personalAccessToken->forceDelete()) {
             Session::flash('success', __('Deleted successfully.'));
             return redirect(route('personal-access-tokens.index'));
         }

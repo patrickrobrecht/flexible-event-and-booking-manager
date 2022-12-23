@@ -42,16 +42,15 @@
                     </div>
                 </x-form.row>
             </div>
-            <div class="col-12 col-md-6">
-                <x-form.row>
-                    <x-form.label for="abilities">{{ __('Abilities') }}</x-form.label>
-                    <x-form.input for="abilities" name="abilities[]"
-                                  type="checkbox"
-                                  :options="\App\Options\Ability::keysWithNames()"
-                                  :value="$token->abilities ?? []" />
-                </x-form.row>
-            </div>
         </div>
+        <x-form.row>
+            <x-form.label for="abilities">{{ __('Abilities') }}</x-form.label>
+            <div class="cols-lg-2 cols-xl-3 cols-xxl-4">
+                <x-form.input for="abilities" name="abilities[]" type="checkbox"
+                              :options="\App\Options\Ability::keysWithNames()"
+                              :value="$token->abilities ?? []" />
+            </div>
+        </x-form.row>
 
         <x-button.group>
             <x-button.save>
@@ -60,4 +59,6 @@
             <x-button.cancel href="{{ route('personal-access-tokens.index') }}"/>
         </x-button.group>
     </x-form>
+
+    <x-text.timestamp :model="$token ?? null" />
 @endsection

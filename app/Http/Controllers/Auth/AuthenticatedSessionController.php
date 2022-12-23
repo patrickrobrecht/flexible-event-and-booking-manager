@@ -28,6 +28,7 @@ class AuthenticatedSessionController extends Controller
         /** @var User $user */
         $user = Auth::user();
         $user->last_login_at = Carbon::now();
+        $user->timestamps = false; // Don't change updated_at column.
         $user->save();
 
         return redirect()->intended(RouteServiceProvider::HOME);

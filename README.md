@@ -1,9 +1,10 @@
-# Flexible Event Bookings
+# Flexible Event and Booking Manager
 
 This application allows to manage events, their booking forms and bookings via a web-based platform.
 
 
 ## Features
+- Manage events, locations, and organizations
 - Login and logout, reset password, verify e-mail address, edit own account
 - User and user role management
 - Manage personal access tokens (for [Laravel Sanctum](https://laravel.com/docs/9.x/sanctum))

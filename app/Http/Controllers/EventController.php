@@ -21,6 +21,7 @@ class EventController extends Controller
             'events' => Event::filter()
                 ->with([
                     'location',
+                    'organizations',
                 ])
                 ->paginate(),
         ]));

@@ -2,6 +2,7 @@
 
 @php
     /** @var \Illuminate\Pagination\LengthAwarePaginator|\App\Models\User[] $users */
+    /** @var \Illuminate\Database\Eloquent\Collection|\App\Models\UserRole[] $userRoles */
 @endphp
 
 @section('title')
@@ -39,7 +40,9 @@
                 <x-form.row>
                     <x-form.label for="user_role_id">{{ __('User role') }}</x-form.label>
                     <x-form.select id="user_role_id" name="filter[user_role_id]"
-                                   :options="$userRoles->pluck('name', 'id')" />
+                                   :options="$userRoles->pluck('name', 'id')">
+                        <option value="">{{ __('all') }}</option>
+                    </x-form.select>
                 </x-form.row>
             </div>
             <div class="col-12 col-sm-6 col-lg">
@@ -57,26 +60,63 @@
 
     <div class="row my-3">
         @foreach($users as $user)
-            <div class="col-12 col-sm-6 col-md-4 mb-3">
+            <div class="col-12 col-lg-6 col-xxl-4 mb-3">
                 <div class="card">
                     <div class="card-header">
                         <h2 class="card-title">{{ $user->name }}</h2>
-                        <p class="card-subtitle text-muted">
-                            {{ __('Last login') }}: {{ $user->last_login_at ? formatDateTime($user->last_login_at) : __('never') }}
-                        </p>
                     </div>
-                    <div class="card-body">
-                        <div class="d-md-flex mb-3">
-                            <span class="flex-grow-1">
-                                @foreach($user->userRoles as $userRole)
-                                    <span class="badge bg-primary">{{ $userRole->name }}</span>
-                                @endforeach
+                    <x-list.group class="list-group-flush">
+                        <x-list.item>
+                            <span class="text-nowrap">
+                                <i class="fa fa-fw fa-at"></i>
+                                {{ __('E-mail') }}
                             </span>
-                            <span>
+                            <span class="text-end">{{ $user->email }}</span>
+                        </x-list.item>
+                        @isset($user->phone)
+                            <x-list.item>
+                                <span class="text-nowrap">
+                                    <i class="fa fa-fw fa-phone"></i>
+                                    {{ __('Phone number') }}
+                                </span>
+                                <span class="text-end">{{ $user->phone }}</span>
+                            </x-list.item>
+                        @endisset
+                        <x-list.item>
+                            <span class="text-nowrap">
+                                <i class="fa fa-fw fa-circle-question"></i>
+                                {{ __('Status') }}
+                            </span>
+                            <span class="text-end">
                                 <x-badge.active-status :active="$user->status" />
                             </span>
-                        </div>
-
+                        </x-list.item>
+                        <x-list.item>
+                            <span class="text-nowrap">
+                                <i class="fa fa-fw fa-user-group"></i>
+                                {{ __('User roles') }}
+                            </span>
+                            <span class="text-end">
+                                @if($user->userRoles->count() === 0)
+                                    {{ __('none') }}
+                                @else
+                                    @foreach($user->userRoles->sortBy('name') as $userRole)
+                                        <span class="badge bg-primary">{{ $userRole->name }}</span>
+                                    @endforeach
+                                @endif
+                            </span>
+                        </x-list.item>
+                        <x-list.item>
+                            <span class="text-nowrap">
+                                <i class="fa fa-fw fa-sign-in-alt"></i>
+                                {{ __('Last login') }}
+                            </span>
+                            <span class="text-end">
+                                {{ $user->last_login_at ? formatDateTime($user->last_login_at) : __('never') }}
+                            </span>
+                        </x-list.item>
+                    </x-list.group>
+                    <div class="card-body">
                         @can('update', $user)
                             <x-button.edit href="{{ route('users.edit', $user) }}"/>
                         @endcan

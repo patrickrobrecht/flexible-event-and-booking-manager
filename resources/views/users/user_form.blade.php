@@ -83,6 +83,11 @@
                 </x-form.row>
             </div>
             <div class="col-12 col-md-6">
+                <x-form.row>
+                    <x-form.label for="phone">{{ __('Phone number') }}</x-form.label>
+                    <x-form.input name="phone" type="tel"
+                                  :value="$editedUser->phone ?? null" />
+                </x-form.row>
                 @include('_shared.address_fields_form', [
                     'address' => $editedUser ?? null,
                 ])

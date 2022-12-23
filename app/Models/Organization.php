@@ -54,7 +54,8 @@ class Organization extends Model
 
     public function events(): BelongsToMany
     {
-        return $this->belongsToMany(Event::class);
+        return $this->belongsToMany(Event::class)
+            ->withTimestamps();
     }
 
     public function parentOrganization(): BelongsTo

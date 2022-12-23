@@ -105,7 +105,7 @@ return [
     'prohibited_if'        => ':attribute ist unzulässig, wenn :other :value ist.',
     'prohibited_unless'    => ':attribute ist unzulässig, wenn :other nicht :values ist.',
     'prohibits'            => ':attribute verbietet die Angabe von :other.',
-    'regex'                => ':attribute Format ist ungültig.',
+    'regex'                => ':attribute hat ein ungültiges Format.',
     'required'             => ':attribute muss ausgefüllt werden.',
     'required_array_keys'  => 'Dieses Feld muss Einträge enthalten für: :values.',
     'required_if'          => ':attribute muss ausgefüllt werden, wenn :other den Wert :value hat.',

@@ -68,6 +68,9 @@
                                             {{ __('Locations') }}
                                         </x-nav.dropdown-item>
                                     @endif
+                                    @if($canViewUsers || $canViewUserRoles)
+                                        <li class="dropdown-divider"></li>
+                                    @endif
                                     @if($canViewUsers)
                                         <x-nav.dropdown-item href="{{ route('users.index') }}">
                                             <i class="fa fa-fw fa-users"></i>

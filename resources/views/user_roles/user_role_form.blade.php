@@ -34,16 +34,15 @@
                                   :value="$userRole->name ?? null" />
                 </x-form.row>
             </div>
-            <div class="col-12 col-md-6">
-                <x-form.row>
-                    <x-form.label for="abilities">{{ __('Abilities') }}</x-form.label>
-                    <x-form.input for="abilities" name="abilities[]"
-                                  type="checkbox"
-                                  :options="\App\Options\Ability::keysWithNames()"
-                                  :value="$userRole->abilities ?? []" />
-                </x-form.row>
-            </div>
         </div>
+        <x-form.row>
+            <x-form.label for="abilities">{{ __('Abilities') }}</x-form.label>
+            <div class="cols-lg-2 cols-xl-3 cols-xxl-4">
+                <x-form.input for="abilities" name="abilities[]" type="checkbox"
+                              :options="\App\Options\Ability::keysWithNames()"
+                              :value="$userRole->abilities ?? []" />
+            </div>
+        </x-form.row>
 
         <x-button.group>
             <x-button.save>
@@ -53,5 +52,5 @@
         </x-button.group>
     </x-form>
 
-    <x-text.timestamp :model="$editedUser ?? null" />
+    <x-text.timestamp :model="$userRole ?? null" />
 @endsection

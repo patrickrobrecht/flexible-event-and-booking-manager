@@ -178,6 +178,8 @@ return [
         'month'                 => 'Monat',
         'name'                  => 'Name',
         'organization_id'       => 'Organisation',
+        'parent_event_id'       => 'Teil der Veranstaltung',
+        'parent_event_series_id' => 'Teil der Veranstaltungsreihe',
         'parent_organization_id' => 'Übergeordnete Organisation',
         'password'              => 'Passwort',
         'password_confirmation' => 'Passwort Bestätigung',

@@ -59,9 +59,7 @@
                 <div class="card">
                     <div class="card-header">
                         <h2 class="card-title">
-                            <a href="{{ route('events.show', $event->slug) }}" target="_blank">
-                                {{ $event->name }}
-                            </a>
+                            <a href="{{ route('events.show', $event->slug) }}">{{ $event->name }}</a>
                         </h2>
                     </div>
                     <x-list.group class="list-group-flush">
@@ -70,12 +68,7 @@
                                 <i class="fa fa-fw fa-clock"></i>
                                 {{ __('Date') }}
                             </span>
-                            <span class="text-end">
-                                {{ __(':start until :end', [
-                                    'start' => isset($event->started_at) ? formatDateTime($event->started_at) : '?',
-                                    'end' => isset($event->finished_at) ? formatDateTime($event->finished_at) : '?',
-                                ]) }}
-                            </span>
+                            <span class="text-end">@include('events.shared.event_dates')</span>
                         </x-list.item>
                         <x-list.item>
                             <span>
@@ -95,14 +88,27 @@
                                 <i class="fa fa-fw fa-sitemap"></i>
                                 {{ __('Organizations') }}
                             </span>
-                            <span class="text-end">
+                            <div class="text-end">
                                 <ul class="list-unstyled">
                                     @foreach($event->organizations as $organization)
                                         <li>{{ $organization->name }}</li>
                                     @endforeach
                                 </ul>
-                            </span>
+                            </div>
                         </x-list.item>
+                        @isset($event->eventSeries)
+                            <x-list.item>
+                                <span>
+                                    <i class="fa fa-fw fa-calendar-week"></i>
+                                    {{ __('Part of the event series') }}
+                                </span>
+                                <span class="text-end">
+                                    <a href="{{ route('event-series.show', $event->eventSeries->slug) }}" target="_blank">
+                                        {{ $event->eventSeries->name }}
+                                    </a>
+                                </span>
+                            </x-list.item>
+                        @endisset
                     </x-list.group>
                     <div class="card-body">
                         @can('update', $event)

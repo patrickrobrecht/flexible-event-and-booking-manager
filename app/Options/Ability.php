@@ -15,6 +15,10 @@ enum Ability: string
     case CreateEvents = 'events.create';
     case EditEvents = 'events.edit';
 
+    case ViewEventSeries = 'event_series.view';
+    case CreateEventSeries = 'event_series.create';
+    case EditEventSeries = 'event_series.edit';
+
     case ViewLocations = 'locations.view';
     case CreateLocations = 'locations.create';
     case EditLocations = 'locations.edit';
@@ -40,6 +44,10 @@ enum Ability: string
             self::ViewEvents => __('View events'),
             self::CreateEvents => __('Create events'),
             self::EditEvents => __('Edit events'),
+
+            self::ViewEventSeries => __('View event series'),
+            self::CreateEventSeries => __('Create event series'),
+            self::EditEventSeries => __('Edit event series'),
 
             self::ViewLocations => __('View locations'),
             self::CreateLocations => __('Create locations'),

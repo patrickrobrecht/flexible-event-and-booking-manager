@@ -2,13 +2,13 @@
 
 namespace App\Policies;
 
-use App\Models\Event;
+use App\Models\EventSeries;
 use App\Models\User;
 use App\Options\Ability;
 use App\Policies\Traits\ChecksAbilities;
 use Illuminate\Auth\Access\Response;
 
-class EventPolicy
+class EventSeriesPolicy
 {
     use ChecksAbilities;
 
@@ -21,18 +21,18 @@ class EventPolicy
      */
     public function viewAny(User $user): Response
     {
-        return $this->requireAbility($user, Ability::ViewEvents);
+        return $this->requireAbility($user, Ability::ViewEventSeries);
     }
 
     /**
      * Determine whether the user can view the model.
      *
      * @param User $user
-     * @param Event $event
+     * @param EventSeries $EventSeries
      *
      * @return Response
      */
-    public function view(User $user, Event $event): Response
+    public function view(User $user, EventSeries $EventSeries): Response
     {
         return $this->viewAny($user);
     }
@@ -46,13 +46,13 @@ class EventPolicy
      */
     public function create(User $user): Response
     {
-        return $this->requireAbility($user, Ability::CreateEvents);
+        return $this->requireAbility($user, Ability::CreateEventSeries);
     }
 
-    public function createChild(User $user, Event $event): Response
+    public function createChild(User $user, EventSeries $eventSeries): Response
     {
         return $this->response(
-            $event->parent_event_id === null
+            $eventSeries->parent_event_series_id === null
             && $this->create($user)->allowed()
         );
     }
@@ -61,24 +61,24 @@ class EventPolicy
      * Determine whether the user can update the model.
      *
      * @param  User  $user
-     * @param Event $event
+     * @param EventSeries $eventSeries
      *
      * @return Response
      */
-    public function update(User $user, Event $event): Response
+    public function update(User $user, EventSeries $eventSeries): Response
     {
-        return $this->requireAbility($user, Ability::EditEvents);
+        return $this->requireAbility($user, Ability::EditEventSeries);
     }
 
     /**
      * Determine whether the user can delete the model.
      *
      * @param  User  $user
-     * @param Event $event
+     * @param EventSeries $eventSeries
      *
      * @return Response
      */
-    public function delete(User $user, Event $event): Response
+    public function delete(User $user, EventSeries $eventSeries): Response
     {
         return $this->deny();
     }
@@ -87,11 +87,11 @@ class EventPolicy
      * Determine whether the user can restore the model.
      *
      * @param  User  $user
-     * @param Event $event
+     * @param EventSeries $eventSeries
      *
      * @return Response
      */
-    public function restore(User $user, Event $event): Response
+    public function restore(User $user, EventSeries $eventSeries): Response
     {
         return $this->deny();
     }
@@ -100,11 +100,11 @@ class EventPolicy
      * Determine whether the user can permanently delete the model.
      *
      * @param  User  $user
-     * @param Event $event
+     * @param EventSeries $eventSeries
      *
      * @return Response
      */
-    public function forceDelete(User $user, Event $event): Response
+    public function forceDelete(User $user, EventSeries $eventSeries): Response
     {
         return $this->deny();
     }

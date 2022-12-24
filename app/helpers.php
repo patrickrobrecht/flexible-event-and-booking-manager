@@ -31,6 +31,11 @@ function formatDateTime(Carbon $date): string
     return $date->format('d.m.Y H:i');
 }
 
+function formatTime(Carbon $date): string
+{
+    return $date->format('H:i');
+}
+
 function formatTransChoice($key, $count, $replace = [], $locale = null): string
 {
     return trans_choice(

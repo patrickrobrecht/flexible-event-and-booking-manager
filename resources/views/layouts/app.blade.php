@@ -26,9 +26,21 @@
             @include('layouts.alerts')
 
             @section('main')
-                @section('headline')
-                    <h1>@yield('title')</h1>
-                @show
+                @hasSection('headline-buttons')
+                    <div class="hstack gap-3">
+                        @section('headline')
+                            <h1>@yield('title')</h1>
+                        @show
+                        <div class="ms-auto">
+                            @section('headline-buttons')
+                            @show
+                        </div>
+                    </div>
+                @else
+                    @section('headline')
+                        <h1>@yield('title')</h1>
+                    @show
+                @endif
 
                 @yield('content')
             @show

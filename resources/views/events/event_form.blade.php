@@ -49,8 +49,6 @@
                     <x-form.input name="website_url" type="text"
                                   :value="$event->website_url ?? null"/>
                 </x-form.row>
-            </div>
-            <div class="col-12 col-md-6">
                 <x-form.row>
                     <x-form.label for="visibility">{{ __('Visibility') }}</x-form.label>
                     <x-form.select name="visibility"
@@ -69,6 +67,8 @@
                                   type="datetime-local"
                                   :value="isset($event->finished_at) ? $event->finished_at->format('Y-m-d\TH:i') : null" />
                 </x-form.row>
+            </div>
+            <div class="col-12 col-md-6">
                 <x-form.row>
                     <x-form.label for="location_id">{{ __('Location') }}</x-form.label>
                     <x-form.select name="location_id"
@@ -81,6 +81,22 @@
                                   :options="$organizations->pluck('name', 'id')"
                                   :value="isset($event) ? $event->organizations->pluck('id')->toArray() : []"
                                   :valuesToInt="true" />
+                </x-form.row>
+                <x-form.row>
+                    <x-form.label for="parent_event_id">{{ __('Part of the event') }}</x-form.label>
+                    <x-form.select name="parent_event_id"
+                                   :options="$events->except($event->id ?? null)->pluck('name', 'id')"
+                                   :value="$event->parent_event_id ?? null">
+                        <option value="">{{ __('none') }}</option>
+                    </x-form.select>
+                </x-form.row>
+                <x-form.row>
+                    <x-form.label for="event_series_id">{{ __('Part of the event series') }}</x-form.label>
+                    <x-form.select name="event_series_id"
+                                   :options="$eventSeries->pluck('name', 'id')"
+                                   :value="$event->event_series_id ?? null">
+                        <option value="">{{ __('none') }}</option>
+                    </x-form.select>
                 </x-form.row>
             </div>
         </div>

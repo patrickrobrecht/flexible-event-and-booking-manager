@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\EventRequest;
 use App\Http\Requests\Filters\EventFilterRequest;
 use App\Models\Event;
+use App\Models\EventSeries;
 use App\Models\Location;
 use App\Models\Organization;
 use Illuminate\Http\RedirectResponse;
@@ -17,11 +18,13 @@ class EventController extends Controller
     {
         $this->authorize('viewAny', Event::class);
 
-        return view('events.event_index', $this->formValues([
+        return view('events.event_index', $this->formValuesForFilter([
             'events' => Event::filter()
                 ->with([
+                    'eventSeries',
                     'location',
                     'organizations',
+                    'parentEvent',
                 ])
                 ->paginate(),
         ]));
@@ -32,7 +35,9 @@ class EventController extends Controller
         $this->authorize('view', $event);
 
         return view('events.event_show', [
-            'event' => $event,
+            'event' => $event->loadMissing([
+                'subEvents.location',
+            ]),
         ]);
     }
 
@@ -81,6 +86,19 @@ class EventController extends Controller
     private function formValues(array $values = []): array
     {
         return array_replace([
+            'events' => Event::query()
+                ->whereNull('parent_event_id')
+                ->orderBy('name')
+                ->get(),
+        ], $this->formValuesForFilter($values));
+    }
+
+    private function formValuesForFilter(array $values = []): array
+    {
+        return array_replace([
+            'eventSeries' => EventSeries::query()
+                ->orderBy('name')
+                ->get(),
             'locations' => Location::query()
                 ->orderBy('name')
                 ->get(),

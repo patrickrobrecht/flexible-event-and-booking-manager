@@ -33,13 +33,15 @@
                             $loggedInUser = \Illuminate\Support\Facades\Auth::user();
 
                             $canViewEvents = $loggedInUser->can('viewAny', App\Models\Event::class);
+                            $canViewEventSeries = $loggedInUser->can('viewAny', App\Models\EventSeries::class);
                             $canViewOrganizations = $loggedInUser->can('viewAny', App\Models\Organization::class);
                             $canViewLocations = $loggedInUser->can('viewAny', App\Models\Location::class);
 
                             $canViewUsers = $loggedInUser->can('viewAny', App\Models\User::class);
                             $canViewUserRoles = $loggedInUser->can('viewAny', App\Models\UserRole::class);
 
-                            $canAdmin = $canViewEvents || $canViewOrganizations || $canViewLocations
+                            $canAdmin = $canViewEvents || $canViewEventSeries
+                                || $canViewOrganizations || $canViewLocations
                                 || $canViewUsers || $canViewUserRoles;
                         @endphp
                         @if($canAdmin)
@@ -54,6 +56,12 @@
                                         <x-nav.dropdown-item href="{{ route('events.index') }}">
                                             <i class="fa fa-fw fa-calendar-days"></i>
                                             {{ __('Events') }}
+                                        </x-nav.dropdown-item>
+                                    @endif
+                                    @if($canViewEventSeries)
+                                        <x-nav.dropdown-item href="{{ route('event-series.index') }}">
+                                            <i class="fa fa-fw fa-calendar-week"></i>
+                                            {{ __('Event series') }}
                                         </x-nav.dropdown-item>
                                     @endif
                                     @if($canViewOrganizations)

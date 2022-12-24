@@ -3,12 +3,14 @@
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\EventSeriesController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\PersonalAccessTokenController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserRoleController;
 use App\Models\Event;
+use App\Models\EventSeries;
 use App\Models\Location;
 use App\Models\Organization;
 use App\Models\PersonalAccessToken;
@@ -32,6 +34,10 @@ Route::middleware('auth')->group(static function () {
 
     Route::model('event', Event::class);
     Route::resource('events', EventController::class)
+         ->only(['index', 'show', 'create', 'store', 'edit', 'update']);
+
+    Route::model('event_series', EventSeries::class);
+    Route::resource('event-series', EventSeriesController::class)
          ->only(['index', 'show', 'create', 'store', 'edit', 'update']);
 
     Route::model('location', Location::class);

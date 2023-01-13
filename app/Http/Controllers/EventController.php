@@ -8,6 +8,7 @@ use App\Models\Event;
 use App\Models\EventSeries;
 use App\Models\Location;
 use App\Models\Organization;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
@@ -21,6 +22,9 @@ class EventController extends Controller
         return view('events.event_index', $this->formValuesForFilter([
             'events' => Event::filter()
                 ->with([
+                    'bookingOptions' => static fn (HasMany $query) => $query->withCount([
+                        'bookings',
+                    ]),
                     'eventSeries',
                     'location',
                     'organizations',

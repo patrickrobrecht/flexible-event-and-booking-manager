@@ -109,10 +109,17 @@
                                 </span>
                             </x-list.item>
                         @endisset
+                       @include('events.event_booking_options')
                     </x-list.group>
                     <div class="card-body">
                         @can('update', $event)
                             <x-button.edit href="{{ route('events.edit', $event) }}"/>
+                        @endcan
+
+                        @can('create', \App\Models\BookingOption::class)
+                            <x-button.create href="{{ route('booking-options.create', $event) }}">
+                                {{ __('Create booking option') }}
+                            </x-button.create>
                         @endcan
                     </div>
                     <div class="card-footer">

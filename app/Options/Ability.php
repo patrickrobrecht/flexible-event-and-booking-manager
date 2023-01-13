@@ -14,6 +14,7 @@ enum Ability: string
     case ViewEvents = 'events.view';
     case CreateEvents = 'events.create';
     case EditEvents = 'events.edit';
+    case ManageBookingOptionsOfEvent = 'events.manage_booking_options';
 
     case ViewEventSeries = 'event_series.view';
     case CreateEventSeries = 'event_series.create';
@@ -44,6 +45,7 @@ enum Ability: string
             self::ViewEvents => __('View events'),
             self::CreateEvents => __('Create events'),
             self::EditEvents => __('Edit events'),
+            self::ManageBookingOptionsOfEvent => __('Manage booking options of event'),
 
             self::ViewEventSeries => __('View event series'),
             self::CreateEventSeries => __('Create event series'),

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\BookingOptionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\EventSeriesController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\PersonalAccessTokenController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserRoleController;
+use App\Models\BookingOption;
 use App\Models\Event;
 use App\Models\EventSeries;
 use App\Models\Location;
@@ -31,6 +33,10 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth')->group(static function () {
     Route::get('/', [DashboardController::class, 'index'])
         ->name('dashboard');
+
+    Route::model('booking_option', BookingOption::class);
+    Route::resource('events/{event:slug}/booking-options', BookingOptionController::class)
+         ->only(['show', 'create', 'store', 'edit', 'update']);
 
     Route::model('event', Event::class);
     Route::resource('events', EventController::class)

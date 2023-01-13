@@ -2,6 +2,7 @@
 
 @php
     /** @var \App\Models\Event $event */
+
 @endphp
 
 @section('title')
@@ -94,8 +95,12 @@
                 </li>
             </x-list.group>
         </div>
-        @if($event->subEvents->count() > 0 || Auth::user()->can('createChild', $event))
-            <div class="col-12 col-md-6">
+        <div class="col-12 col-md-6">
+            <x-list.group class="mb-3">
+                @include('events.event_booking_options')
+            </x-list.group>
+
+            @if($event->subEvents->count() > 0 || Auth::user()->can('createChild', $event))
                 @include('events.shared.event_list', [
                     'events' => $event->subEvents,
                 ])
@@ -107,8 +112,8 @@
                         </x-button.create>
                     </div>
                 @endcan
-            </div>
-        @endif
+            @endif
+        </div>
     </div>
 
     <x-text.updated-human-diff :model="$event"/>

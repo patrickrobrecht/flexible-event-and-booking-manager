@@ -10,15 +10,13 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarHeader">
-                @auth
-                    {{-- Left Side Of Navbar --}}
-                    <ul class="navbar-nav me-md-auto">
-                        <x-nav.item href="{{ route('dashboard') }}">
-                            <i class="fa fa-home"></i>
-                            {{ __('Dashboard') }}
-                        </x-nav.item>
-                    </ul>
-                @endauth
+                {{-- Left Side Of Navbar --}}
+                <ul class="navbar-nav me-md-auto">
+                    <x-nav.item href="{{ route('dashboard') }}">
+                        <i class="fa fa-home"></i>
+                        {{ __('Dashboard') }}
+                    </x-nav.item>
+                </ul>
 
                 {{-- Right Side Of Navbar --}}
                 <ul class="navbar-nav ms-md-auto mt-0">

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Traits\Filterable;
 use App\Models\Traits\HasSlugForRouting;
+use App\Options\Visibility;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,6 +16,7 @@ use Spatie\QueryBuilder\AllowedFilter;
  * @property-read int $id
  * @property string $name
  * @property string $slug
+ * @property Visibility $visibility
  *
  * @property-read Collection|Event[] $events {@see EventSeries::events()}
  * @property-read ?EventSeries $parentEventSeries {@see EventSeries::parentEventSeries()}
@@ -27,6 +29,15 @@ class EventSeries extends Model
     use HasSlugForRouting;
 
     /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'visibility' => Visibility::class,
+    ];
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
@@ -34,6 +45,7 @@ class EventSeries extends Model
     protected $fillable = [
         'name',
         'slug',
+        'visibility',
     ];
 
     public function events(): HasMany

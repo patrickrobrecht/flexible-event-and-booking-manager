@@ -46,6 +46,13 @@
                     <x-list.group class="list-group-flush">
                         <x-list.item>
                             <span>
+                                <i class="fa fa-fw fa-eye"></i>
+                                {{ __('Visibility') }}
+                            </span>
+                            <x-badge.visibility :visibility="$eventSeriesItem->visibility"/>
+                        </x-list.item>
+                        <x-list.item>
+                            <span>
                                 <i class="fa fa-fw fa-calendar-week"></i>
                                 {{ __('Part of the event series') }}
                             </span>

@@ -16,8 +16,12 @@ trait ChecksAbilities
         return $allowed ? $this->allow() : $this->deny();
     }
 
-    public function requireAbility(User $user, Ability $ability): Response
+    public function requireAbility(?User $user, Ability $ability): Response
     {
+        if (!isset($user)) {
+            return $this->deny();
+        }
+
         return $this->response($user->hasAbility($ability));
     }
 }

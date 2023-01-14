@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Booking;
+use App\Models\BookingOption;
 use App\Models\Event;
 use App\Models\EventSeries;
 use App\Models\Location;
@@ -9,6 +11,8 @@ use App\Models\Organization;
 use App\Models\PersonalAccessToken;
 use App\Models\User;
 use App\Models\UserRole;
+use App\Policies\BookingOptionPolicy;
+use App\Policies\BookingPolicy;
 use App\Policies\EventPolicy;
 use App\Policies\EventSeriesPolicy;
 use App\Policies\LocationPolicy;
@@ -26,6 +30,8 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
+        Booking::class => BookingPolicy::class,
+        BookingOption::class => BookingOptionPolicy::class,
         Event::class => EventPolicy::class,
         EventSeries::class => EventSeriesPolicy::class,
         Location::class => LocationPolicy::class,

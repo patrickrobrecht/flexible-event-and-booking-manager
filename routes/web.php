@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\BookingController;
+use App\Http\Controllers\BookingOptionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\EventSeriesController;
@@ -9,6 +11,8 @@ use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\PersonalAccessTokenController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserRoleController;
+use App\Models\Booking;
+use App\Models\BookingOption;
 use App\Models\Event;
 use App\Models\EventSeries;
 use App\Models\Location;
@@ -28,13 +32,18 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::middleware('auth')->group(static function () {
-    Route::get('/', [DashboardController::class, 'index'])
-        ->name('dashboard');
 
-    Route::model('event', Event::class);
+Route::middleware('auth')->group(static function () {
+    Route::model('bookings', Booking::class);
+    Route::resource('bookings', BookingController::class)
+         ->only(['edit', 'update']);
+
     Route::resource('events', EventController::class)
-         ->only(['index', 'show', 'create', 'store', 'edit', 'update']);
+         ->only(['index', 'create', 'store', 'edit', 'update']);
+    Route::resource('events/{event:slug}/booking-options', BookingOptionController::class)
+         ->only(['show', 'create', 'store', 'edit', 'update']);
+    Route::resource('events/{event:slug}/{booking_option:slug}/bookings', BookingController::class)
+         ->only(['index']);
 
     Route::model('event_series', EventSeries::class);
     Route::resource('event-series', EventSeriesController::class)
@@ -66,5 +75,19 @@ Route::middleware('auth')->group(static function () {
     Route::put('account', [AccountController::class, 'update'])
         ->name('account.update');
 });
+
+Route::get('/', [DashboardController::class, 'index'])
+     ->name('dashboard');
+
+Route::model('event', Event::class);
+Route::resource('events', EventController::class)
+     ->only(['show']);
+
+Route::model('booking_option', BookingOption::class);
+Route::resource('events/{event:slug}/booking-options', BookingOptionController::class)
+     ->only(['show']);
+
+Route::resource('events/{event:slug}/{booking_option:slug}/bookings', BookingController::class)
+     ->only(['store']);
 
 require __DIR__ . '/auth.php';

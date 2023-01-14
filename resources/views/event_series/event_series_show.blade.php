@@ -9,7 +9,11 @@
 @endsection
 
 @section('breadcrumbs')
-    <x-nav.breadcrumb href="{{ route('event-series.index') }}">{{ __('Event series') }}</x-nav.breadcrumb>
+    @can('viewAny', \App\Models\EventSeries::class)
+        <x-nav.breadcrumb href="{{ route('event-series.index') }}">{{ __('Event series') }}</x-nav.breadcrumb>
+    @else
+        <x-nav.breadcrumb>{{ __('Event series') }}</x-nav.breadcrumb>
+    @endcan
     <x-nav.breadcrumb/>
 @endsection
 

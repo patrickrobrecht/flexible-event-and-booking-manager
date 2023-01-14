@@ -25,6 +25,7 @@ use Spatie\QueryBuilder\AllowedFilter;
  * @property ?Carbon $started_at
  * @property ?Carbon $finished_at
  *
+ * @property-read Collection|BookingOption[] $bookingOptions {@see Event::bookingOptions()}
  * @property-read ?EventSeries $eventSeries {@see Event::eventSeries()}
  * @property-read Collection|Organization[] $organizations {@see Event::organizations()}
  * @property-read ?Event $parentEvent {@see Event::parentEvent()}
@@ -63,6 +64,11 @@ class Event extends Model
         'started_at' => 'datetime',
         'finished_at' => 'datetime',
     ];
+
+    public function bookingOptions(): HasMany
+    {
+        return $this->hasMany(BookingOption::class, 'event_id');
+    }
 
     public function eventSeries(): BelongsTo
     {

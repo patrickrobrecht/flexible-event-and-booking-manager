@@ -73,7 +73,7 @@ class UserRequest extends FormRequest
             ],
         ];
 
-        $rules = array_replace($rules, $this->rulesForAddressFields());
+        $rules = array_replace($rules, $this->rulesForAddressFields('nullable'));
 
         if ($this->routeIs('users.store', 'users.update')) {
             $rules = array_replace($rules, [

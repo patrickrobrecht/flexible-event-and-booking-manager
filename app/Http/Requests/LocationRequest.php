@@ -38,6 +38,6 @@ class LocationRequest extends FormRequest
             ],
         ];
 
-        return array_replace($rules, $this->rulesForAddressFields());
+        return array_replace($rules, $this->rulesForAddressFields('nullable'));
     }
 }

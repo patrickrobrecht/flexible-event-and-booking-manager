@@ -65,6 +65,13 @@
                     <x-list.group class="list-group-flush">
                         <x-list.item>
                             <span>
+                                <i class="fa fa-fw fa-eye"></i>
+                                {{ __('Visibility') }}
+                            </span>
+                            <x-badge.visibility :visibility="$event->visibility"/>
+                        </x-list.item>
+                        <x-list.item>
+                            <span>
                                 <i class="fa fa-fw fa-clock"></i>
                                 {{ __('Date') }}
                             </span>
@@ -109,10 +116,17 @@
                                 </span>
                             </x-list.item>
                         @endisset
+                        @include('events.shared.event_booking_options')
                     </x-list.group>
                     <div class="card-body">
                         @can('update', $event)
                             <x-button.edit href="{{ route('events.edit', $event) }}"/>
+                        @endcan
+
+                        @can('create', \App\Models\BookingOption::class)
+                            <x-button.create href="{{ route('booking-options.create', $event) }}">
+                                {{ __('Create booking option') }}
+                            </x-button.create>
                         @endcan
                     </div>
                     <div class="card-footer">

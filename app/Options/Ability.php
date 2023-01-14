@@ -12,11 +12,15 @@ enum Ability: string
     case ManagePersonalAccessTokens = 'personal_access_tokens.manage_own';
 
     case ViewEvents = 'events.view';
+    case ViewPrivateEvents = 'events.view_private';
     case CreateEvents = 'events.create';
     case EditEvents = 'events.edit';
     case ManageBookingOptionsOfEvent = 'events.manage_booking_options';
+    case ViewBookingsOfEvent = 'events.view_bookings';
+    case EditBookingsOfEvent = 'events.edit_bookings';
 
     case ViewEventSeries = 'event_series.view';
+    case ViewPrivateEventSeries = 'event_series.view_private';
     case CreateEventSeries = 'event_series.create';
     case EditEventSeries = 'event_series.edit';
 
@@ -43,11 +47,15 @@ enum Ability: string
             self::ManagePersonalAccessTokens => __('Manage personal access tokens'),
 
             self::ViewEvents => __('View events'),
+            self::ViewPrivateEvents => __('View private events'),
             self::CreateEvents => __('Create events'),
             self::EditEvents => __('Edit events'),
             self::ManageBookingOptionsOfEvent => __('Manage booking options of event'),
+            self::ViewBookingsOfEvent => __('View bookings of event'),
+            self::EditBookingsOfEvent => __('Edit bookings of event'),
 
             self::ViewEventSeries => __('View event series'),
+            self::ViewPrivateEventSeries => __('View private event series'),
             self::CreateEventSeries => __('Create event series'),
             self::EditEventSeries => __('Edit event series'),
 

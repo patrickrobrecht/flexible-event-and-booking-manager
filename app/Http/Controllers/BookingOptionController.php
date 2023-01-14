@@ -6,8 +6,8 @@ use App\Http\Requests\BookingOptionRequest;
 use App\Models\BookingOption;
 use App\Models\Event;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
 use Illuminate\Support\Facades\Session;
+use Illuminate\View\View;
 
 class BookingOptionController extends Controller
 {

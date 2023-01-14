@@ -40,6 +40,12 @@
                         ]) !!}
                     </div>
                 </x-form.row>
+                <x-form.row>
+                    <x-form.label for="visibility">{{ __('Visibility') }}</x-form.label>
+                    <x-form.select name="visibility"
+                                   :options="\App\Options\Visibility::keysWithNames()"
+                                   :value="$eventSeries->visibility->value ?? null" />
+                </x-form.row>
             </div>
 
             <div class="col-12 col-md-6">

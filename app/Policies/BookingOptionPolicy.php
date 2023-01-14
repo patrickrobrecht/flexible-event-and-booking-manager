@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\BookingOption;
 use App\Models\User;
 use App\Options\Ability;
+use App\Options\Visibility;
 use App\Policies\Traits\ChecksAbilities;
 use Illuminate\Auth\Access\Response;
 
@@ -32,19 +33,41 @@ class BookingOptionPolicy
      *
      * @return Response
      */
-    public function view(User $user, BookingOption $bookingOption): Response
+    public function view(?User $user, BookingOption $bookingOption): Response
     {
-        return $this->response($user->can('view', $bookingOption->event));
+        if ($bookingOption->event->visibility === Visibility::Public) {
+            return $this->allow();
+        }
+
+        return $this->response(isset($user) && $user->can('view', $bookingOption->event));
     }
 
-    public function book(User $user, BookingOption $bookingOption): Response
+    public function book(?User $user, BookingOption $bookingOption): Response
     {
-        return $this->response(
-            // booking period has started
-            isset($bookingOption->available_from) && $bookingOption->available_from->isPast()
-            // ... and never ends or has not ended yet
-            && (!isset($bookingOption->available_until) || $bookingOption->available_until->isFuture())
-        );
+        if (
+            !isset($bookingOption->available_from)
+            || $bookingOption->available_from->isFuture()
+        ) {
+            return $this->deny(__('Bookings are not possible yet.'));
+        }
+
+        if (isset($bookingOption->available_until) && $bookingOption->available_until->isPast()) {
+            return $this->deny(
+                __('The booking period ended at :date.', ['date' => formatDateTime($bookingOption->available_until)])
+                . ' '
+                . __('Bookings are not possible anymore.')
+            );
+        }
+
+        if ($bookingOption->hasReachedMaximumBookings()) {
+            return $this->deny(
+                __('The maximum number of bookings has been reached.')
+                . ' '
+                . __('Bookings are not possible anymore.')
+            );
+        }
+
+        return $this->allow();
     }
 
     /**

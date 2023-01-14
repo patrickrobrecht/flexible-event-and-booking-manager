@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Event;
+use App\Models\EventSeries;
 use App\Models\Location;
 use App\Models\Organization;
 use App\Models\User;
@@ -36,6 +37,9 @@ class DatabaseSeeder extends Seeder
         Event::factory(5)
             ->for(fake()->randomElement($locations))
             ->hasAttached(fake()->randomElements($organizations, fake()->numberBetween(1, 3)))
+            ->create();
+
+        EventSeries::factory(3)
             ->create();
     }
 }

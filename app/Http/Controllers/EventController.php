@@ -40,6 +40,9 @@ class EventController extends Controller
 
         return view('events.event_show', [
             'event' => $event->loadMissing([
+                'bookingOptions' => static fn (HasMany $query) => $query->withCount([
+                    'bookings',
+                ]),
                 'subEvents.location',
             ]),
         ]);

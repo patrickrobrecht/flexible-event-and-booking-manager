@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read int $id
  * @property string $name
  * @property string $slug
- * @property string $description
+ * @property ?string $description
  * @property ?int $maximum_bookings
  * @property ?Carbon $available_from
  * @property ?Carbon $available_until
@@ -36,6 +36,7 @@ class BookingOption extends Model
     protected $fillable = [
         'name',
         'slug',
+        'description',
         'maximum_bookings',
         'available_from',
         'available_until',
@@ -69,5 +70,11 @@ class BookingOption extends Model
     public function fillAndSave(array $validatedData): bool
     {
         return $this->fill($validatedData)->save();
+    }
+
+    public function hasReachedMaximumBookings(): bool
+    {
+        return isset($this->maximum_bookings)
+               && $this->bookings->count() >= $this->maximum_bookings;
     }
 }

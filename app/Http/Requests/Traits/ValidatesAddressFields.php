@@ -4,33 +4,33 @@ namespace App\Http\Requests\Traits;
 
 trait ValidatesAddressFields
 {
-    protected function rulesForAddressFields(): array
+    protected function rulesForAddressFields(string $default): array
     {
         return [
             'street' => [
-                'nullable',
+                $default,
                 'string',
                 'max:255',
             ],
             'house_number' => [
-                'nullable',
+                $default,
                 'string',
                 'alpha_num',
                 'max:255'
             ],
             'postal_code' => [
-                'nullable',
+                $default,
                 'string',
                 'alpha_num',
                 'max:255'
             ],
             'city' => [
-                'nullable',
+                $default,
                 'string',
                 'max:255',
             ],
             'country' => [
-                'nullable',
+                $default,
                 'string',
                 'max:255',
             ],

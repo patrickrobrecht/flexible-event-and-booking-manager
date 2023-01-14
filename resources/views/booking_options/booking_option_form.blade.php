@@ -6,15 +6,19 @@
 @endphp
 
 @section('title')
-    @isset($event)
-        {{ __('Edit :name', ['name' => $event->name]) }}
+    @isset($bookingOption)
+        {{ __('Edit :name', ['name' => $bookingOption->name]) }}
     @else
-        {{ __('Create event') }}
+        {{ __('Create booking option') }}
     @endisset
 @endsection
 
 @section('breadcrumbs')
     <x-nav.breadcrumb href="{{ route('events.index') }}">{{ __('Events') }}</x-nav.breadcrumb>
+    <x-nav.breadcrumb href="{{ route('events.show', $event) }}">{{ $event->name }}</x-nav.breadcrumb>
+    @isset($bookingOption)
+        <x-nav.breadcrumb href="{{ route('booking-options.show', [$event, $bookingOption]) }}">{{ $bookingOption->name }}</x-nav.breadcrumb>
+    @endisset
     <x-nav.breadcrumb/>
 @endsection
 

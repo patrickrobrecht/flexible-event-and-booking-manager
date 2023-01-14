@@ -4,6 +4,7 @@ namespace App\Models\Traits;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -23,9 +24,9 @@ trait Filterable
         return $query;
     }
 
-    public static function filter(): QueryBuilder
+    public static function filter(Builder|Relation|string|null $subject = null): QueryBuilder
     {
-        $query = QueryBuilder::for(self::class)
+        $query = QueryBuilder::for($subject ?? self::class)
             ->allowedFilters(self::allowedFilters());
 
         $sorts = self::defaultSorts();

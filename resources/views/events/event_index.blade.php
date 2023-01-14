@@ -65,6 +65,13 @@
                     <x-list.group class="list-group-flush">
                         <x-list.item>
                             <span>
+                                <i class="fa fa-fw fa-eye"></i>
+                                {{ __('Visibility') }}
+                            </span>
+                            <x-badge.visibility :visibility="$event->visibility"/>
+                        </x-list.item>
+                        <x-list.item>
+                            <span>
                                 <i class="fa fa-fw fa-clock"></i>
                                 {{ __('Date') }}
                             </span>
@@ -109,7 +116,7 @@
                                 </span>
                             </x-list.item>
                         @endisset
-                       @include('events.event_booking_options')
+                        @include('events.shared.event_booking_options')
                     </x-list.group>
                     <div class="card-body">
                         @can('update', $event)

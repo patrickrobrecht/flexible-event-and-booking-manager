@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\EventSeries;
 use App\Models\User;
 use App\Options\Ability;
+use App\Options\Visibility;
 use App\Policies\Traits\ChecksAbilities;
 use Illuminate\Auth\Access\Response;
 
@@ -28,13 +29,22 @@ class EventSeriesPolicy
      * Determine whether the user can view the model.
      *
      * @param User $user
-     * @param EventSeries $EventSeries
+     * @param EventSeries $eventSeries
      *
      * @return Response
      */
-    public function view(User $user, EventSeries $EventSeries): Response
+    public function view(User $user, EventSeries $eventSeries): Response
     {
-        return $this->viewAny($user);
+        if ($eventSeries->visibility === Visibility::Public) {
+            // Anyone can view public event series.
+            return $this->allow();
+        }
+
+        /**
+         * Private event series are only visible for logged-in users
+         * with the ability to view private event series as well.
+         */
+        return $this->requireAbility($user, Ability::ViewPrivateEvents);
     }
 
     /**

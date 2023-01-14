@@ -10,7 +10,11 @@
 @endsection
 
 @section('breadcrumbs')
-    <x-nav.breadcrumb href="{{ route('events.index') }}">{{ __('Events') }}</x-nav.breadcrumb>
+    @can('viewAny', \App\Models\Event::class)
+        <x-nav.breadcrumb href="{{ route('events.index') }}">{{ __('Events') }}</x-nav.breadcrumb>
+    @else
+        <x-nav.breadcrumb>{{ __('Events') }}</x-nav.breadcrumb>
+    @endcan
     <x-nav.breadcrumb/>
 @endsection
 
@@ -41,7 +45,7 @@
     @endisset
 
     <div class="row my-3">
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-md-4">
             <x-list.group>
                 @isset($event->description)
                     <li class="list-group-item">
@@ -57,7 +61,7 @@
                     <span class="me-3">
                         <i class="fa fa-fw fa-eye" title="{{ __('Visibility') }}"></i>
                     </span>
-                    <div>{{ $event->visibility->getTranslatedName() }}</div>
+                    <div><x-badge.visibility :visibility="$event->visibility"/></div>
                 </li>
                 <li class="list-group-item d-flex">
                     <span class="me-3">
@@ -95,12 +99,20 @@
                 </li>
             </x-list.group>
         </div>
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-md-8">
             <x-list.group class="mb-3">
-                @include('events.event_booking_options')
+                @include('events.shared.event_booking_options')
             </x-list.group>
 
-            @if($event->subEvents->count() > 0 || Auth::user()->can('createChild', $event))
+            @can('create', \App\Models\BookingOption::class)
+                <div class="mb-3">
+                    <x-button.create href="{{ route('booking-options.create', $event) }}">
+                        {{ __('Create booking option') }}
+                    </x-button.create>
+                </div>
+            @endcan
+
+            @if($event->subEvents->count() > 0 || Auth::user()?->can('createChild', $event))
                 @include('events.shared.event_list', [
                     'events' => $event->subEvents,
                 ])

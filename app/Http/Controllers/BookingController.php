@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\BookingCompleted;
 use App\Http\Requests\BookingRequest;
 use App\Models\Booking;
 use App\Models\BookingOption;
@@ -37,6 +38,8 @@ class BookingController extends Controller
 
         if ($booking->fillAndSave($request->validated())) {
             Session::flash('success', __('Your booking has been saved successfully.'));
+
+            event(new BookingCompleted($booking));
 
             if (Auth::user()?->can('update', $booking)) {
                 return redirect(route('bookings.edit', $booking));

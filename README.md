@@ -5,6 +5,8 @@ This application allows to manage events, their booking forms and bookings via a
 
 ## Features
 - Manage events and event series, locations, and organizations
+- Manage booking options and flexible booking forms
+- Bookings
 - Login and logout, reset password, verify e-mail address, edit own account
 - User and user role management
 - Manage personal access tokens (for [Laravel Sanctum](https://laravel.com/docs/9.x/sanctum))

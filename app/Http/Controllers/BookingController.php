@@ -31,12 +31,14 @@ class BookingController extends Controller
 
         $booking = new Booking();
         $booking->bookingOption()->associate($bookingOption);
+        $booking->price = $bookingOption->price;
+        $booking->bookedByUser()->associate(Auth::user());
         $booking->booked_at = Carbon::now();
 
         if ($booking->fillAndSave($request->validated())) {
             Session::flash('success', __('Your booking has been saved successfully.'));
 
-            if (Auth::user()) {
+            if (Auth::user()?->can('update', $booking)) {
                 return redirect(route('bookings.edit', $booking));
             }
         }
@@ -49,7 +51,9 @@ class BookingController extends Controller
         $this->authorize('update', $booking);
 
         return view('bookings.booking_form', [
-            'booking' => $booking,
+            'booking' => $booking->loadMissing([
+                'bookingOption.form.formFieldGroups.formFields',
+            ]),
         ]);
     }
 

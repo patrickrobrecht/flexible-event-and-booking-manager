@@ -110,8 +110,12 @@
                     @endisset
                 @endif
             @endif
+        @elseif($type === 'textarea')
+            <textarea id="{{ $id ?? $name }}" name="{{ $name }}"
+                {{ $attributes->class(['form-control', 'is-invalid' => $errorBag->hasAny($fieldName)]) }}>{{--
+                --}}{{ $value }}</textarea>
         @else
-            {{-- Other type than checkbox or radio --}}
+            {{-- Other type than checkbox, radio, textarea --}}
             <input id="{{ $id ?? $name }}" name="{{ $name }}"
                    type="{{ $type }}" value="{{ $value }}"
                    {{ $attributes->class(['form-control', 'is-invalid' => $errorBag->hasAny($fieldName)]) }} />

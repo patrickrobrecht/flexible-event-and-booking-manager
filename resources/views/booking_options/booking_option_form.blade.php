@@ -3,6 +3,7 @@
 @php
     /** @var \App\Models\Event $event */
     /** @var ?\App\Models\BookingOption $bookingOption */
+    /** @var \Illuminate\Database\Eloquent\Collection|\App\Models\Form $forms */
 @endphp
 
 @section('title')
@@ -51,6 +52,14 @@
                 </x-form.row>
             </div>
             <div class="col-12 col-md-6">
+                <x-form.row>
+                    <x-form.label for="form_id">{{ __('Form') }}</x-form.label>
+                    <x-form.select name="form_id"
+                                   :options="$forms->pluck('name', 'id')"
+                                   :value="$bookingOption->form_id ?? null">
+                        <option value="">{{ __('none') }}</option>
+                    </x-form.select>
+                </x-form.row>
                 <x-form.row>
                     <x-form.label for="maximum_bookings">{{ __('Maximum bookings') }}</x-form.label>
                     <x-form.input name="maximum_bookings" type="number" min="1" step="1"

@@ -17,12 +17,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property ?int $maximum_bookings
  * @property ?Carbon $available_from
  * @property ?Carbon $available_until
- * @property float $price
+ * @property ?float $price
  * @property array $price_conditions
  * @property array $restrictions
  *
  * @property-read Collection|Booking[] $bookings {@see self::bookings()}
  * @property-read Event $event {@see self::event()}
+ * @property-read Form $form {@see self::form()}
  */
 class BookingOption extends Model
 {
@@ -67,9 +68,17 @@ class BookingOption extends Model
         return $this->belongsTo(Event::class, 'event_id');
     }
 
+    public function form(): BelongsTo
+    {
+        return $this->belongsTo(Form::class, 'form_id');
+    }
+
     public function fillAndSave(array $validatedData): bool
     {
-        return $this->fill($validatedData)->save();
+        $this->fill($validatedData);
+        $this->form()->associate($validatedData['form_id'] ?? null);
+
+        return $this->save();
     }
 
     public function hasReachedMaximumBookings(): bool

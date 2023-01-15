@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\BookingOptionRequest;
 use App\Models\BookingOption;
 use App\Models\Event;
+use App\Models\Form;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
@@ -25,9 +26,9 @@ class BookingOptionController extends Controller
     {
         $this->authorize('create', BookingOption::class);
 
-        return view('booking_options.booking_option_form', [
+        return view('booking_options.booking_option_form', $this->formValues([
             'event' => $event,
-        ]);
+        ]));
     }
 
     public function store(Event $event, BookingOptionRequest $request): RedirectResponse
@@ -48,10 +49,10 @@ class BookingOptionController extends Controller
     {
         $this->authorize('update', $bookingOption);
 
-        return view('booking_options.booking_option_form', [
+        return view('booking_options.booking_option_form', $this->formValues([
             'bookingOption' => $bookingOption,
             'event' => $event,
-        ]);
+        ]));
     }
 
     public function update(Event $event, BookingOption $bookingOption, BookingOptionRequest $request): RedirectResponse
@@ -65,5 +66,14 @@ class BookingOptionController extends Controller
         }
 
         return back();
+    }
+
+    private function formValues(array $values = []): array
+    {
+        return array_replace([
+            'forms' => Form::query()
+                            ->orderBy('name')
+                            ->get(),
+        ], $values);
     }
 }

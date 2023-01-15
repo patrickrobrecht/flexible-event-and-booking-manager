@@ -27,7 +27,9 @@ return new class extends Migration
             $table->string('city')->nullable();
             $table->string('country')->nullable();
 
+            $table->foreignId('booked_by_user_id')->nullable()->constrained('users');
             $table->dateTime('booked_at')->nullable();
+            $table->unsignedDecimal('price', 8, 2)->nullable();
             $table->timestamps();
         });
     }

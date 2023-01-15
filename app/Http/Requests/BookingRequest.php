@@ -99,7 +99,7 @@ class BookingRequest extends FormRequest
     {
         $attributes = parent::attributes();
 
-        foreach ($this->booking_option->form->formFieldGroups as $group) {
+        foreach ($this->booking_option->form->formFieldGroups ?? [] as $group) {
             foreach ($group->formFields as $field) {
                 $attributes[$field->input_name] = $field->name;
             }

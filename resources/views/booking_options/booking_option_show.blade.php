@@ -26,6 +26,27 @@
             @include('events.shared.event_details')
         </div>
         <div class="col-12 col-md-8">
+            @auth()
+                @if($bookingOption->isRestrictedBy(\App\Options\BookingRestriction::VerifiedEmailAddressRequired) && Auth::user()?->email_verified_at === null)
+                    <p class="alert alert-danger">
+                        {{ __('Bookings are only available for logged-in users with a verified email address.') }}
+                        <a href="{{ route('verification.notice') }}" class="alert-link">{{ __('Verify e-mail address') }}</a>
+                    </p>
+                @endif
+            @else
+                @if($bookingOption->isRestrictedBy(\App\Options\BookingRestriction::AccountRequired))
+                    <p class="alert alert-danger">
+                        {{ __('Bookings are only available for logged-in users.') }}
+                        <a href="{{ route('login') }}" class="alert-link">{{ __('Login') }}</a>
+                    </p>
+                @else
+                    <p class="alert alert-danger">
+                        {{ __('To be able to view bookings after submission, we recommend logging in or registering beforehand.') }}
+                        {{ __('This is the only way we can assign your registration to your account and offer you additional functions such as the reuse of entries for the next booking or updating bookings in case of changes.') }}
+                    </p>
+               @endif
+            @endauth
+
             @if(!isset($bookingOption->available_from) || $bookingOption->available_from->isFuture())
                 <p class="alert alert-danger">
                     {{ __('Bookings are not possible yet.') }}

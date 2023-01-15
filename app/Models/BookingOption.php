@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Traits\HasSlugForRouting;
+use App\Options\BookingRestriction;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -42,7 +43,8 @@ class BookingOption extends Model
         'available_from',
         'available_until',
         'price',
-        'book_for_self_only',
+        'price_conditions',
+        'restrictions',
     ];
 
     /**
@@ -55,7 +57,8 @@ class BookingOption extends Model
         'available_from' => 'datetime',
         'available_until' => 'datetime',
         'price' => 'float',
-        'book_for_self_only' => 'bool',
+        'price_conditions' => 'json',
+        'restrictions' => 'json', /* @see BookingRestriction */
     ];
 
     public function bookings(): HasMany
@@ -79,6 +82,11 @@ class BookingOption extends Model
         $this->form()->associate($validatedData['form_id'] ?? null);
 
         return $this->save();
+    }
+
+    public function isRestrictedBy(BookingRestriction $restriction): bool
+    {
+        return in_array($restriction->value, $this->restrictions ?? [], true);
     }
 
     public function hasReachedMaximumBookings(): bool

@@ -84,7 +84,7 @@ class Booking extends Model
             return false;
         }
 
-        foreach ($this->bookingOption->form->formFieldGroups as $group) {
+        foreach ($this->bookingOption->form->formFieldGroups ?? [] as $group) {
             foreach ($group->formFields as $field) {
                 if (!isset($field->column)) {
                     if (!$this->setFieldValue($field, $validatedData[$field->input_name] ?? null)) {

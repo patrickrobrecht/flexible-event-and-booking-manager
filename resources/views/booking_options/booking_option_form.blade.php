@@ -18,7 +18,9 @@
     <x-nav.breadcrumb href="{{ route('events.index') }}">{{ __('Events') }}</x-nav.breadcrumb>
     <x-nav.breadcrumb href="{{ route('events.show', $event) }}">{{ $event->name }}</x-nav.breadcrumb>
     @isset($bookingOption)
-        <x-nav.breadcrumb href="{{ route('booking-options.show', [$event, $bookingOption]) }}">{{ $bookingOption->name }}</x-nav.breadcrumb>
+        <x-nav.breadcrumb href="{{ route('booking-options.show', [$event, $bookingOption]) }}">
+            {{ $bookingOption->name }}
+        </x-nav.breadcrumb>
     @endisset
     <x-nav.breadcrumb/>
 @endsection
@@ -63,23 +65,28 @@
                 <x-form.row>
                     <x-form.label for="maximum_bookings">{{ __('Maximum bookings') }}</x-form.label>
                     <x-form.input name="maximum_bookings" type="number" min="1" step="1"
-                                  :value="$bookingOption->maximum_bookings ?? null" />
+                                  :value="$bookingOption->maximum_bookings ?? null"/>
                 </x-form.row>
                 <x-form.row>
                     <x-form.label for="available_from">{{ __('Start date') }}</x-form.label>
                     <x-form.input name="available_from" type="datetime-local"
-                                  :value="isset($bookingOption->available_from) ? $bookingOption->available_from->format('Y-m-d\TH:i') : null" />
+                                  :value="isset($bookingOption->available_from) ? $bookingOption->available_from->format('Y-m-d\TH:i') : null"/>
                 </x-form.row>
                 <x-form.row>
                     <x-form.label for="available_until">{{ __('End date') }}</x-form.label>
                     <x-form.input name="available_until" type="datetime-local"
-                                  :value="isset($bookingOption->available_until) ? $bookingOption->available_until->format('Y-m-d\TH:i') : null" />
+                                  :value="isset($bookingOption->available_until) ? $bookingOption->available_until->format('Y-m-d\TH:i') : null"/>
                 </x-form.row>
-
                 <x-form.row>
                     <x-form.label for="price">{{ __('Price') }}</x-form.label>
                     <x-form.input name="price" type="number" min="0.01" step="0.01"
                                   :value="$bookingOption->price ?? null"/>
+                </x-form.row>
+                <x-form.row>
+                    <x-form.label for="restrictions">{{ __('Restrictions') }}</x-form.label>
+                    <x-form.input id="restrictions" name="restrictions[]" type="checkbox"
+                                  :options="\App\Options\BookingRestriction::keysWithNames()"
+                                  :value="$bookingOption->restrictions ?? null"/>
                 </x-form.row>
             </div>
         </div>

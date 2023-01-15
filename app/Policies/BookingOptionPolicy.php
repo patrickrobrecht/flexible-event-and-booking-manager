@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\BookingOption;
 use App\Models\User;
 use App\Options\Ability;
+use App\Options\BookingRestriction;
 use App\Options\Visibility;
 use App\Policies\Traits\ChecksAbilities;
 use Illuminate\Auth\Access\Response;
@@ -65,6 +66,20 @@ class BookingOptionPolicy
                 . ' '
                 . __('Bookings are not possible anymore.')
             );
+        }
+
+        if (
+            !isset($user)
+            && $bookingOption->isRestrictedBy(BookingRestriction::AccountRequired)
+        ) {
+            return $this->deny(__('Bookings are only available for logged-in users.'));
+        }
+
+        if (
+            (!isset($user) || $user->email_verified_at === null)
+            && $bookingOption->isRestrictedBy(BookingRestriction::VerifiedEmailAddressRequired)
+        ) {
+            return $this->deny(__('Bookings are only available for logged-in users with a verified email address.'));
         }
 
         return $this->allow();

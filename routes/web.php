@@ -6,6 +6,7 @@ use App\Http\Controllers\BookingOptionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\EventSeriesController;
+use App\Http\Controllers\FormController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\PersonalAccessTokenController;
@@ -15,6 +16,7 @@ use App\Models\Booking;
 use App\Models\BookingOption;
 use App\Models\Event;
 use App\Models\EventSeries;
+use App\Models\Form;
 use App\Models\Location;
 use App\Models\Organization;
 use App\Models\PersonalAccessToken;
@@ -36,7 +38,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth')->group(static function () {
     Route::model('bookings', Booking::class);
     Route::resource('bookings', BookingController::class)
-         ->only(['edit', 'update']);
+         ->only(['show', 'edit', 'update']);
 
     Route::resource('events', EventController::class)
          ->only(['index', 'create', 'store', 'edit', 'update']);
@@ -48,6 +50,10 @@ Route::middleware('auth')->group(static function () {
     Route::model('event_series', EventSeries::class);
     Route::resource('event-series', EventSeriesController::class)
          ->only(['index', 'show', 'create', 'store', 'edit', 'update']);
+
+    Route::model('form', Form::class);
+    Route::resource('forms', FormController::class)
+        ->only(['index', 'show', 'create', 'store', 'edit', 'update']);
 
     Route::model('location', Location::class);
     Route::resource('locations', LocationController::class)

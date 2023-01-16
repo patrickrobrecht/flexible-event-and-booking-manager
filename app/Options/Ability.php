@@ -24,6 +24,10 @@ enum Ability: string
     case CreateEventSeries = 'event_series.create';
     case EditEventSeries = 'event_series.edit';
 
+    case ViewForms = 'forms.view';
+    case CreateForms = 'forms.create';
+    case EditForms = 'forms.edit';
+
     case ViewLocations = 'locations.view';
     case CreateLocations = 'locations.create';
     case EditLocations = 'locations.edit';
@@ -58,6 +62,10 @@ enum Ability: string
             self::ViewPrivateEventSeries => __('View private event series'),
             self::CreateEventSeries => __('Create event series'),
             self::EditEventSeries => __('Edit event series'),
+
+            self::ViewForms => __('View forms'),
+            self::CreateForms => __('Create forms'),
+            self::EditForms => __('Edit forms'),
 
             self::ViewLocations => __('View locations'),
             self::CreateLocations => __('Create locations'),

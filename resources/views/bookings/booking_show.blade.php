@@ -1,0 +1,134 @@
+@extends('layouts.app')
+
+@php
+    /** @var \App\Models\Booking $booking */
+    $bookingOption = $booking->bookingOption;
+    $event = $bookingOption->event;
+@endphp
+
+@section('title')
+    @isset($booking->booked_at)
+        {{ __('Booking no. :id of :date', [
+            'id' => $booking->id,
+            'date' => formatDateTime($booking->booked_at)
+        ]) }}
+    @else
+        {{ __('Booking no. :id', [
+            'id' => $booking->id,
+        ]) }}
+    @endisset
+@endsection
+
+@section('breadcrumbs')
+    <x-nav.breadcrumb href="{{ route('events.index') }}">{{ __('Events') }}</x-nav.breadcrumb>
+    <x-nav.breadcrumb href="{{ route('events.show', $event) }}">{{ $event->name }}</x-nav.breadcrumb>
+    <x-nav.breadcrumb href="{{ route('booking-options.show', [$event, $bookingOption]) }}">{{ $bookingOption->name }}</x-nav.breadcrumb>
+    @can('viewAny', \App\Models\Booking::class)
+        <x-nav.breadcrumb href="{{ route('bookings.index', [$event, $bookingOption]) }}">{{ __('Bookings') }}</x-nav.breadcrumb>
+    @endcan
+@endsection
+
+@section('headline')
+    <hgroup>
+        <h1>{{ $event->name }}: {{ $bookingOption->name }}</h1>
+        <h2>@yield('title')</h2>
+    </hgroup>
+@endsection
+
+@section('headline-buttons')
+    @can('update', $booking)
+        <x-button.edit href="{{ route('bookings.edit', $booking) }}"/>
+    @endcan
+@endsection
+
+@section('content')
+    <div class="row">
+        <div class="col-12 col-md-4">
+            @include('events.shared.event_details')
+        </div>
+        <div class="col-12 col-md-8">
+            @isset($bookingOption->form)
+                @foreach($bookingOption->form->formFieldGroups as $group)
+                    @if($group->show_name)
+                        <h2 id="{{ Str::slug($group->name) }}">{{ $group->name }}</h2>
+                    @endif
+                    @isset($group->description)
+                        <p class="lead">{!! $group->description !!}</p>
+                    @endisset
+
+                    <div class="row">
+                        @foreach($group->formFields as $field)
+                            @php
+                                $allowedValues = array_combine($field->allowed_values ?? [], $field->allowed_values ?? []);
+                                $inputName = $field->input_name . ($field->isMultiCheckbox() ? '[]' : '');
+                            @endphp
+                            <div class="{{ $field->container_class ?? 'col-12' }}">
+                                <x-form.row>
+                                    @if($field->type === 'checkbox' && ($field->allowed_values === null || count($field->allowed_values) === 1))
+                                        <x-form.input readonly disabled
+                                                      name="{{ $field->input_name }}" type="{{ $field->type }}"
+                                                      :value="$booking?->getFieldValue($field)">
+                                            {{ $field->allowed_values[0] ?? $field->name }}
+                                            @if($field->required) * @endif
+                                        </x-form.input>
+                                    @else
+                                        <x-form.label for="{{ $inputName }}">{{ $field->name }} @if($field->required) * @endif</x-form.label>
+                                        @if(!$field->required || $field->type === 'checkbox')
+                                            <x-form.input readonly disabled
+                                                          name="{{ $inputName }}" type="{{ $field->type }}"
+                                                          :options="$allowedValues"
+                                                          :value="$booking?->getFieldValue($field)" />
+                                        @else
+                                            <x-form.input readonly disabled
+                                                          name="{{ $inputName }}" type="{{ $field->type }}"
+                                                          :options="$allowedValues"
+                                                          :value="$booking?->getFieldValue($field)"
+                                                          required />
+                                        @endif
+                                    @endif
+                                    @if(isset($field->hint) && $field->type !== 'hidden')
+                                        <div id="{{ $field->id }}-hint" class="form-text">
+                                            {!! $field->hint !!}
+                                        </div>
+                                    @endif
+                                </x-form.row>
+                            </div>
+                        @endforeach
+                    </div>
+                @endforeach
+            @else {{-- no form set, so use the default form --}}
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <x-form.row>
+                            <x-form.label for="first_name">{{ __('First name') }}</x-form.label>
+                            <div class="form-control-plaintext">{{ $booking->first_name }}</div>
+                        </x-form.row>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <x-form.row>
+                            <x-form.label for="last_name">{{ __('Last name') }}</x-form.label>
+                            <x-form.input name="last_name" type="text"
+                                          :value="$booking->last_name ?? null"/>
+                        </x-form.row>
+                    </div>
+                </div>
+                <x-form.row>
+                    <x-form.label for="phone">{{ __('Phone number') }}</x-form.label>
+                    <x-form.input name="phone" type="tel"
+                                  :value="$booking->phone ?? null"/>
+                </x-form.row>
+                <x-form.row>
+                    <x-form.label for="email">{{ __('E-mail') }}</x-form.label>
+                    <x-form.input name="email" type="email"
+                                  :value="$booking->email ?? null"/>
+                </x-form.row>
+
+                @include('_shared.address_fields_form', [
+                    'address' => $booking,
+                ])
+                @endisset
+        </div>
+    </div>
+
+    <x-text.timestamp :model="$booking ?? null"/>
+@endsection

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\BookingCompleted;
 use App\Http\Requests\BookingRequest;
 use App\Models\Booking;
 use App\Models\BookingOption;
@@ -25,19 +26,38 @@ class BookingController extends Controller
         ]);
     }
 
+    public function show(Booking $booking): View
+    {
+        $this->authorize('view', $booking);
+
+        return view('bookings.booking_show', [
+            'booking' => $booking->loadMissing([
+                'bookingOption.form.formFieldGroups.formFields',
+            ]),
+        ]);
+    }
+
     public function store(Event $event, BookingOption $bookingOption, BookingRequest $request): RedirectResponse
     {
         $this->authorize('book', $bookingOption);
 
         $booking = new Booking();
         $booking->bookingOption()->associate($bookingOption);
+        $booking->price = $bookingOption->price;
+        $booking->bookedByUser()->associate(Auth::user());
         $booking->booked_at = Carbon::now();
 
         if ($booking->fillAndSave($request->validated())) {
             Session::flash('success', __('Your booking has been saved successfully.'));
 
-            if (Auth::user()) {
+            event(new BookingCompleted($booking));
+
+            if (Auth::user()?->can('update', $booking)) {
                 return redirect(route('bookings.edit', $booking));
+            }
+
+            if (Auth::user()?->can('view', $booking)) {
+                return redirect(route('bookings.show', $booking));
             }
         }
 
@@ -49,7 +69,9 @@ class BookingController extends Controller
         $this->authorize('update', $booking);
 
         return view('bookings.booking_form', [
-            'booking' => $booking,
+            'booking' => $booking->loadMissing([
+                'bookingOption.form.formFieldGroups.formFields',
+            ]),
         ]);
     }
 

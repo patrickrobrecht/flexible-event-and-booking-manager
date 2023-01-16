@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Traits\HasSlugForRouting;
+use App\Options\BookingRestriction;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -17,12 +18,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property ?int $maximum_bookings
  * @property ?Carbon $available_from
  * @property ?Carbon $available_until
- * @property float $price
+ * @property ?float $price
  * @property array $price_conditions
  * @property array $restrictions
  *
  * @property-read Collection|Booking[] $bookings {@see self::bookings()}
  * @property-read Event $event {@see self::event()}
+ * @property-read Form $form {@see self::form()}
  */
 class BookingOption extends Model
 {
@@ -41,7 +43,8 @@ class BookingOption extends Model
         'available_from',
         'available_until',
         'price',
-        'book_for_self_only',
+        'price_conditions',
+        'restrictions',
     ];
 
     /**
@@ -54,7 +57,8 @@ class BookingOption extends Model
         'available_from' => 'datetime',
         'available_until' => 'datetime',
         'price' => 'float',
-        'book_for_self_only' => 'bool',
+        'price_conditions' => 'json',
+        'restrictions' => 'json', /* @see BookingRestriction */
     ];
 
     public function bookings(): HasMany
@@ -67,9 +71,22 @@ class BookingOption extends Model
         return $this->belongsTo(Event::class, 'event_id');
     }
 
+    public function form(): BelongsTo
+    {
+        return $this->belongsTo(Form::class, 'form_id');
+    }
+
     public function fillAndSave(array $validatedData): bool
     {
-        return $this->fill($validatedData)->save();
+        $this->fill($validatedData);
+        $this->form()->associate($validatedData['form_id'] ?? null);
+
+        return $this->save();
+    }
+
+    public function isRestrictedBy(BookingRestriction $restriction): bool
+    {
+        return in_array($restriction->value, $this->restrictions ?? [], true);
     }
 
     public function hasReachedMaximumBookings(): bool

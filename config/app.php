@@ -220,4 +220,17 @@ return [
         'terms_and_conditions' => env('APP_URL_TERMS_AND_CONDITIONS'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Bank account
+    |--------------------------------------------------------------------------
+    |
+    */
+
+    'bank_account' => [
+        'iban' => env('BANK_ACCOUNT_IBAN'),
+        'bank_name' => env('BANK_ACCOUNT_BANK_NAME'),
+        'holder' => env('BANK_ACCOUNT_HOLDER', env('APP_OWNER', '')),
+    ],
+
 ];

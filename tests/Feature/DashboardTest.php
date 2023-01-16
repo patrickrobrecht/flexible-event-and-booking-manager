@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /**
@@ -9,10 +10,12 @@ use Tests\TestCase;
  */
 class DashboardTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function testTheApplicationReturnsSuccessfulResponse(): void
     {
         $response = $this->get('/');
 
-        $response->assertStatus(302);
+        $response->assertStatus(200);
     }
 }

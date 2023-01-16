@@ -17,18 +17,7 @@
                     {{ $bookingOption->description }}
                 </p>
             @endisset
-            @isset($bookingOption->available_from)
-                <div class="small text-muted">
-                    {{ __('Booking period') }}:
-                    {{ formatDateTime($bookingOption->available_from) }}
-                    -
-                    @isset($bookingOption->available_until)
-                        {{ formatDateTime($bookingOption->available_until) }}
-                    @else
-                        {{ __('forever') }}
-                    @endisset
-                </div>
-            @endisset
+            @include('booking_options.shared.booking_option_period')
         </div>
         <x-button.group :vertical="true">
             @can('create', $bookingOption)

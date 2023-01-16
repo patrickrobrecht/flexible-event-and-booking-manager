@@ -6,6 +6,7 @@ use App\Http\Controllers\BookingOptionController;
 use App\Http\Requests\Traits\AuthorizationViaController;
 use App\Models\BookingOption;
 use App\Models\Event;
+use App\Options\BookingRestriction;
 use App\Policies\BookingOptionPolicy;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
@@ -25,6 +26,7 @@ class BookingOptionRequest extends FormRequest
         $this->merge([
             // Replace whitespace etc. with "-"
             'slug' => isset($this->slug) ? Str::slug($this->slug) : null,
+            'restrictions' => $this->restrictions ?? [],
         ]);
     }
 
@@ -53,6 +55,10 @@ class BookingOptionRequest extends FormRequest
                 'nullable',
                 'string',
             ],
+            'form_id' => [
+                'nullable',
+                Rule::exists('forms', 'id'),
+            ],
             'maximum_bookings' => [
                 'nullable',
                 'integer',
@@ -74,6 +80,13 @@ class BookingOptionRequest extends FormRequest
             'book_for_self_only' => [
                 'nullable',
                 'bool',
+            ],
+            'restrictions' => [
+                'nullable',
+                'array',
+            ],
+            'restrictions.*' => [
+                BookingRestriction::rule(),
             ],
         ];
     }

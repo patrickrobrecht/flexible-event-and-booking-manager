@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
@@ -37,6 +38,7 @@ use Spatie\QueryBuilder\AllowedFilter;
  * @property-read string greeting {@see User::greeting()}
  * @property-read string $name {@see User::name()}
  *
+ * @property-read Collection|Booking[] $bookings {@see self::bookings()}
  * @property-read Collection|PersonalAccessToken[] $tokens {@see HasApiTokens::tokens()}
  * @property-read Collection|UserRole[] $userRoles {@see User::userRoles()}
  */
@@ -100,6 +102,17 @@ class User extends Authenticatable implements MustVerifyEmail
         return new Attribute(fn () => $this->first_name . ' ' . $this->last_name);
     }
 
+    public function bookings(): HasMany
+    {
+        return $this->hasMany(Booking::class, 'booked_by_user_id');
+    }
+
+    public function userRoles(): BelongsToMany
+    {
+        return $this->belongsToMany(UserRole::class)
+                    ->withTimestamps();
+    }
+
     public function scopeEmail(Builder $query, ...$searchTerms): Builder
     {
         return $this->scopeSearch($query, 'email', true, ...$searchTerms);
@@ -108,12 +121,6 @@ class User extends Authenticatable implements MustVerifyEmail
     public function scopeName(Builder $query, ...$searchTerms): Builder
     {
         return $this->scopeIncludeColumns($query, ['first_name', 'last_name'], true, ...$searchTerms);
-    }
-
-    public function userRoles(): BelongsToMany
-    {
-        return $this->belongsToMany(UserRole::class)
-            ->withTimestamps();
     }
 
     public function fillAndSave(array $validatedData): bool

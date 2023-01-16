@@ -6,17 +6,28 @@ use App\Http\Controllers\BookingController;
 use App\Http\Requests\Traits\AuthorizationViaController;
 use App\Http\Requests\Traits\ValidatesAddressFields;
 use App\Models\Booking;
+use App\Models\BookingOption;
 use App\Policies\BookingPolicy;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 /**
- * @property ?Booking $booking
+ * @property-read BookingOption $booking_option
+ * @property-read ?Booking $booking
  */
 class BookingRequest extends FormRequest
 {
     /** {@see BookingPolicy} in {@see BookingController} */
     use AuthorizationViaController;
     use ValidatesAddressFields;
+
+    public function prepareForValidation()
+    {
+        if (isset($this->booking->bookingOption)) {
+            // Set booking option from booking when updating an existing booking.
+            $this->booking_option = $this->booking->bookingOption;
+        }
+    }
 
     /**
      * Get the validation rules that apply to the request.
@@ -25,7 +36,7 @@ class BookingRequest extends FormRequest
      */
     public function rules(): array
     {
-        $rules = [
+        $defaultRules = [
             'first_name' => [
                 'required',
                 'string',
@@ -49,7 +60,51 @@ class BookingRequest extends FormRequest
             ],
         ];
 
-        $addressFieldsRule = 'nullable';
-        return array_replace($rules, $this->rulesForAddressFields($addressFieldsRule));
+        $defaultRules = array_replace($defaultRules, $this->rulesForAddressFields('nullable'));
+
+        if (!isset($this->booking_option->form)) {
+            return $defaultRules;
+        }
+
+        $rules = [];
+        foreach ($this->booking_option->form->formFieldGroups as $group) {
+            foreach ($group->formFields as $field) {
+                $rulesForField = [
+                    $field->required ? 'required' : 'nullable',
+                ];
+                $allowedValues = $field->allowed_values ?? [];
+
+                if ($field->type === 'checkbox' && count($allowedValues) > 1) {
+                    $rulesForField[] = 'array';
+                    $rules[$field->input_name . '.*'] = Rule::in($allowedValues);
+                } else {
+                    $rulesForField[] = match ($field->type) {
+                        'date' => 'date_format:Y-m-d',
+                        'datetime-local' => 'date_format:Y-m-d\TH:i',
+                        'email' => $field->type,
+                        'number' => 'numeric',
+                        'radio', 'select' => Rule::in($allowedValues),
+                        default => 'string',
+                    };
+                }
+
+                $rules[$field->input_name] = array_merge($rulesForField, $field->validation_rules ?? []);
+            }
+        }
+
+        return $rules;
+    }
+
+    public function attributes()
+    {
+        $attributes = parent::attributes();
+
+        foreach ($this->booking_option->form->formFieldGroups ?? [] as $group) {
+            foreach ($group->formFields as $field) {
+                $attributes[$field->input_name] = $field->name;
+            }
+        }
+
+        return $attributes;
     }
 }

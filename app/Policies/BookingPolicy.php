@@ -34,6 +34,10 @@ class BookingPolicy
      */
     public function view(User $user, Booking $booking): Response
     {
+        if ($booking->bookedByUser->is($user)) {
+            return $this->allow();
+        }
+
         return $this->viewAny($user);
     }
 

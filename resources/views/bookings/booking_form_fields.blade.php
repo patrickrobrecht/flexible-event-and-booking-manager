@@ -9,7 +9,7 @@
             <h2 id="{{ Str::slug($group->name) }}">{{ $group->name }}</h2>
         @endif
         @isset($group->description)
-            <p class="lead">{{ $group->description }}</p>
+            <p class="lead">{!! $group->description !!}</p>
         @endisset
 
         <div class="row">

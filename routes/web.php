@@ -38,7 +38,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth')->group(static function () {
     Route::model('bookings', Booking::class);
     Route::resource('bookings', BookingController::class)
-         ->only(['edit', 'update']);
+         ->only(['show', 'edit', 'update']);
 
     Route::resource('events', EventController::class)
          ->only(['index', 'create', 'store', 'edit', 'update']);

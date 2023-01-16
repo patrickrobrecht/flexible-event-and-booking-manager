@@ -26,6 +26,17 @@ class BookingController extends Controller
         ]);
     }
 
+    public function show(Booking $booking): View
+    {
+        $this->authorize('view', $booking);
+
+        return view('bookings.booking_show', [
+            'booking' => $booking->loadMissing([
+                'bookingOption.form.formFieldGroups.formFields',
+            ]),
+        ]);
+    }
+
     public function store(Event $event, BookingOption $bookingOption, BookingRequest $request): RedirectResponse
     {
         $this->authorize('book', $bookingOption);
@@ -43,6 +54,10 @@ class BookingController extends Controller
 
             if (Auth::user()?->can('update', $booking)) {
                 return redirect(route('bookings.edit', $booking));
+            }
+
+            if (Auth::user()?->can('view', $booking)) {
+                return redirect(route('bookings.show', $booking));
             }
         }
 

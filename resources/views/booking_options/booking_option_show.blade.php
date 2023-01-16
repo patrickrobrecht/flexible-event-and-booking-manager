@@ -69,6 +69,19 @@
                             'bookingOption' => $bookingOption,
                         ])
 
+                        @if(isset($bookingOption->price) && $bookingOption->price)
+                            <div class="alert alert-info">
+                                {{ __('Please transfer :price to the following bank account:', [
+                                    'price' => formatDecimal($bookingOption->price) . ' €',
+                                ]) }}
+                                <ul>
+                                    <li>IBAN: {{ config('app.bank_account.iban') }}</li>
+                                    <li>{{ __('Bank') }}: {{ config('app.bank_account.bank_name') }}</li>
+                                    <li>{{ __('Account holder') }}: {{ config('app.bank_account.holder') }}</li>
+                                </ul>
+                            </div>
+                        @endif
+
                         <x-button.save>
                             @isset($bookingOption->price)
                                 {{ __('Book with costs') }}

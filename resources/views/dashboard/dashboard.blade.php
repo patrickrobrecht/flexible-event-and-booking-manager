@@ -26,7 +26,7 @@
                         $event = $booking->bookingOption->event;
                     @endphp
                     <div class="list-group">
-                        <a href="{{ route('bookings.edit', $booking) }}" class="list-group-item list-group-item-action">
+                        <a href="{{ route('bookings.show', $booking) }}" class="list-group-item list-group-item-action">
                             <strong>{{ $event->name }}</strong>
                             <div>
                                 <i class="fa fa-fw fa-clock"></i>

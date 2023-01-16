@@ -63,7 +63,15 @@
                         </x-list.item>
                     </x-list.group>
                     <div class="card-body">
-                        <x-button.edit href="{{ route('bookings.edit', $booking) }}"/>
+                        @can('view', $booking)
+                            <x-button.secondary href="{{ route('bookings.edit', $booking) }}">
+                                <i class="fa fa-eye"></i>
+                                {{ __('View') }}
+                            </x-button.secondary>
+                        @endcan
+                        @can('update', $booking)
+                            <x-button.edit href="{{ route('bookings.edit', $booking) }}"/>
+                        @endcan
                     </div>
                 </div>
             </div>

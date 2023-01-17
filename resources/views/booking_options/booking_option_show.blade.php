@@ -62,6 +62,8 @@
                     {{ __('Bookings are not possible anymore.') }}
                 </p>
             @else
+                @include('layouts.alerts')
+
                 @can('book', $bookingOption)
                     <x-form method="POST" action="{{ route('bookings.store', [$event, $bookingOption]) }}">
                         @include('bookings.booking_form_fields', [

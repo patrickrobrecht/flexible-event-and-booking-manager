@@ -48,7 +48,9 @@ class BookingController extends Controller
         $booking->booked_at = Carbon::now();
 
         if ($booking->fillAndSave($request->validated())) {
-            Session::flash('success', __('Your booking has been saved successfully.'));
+            $message = __('Your booking has been saved successfully.')
+                . ' ' . __('We will send you a confirmation by e-mail shortly.');
+            Session::flash('success', $message);
 
             event(new BookingCompleted($booking));
 

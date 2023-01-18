@@ -7,16 +7,9 @@
 @endphp
 
 @section('title')
-    @isset($booking->booked_at)
-        {{ __('Booking no. :id of :date', [
-            'id' => $booking->id,
-            'date' => formatDateTime($booking->booked_at)
-        ]) }}
-    @else
-        {{ __('Booking no. :id', [
-            'id' => $booking->id,
-        ]) }}
-    @endisset
+    {{ __('Booking no. :id', [
+        'id' => $booking->id,
+    ]) }}
 @endsection
 
 @section('breadcrumbs')
@@ -29,10 +22,7 @@
 @endsection
 
 @section('headline')
-    <hgroup>
-        <h1>{{ $event->name }}: {{ $bookingOption->name }}</h1>
-        <h2>@yield('title')</h2>
-    </hgroup>
+    <h1>{{ $event->name }}: {{ $bookingOption->name }}</h1>
 @endsection
 
 @section('headline-buttons')
@@ -47,6 +37,8 @@
             @include('events.shared.event_details')
         </div>
         <div class="col-12 col-md-8">
+            @include('bookings.shared.booking_details')
+
             @isset($bookingOption->form)
                 @foreach($bookingOption->form->formFieldGroups as $group)
                     @if($group->show_name)

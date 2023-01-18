@@ -43,15 +43,39 @@
                 <div class="card">
                     <div class="card-header">
                         <h2 class="card-title">{{ $booking->first_name }} {{ $booking->last_name }}</h2>
-                        <div class="card-subtitle text-muted">
-                            @isset($booking->booked_at)
-                                {{ formatDateTime($booking->booked_at) }}
-                            @else
-                                <span class="badge bg-primary">{{ __('Booking not completed yet') }}</span>
-                            @endisset
-                        </div>
+                        <div class="card-subtitle text-muted">{{ $bookingOption->name }}</div>
                     </div>
                     <x-list.group class="list-group-flush">
+                        <x-list.item>
+                            <span>
+                                <i class="fa fa-fw fa-clock"></i>
+                                @isset($booking->booked_at)
+                                    {{ formatDateTime($booking->booked_at) }}
+                                @else
+                                    <span class="badge bg-primary">{{ __('Booking not completed yet') }}</span>
+                                @endisset
+                            </span>
+                        </x-list.item>
+                        <x-list.item>
+                            <span>
+                                <i class="fa fa-fw fa-user"></i>
+                                @isset($booking->bookedByUser)
+                                    {{ $booking->bookedByUser->first_name }} {{ $booking->bookedByUser->last_name }}
+                                @else
+                                    {{ __('Guest') }}
+                                @endisset
+                            </span>
+                        </x-list.item>
+                        <x-list.item>
+                            <span>
+                                <i class="fa fa-fw fa-euro"></i>
+                                @isset($booking->price)
+                                    {{ formatDecimal($booking->price) }}&nbsp;€
+                                @else
+                                    <span class="badge bg-primary">{{ __('free of charge') }}</span>
+                                @endisset
+                            </span>
+                        </x-list.item>
                         <x-list.item>
                             {{ $booking->email }}
                             <br/>{{ $booking->phone }}

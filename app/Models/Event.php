@@ -65,6 +65,8 @@ class Event extends Model
         'finished_at' => 'datetime',
     ];
 
+    protected $perPage = 12;
+
     public function bookingOptions(): HasMany
     {
         return $this->hasMany(BookingOption::class, 'event_id');

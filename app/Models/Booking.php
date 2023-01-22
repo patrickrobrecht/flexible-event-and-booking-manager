@@ -57,6 +57,8 @@ class Booking extends Model
         'booked_at' => 'datetime',
     ];
 
+    protected $perPage = 12;
+
     public function bookedByUser()
     {
         return $this->belongsTo(User::class, 'booked_by_user_id');

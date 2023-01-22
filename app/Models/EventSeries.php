@@ -48,6 +48,8 @@ class EventSeries extends Model
         'visibility',
     ];
 
+    protected $perPage = 12;
+
     public function events(): HasMany
     {
         return $this->hasMany(Event::class, 'event_series_id')

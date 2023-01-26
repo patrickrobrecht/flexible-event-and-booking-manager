@@ -44,6 +44,8 @@ class Location extends Model
         'website_url',
     ];
 
+    protected $perPage = 12;
+
     public function fullAddressBlock(): Attribute
     {
         return new Attribute(fn () => array_merge(

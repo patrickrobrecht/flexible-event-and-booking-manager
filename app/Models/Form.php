@@ -26,6 +26,8 @@ class Form extends Model
         'name',
     ];
 
+    protected $perPage = 12;
+
     public function bookingOptions(): HasMany
     {
         return $this->hasMany(BookingOption::class);

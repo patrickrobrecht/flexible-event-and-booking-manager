@@ -52,6 +52,8 @@ class Organization extends Model
         'status' => ActiveStatus::class,
     ];
 
+    protected $perPage = 12;
+
     public function events(): BelongsToMany
     {
         return $this->belongsToMany(Event::class)

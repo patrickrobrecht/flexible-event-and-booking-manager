@@ -31,6 +31,8 @@ class UserRole extends Model
         'abilities',
     ];
 
+    protected $perPage = 12;
+
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class)

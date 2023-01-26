@@ -20,6 +20,8 @@ use Spatie\QueryBuilder\AllowedFilter;
  * @property ?string $phone
  * @property ?Carbon $booked_at
  * @property ?float $price
+ * @property ?Carbon $paid_at
+ * @property ?string $comment
  *
  * @property-read ?User $bookedByUser {@see self::bookedByUser()}
  * @property-read BookingOption $bookingOption {@see self::bookingOption()}
@@ -46,6 +48,8 @@ class Booking extends Model
         'city',
         'country',
         'booked_at',
+        'paid_at',
+        'comment',
     ];
 
     /**
@@ -55,6 +59,7 @@ class Booking extends Model
      */
     protected $casts = [
         'booked_at' => 'datetime',
+        'paid_at' => 'datetime',
     ];
 
     protected $perPage = 12;

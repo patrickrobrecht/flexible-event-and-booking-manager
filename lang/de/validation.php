@@ -178,6 +178,7 @@ return [
         'month'                 => 'Monat',
         'name'                  => 'Name',
         'organization_id'       => 'Organisation',
+        'paid_at'               => 'Bezahlt am',
         'parent_event_id'       => 'Teil der Veranstaltung',
         'parent_event_series_id' => 'Teil der Veranstaltungsreihe',
         'parent_organization_id' => 'Übergeordnete Organisation',

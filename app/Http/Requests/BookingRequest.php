@@ -60,10 +60,23 @@ class BookingRequest extends FormRequest
             ],
         ];
 
-        $defaultRules = array_replace($defaultRules, $this->rulesForAddressFields('nullable'));
+        $user = $this->user();
+        $commonRules = [];
+        if (isset($user, $this->booking)) {
+            $commonRules = [
+                'paid_at' => [
+                    $user->can('updatePaymentStatus', $this->booking) ? 'nullable' : 'prohibited',
+                    'date_format:Y-m-d\TH:i',
+                ],
+                'comment' => [
+                    $user->can('updateBookingComment', $this->booking) ? 'nullable' : 'prohibited',
+                    'string',
+                ],
+            ];
+        }
 
         if (!isset($this->booking_option->form)) {
-            return $defaultRules;
+            return array_replace($defaultRules, $commonRules, $this->rulesForAddressFields('nullable'));
         }
 
         $rules = [];
@@ -92,7 +105,7 @@ class BookingRequest extends FormRequest
             }
         }
 
-        return $rules;
+        return array_replace($rules, $commonRules);
     }
 
     public function attributes()

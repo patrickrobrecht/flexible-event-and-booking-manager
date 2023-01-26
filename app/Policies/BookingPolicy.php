@@ -66,6 +66,16 @@ class BookingPolicy
         return $this->requireAbility($user, Ability::EditBookingsOfEvent);
     }
 
+    public function updateBookingComment(User $user, Booking $booking): Response
+    {
+        return $this->requireAbility($user, Ability::EditBookingComment);
+    }
+
+    public function updatePaymentStatus(User $user, Booking $booking): Response
+    {
+        return $this->requireAbility($user, Ability::EditPaymentStatus);
+    }
+
     /**
      * Determine whether the user can delete the model.
      *

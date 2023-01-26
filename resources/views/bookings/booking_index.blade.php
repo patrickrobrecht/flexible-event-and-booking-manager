@@ -29,10 +29,28 @@
 
 @section('content')
     <x-form.filter method="GET">
-        <x-form.row>
-            <x-form.label for="search">{{ __('Search term') }}</x-form.label>
-            <x-form.input id="search" name="filter[search]"/>
-        </x-form.row>
+        @can('viewAnyPaymentStatus', \App\Models\Booking::class)
+            <div class="row">
+                <div class="col-12 col-md-9">
+                    <x-form.row>
+                        <x-form.label for="search">{{ __('Search term') }}</x-form.label>
+                        <x-form.input id="search" name="filter[search]"/>
+                    </x-form.row>
+                </div>
+                <div class="col-12 col-md-3">
+                    <x-form.row>
+                        <x-form.label for="payment_status">{{ __('Payment status') }}</x-form.label>
+                        <x-form.select id="payment_status" name="filter[payment_status]"
+                                       :options="\App\Options\PaymentStatus::keysWithNamesAndAll()"/>
+                    </x-form.row>
+                </div>
+            </div>
+        @else
+            <x-form.row>
+                <x-form.label for="search">{{ __('Search term') }}</x-form.label>
+                <x-form.input id="search" name="filter[search]"/>
+            </x-form.row>
+        @endcan
     </x-form.filter>
 
     <x-alert.count class="mt-3" :count="$bookings->total()"/>
@@ -74,13 +92,15 @@
                                 @else
                                     <span class="badge bg-primary">{{ __('free of charge') }}</span>
                                 @endisset
-                                @isset($booking->paid_at)
-                                    <span class="badge bg-primary">{{ __('paid') }} ({{ $booking->paid_at->isMidnight()
-                                        ? formatDate($booking->paid_at)
-                                        : formatDateTime($booking->paid_at) }})</span>
-                                @else
-                                    <span class="badge bg-danger">{{ __('not paid yet') }}</span>
-                                @endisset
+                                @can('viewPaymentStatus', $booking)
+                                    @isset($booking->paid_at)
+                                        <span class="badge bg-primary">{{ __('paid') }} ({{ $booking->paid_at->isMidnight()
+                                            ? formatDate($booking->paid_at)
+                                            : formatDateTime($booking->paid_at) }})</span>
+                                    @else
+                                        <span class="badge bg-danger">{{ __('not paid yet') }}</span>
+                                    @endisset
+                                @endcan
                             </span>
                         </x-list.item>
                         <x-list.item>

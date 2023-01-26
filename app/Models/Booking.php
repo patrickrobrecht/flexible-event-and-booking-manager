@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Traits\Filterable;
 use App\Models\Traits\HasAddress;
+use App\Options\PaymentStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -80,6 +81,19 @@ class Booking extends Model
                     ->with('formField');
     }
 
+    public function scopePaymentStatus(Builder $query, int|PaymentStatus $paymentStatus)
+    {
+        $payment = is_int($paymentStatus)
+            ? $paymentStatus
+            : $paymentStatus->value;
+
+        return match ($payment) {
+            PaymentStatus::Paid->value => $query->whereNotNull('paid_at'),
+            PaymentStatus::NotPaid->value => $query->whereNull('paid_at'),
+            default => $query,
+        };
+    }
+
     public function scopeSearchAll(Builder $query, string ...$searchTerms): Builder
     {
         return $this->scopeIncludeColumns($query, ['first_name', 'last_name'], true, ...$searchTerms);
@@ -145,6 +159,8 @@ class Booking extends Model
         return [
             /** @see self::scopeSearchAll() */
             AllowedFilter::scope('search', 'searchAll'),
+            /** @see self::scopePaymentStatus() */
+            AllowedFilter::scope('payment_status', 'paymentStatus'),
         ];
     }
 }

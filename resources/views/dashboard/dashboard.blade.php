@@ -48,6 +48,13 @@
                                         {{ __('free of charge') }}
                                     @endisset
                                 </span>
+                                @isset($booking->paid_at)
+                                    <span class="badge bg-primary">{{ __('paid') }} ({{ $booking->paid_at->isMidnight()
+                                            ? formatDate($booking->paid_at)
+                                            : formatDateTime($booking->paid_at) }})</span>
+                                @else
+                                    <span class="badge bg-danger">{{ __('not paid yet') }}</span>
+                                @endisset
                                 @isset($booking->booked_at)
                                     <span class="badge bg-primary">{{ formatDateTime($booking->booked_at) }}</span>
                                 @endisset

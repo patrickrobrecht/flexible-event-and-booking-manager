@@ -1,0 +1,45 @@
+name: Run tests and check code style
+
+on: [push, pull_request]
+
+jobs:
+    quality:
+        runs-on: ${{ matrix.os }}
+
+        strategy:
+            fail-fast: false
+            matrix:
+                os: [ ubuntu-latest ]
+                php: [ 8.2, 8.1 ]
+                stability: [ prefer-lowest, prefer-stable ]
+
+        name: ${{ matrix.os }} - PHP ${{ matrix.php }} - ${{ matrix.stability }}
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php }}
+
+            - name: Setup Node
+              uses: actions/setup-node@v2
+              with:
+                  node-version: 18
+
+            - name: Install
+              run: |
+                  composer install --no-interaction
+                  composer update --${{ matrix.stability }} --prefer-dist --no-interaction
+                  npm ci
+
+            - name: Code style checks for PHP
+              run: composer cs
+
+            - name: Code style checks for CSS and JavaScript
+              run: npm run cs
+
+            - name: Execute tests
+              run: vendor/bin/phpunit

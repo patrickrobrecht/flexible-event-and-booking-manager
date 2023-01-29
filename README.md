@@ -1,5 +1,7 @@
 # Flexible Event and Booking Manager
 
+[![Run tests and check code style](https://github.com/patrickrobrecht/flexible-event-and-booking-manager/actions/workflows/tests-and-code-style.yml/badge.svg)](https://github.com/patrickrobrecht/flexible-event-and-booking-manager/actions/workflows/tests-and-code-style.yml)
+
 This application allows to manage events, their booking forms and bookings via a web-based platform.
 
 

@@ -22,7 +22,11 @@ class BookingController extends Controller
         return view('bookings.booking_index', [
             'event' => $event,
             'bookingOption' => $bookingOption,
-            'bookings' => Booking::filter($bookingOption->bookings())->paginate(),
+            'bookings' => Booking::filter($bookingOption->bookings())
+                ->with([
+                    'bookedByUser',
+                ])
+                ->paginate(),
         ]);
     }
 

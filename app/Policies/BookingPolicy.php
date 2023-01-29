@@ -24,6 +24,11 @@ class BookingPolicy
         return $this->requireAbility($user, Ability::ViewBookingsOfEvent);
     }
 
+    public function viewAnyPaymentStatus(User $user): Response
+    {
+        return $this->requireAbility($user, Ability::ViewPaymentStatus);
+    }
+
     /**
      * Determine whether the user can view the model.
      *
@@ -39,6 +44,11 @@ class BookingPolicy
         }
 
         return $this->viewAny($user);
+    }
+
+    public function viewPaymentStatus(User $user, Booking $booking): Response
+    {
+        return $this->viewAnyPaymentStatus($user);
     }
 
     /**
@@ -64,6 +74,16 @@ class BookingPolicy
     public function update(User $user, Booking $booking): Response
     {
         return $this->requireAbility($user, Ability::EditBookingsOfEvent);
+    }
+
+    public function updateBookingComment(User $user, Booking $booking): Response
+    {
+        return $this->requireAbility($user, Ability::EditBookingComment);
+    }
+
+    public function updatePaymentStatus(User $user, Booking $booking): Response
+    {
+        return $this->requireAbility($user, Ability::EditPaymentStatus);
     }
 
     /**

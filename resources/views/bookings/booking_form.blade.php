@@ -34,6 +34,29 @@
             @include('bookings.shared.booking_details')
 
             <x-form method="PUT" action="{{ route('bookings.update', $booking) }}">
+                @canany(['updateBookingComment', 'updatePaymentStatus'], $booking)
+                    <div class="row">
+                        @can('updateBookingComment', $booking)
+                            <div class="col-12 col-md-6">
+                                <x-form.row>
+                                    <x-form.label for="comment">{{ __('Comment') }}</x-form.label>
+                                    <x-form.input name="comment" type="textarea"
+                                                  :value="$booking->comment ?? null"/>
+                                </x-form.row>
+                            </div>
+                        @endcan
+                        @can('updatePaymentStatus', $booking)
+                            <div class="col-12 col-md-6">
+                                <x-form.row>
+                                    <x-form.label for="paid_at">{{ __('Paid at') }}</x-form.label>
+                                    <x-form.input name="paid_at" type="datetime-local"
+                                                  :value="$booking->paid_at ?? null"/>
+                                </x-form.row>
+                            </div>
+                        @endcan
+                    </div>
+                @endcanany
+
                 @include('bookings.booking_form_fields', [
                     'booking' => $booking,
                     'bookingOption' => $bookingOption,

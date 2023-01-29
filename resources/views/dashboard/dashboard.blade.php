@@ -41,13 +41,18 @@
                                 {{ $booking->first_name }} {{ $booking->last_name }}
                             </div>
                             <div>
-                                <span class="badge bg-primary">
-                                    @isset($booking->price)
-                                        {{ formatDecimal($booking->price) }}&nbsp;€
+                                @isset($booking->price)
+                                    <span class="badge bg-primary">{{ formatDecimal($booking->price) }}&nbsp;€</span>
+                                    @isset($booking->paid_at)
+                                        <span class="badge bg-primary">{{ __('paid') }} ({{ $booking->paid_at->isMidnight()
+                                            ? formatDate($booking->paid_at)
+                                            : formatDateTime($booking->paid_at) }})</span>
                                     @else
-                                        {{ __('free of charge') }}
+                                        <span class="badge bg-danger">{{ __('not paid yet') }}</span>
                                     @endisset
-                                </span>
+                                @else
+                                    <span class="badge bg-primary">{{ __('free of charge') }}</span>
+                                @endisset
                                 @isset($booking->booked_at)
                                     <span class="badge bg-primary">{{ formatDateTime($booking->booked_at) }}</span>
                                 @endisset

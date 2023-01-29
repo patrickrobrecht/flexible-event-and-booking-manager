@@ -9,6 +9,7 @@ This application allows to manage events, their booking forms and bookings via a
 - Bookings (confirmed via email)
   - Guest bookings are supported, can be forbidden by enabling the restriction to logged-in users in the settings of the booking option.
   - Editing is limited to users with an administrative role.
+  - Update booking comment and payment status
 - Login and logout, reset password, verify e-mail address, edit own account
 - User and user role management
 - Manage personal access tokens (for [Laravel Sanctum](https://laravel.com/docs/9.x/sanctum))

@@ -89,18 +89,18 @@
                                 <i class="fa fa-fw fa-euro"></i>
                                 @isset($booking->price)
                                     {{ formatDecimal($booking->price) }}&nbsp;€
+                                    @can('viewPaymentStatus', $booking)
+                                        @isset($booking->paid_at)
+                                            <span class="badge bg-primary">{{ __('paid') }} ({{ $booking->paid_at->isMidnight()
+                                            ? formatDate($booking->paid_at)
+                                            : formatDateTime($booking->paid_at) }})</span>
+                                        @else
+                                            <span class="badge bg-danger">{{ __('not paid yet') }}</span>
+                                        @endisset
+                                    @endcan
                                 @else
                                     <span class="badge bg-primary">{{ __('free of charge') }}</span>
                                 @endisset
-                                @can('viewPaymentStatus', $booking)
-                                    @isset($booking->paid_at)
-                                        <span class="badge bg-primary">{{ __('paid') }} ({{ $booking->paid_at->isMidnight()
-                                            ? formatDate($booking->paid_at)
-                                            : formatDateTime($booking->paid_at) }})</span>
-                                    @else
-                                        <span class="badge bg-danger">{{ __('not paid yet') }}</span>
-                                    @endisset
-                                @endcan
                             </span>
                         </x-list.item>
                         <x-list.item>

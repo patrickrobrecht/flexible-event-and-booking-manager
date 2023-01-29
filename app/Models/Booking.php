@@ -88,8 +88,8 @@ class Booking extends Model
             : $paymentStatus->value;
 
         return match ($payment) {
-            PaymentStatus::Paid->value => $query->whereNotNull('paid_at'),
-            PaymentStatus::NotPaid->value => $query->whereNull('paid_at'),
+            PaymentStatus::Paid->value => $query->whereNotNull('paid_at')->orWhereNull('price'),
+            PaymentStatus::NotPaid->value => $query->whereNull('paid_at')->whereNotNull('price'),
             default => $query,
         };
     }

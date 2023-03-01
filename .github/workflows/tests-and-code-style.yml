@@ -11,9 +11,8 @@ jobs:
             matrix:
                 os: [ ubuntu-latest ]
                 php: [ 8.2, 8.1 ]
-                stability: [ prefer-lowest, prefer-stable ]
 
-        name: ${{ matrix.os }} - PHP ${{ matrix.php }} - ${{ matrix.stability }}
+        name: ${{ matrix.os }} - PHP ${{ matrix.php }}
 
         steps:
             - name: Checkout code
@@ -32,7 +31,6 @@ jobs:
             - name: Install
               run: |
                   composer install --no-interaction
-                  composer update --${{ matrix.stability }} --prefer-dist --no-interaction
                   npm ci
                   npm run production
 

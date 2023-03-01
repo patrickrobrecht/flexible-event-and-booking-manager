@@ -71,7 +71,14 @@
                                 <i class="fa fa-fw fa-at"></i>
                                 {{ __('E-mail') }}
                             </span>
-                            <span class="text-end">{{ $user->email }}</span>
+                            <span class="text-end">
+                                {{ $user->email }}
+                                @isset($user->email_verified_at)
+                                    <span class="badge bg-primary">{{ __('verified') }}</span>
+                                @else
+                                    <span class="badge bg-danger">{{ __('not verified') }}</span>
+                                @endisset
+                            </span>
                         </x-list.item>
                         @isset($user->phone)
                             <x-list.item>

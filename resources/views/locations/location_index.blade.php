@@ -48,15 +48,14 @@
                         <h2 class="card-title">{{ $location->nameOrAddress }}</h2>
                     </div>
                     <x-list.group class="list-group-flush">
-                        <x-list.item>
-                            <span>
-                                <i class="fa fa-fw fa-location-pin"></i>
-                                {{ __('Address') }}
-                            </span>
-                            <span class="text-end">
-                                @foreach($location->addressBlock as $line)
-                                    {{ $line }}@if(!$loop->last)<br>@endif
-                                @endforeach
+                        <x-list.item :flex="false">
+                            <i class="fa fa-fw fa-road"></i>
+                            <span class="d-inline-block">
+                                <div class="d-flex flex-column">
+                                    @foreach($location->addressBlock as $line)
+                                        <div>{{ $line }}</div>
+                                    @endforeach
+                                </div>
                             </span>
                         </x-list.item>
                         <x-list.item>

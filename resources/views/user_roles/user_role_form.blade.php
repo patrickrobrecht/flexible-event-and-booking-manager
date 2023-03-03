@@ -8,7 +8,7 @@
     @isset($userRole)
         {{ __('Edit :name', ['name' => $userRole->name]) }}
     @else
-        {{ __('Create user') }}
+        {{ __('Create user role') }}
     @endisset
 @endsection
 
@@ -48,7 +48,7 @@
             <x-button.save>
                 @isset($userRole){{ __( 'Save' ) }} @else{{ __('Create') }}@endisset
             </x-button.save>
-            <x-button.cancel href="{{ route('users.index') }}"/>
+            <x-button.cancel href="{{ route('user-roles.index') }}"/>
         </x-button.group>
     </x-form>
 

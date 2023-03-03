@@ -44,11 +44,8 @@
                         </h2>
                     </div>
                     <x-list.group class="list-group-flush">
-                        <x-list.item>
-                            <span>
-                                <i class="fa fa-fw fa-eye"></i>
-                                {{ __('Visibility') }}
-                            </span>
+                        <x-list.item :flex="false">
+                            <i class="fa fa-fw fa-eye" title="{{ __('Visibility') }}"></i>
                             <x-badge.visibility :visibility="$eventSeriesItem->visibility"/>
                         </x-list.item>
                         <x-list.item>

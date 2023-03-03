@@ -60,17 +60,14 @@
                             </span>
                             <x-badge.counter>{{ formatInt($organization->events_count) }}</x-badge.counter>
                         </x-list.item>
-                        <x-list.item>
-                            <span>
-                                <i class="fa fa-fw fa-location-pin"></i>
-                                {{ __('Address') }}
-                            </span>
-                            <span class="text-end">
-                                @foreach($organization->location->fullAddressBlock as $line)
-                                    {{ $line }}@if(!$loop->last)
-                                        <br>
-                                    @endif
-                                @endforeach
+                        <x-list.item :flex="false">
+                            <i class="fa fa-fw fa-location-pin"></i>
+                            <span class="d-inline-block">
+                                <div class="d-flex flex-column">
+                                    @foreach($organization->location->fullAddressBlock as $line)
+                                        <div>{{ $line }}</div>
+                                    @endforeach
+                                </div>
                             </span>
                         </x-list.item>
                         @isset($organization->register_entry)

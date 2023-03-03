@@ -25,6 +25,9 @@ class UserController extends Controller
                 ->with([
                     'userRoles',
                 ])
+                ->withCount([
+                    'bookings',
+                ])
                 ->paginate(),
         ]));
     }

@@ -64,53 +64,63 @@
                         <div class="card-subtitle text-muted">{{ $bookingOption->name }}</div>
                     </div>
                     <x-list.group class="list-group-flush">
-                        <x-list.item>
-                            <span>
-                                <i class="fa fa-fw fa-clock"></i>
-                                @isset($booking->booked_at)
-                                    {{ formatDateTime($booking->booked_at) }}
-                                @else
-                                    <span class="badge bg-primary">{{ __('Booking not completed yet') }}</span>
-                                @endisset
-                            </span>
+                        <x-list.item :flex="false">
+                            <i class="fa fa-fw fa-clock"></i>
+                            @isset($booking->booked_at)
+                                {{ formatDateTime($booking->booked_at) }}
+                            @else
+                                <span class="badge bg-primary">{{ __('Booking not completed yet') }}</span>
+                            @endisset
                         </x-list.item>
-                        <x-list.item>
-                            <span>
-                                <i class="fa fa-fw fa-user"></i>
-                                @isset($booking->bookedByUser)
-                                    {{ $booking->bookedByUser->first_name }} {{ $booking->bookedByUser->last_name }}
+                        <x-list.item :flex="false">
+                            <i class="fa fa-fw fa-user"></i>
+                            @isset($booking->bookedByUser)
+                                <span title="{{ $booking->bookedByUser->email }}">{{ $booking->bookedByUser->first_name }} {{ $booking->bookedByUser->last_name }}</span>
+                            @else
+                                {{ __('Guest') }}
+                            @endisset
+                            @isset($booking->bookedByUser)
+                                @isset($booking->bookedByUser->email_verified_at)
+                                    <span class="badge bg-primary">{{ __('verified') }}</span>
                                 @else
-                                    {{ __('Guest') }}
+                                    <span class="badge bg-danger">{{ __('not verified') }}</span>
                                 @endisset
-                            </span>
+                            @endisset
                         </x-list.item>
-                        <x-list.item>
-                            <span>
-                                <i class="fa fa-fw fa-euro"></i>
-                                @isset($booking->price)
-                                    {{ formatDecimal($booking->price) }}&nbsp;€
-                                    @can('viewPaymentStatus', $booking)
-                                        @isset($booking->paid_at)
-                                            <span class="badge bg-primary">{{ __('paid') }} ({{ $booking->paid_at->isMidnight()
-                                            ? formatDate($booking->paid_at)
-                                            : formatDateTime($booking->paid_at) }})</span>
-                                        @else
-                                            <span class="badge bg-danger">{{ __('not paid yet') }}</span>
-                                        @endisset
-                                    @endcan
-                                @else
-                                    <span class="badge bg-primary">{{ __('free of charge') }}</span>
-                                @endisset
-                            </span>
+                        <x-list.item :flex="false">
+                            <i class="fa fa-fw fa-euro"></i>
+                            @isset($booking->price)
+                                {{ formatDecimal($booking->price) }}&nbsp;€
+                                @can('viewPaymentStatus', $booking)
+                                    @isset($booking->paid_at)
+                                        <span class="badge bg-primary">{{ __('paid') }} ({{ $booking->paid_at->isMidnight()
+                                        ? formatDate($booking->paid_at)
+                                        : formatDateTime($booking->paid_at) }})</span>
+                                    @else
+                                        <span class="badge bg-danger">{{ __('not paid yet') }}</span>
+                                    @endisset
+                                @endcan
+                            @else
+                                <span class="badge bg-primary">{{ __('free of charge') }}</span>
+                            @endisset
                         </x-list.item>
-                        <x-list.item>
+                        <x-list.item :flex="false">
+                            <i class="fa fa-fw fa-at"></i>
                             {{ $booking->email }}
-                            <br/>{{ $booking->phone }}
                         </x-list.item>
-                        <x-list.item>
-                            {{ $booking->streetLine }}
-                            <br/>{{ $booking->cityLine }}
-                            <br/>{{ $booking->country }}
+                        <x-list.item :flex="false">
+                            <i class="fa fa-fw fa-phone"></i>
+                            {{ $booking->phone ?? __('none') }}
+                        </x-list.item>
+                        <x-list.item :flex="false">
+                            <i class="fa fa-fw fa-road"></i>
+                            <span class="d-inline-block">
+                                <div class="d-flex flex-column">
+                                    <div>{{ $booking->streetLine }}</div>
+                                    <div>{{ $booking->cityLine }}</div>
+                                    <div>{{ $booking->country }}</div>
+                                </div>
+                            </span>
                         </x-list.item>
                     </x-list.group>
                     <div class="card-body">

@@ -63,31 +63,22 @@
                         </h2>
                     </div>
                     <x-list.group class="list-group-flush">
-                        <x-list.item>
-                            <span>
-                                <i class="fa fa-fw fa-eye"></i>
-                                {{ __('Visibility') }}
-                            </span>
+                        <x-list.item :flex="false">
+                            <i class="fa fa-fw fa-eye" title="{{ __('Visibility') }}"></i>
                             <x-badge.visibility :visibility="$event->visibility"/>
                         </x-list.item>
-                        <x-list.item>
-                            <span>
-                                <i class="fa fa-fw fa-clock"></i>
-                                {{ __('Date') }}
-                            </span>
+                        <x-list.item :flex="false">
+                            <i class="fa fa-fw fa-clock" title="{{ __('Date') }}"></i>
                             <span class="text-end">@include('events.shared.event_dates')</span>
                         </x-list.item>
-                        <x-list.item>
-                            <span>
-                                <i class="fa fa-fw fa-location-pin"></i>
-                                {{ __('Address') }}
-                            </span>
-                            <span class="text-end">
-                                @foreach($event->location->fullAddressBlock as $line)
-                                    {{ $line }}@if(!$loop->last)
-                                        <br>
-                                    @endif
-                                @endforeach
+                        <x-list.item :flex="false">
+                            <i class="fa fa-fw fa-location-pin" title="{{ __('Location') }}"></i>
+                            <span class="d-inline-block">
+                                <div class="d-flex flex-column">
+                                    @foreach($event->location->fullAddressBlock as $line)
+                                        <div>{{ $line }}</div>
+                                    @endforeach
+                                </div>
                             </span>
                         </x-list.item>
                         <x-list.item>

@@ -122,6 +122,13 @@
                                 {{ $user->last_login_at ? formatDateTime($user->last_login_at) : __('never') }}
                             </span>
                         </x-list.item>
+                        <x-list.item>
+                            <span class="text-nowrap">
+                                <i class="fa fa-fw fa-file-contract"></i>
+                                {{ __('Bookings') }}
+                            </span>
+                            <x-badge.counter>{{ formatInt($user->bookings_count) }}</x-badge.counter>
+                        </x-list.item>
                     </x-list.group>
                     <div class="card-body">
                         @can('update', $user)

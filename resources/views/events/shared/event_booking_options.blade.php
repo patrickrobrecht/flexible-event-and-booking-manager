@@ -25,7 +25,7 @@
             @endcan
             @can('viewAny', \App\Models\Booking::class)
                 <a class="btn btn-secondary" href="{{ route('bookings.index', [$event, $bookingOption]) }}">
-                    {{ __('Bookings') }}
+                    <i class="fa fa-file-contract"></i> {{ __('Bookings') }}
                     <span class="badge bg-danger">{{ formatInt($bookingOption->bookings_count ?? 0) }}&nbsp;/&nbsp;{{
                         isset($bookingOption->maximum_bookings)
                             ? formatInt($bookingOption->maximum_bookings)

@@ -125,9 +125,13 @@
                             <i class="fa fa-fw fa-road"></i>
                             <span class="d-inline-block">
                                 <div class="d-flex flex-column">
-                                    <div>{{ $booking->streetLine }}</div>
-                                    <div>{{ $booking->cityLine }}</div>
-                                    <div>{{ $booking->country }}</div>
+                                    @if($booking->hasAnyFilledAddressField())
+                                        <div>{{ $booking->streetLine }}</div>
+                                        <div>{{ $booking->cityLine }}</div>
+                                        <div>{{ $booking->country }}</div>
+                                    @else
+                                        {{ __('none') }}
+                                    @endif
                                 </div>
                             </span>
                         </x-list.item>

@@ -55,7 +55,23 @@ class BookingsExportSpreadsheet extends Spreadsheet
             __('ID'),
             __('Booking date'),
             __('User'),
+            __('Price'),
+            __('Paid at'),
         ];
+
+        if (!isset($this->bookingOption->form)) {
+            return array_merge($columns, [
+                __('First name'),
+                __('Last name'),
+                __('Phone number'),
+                __('E-mail'),
+                __('Street'),
+                __('House number'),
+                __('Postal code'),
+                __('City'),
+                __('Country'),
+            ]);
+        }
 
         foreach ($this->bookingOption->form->formFieldGroups as $group) {
             foreach ($group->formFields as $field) {
@@ -72,11 +88,31 @@ class BookingsExportSpreadsheet extends Spreadsheet
             $this->event->name,
             $this->bookingOption->name,
             $booking->id,
-            $booking->booked_at,
+            isset($booking->booked_at)
+                ? $booking->booked_at->format('d.m.Y H:i')
+                : '',
             isset($booking->bookedByUser)
                 ? sprintf('%s %s', $booking->bookedByUser->first_name, $booking->bookedByUser->last_name)
                 : __('Guest'),
+            $booking->price ?? 0.00,
+            $booking->paid_at
+                ? $booking->paid_at->format('d.m.Y H:i')
+                : '',
         ];
+
+        if (!isset($this->bookingOption->form)) {
+            return array_merge($columns, [
+                $booking->first_name,
+                $booking->last_name,
+                $booking->phone ?? null,
+                $booking->email,
+                $booking->street,
+                $booking->house_number,
+                $booking->postal_code,
+                $booking->city,
+                $booking->country,
+            ]);
+        }
 
         foreach ($this->bookingOption->form->formFieldGroups as $group) {
             foreach ($group->formFields as $field) {

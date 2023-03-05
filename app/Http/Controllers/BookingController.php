@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Events\BookingCompleted;
+use App\Exports\BookingsExportSpreadsheet;
+use App\Http\Controllers\Traits\StreamsExport;
 use App\Http\Requests\BookingRequest;
+use App\Http\Requests\Filters\BookingFilterRequest;
 use App\Models\Booking;
 use App\Models\BookingOption;
 use App\Models\Event;
@@ -12,21 +15,42 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class BookingController extends Controller
 {
-    public function index(Event $event, BookingOption $bookingOption): View
-    {
+    use StreamsExport;
+
+    public function index(
+        Event $event,
+        BookingOption $bookingOption,
+        BookingFilterRequest $request
+    ): StreamedResponse|View {
+        $bookingOption->load([
+            'form.formFieldGroups.formFields',
+        ]);
+
+        $bookingsQuery = Booking::filter($bookingOption->bookings())
+            ->with([
+                'bookedByUser',
+            ]);
+
+        if ($request->query('output') === 'export') {
+            $this->authorize('exportAny', Booking::class);
+
+            $fileName = $event->slug . '-' . $bookingOption->slug;
+            return $this->streamExcelExport(
+                new BookingsExportSpreadsheet($event, $bookingOption, $bookingsQuery->get()),
+                str_replace(' ', '-', $fileName) . '.xlsx',
+            );
+        }
+
         $this->authorize('viewAny', Booking::class);
 
         return view('bookings.booking_index', [
             'event' => $event,
             'bookingOption' => $bookingOption,
-            'bookings' => Booking::filter($bookingOption->bookings())
-                ->with([
-                    'bookedByUser',
-                ])
-                ->paginate(),
+            'bookings' => $bookingsQuery->paginate(),
         ]);
     }
 

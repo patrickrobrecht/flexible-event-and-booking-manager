@@ -17,6 +17,7 @@ enum Ability: string
     case EditEvents = 'events.edit';
     case ManageBookingOptionsOfEvent = 'events.manage_booking_options';
     case ViewBookingsOfEvent = 'events.view_bookings';
+    case ExportBookingsOfEvent = 'events.export_bookings';
     case EditBookingsOfEvent = 'events.edit_bookings';
     case EditBookingComment = 'events.edit_booking_comment';
     case ViewPaymentStatus = 'events.view_payment_status';
@@ -59,6 +60,7 @@ enum Ability: string
             self::EditEvents => __('Edit events'),
             self::ManageBookingOptionsOfEvent => __('Manage booking options of event'),
             self::ViewBookingsOfEvent => __('View bookings of event'),
+            self::ExportBookingsOfEvent => __('Export bookings of event'),
             self::EditBookingsOfEvent => __('Edit bookings of event'),
             self::EditBookingComment => __('Edit booking comment'),
             self::ViewPaymentStatus => __('View payment status'),

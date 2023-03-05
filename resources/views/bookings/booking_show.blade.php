@@ -93,32 +93,67 @@
                     <div class="col-12 col-md-6">
                         <x-form.row>
                             <x-form.label for="first_name">{{ __('First name') }}</x-form.label>
-                            <div class="form-control-plaintext">{{ $booking->first_name }}</div>
+                            <x-form.input readonly disabled name="first_name"
+                                          value="{{ $booking->first_name }}" />
                         </x-form.row>
                     </div>
                     <div class="col-12 col-md-6">
                         <x-form.row>
                             <x-form.label for="last_name">{{ __('Last name') }}</x-form.label>
-                            <x-form.input name="last_name" type="text"
-                                          :value="$booking->last_name ?? null"/>
+                            <x-form.input readonly disabled name="last_name"
+                                          value="{{ $booking->last_name }}" />
                         </x-form.row>
                     </div>
                 </div>
                 <x-form.row>
                     <x-form.label for="phone">{{ __('Phone number') }}</x-form.label>
-                    <x-form.input name="phone" type="tel"
-                                  :value="$booking->phone ?? null"/>
+                    <x-form.input readonly disabled name="phone"
+                                  value="{{ $booking->phone ?? null }}" />
                 </x-form.row>
                 <x-form.row>
                     <x-form.label for="email">{{ __('E-mail') }}</x-form.label>
-                    <x-form.input name="email" type="email"
-                                  :value="$booking->email ?? null"/>
+                    <x-form.input readonly disabled name="email"
+                                  value="{{ $booking->email }}" />
                 </x-form.row>
 
-                @include('_shared.address_fields_form', [
-                    'address' => $booking,
-                ])
-                @endisset
+                <div class="row">
+                    <div class="col-12 col-md-8">
+                        <x-form.row>
+                            <x-form.label for="street">{{ __('Street') }}</x-form.label>
+                            <x-form.input readonly disabled name="street"
+                                          value="{{ $booking->street ?? null }}" />
+                        </x-form.row>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <x-form.row>
+                            <x-form.label for="house_number">{{ __('House number') }}</x-form.label>
+                            <x-form.input readonly disabled name="house_number"
+                                          value="{{ $booking->house_number ?? null }}" />
+                        </x-form.row>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-4">
+                        <x-form.row>
+                            <x-form.label for="postal_code">{{ __('Postal code') }}</x-form.label>
+                            <x-form.input readonly disabled name="postal_code"
+                                          value="{{ $booking->postal_code ?? null }}" />
+                        </x-form.row>
+                    </div>
+                    <div class="col-12 col-md-8">
+                        <x-form.row>
+                            <x-form.label for="city">{{ __('City') }}</x-form.label>
+                            <x-form.input readonly disabled name="city"
+                                          value="{{ $booking->city ?? null }}" />
+                        </x-form.row>
+                    </div>
+                </div>
+                <x-form.row>
+                    <x-form.label for="country">{{ __('Country') }}</x-form.label>
+                    <x-form.input readonly disabled name="country"
+                                  value="{{ $booking->country ?? null }}" />
+                </x-form.row>
+            @endisset
         </div>
     </div>
 

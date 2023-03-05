@@ -57,4 +57,13 @@ trait HasAddress
     {
         return $this->scopeIncludeColumns($query, self::$addressFields, true, ...$searchTerms);
     }
+
+    public function hasAnyFilledAddressField(): bool
+    {
+        return $this->street !== null
+            || $this->house_number !== null
+            || $this->postal_code !== null
+            || $this->city !== null
+            || $this->country !== null;
+    }
 }

@@ -51,6 +51,15 @@
                 <x-form.input id="search" name="filter[search]"/>
             </x-form.row>
         @endcan
+
+        <x-slot:addButtons>
+            @can('exportAny', \App\Models\Booking::class)
+                <button type="submit" class="btn btn-primary" name="output" value="export">
+                    <i class="fa fa-download"></i>
+                    {{ __('Export') }}
+                </button>
+            @endcan
+        </x-slot:addButtons>
     </x-form.filter>
 
     <x-alert.count class="mt-3" :count="$bookings->total()"/>
@@ -116,9 +125,13 @@
                             <i class="fa fa-fw fa-road"></i>
                             <span class="d-inline-block">
                                 <div class="d-flex flex-column">
-                                    <div>{{ $booking->streetLine }}</div>
-                                    <div>{{ $booking->cityLine }}</div>
-                                    <div>{{ $booking->country }}</div>
+                                    @if($booking->hasAnyFilledAddressField())
+                                        <div>{{ $booking->streetLine }}</div>
+                                        <div>{{ $booking->cityLine }}</div>
+                                        <div>{{ $booking->country }}</div>
+                                    @else
+                                        {{ __('none') }}
+                                    @endif
                                 </div>
                             </span>
                         </x-list.item>

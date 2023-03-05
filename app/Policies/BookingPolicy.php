@@ -124,4 +124,9 @@ class BookingPolicy
     {
         return $this->deny();
     }
+
+    public function exportAny(User $user): Response
+    {
+        return $this->requireAbility($user, Ability::ExportBookingsOfEvent);
+    }
 }

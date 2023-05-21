@@ -14,7 +14,7 @@ This application allows to manage events, their booking forms and bookings via a
   - Update booking comment and payment status
 - Login and logout, reset password, verify e-mail address, edit own account
 - User and user role management
-- Manage personal access tokens (for [Laravel Sanctum](https://laravel.com/docs/9.x/sanctum))
+- Manage personal access tokens (for [Laravel Sanctum](https://laravel.com/docs/10.x/sanctum))
 - Registration (if enabled via `.env`)
 - Footer links for legal notice, privacy, terms and conditions configurable via `.env`
 
@@ -30,7 +30,7 @@ To get started, you need to install the following software:
 ### Used technologies
 - [Bootstrap](https://getbootstrap.com/), a front-end toolkit
 - [Font Awesome](https://github.com/FortAwesome/Font-Awesome) for [icons](https://fontawesome.com/icons?d=gallery&m=free)
-- [Laravel](https://laravel.com/docs/9.x) framework
+- [Laravel](https://laravel.com/docs/10.x) framework
 - [Laravel Query Builder](https://spatie.be/docs/laravel-query-builder/v5/introduction) for custom filtering and sorting
 
 ### How to develop

@@ -1,4 +1,5 @@
 /.idea
+/.phpunit.cache
 /.vscode
 /node_modules
 /public/mix.js.map
@@ -12,7 +13,6 @@
 /vendor
 .env
 .env.backup
-.phpunit.result.cache
 Homestead.json
 Homestead.yaml
 npm-debug.log

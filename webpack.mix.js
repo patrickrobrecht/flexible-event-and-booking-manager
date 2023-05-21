@@ -1,15 +1,14 @@
-const del = require('del');
 const fs = require('fs-extra');
 const mix = require('laravel-mix');
 const convertToFileHash = require('laravel-mix-make-file-hash');
 
 // Delete asset directories.
-del.sync([
+[
     'public/css',
     'public/js',
     'public/lib',
     'public/webfonts',
-]);
+].forEach(outputPath => fs.removeSync(outputPath));
 
 // Compile styles.
 mix.sass('resources/sass/app.scss', 'public/css');

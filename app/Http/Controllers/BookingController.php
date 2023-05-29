@@ -10,10 +10,12 @@ use App\Http\Requests\Filters\BookingFilterRequest;
 use App\Models\Booking;
 use App\Models\BookingOption;
 use App\Models\Event;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -63,6 +65,43 @@ class BookingController extends Controller
                 'bookingOption.form.formFieldGroups.formFields',
             ]),
         ]);
+    }
+
+    public function showPdf(Booking $booking): StreamedResponse
+    {
+        $this->authorize('viewPDF', $booking);
+
+        $fileName = str_replace(' ', '', implode('-', [
+            $booking->id,
+            $booking->first_name,
+            $booking->last_name,
+        ])) . '.pdf';
+        $directoryPath = implode('/', [
+            'bookings',
+            $booking->bookingOption->event->id,
+            $booking->bookingOption->id
+        ]);
+        $filePath = $directoryPath . '/' . $fileName;
+
+        if (!Storage::disk('local')->exists($filePath)) {
+            Storage::disk('local')->makeDirectory($directoryPath);
+            Pdf::loadView('bookings.booking_show_pdf', [
+                    'booking' => $booking->loadMissing([
+                        'bookingOption.form.formFieldGroups.formFields',
+                    ]),
+                ])
+                ->addInfo([
+                    'Author' => config('app.owner'),
+                    'Title' => implode(' ', [
+                        $booking->bookingOption->name,
+                        $booking->first_name,
+                        $booking->last_name,
+                    ]),
+                ])
+               ->save(Storage::disk('local')->path($filePath));
+        }
+
+        return Storage::disk('local')->download($filePath);
     }
 
     public function store(Event $event, BookingOption $bookingOption, BookingRequest $request): RedirectResponse

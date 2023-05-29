@@ -29,6 +29,12 @@
     @can('update', $booking)
         <x-button.edit href="{{ route('bookings.edit', $booking) }}"/>
     @endcan
+    @can('viewPDF', $booking)
+        <x-button.secondary href="{{ route('bookings.show-pdf', $booking) }}">
+            <i class="fa fa-file-pdf"></i>
+            {{ __('PDF') }}
+        </x-button.secondary>
+    @endcan
 @endsection
 
 @section('content')
@@ -70,6 +76,12 @@
                                                           name="{{ $inputName }}" type="{{ $field->type }}"
                                                           :options="$allowedValues"
                                                           :value="$booking?->getFieldValue($field)" />
+                                        @elseif($field->isDate())
+                                            <x-form.input readonly disabled
+                                                          name="{{ $inputName }}" type="{{ $field->type }}"
+                                                          :options="$allowedValues"
+                                                          :value="$booking?->getFieldValue($field)?->format('Y-m-d')"
+                                                          required />
                                         @else
                                             <x-form.input readonly disabled
                                                           name="{{ $inputName }}" type="{{ $field->type }}"

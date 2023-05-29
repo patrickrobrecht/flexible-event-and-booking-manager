@@ -39,6 +39,8 @@ Route::middleware('auth')->group(static function () {
     Route::model('bookings', Booking::class);
     Route::resource('bookings', BookingController::class)
          ->only(['show', 'edit', 'update']);
+    Route::get('bookings/{booking}/pdf', [BookingController::class, 'showPdf'])
+        ->name('bookings.show-pdf');
 
     Route::resource('events', EventController::class)
          ->only(['index', 'create', 'store', 'edit', 'update']);

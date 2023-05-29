@@ -37,6 +37,8 @@ class FormFieldValue extends Model
             $this->casts['value'] = 'json';
         } elseif ($this->formField->isSingleCheckbox()) {
             $this->casts['value'] = 'integer';
+        } elseif (in_array($this->formField->type, ['date', 'datetime'], true)) {
+            $this->casts['value'] = 'datetime';
         }
     }
 

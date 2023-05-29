@@ -25,6 +25,15 @@
     <h1>{{ $event->name }}: {{ $bookingOption->name }}</h1>
 @endsection
 
+@section('headline-buttons')
+    @can('viewPDF', $booking)
+        <x-button.secondary href="{{ route('bookings.show-pdf', $booking) }}">
+            <i class="fa fa-file-pdf"></i>
+            {{ __('PDF') }}
+        </x-button.secondary>
+    @endcan
+@endsection
+
 @section('content')
     <div class="row">
         <div class="col-12 col-md-4">

@@ -66,6 +66,11 @@ class FormField extends Model
         return $this->fill($validatedData)->save();
     }
 
+    public function isDate(): bool
+    {
+        return $this->type === 'date';
+    }
+
     public function isSingleCheckbox(): bool
     {
         return $this->type === 'checkbox'

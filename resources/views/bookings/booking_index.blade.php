@@ -74,7 +74,7 @@
                     </div>
                     <x-list.group class="list-group-flush">
                         <x-list.item :flex="false">
-                            <i class="fa fa-fw fa-clock"></i>
+                            <i class="fa fa-fw fa-clock" title="{{ __('Booking date') }}"></i>
                             @isset($booking->booked_at)
                                 {{ formatDateTime($booking->booked_at) }}
                             @else
@@ -82,7 +82,7 @@
                             @endisset
                         </x-list.item>
                         <x-list.item :flex="false">
-                            <i class="fa fa-fw fa-user"></i>
+                            <i class="fa fa-fw fa-user" title="{{ __('Booked by') }}"></i>
                             @isset($booking->bookedByUser)
                                 <span title="{{ $booking->bookedByUser->email }}">{{ $booking->bookedByUser->first_name }} {{ $booking->bookedByUser->last_name }}</span>
                             @else
@@ -97,7 +97,7 @@
                             @endisset
                         </x-list.item>
                         <x-list.item :flex="false">
-                            <i class="fa fa-fw fa-euro"></i>
+                            <i class="fa fa-fw fa-euro" title="{{ __('Price') }}"></i>
                             @isset($booking->price)
                                 {{ formatDecimal($booking->price) }}&nbsp;€
                                 @can('viewPaymentStatus', $booking)
@@ -141,6 +141,12 @@
                             <x-button.secondary href="{{ route('bookings.show', $booking) }}">
                                 <i class="fa fa-eye"></i>
                                 {{ __('View') }}
+                            </x-button.secondary>
+                        @endcan
+                        @can('viewPDF', $booking)
+                            <x-button.secondary href="{{ route('bookings.show-pdf', $booking) }}">
+                                <i class="fa fa-file-pdf"></i>
+                                {{ __('PDF') }}
                             </x-button.secondary>
                         @endcan
                         @can('update', $booking)

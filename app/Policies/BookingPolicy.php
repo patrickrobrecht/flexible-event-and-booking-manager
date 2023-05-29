@@ -46,6 +46,11 @@ class BookingPolicy
         return $this->viewAny($user);
     }
 
+    public function viewPDF(User $user, Booking $booking): Response
+    {
+        return $this->view($user, $booking);
+    }
+
     public function viewPaymentStatus(User $user, Booking $booking): Response
     {
         return $this->viewAnyPaymentStatus($user);

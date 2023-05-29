@@ -36,6 +36,11 @@
                                     <x-form.input name="{{ $inputName }}" type="{{ $field->type }}"
                                                   :options="$allowedValues"
                                                   :value="$booking?->getFieldValue($field)" />
+                                @elseif($field->isDate())
+                                    <x-form.input name="{{ $inputName }}" type="{{ $field->type }}"
+                                                  :options="$allowedValues"
+                                                  :value="$booking?->getFieldValue($field)?->format('Y-m-d')"
+                                                  required />
                                 @else
                                     <x-form.input name="{{ $inputName }}" type="{{ $field->type }}"
                                                   :options="$allowedValues"

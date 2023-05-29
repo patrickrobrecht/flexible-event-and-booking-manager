@@ -18,17 +18,20 @@ class DashboardController extends Controller
             ->where('visibility', '=', Visibility::Public->value)
             ->orderBy('started_at')
             ->limit(10)
+            ->with([
+                'location',
+            ])
             ->get();
 
         /** @var ?User $user */
         $user = Auth::user();
         if (isset($user)) {
             $bookings = $user->bookings()
-                ->with([
-                    'bookingOption.event',
-                ])
                 ->orderByDesc('booked_at')
                 ->limit(10)
+                ->with([
+                    'bookingOption.event.location',
+                ])
                 ->get();
         }
 

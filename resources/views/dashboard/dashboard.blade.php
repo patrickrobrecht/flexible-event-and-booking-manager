@@ -21,11 +21,11 @@
         @if($bookings !== null)
             <div class="col-12 col-md-6">
                 <h2>{{ __('My bookings') }}</h2>
-                @foreach($bookings as $booking)
-                    @php
-                        $event = $booking->bookingOption->event;
-                    @endphp
-                    <div class="list-group">
+                <div class="list-group">
+                    @foreach($bookings as $booking)
+                        @php
+                            $event = $booking->bookingOption->event;
+                        @endphp
                         <a href="{{ route('bookings.show', $booking) }}" class="list-group-item list-group-item-action">
                             <strong>{{ $event->name }}</strong>
                             <div>
@@ -58,8 +58,8 @@
                                 @endisset
                             </div>
                         </a>
-                    </div>
-                @endforeach
+                    @endforeach
+                </div>
             </div>
         @endif
     </div>

@@ -77,7 +77,7 @@
             "phpunit"
         ],
         "translate": [
-            "php artisan translatable:export de"
+            "@php artisan translatable:export de"
         ]
     },
     "extra": {

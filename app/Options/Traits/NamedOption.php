@@ -29,7 +29,7 @@ trait NamedOption
         );
     }
 
-    public static function exists(string|int $key): bool
+    public static function exists(int|string $key): bool
     {
         return in_array($key, self::keys(), true);
     }

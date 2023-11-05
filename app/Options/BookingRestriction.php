@@ -4,7 +4,7 @@ namespace App\Options;
 
 use App\Options\Traits\NamedOption;
 
-enum BookingRestriction : string
+enum BookingRestriction: string
 {
     use NamedOption;
 

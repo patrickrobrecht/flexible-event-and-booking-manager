@@ -1,6 +1,8 @@
 # Flexible Event and Booking Manager
 
-[![Run tests and check code style](https://github.com/patrickrobrecht/flexible-event-and-booking-manager/actions/workflows/tests-and-code-style.yml/badge.svg)](https://github.com/patrickrobrecht/flexible-event-and-booking-manager/actions/workflows/tests-and-code-style.yml)
+![PHP](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fpatrickrobrecht%2Fflexible-event-and-booking-manager%2Fmaster%2Fcomposer.json&query=%24.require.php&label=PHP)
+[![Code style](https://github.com/patrickrobrecht/flexible-event-and-booking-manager/actions/workflows/code-style.yml/badge.svg)](https://github.com/patrickrobrecht/flexible-event-and-booking-manager/actions/workflows/code-style.yml)
+[![Tests](https://github.com/patrickrobrecht/flexible-event-and-booking-manager/actions/workflows/tests.yml/badge.svg)](https://github.com/patrickrobrecht/flexible-event-and-booking-manager/actions/workflows/tests.yml)
 
 This application allows to manage events, their booking forms and bookings via a web-based platform.
 
@@ -43,15 +45,15 @@ For development, we use
 - [ESlint](https://eslint.org/) for the JavaScript code style check
 - [Laravel Debugbar](https://github.com/barryvdh/laravel-debugbar) for debugging utility
 - [Laravel Mix](https://laravel-mix.com/docs/) for compiling assets
+- [Laravel Pint](https://laravel.com/docs/10.x/pint) for the PHP code style check.
 - [Laravel Translatable String Exporter](https://github.com/kkomelin/laravel-translatable-string-exporter)
-- [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) for the PHP code style check.
 - [Stylelint](https://stylelint.io/) for the SASS code style check
 
 ### Code Style
 Run `composer cs` to check compliance with the code style
 and `composer csfix` to fix code style violations before every commit
 (see composer.json` and `package.json` for commands to run the code style check/fix for just one language).
-- PHP code MUST follow [PSR-12 specification](https://www.php-fig.org/psr/psr-12/).
+- PHP code MUST follow the [Pint configuration](./pint.json), including [PSR-12 specification](https://www.php-fig.org/psr/psr-12/).
 - Laravel code SHOULD follow the best practices from the list
   [by Alexey Mezenin](https://github.com/alexeymezenin/laravel-best-practices).
 - JavaScript code MUST follow [the default ESLint rules](https://eslint.org/docs/rules/).

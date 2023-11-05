@@ -37,7 +37,7 @@ trait Searchable
     ): Builder {
         return $query->where(function (Builder $subQuery) use ($columns, $like, $searchTerms) {
             foreach ($columns as $column) {
-                $subQuery->orWhere(fn($subQuery) => $this->scopeInclude($subQuery, $column, $like, ...$searchTerms));
+                $subQuery->orWhere(fn ($subQuery) => $this->scopeInclude($subQuery, $column, $like, ...$searchTerms));
             }
         });
     }

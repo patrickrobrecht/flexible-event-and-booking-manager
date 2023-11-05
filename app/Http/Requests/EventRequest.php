@@ -81,7 +81,7 @@ class EventRequest extends FormRequest
             ],
             'parent_event_id'   => [
                 'nullable',
-                Rule::prohibitedIf(fn() => isset($this->event) && $this->event->subEvents->count() > 0),
+                Rule::prohibitedIf(fn () => isset($this->event) && $this->event->subEvents->count() > 0),
                 Rule::exists('events', 'id')
                     ->whereNull('parent_event_id')
                     ->whereNot('id', $this->event->id ?? null),

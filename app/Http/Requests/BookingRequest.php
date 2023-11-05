@@ -21,7 +21,7 @@ class BookingRequest extends FormRequest
     use AuthorizationViaController;
     use ValidatesAddressFields;
 
-    public function prepareForValidation()
+    public function prepareForValidation(): void
     {
         if (isset($this->booking->bookingOption)) {
             // Set booking option from booking when updating an existing booking.

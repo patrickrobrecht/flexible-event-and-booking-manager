@@ -14,8 +14,6 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 class BookingsExportSpreadsheet extends Spreadsheet
 {
     /**
-     * @param Event $event
-     * @param BookingOption $bookingOption
      * @param Collection<Booking> $bookings
      */
     public function __construct(

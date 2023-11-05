@@ -14,10 +14,6 @@ class BookingPolicy
 
     /**
      * Determine whether the user can view any models.
-     *
-     * @param User $user
-     *
-     * @return Response
      */
     public function viewAny(User $user): Response
     {
@@ -31,11 +27,6 @@ class BookingPolicy
 
     /**
      * Determine whether the user can view the model.
-     *
-     * @param User $user
-     * @param Booking $booking
-     *
-     * @return Response
      */
     public function view(User $user, Booking $booking): Response
     {
@@ -58,10 +49,6 @@ class BookingPolicy
 
     /**
      * Determine whether the user can create models.
-     *
-     * @param User $user
-     *
-     * @return Response
      */
     public function create(User $user): Response
     {
@@ -70,11 +57,6 @@ class BookingPolicy
 
     /**
      * Determine whether the user can update the model.
-     *
-     * @param User $user
-     * @param Booking $booking
-     *
-     * @return Response
      */
     public function update(User $user, Booking $booking): Response
     {
@@ -93,11 +75,6 @@ class BookingPolicy
 
     /**
      * Determine whether the user can delete the model.
-     *
-     * @param User $user
-     * @param Booking $booking
-     *
-     * @return Response
      */
     public function delete(User $user, Booking $booking): Response
     {
@@ -106,11 +83,6 @@ class BookingPolicy
 
     /**
      * Determine whether the user can restore the model.
-     *
-     * @param User $user
-     * @param Booking $booking
-     *
-     * @return Response
      */
     public function restore(User $user, Booking $booking): Response
     {
@@ -119,11 +91,6 @@ class BookingPolicy
 
     /**
      * Determine whether the user can permanently delete the model.
-     *
-     * @param User $user
-     * @param Booking $booking
-     *
-     * @return Response
      */
     public function forceDelete(User $user, Booking $booking): Response
     {

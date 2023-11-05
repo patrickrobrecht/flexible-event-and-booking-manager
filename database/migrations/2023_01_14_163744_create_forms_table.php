@@ -8,8 +8,6 @@ return new class extends Migration
 {
     /**
      * Run the migrations: Create table for {@see \App\Models\Form}s.
-     *
-     * @return void
      */
     public function up(): void
     {
@@ -25,8 +23,6 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down(): void
     {

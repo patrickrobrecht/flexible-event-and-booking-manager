@@ -28,8 +28,6 @@ class LoginRequest extends FormRequest
     /**
      * Attempt to authenticate the request's credentials.
      *
-     * @return void
-     *
      * @throws ValidationException
      */
     public function authenticate(): void
@@ -65,8 +63,6 @@ class LoginRequest extends FormRequest
     /**
      * Ensure the login request is not rate limited.
      *
-     * @return void
-     *
      * @throws ValidationException
      */
     public function ensureIsNotRateLimited(): void
@@ -89,8 +85,6 @@ class LoginRequest extends FormRequest
 
     /**
      * Get the rate limiting throttle key for the request.
-     *
-     * @return string
      */
     public function throttleKey(): string
     {

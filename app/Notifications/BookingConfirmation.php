@@ -60,7 +60,7 @@ class BookingConfirmation extends Notification
             $mail->lines([
                 'IBAN: ' . config('app.bank_account.iban'),
                 __('Bank') . ': ' . config('app.bank_account.bank_name'),
-                __('Account holder') . ': ' . config('app.bank_account.holder')
+                __('Account holder') . ': ' . config('app.bank_account.holder'),
             ]);
         }
 

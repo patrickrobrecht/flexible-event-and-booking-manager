@@ -50,7 +50,7 @@ trait FiltersList
     {
         return [
             'nullable',
-            Rule::exists($table, 'id')
+            Rule::exists($table, 'id'),
         ];
     }
 

@@ -36,7 +36,7 @@ class UserFilterRequest extends FormRequest
             ],
             'filter.status' => [
                 'nullable',
-                ActiveStatus::rule()
+                ActiveStatus::rule(),
             ],
         ];
     }

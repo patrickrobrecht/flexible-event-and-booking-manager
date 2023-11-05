@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
 
         $locations = Location::factory(5)->create();
 
-        $organizations =  Organization::factory(5)
+        $organizations = Organization::factory(5)
             ->for(fake()->randomElement($locations))
             ->create();
 

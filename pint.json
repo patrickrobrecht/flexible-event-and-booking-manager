@@ -1,9 +1,11 @@
 {
     "preset": "psr12",
     "rules": {
+        "array_indentation": true,
         "array_syntax": {
             "syntax": "short"
         },
+        "binary_operator_spaces": true,
         "braces_position": {
             "anonymous_classes_opening_brace": "next_line_unless_newline_at_signature_end",
             "allow_single_line_empty_anonymous_classes": true
@@ -63,6 +65,7 @@
         "single_line_comment_spacing": true,
         "single_quote": true,
         "ternary_to_null_coalescing": true,
+        "trailing_comma_in_multiline": true,
         "trim_array_spaces": true,
         "type_declaration_spaces": true
     }

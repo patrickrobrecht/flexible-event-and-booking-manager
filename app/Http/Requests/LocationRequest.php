@@ -29,7 +29,7 @@ class LocationRequest extends FormRequest
             'name' => [
                 'nullable',
                 'string',
-                'max:255'
+                'max:255',
             ],
             'website_url' => [
                 'nullable',

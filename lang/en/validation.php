@@ -141,7 +141,7 @@ return [
     |
     */
 
-    'custom'               => [
+    'custom' => [
         'terms_and_conditions' => [
             'accepted' => 'The terms and conditions must be accepted. Otherwise registration is not allowed.',
         ],
@@ -163,9 +163,9 @@ return [
          * As the database scheme is in English, translations work out of the box for the most attributes.
          * The other attributes have to be added here.
          */
-        'location_id'           => 'Location',
+        'location_id' => 'Location',
         'parent_organization_id' => 'Parent organization',
-        'user_role_id'          => 'User role',
+        'user_role_id' => 'User role',
     ],
 
 ];

@@ -80,7 +80,7 @@ class Location extends Model
         return [
             AllowedFilter::partial('name'),
             /** @see HasAddress::scopeAddressFields() */
-            AllowedFilter::scope('address', 'addressFields')
+            AllowedFilter::scope('address', 'addressFields'),
         ];
     }
 }

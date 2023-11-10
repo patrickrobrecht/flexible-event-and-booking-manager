@@ -21,7 +21,7 @@ class BookingRequest extends FormRequest
     use AuthorizationViaController;
     use ValidatesAddressFields;
 
-    public function prepareForValidation()
+    public function prepareForValidation(): void
     {
         if (isset($this->booking->bookingOption)) {
             // Set booking option from booking when updating an existing booking.
@@ -51,7 +51,7 @@ class BookingRequest extends FormRequest
                 'nullable',
                 'string',
                 'max:255',
-                'regex:/^([0-9\s\ \+\(\)]*)$/'
+                'regex:/^([0-9\s\ \+\(\)]*)$/',
             ],
             'email' => [
                 'required',

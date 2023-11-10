@@ -23,8 +23,6 @@ class BookingConfirmation extends Notification
     /**
      * Get the notification's delivery channels.
      *
-     * @param mixed $notifiable
-     *
      * @return array
      */
     public function via($notifiable)
@@ -34,8 +32,6 @@ class BookingConfirmation extends Notification
 
     /**
      * Get the mail representation of the notification.
-     *
-     * @param mixed $notifiable
      *
      * @return MailMessage
      */
@@ -60,7 +56,7 @@ class BookingConfirmation extends Notification
             $mail->lines([
                 'IBAN: ' . config('app.bank_account.iban'),
                 __('Bank') . ': ' . config('app.bank_account.bank_name'),
-                __('Account holder') . ': ' . config('app.bank_account.holder')
+                __('Account holder') . ': ' . config('app.bank_account.holder'),
             ]);
         }
 
@@ -69,8 +65,6 @@ class BookingConfirmation extends Notification
 
     /**
      * Get the array representation of the notification.
-     *
-     * @param mixed $notifiable
      *
      * @return array
      */

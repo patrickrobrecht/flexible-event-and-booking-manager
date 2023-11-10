@@ -14,7 +14,7 @@ trait StreamsExport
 
         return response()
             ->streamDownload(
-                static function () use ($writer) {
+                static function () use ($writer): void {
                     $writer->save('php://output');
                 },
                 $fileName,

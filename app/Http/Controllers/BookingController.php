@@ -79,17 +79,17 @@ class BookingController extends Controller
         $directoryPath = implode('/', [
             'bookings',
             $booking->bookingOption->event->id,
-            $booking->bookingOption->id
+            $booking->bookingOption->id,
         ]);
         $filePath = $directoryPath . '/' . $fileName;
 
         if (!Storage::disk('local')->exists($filePath)) {
             Storage::disk('local')->makeDirectory($directoryPath);
             Pdf::loadView('bookings.booking_show_pdf', [
-                    'booking' => $booking->loadMissing([
-                        'bookingOption.form.formFieldGroups.formFields',
-                    ]),
-                ])
+                'booking' => $booking->loadMissing([
+                    'bookingOption.form.formFieldGroups.formFields',
+                ]),
+            ])
                 ->addInfo([
                     'Author' => config('app.owner'),
                     'Title' => implode(' ', [

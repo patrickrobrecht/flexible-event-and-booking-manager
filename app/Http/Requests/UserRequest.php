@@ -31,8 +31,6 @@ class UserRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
     public function rules(): array
     {
@@ -58,7 +56,7 @@ class UserRequest extends FormRequest
                 'nullable',
                 'string',
                 'max:255',
-                'regex:/^([0-9\s\ \+\(\)]*)$/'
+                'regex:/^([0-9\s\ \+\(\)]*)$/',
             ],
             'email' => [
                 'required',

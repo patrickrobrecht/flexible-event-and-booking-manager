@@ -22,8 +22,6 @@ class UserFilterRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
     public function rules(): array
     {
@@ -36,7 +34,7 @@ class UserFilterRequest extends FormRequest
             ],
             'filter.status' => [
                 'nullable',
-                ActiveStatus::rule()
+                ActiveStatus::rule(),
             ],
         ];
     }

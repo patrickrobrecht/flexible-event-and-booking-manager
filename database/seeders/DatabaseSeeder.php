@@ -14,8 +14,6 @@ class DatabaseSeeder extends Seeder
 {
     /**
      * Seed the application's database.
-     *
-     * @return void
      */
     public function run(): void
     {
@@ -30,7 +28,7 @@ class DatabaseSeeder extends Seeder
 
         $locations = Location::factory(5)->create();
 
-        $organizations =  Organization::factory(5)
+        $organizations = Organization::factory(5)
             ->for(fake()->randomElement($locations))
             ->create();
 

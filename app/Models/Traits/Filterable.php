@@ -24,6 +24,11 @@ trait Filterable
         return $query;
     }
 
+    /**
+     * @return AllowedFilter[]
+     */
+    abstract public static function allowedFilters(): array;
+
     public static function filter(Builder|Relation|string|null $subject = null): QueryBuilder
     {
         $query = QueryBuilder::for($subject ?? self::class)
@@ -37,11 +42,6 @@ trait Filterable
 
         return $query;
     }
-
-    /**
-     * @return AllowedFilter[]
-     */
-    abstract public static function allowedFilters(): array;
 
     public static function defaultValuesForFilters(): array
     {

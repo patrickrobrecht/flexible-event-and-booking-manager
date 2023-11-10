@@ -16,13 +16,13 @@ trait ValidatesAddressFields
                 $default,
                 'string',
                 'alpha_num',
-                'max:255'
+                'max:255',
             ],
             'postal_code' => [
                 $default,
                 'string',
                 'alpha_num',
-                'max:255'
+                'max:255',
             ],
             'city' => [
                 $default,

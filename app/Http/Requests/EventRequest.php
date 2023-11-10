@@ -35,58 +35,58 @@ class EventRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'              => [
+            'name' => [
                 'required',
                 'string',
                 'max:255',
             ],
-            'slug'              => [
+            'slug' => [
                 'nullable',
                 'string',
                 'max:255',
                 Rule::unique('events', 'slug')
                     ->ignore($this->event ?? null),
             ],
-            'description'       => [
+            'description' => [
                 'nullable',
                 'string',
             ],
-            'visibility'        => [
+            'visibility' => [
                 'required',
                 Visibility::rule(),
             ],
-            'started_at'        => [
+            'started_at' => [
                 'nullable',
                 'date_format:Y-m-d\TH:i',
             ],
-            'finished_at'       => [
+            'finished_at' => [
                 'nullable',
                 'date_format:Y-m-d\TH:i',
             ],
-            'website_url'       => [
+            'website_url' => [
                 'nullable',
                 'string',
                 'max:255',
             ],
-            'location_id'       => [
+            'location_id' => [
                 'required',
                 Rule::exists('locations', 'id'),
             ],
-            'organization_id'   => [
+            'organization_id' => [
                 'sometimes',
                 'array',
             ],
             'organization_id.*' => [
                 Rule::exists('organizations', 'id'),
             ],
-            'parent_event_id'   => [
+            'parent_event_id' => [
                 'nullable',
-                Rule::prohibitedIf(fn() => isset($this->event) && $this->event->subEvents->count() > 0),
+                Rule::prohibitedIf(fn () => isset($this->event) && $this->event->subEvents->count() > 0),
                 Rule::exists('events', 'id')
                     ->whereNull('parent_event_id')
                     ->whereNot('id', $this->event->id ?? null),
             ],
-            'event_series_id'   => [
+            'event_series_id' => [
                 'nullable',
                 Rule::exists('event_series', 'id'),
             ],

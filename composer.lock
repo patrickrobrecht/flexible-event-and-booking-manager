@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "67ebe29f94ca9fac31d9b72f8a707872",
+    "content-hash": "c80cfb3d51e6492381360e4163bce8cf",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -6866,16 +6866,16 @@
         },
         {
             "name": "laravel/pint",
-            "version": "v1.13.5",
+            "version": "v1.13.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/pint.git",
-                "reference": "df105cf8ce7a8f0b8a9425ff45cd281a5448e423"
+                "reference": "3e3d2ab01c7d8b484c18e6100ecf53639c744fa7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/pint/zipball/df105cf8ce7a8f0b8a9425ff45cd281a5448e423",
-                "reference": "df105cf8ce7a8f0b8a9425ff45cd281a5448e423",
+                "url": "https://api.github.com/repos/laravel/pint/zipball/3e3d2ab01c7d8b484c18e6100ecf53639c744fa7",
+                "reference": "3e3d2ab01c7d8b484c18e6100ecf53639c744fa7",
                 "shasum": ""
             },
             "require": {
@@ -6886,13 +6886,13 @@
                 "php": "^8.1.0"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^3.34.1",
-                "illuminate/view": "^10.26.2",
-                "laravel-zero/framework": "^10.1.2",
+                "friendsofphp/php-cs-fixer": "^3.38.0",
+                "illuminate/view": "^10.30.1",
+                "laravel-zero/framework": "^10.3.0",
                 "mockery/mockery": "^1.6.6",
                 "nunomaduro/larastan": "^2.6.4",
                 "nunomaduro/termwind": "^1.15.1",
-                "pestphp/pest": "^2.20.0"
+                "pestphp/pest": "^2.24.2"
             },
             "bin": [
                 "builds/pint"
@@ -6928,7 +6928,7 @@
                 "issues": "https://github.com/laravel/pint/issues",
                 "source": "https://github.com/laravel/pint"
             },
-            "time": "2023-10-26T09:26:10+00:00"
+            "time": "2023-11-07T17:59:57+00:00"
         },
         {
             "name": "laravel/sail",
@@ -7833,6 +7833,42 @@
                 }
             ],
             "time": "2023-10-26T07:21:45+00:00"
+        },
+        {
+            "name": "portavice/laravel-pint-config",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/portavice/laravel-pint-config.git",
+                "reference": "5d5fc5e816a9caabe3619ed4c5a6949a36369797"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/portavice/laravel-pint-config/zipball/5d5fc5e816a9caabe3619ed4c5a6949a36369797",
+                "reference": "5d5fc5e816a9caabe3619ed4c5a6949a36369797",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/pint": "^1.13"
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Patrick Robrecht",
+                    "email": "patrick.robrecht@portavice.de",
+                    "role": "Lead Developer"
+                }
+            ],
+            "description": "Laravel Pint configuration used at portavice",
+            "support": {
+                "issues": "https://github.com/portavice/laravel-pint-config/issues",
+                "source": "https://github.com/portavice/laravel-pint-config/tree/v1.0.0"
+            },
+            "time": "2023-11-08T08:31:06+00:00"
         },
         {
             "name": "sebastian/cli-parser",

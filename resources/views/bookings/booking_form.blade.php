@@ -27,10 +27,10 @@
 
 @section('headline-buttons')
     @can('viewPDF', $booking)
-        <x-button.secondary href="{{ route('bookings.show-pdf', $booking) }}">
+        <x-bs::button.link variant="secondary" href="{{ route('bookings.show-pdf', $booking) }}">
             <i class="fa fa-file-pdf"></i>
             {{ __('PDF') }}
-        </x-button.secondary>
+        </x-bs::button.link>
     @endcan
 @endsection
 
@@ -71,7 +71,7 @@
                     'bookingOption' => $bookingOption,
                 ])
 
-                <x-button.group>
+                <x-bs::button.group>
                     <x-button.save>
                         @isset($booking)
                             {{ __( 'Save' ) }}
@@ -80,7 +80,7 @@
                         @endisset
                     </x-button.save>
                     <x-button.cancel href="{{ route('bookings.index', [$event, $bookingOption]) }}"/>
-                </x-button.group>
+                </x-bs::button.group>
             </x-form>
         </div>
     </div>

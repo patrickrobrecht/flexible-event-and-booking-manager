@@ -39,15 +39,13 @@
                                   :value="$editedUser->email ?? null" />
                 </x-form.row>
                 @isset($editedUser->email_verified_at)
-                    <p class="alert alert-primary">
+                    <x-bs::alert variant="primary">
                         {{ __('The e-mail address has been verified at :email_verified_at', [
                             'email_verified_at' => formatDateTime($editedUser->email_verified_at),
                         ]) }}
-                    </p>
+                    </x-bs::alert>
                 @else
-                    <p class="alert alert-danger">
-                        {{ __('The e-mail address has not been verified yet.') }}
-                    </p>
+                    <x-bs::alert variant="danger">{{ __('The e-mail address has not been verified yet.') }}</x-bs::alert>
                 @endisset
                 <x-form.row>
                     <x-form.label for="password">{{ __('New password') }}</x-form.label>
@@ -94,12 +92,12 @@
             </div>
         </div>
 
-        <x-button.group>
+        <x-bs::button.group>
             <x-button.save>
                 @isset($editedUser){{ __( 'Save' ) }} @else{{ __('Create') }}@endisset
             </x-button.save>
             <x-button.cancel href="{{ route('users.index') }}"/>
-        </x-button.group>
+        </x-bs::button.group>
     </x-form>
 
     <x-text.timestamp :model="$editedUser ?? null" />

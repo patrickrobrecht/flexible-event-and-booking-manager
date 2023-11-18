@@ -31,7 +31,7 @@
                     <x-form.label for="expires_at">
                         {{ __('Expires at') }}
                         @if(isset($token->expires_at) && $token->expires_at->isPast())
-                            <span class="badge bg-danger">{{ __('expired') }}</span>
+                            <x-bs::badge variant="danger">{{ __('expired') }}</x-bs::badge>
                         @endif
                     </x-form.label>
                     <x-form.input name="expires_at" aria-describedby="expireHelpBlock"
@@ -52,12 +52,12 @@
             </div>
         </x-form.row>
 
-        <x-button.group>
+        <x-bs::button.group>
             <x-button.save>
                 @isset($token){{ __( 'Save' ) }} @else{{ __('Create') }}@endisset
             </x-button.save>
             <x-button.cancel href="{{ route('personal-access-tokens.index') }}"/>
-        </x-button.group>
+        </x-bs::button.group>
     </x-form>
 
     <x-text.timestamp :model="$token ?? null" />

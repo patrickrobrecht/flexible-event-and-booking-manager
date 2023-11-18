@@ -14,13 +14,13 @@
 @endsection
 
 @section('content')
-    <x-button.group>
+    <x-bs::button.group>
         @can('create', \App\Models\Organization::class)
             <x-button.create href="{{ route('organizations.create') }}">
                 {{ __('Create organization') }}
             </x-button.create>
         @endcan
-    </x-button.group>
+    </x-bs::button.group>
 
     <x-form.filter method="GET">
         <div class="row">

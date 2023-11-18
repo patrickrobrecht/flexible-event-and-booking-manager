@@ -101,7 +101,7 @@
             </div>
         </div>
 
-        <x-button.group>
+        <x-bs::button.group>
             <x-button.save>
                 @isset($event)
                     {{ __( 'Save' ) }}
@@ -110,7 +110,7 @@
                 @endisset
             </x-button.save>
             <x-button.cancel href="{{ route('events.index') }}"/>
-        </x-button.group>
+        </x-bs::button.group>
     </x-form>
 
     <x-text.timestamp :model="$event ?? null"/>

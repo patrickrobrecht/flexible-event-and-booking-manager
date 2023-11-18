@@ -36,12 +36,12 @@
             </div>
         </div>
 
-        <x-button.group>
+        <x-bs::button.group>
             <x-button.save>
                 @isset($location){{ __( 'Save' ) }} @else{{ __('Create') }}@endisset
             </x-button.save>
             <x-button.cancel href="{{ route('locations.index') }}"/>
-        </x-button.group>
+        </x-bs::button.group>
     </x-form>
 
     <x-text.timestamp :model="$location ?? null" />

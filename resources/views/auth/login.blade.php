@@ -7,13 +7,13 @@
 @section('main')
     <x-card.centered>
         @if(config('app.features.registration'))
-            <div class="alert alert-primary mb-3">
+            <x-bs::alert variant="primary" class="mb-3">
                 {{ __('Not registered yet?') }}
 
                 <a class="alert-link" href="{{ route('register') }}">
                     {{ __('Register') }}
                 </a>
-            </div>
+            </x-bs::alert>
         @endif
 
         <x-form method="POST" action="{{ route('login') }}">

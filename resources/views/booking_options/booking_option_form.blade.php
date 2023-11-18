@@ -91,7 +91,7 @@
             </div>
         </div>
 
-        <x-button.group>
+        <x-bs::button.group>
             <x-button.save>
                 @isset($bookingOption)
                     {{ __( 'Save' ) }}
@@ -100,7 +100,7 @@
                 @endisset
             </x-button.save>
             <x-button.cancel href="{{ route('events.show', $event) }}"/>
-        </x-button.group>
+        </x-bs::button.group>
     </x-form>
 
     <x-text.timestamp :model="$bookingOption ?? null"/>

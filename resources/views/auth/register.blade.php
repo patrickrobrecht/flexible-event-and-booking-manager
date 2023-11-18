@@ -6,11 +6,11 @@
 
 @section('main')
     <x-card.centered>
-        <div class="alert alert-primary mb-3">
+        <x-bs::alert variant="primary" class="mb-3">
             <a class="alert-link" href="{{ route('login') }}">
                 {{ __('Already registered?') }}
             </a>
-        </div>
+        </x-bs::alert>
 
         <x-form method="POST" action="{{ route('register') }}">
             <x-form.row>

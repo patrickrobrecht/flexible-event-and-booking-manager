@@ -25,7 +25,7 @@
 
 @section('content')
     @isset($eventSeries->parentEventSeries)
-        <span class="badge bg-primary">
+        <x-bs::badge variant="primary">
             <span>
                 <i class="fa fa-fw fa-calendar-week"></i>
                 {{ __('Part of the event series') }}
@@ -33,7 +33,7 @@
             <a href="{{ route('event-series.show', $eventSeries->parentEventSeries->slug) }}" class="link-light">
                 {{ $eventSeries->parentEventSeries->name }}
             </a>
-        </span>
+        </x-bs::badge>
     @endisset
 
     <div class="row my-3">

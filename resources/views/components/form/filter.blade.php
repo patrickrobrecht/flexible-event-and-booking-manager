@@ -9,7 +9,7 @@
 <form id="{{ $id }}" method="GET" {{ $attributes->class(['my-3', 'collapse', 'show' => $show]) }}>
     {{ $slot }}
 
-    <x-button.group>
+    <x-bs::button.group>
         <button type="submit" class="btn btn-outline-primary">
             <i class="fa fa-search"></i>
             {{ __('Search and filter') }}
@@ -22,5 +22,5 @@
             <i class="fa fa-undo"></i>
             {{ __('Reset') }}
         </a>
-    </x-button.group>
+    </x-bs::button.group>
 </form>

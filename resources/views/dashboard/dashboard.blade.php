@@ -16,6 +16,7 @@
             @include('events.shared.event_list', [
                 'events' => $events,
                 'showVisibility' => false,
+                'noEventsMessage' => __('There are no public future events.'),
             ])
         </div>
         @if($bookings !== null)
@@ -42,19 +43,19 @@
                             </div>
                             <div>
                                 @isset($booking->price)
-                                    <span class="badge bg-primary">{{ formatDecimal($booking->price) }}&nbsp;€</span>
+                                    <x-bs::badge variant="primary">{{ formatDecimal($booking->price) }}&nbsp;€</x-bs::badge>
                                     @isset($booking->paid_at)
-                                        <span class="badge bg-primary">{{ __('paid') }} ({{ $booking->paid_at->isMidnight()
+                                        <x-bs::badge variant="success">{{ __('paid') }} ({{ $booking->paid_at->isMidnight()
                                             ? formatDate($booking->paid_at)
-                                            : formatDateTime($booking->paid_at) }})</span>
+                                            : formatDateTime($booking->paid_at) }})</x-bs::badge>
                                     @else
-                                        <span class="badge bg-danger">{{ __('not paid yet') }}</span>
+                                        <x-bs::badge variant="danger">{{ __('not paid yet') }}</x-bs::badge>
                                     @endisset
                                 @else
-                                    <span class="badge bg-primary">{{ __('free of charge') }}</span>
+                                    <x-bs::badge variant="primary">{{ __('free of charge') }}</x-bs::badge>
                                 @endisset
                                 @isset($booking->booked_at)
-                                    <span class="badge bg-primary">{{ formatDateTime($booking->booked_at) }}</span>
+                                    <x-bs::badge variant="primary">{{ formatDateTime($booking->booked_at) }}</x-bs::badge>
                                 @endisset
                             </div>
                         </a>

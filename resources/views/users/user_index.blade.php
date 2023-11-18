@@ -14,13 +14,13 @@
 @endsection
 
 @section('content')
-    <x-button.group>
+    <x-bs::button.group>
         @can('create', \App\Models\User::class)
             <x-button.create href="{{ route('users.create') }}">
                 {{ __('Create user') }}
             </x-button.create>
         @endcan
-    </x-button.group>
+    </x-bs::button.group>
 
     <x-form.filter method="GET">
         <div class="row">
@@ -74,9 +74,9 @@
                             <span class="text-end">
                                 {{ $user->email }}
                                 @isset($user->email_verified_at)
-                                    <span class="badge bg-primary">{{ __('verified') }}</span>
+                                    <x-bs::badge variant="success">{{ __('verified') }}</x-bs::badge>
                                 @else
-                                    <span class="badge bg-danger">{{ __('not verified') }}</span>
+                                    <x-bs::badge variant="danger">{{ __('not verified') }}</x-bs::badge>
                                 @endisset
                             </span>
                         </x-list.item>
@@ -108,7 +108,7 @@
                                     {{ __('none') }}
                                 @else
                                     @foreach($user->userRoles->sortBy('name') as $userRole)
-                                        <span class="badge bg-primary">{{ $userRole->name }}</span>
+                                        <x-bs::badge variant="primary">{{ $userRole->name }}</x-bs::badge>
                                     @endforeach
                                 @endif
                             </span>

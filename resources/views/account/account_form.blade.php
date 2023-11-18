@@ -29,16 +29,16 @@
                                   :value="$user->email ?? null" />
                 </x-form.row>
                 @isset($user->email_verified_at)
-                    <p class="alert alert-primary">
+                    <x-bs::alert variant="primary">
                         {{ __('The e-mail address has been verified at :email_verified_at', [
                             'email_verified_at' => formatDateTime($user->email_verified_at),
                         ]) }}
-                    </p>
+                    </x-bs::alert>
                 @else
-                    <p class="alert alert-danger">
+                    <x-bs::alert variant="danger">
                         {{ __('The e-mail address has not been verified yet.') }}
                         <a class="alert-link" href="{{ route('verification.notice') }}">{{ __('Verify e-mail address') }}</a>
-                    </p>
+                    </x-bs::alert>
                 @endisset
                 <x-form.row>
                     <x-form.label for="password">{{ __('New password') }}</x-form.label>
@@ -71,7 +71,7 @@
         <h2>{{ __('Abilities') }}</h2>
         <div class="mb-3">
             @foreach($user->userRoles as $userRole)
-                <span class="badge bg-primary">{{ $userRole->name }}</span>
+                <x-bs::badge variant="primary">{{ $userRole->name }}</x-bs::badge>
             @endforeach
         </div>
 

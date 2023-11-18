@@ -170,6 +170,7 @@
     "The e-mail address has been verified at :email_verified_at": "Die E-Mail-Adresse wurde am :email_verified_at bestätigt.",
     "The e-mail address has not been verified yet.": "Die E-Mail-Adresse wurde noch nicht bestätigt.",
     "The maximum number of bookings has been reached.": "Die maximale Anzahl an Anmeldungen wurde erreicht.",
+    "There are no public future events.": "Es gibt keine öffentlichen Veranstaltungen in der Zukunft.",
     "This event series does not contain any events yet.": "Diese Veranstaltungsreihe enthält noch keine Veranstaltungen",
     "This field defines the path in the URL, such as :url. If you leave it empty, is auto-generated for you.": "Dieses Feld bezeichnet den Pfad in der URL, wie in :url. Wenn du es leer lässt, wird es automatisch generiert.",
     "This is a secure area of the application. Please confirm your password before continuing.": "Dieses ist ein abgesicherter Bereich der Anwendung. Bitte bestätigen Sie Ihr Passwort vor dem Fortfahren.",

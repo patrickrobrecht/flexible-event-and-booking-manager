@@ -20,7 +20,7 @@
 @section('content')
     @isset($userRole)
         <div class="mb-3">
-            <span class="badge ba bg-primary">{{ formatTransChoice(':count users', $userRole->users()->count()) }}</span>
+            <x-bs::badge variant="primary">{{ formatTransChoice(':count users', $userRole->users()->count()) }}</x-bs::badge>
         </div>
     @endisset
 
@@ -44,12 +44,12 @@
             </div>
         </x-form.row>
 
-        <x-button.group>
+        <x-bs::button.group>
             <x-button.save>
                 @isset($userRole){{ __( 'Save' ) }} @else{{ __('Create') }}@endisset
             </x-button.save>
             <x-button.cancel href="{{ route('user-roles.index') }}"/>
-        </x-button.group>
+        </x-bs::button.group>
     </x-form>
 
     <x-text.timestamp :model="$userRole ?? null" />

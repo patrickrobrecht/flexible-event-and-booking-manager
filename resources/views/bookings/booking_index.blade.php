@@ -78,7 +78,7 @@
                             @isset($booking->booked_at)
                                 {{ formatDateTime($booking->booked_at) }}
                             @else
-                                <span class="badge bg-primary">{{ __('Booking not completed yet') }}</span>
+                                <x-bs::badge variant="danger">{{ __('Booking not completed yet') }}</x-bs::badge>
                             @endisset
                         </x-list.item>
                         <x-list.item :flex="false">
@@ -90,9 +90,9 @@
                             @endisset
                             @isset($booking->bookedByUser)
                                 @isset($booking->bookedByUser->email_verified_at)
-                                    <span class="badge bg-primary">{{ __('verified') }}</span>
+                                    <x-bs::badge variant="success">{{ __('verified') }}</x-bs::badge>
                                 @else
-                                    <span class="badge bg-danger">{{ __('not verified') }}</span>
+                                    <x-bs::badge variant="danger">{{ __('not verified') }}</x-bs::badge>
                                 @endisset
                             @endisset
                         </x-list.item>
@@ -102,15 +102,15 @@
                                 {{ formatDecimal($booking->price) }}&nbsp;€
                                 @can('viewPaymentStatus', $booking)
                                     @isset($booking->paid_at)
-                                        <span class="badge bg-primary">{{ __('paid') }} ({{ $booking->paid_at->isMidnight()
-                                        ? formatDate($booking->paid_at)
-                                        : formatDateTime($booking->paid_at) }})</span>
+                                        <x-bs::badge variant="success">{{ __('paid') }} ({{ $booking->paid_at->isMidnight()
+                                            ? formatDate($booking->paid_at)
+                                            : formatDateTime($booking->paid_at) }})</x-bs::badge>
                                     @else
-                                        <span class="badge bg-danger">{{ __('not paid yet') }}</span>
+                                        <x-bs::badge variant="danger">{{ __('not paid yet') }}</x-bs::badge>
                                     @endisset
                                 @endcan
                             @else
-                                <span class="badge bg-primary">{{ __('free of charge') }}</span>
+                                <x-bs::badge variant="primary">{{ __('free of charge') }}</x-bs::badge>
                             @endisset
                         </x-list.item>
                         <x-list.item :flex="false">
@@ -138,16 +138,16 @@
                     </x-list.group>
                     <div class="card-body">
                         @can('view', $booking)
-                            <x-button.secondary href="{{ route('bookings.show', $booking) }}">
+                            <x-bs::button.link variant="secondary" href="{{ route('bookings.show', $booking) }}">
                                 <i class="fa fa-eye"></i>
                                 {{ __('View') }}
-                            </x-button.secondary>
+                            </x-bs::button.link>
                         @endcan
                         @can('viewPDF', $booking)
-                            <x-button.secondary href="{{ route('bookings.show-pdf', $booking) }}">
+                            <x-bs::button.link variant="secondary" href="{{ route('bookings.show-pdf', $booking) }}">
                                 <i class="fa fa-file-pdf"></i>
                                 {{ __('PDF') }}
-                            </x-button.secondary>
+                            </x-bs::button.link>
                         @endcan
                         @can('update', $booking)
                             <x-button.edit href="{{ route('bookings.edit', $booking) }}"/>

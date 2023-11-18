@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c80cfb3d51e6492381360e4163bce8cf",
+    "content-hash": "ace4e556bf992ee97700f94a04a8b9ab",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -3039,6 +3039,64 @@
                 }
             ],
             "time": "2023-02-25T19:38:58+00:00"
+        },
+        {
+            "name": "portavice/bladestrap",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/portavice/bladestrap.git",
+                "reference": "e3c943fb503fe05f60cc1b0fcfe643644b8023d0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/portavice/bladestrap/zipball/e3c943fb503fe05f60cc1b0fcfe643644b8023d0",
+                "reference": "e3c943fb503fe05f60cc1b0fcfe643644b8023d0",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/console": "^10.24",
+                "illuminate/http": "^10.24",
+                "illuminate/support": "^10.24",
+                "illuminate/view": "^10.24",
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^8.5",
+                "phpunit/phpunit": "^10.4",
+                "portavice/laravel-pint-config": "1.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Portavice\\Bladestrap\\BladestrapServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Portavice\\Bladestrap\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Patrick Robrecht",
+                    "email": "patrick.robrecht@portavice.de",
+                    "role": "Lead Developer"
+                }
+            ],
+            "description": "Blade components for Bootstrap 5",
+            "support": {
+                "issues": "https://github.com/portavice/bladestrap/issues",
+                "source": "https://github.com/portavice/bladestrap/tree/main"
+            },
+            "time": "2023-11-14T10:25:41+00:00"
         },
         {
             "name": "psr/clock",
@@ -9216,7 +9274,7 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,

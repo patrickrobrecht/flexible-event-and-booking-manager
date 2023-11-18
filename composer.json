@@ -11,6 +11,7 @@
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "phpoffice/phpspreadsheet": "^1.29",
+        "portavice/bladestrap": "dev-main",
         "spatie/laravel-query-builder": "^5.6",
         "spatie/laravel-sluggable": "^3.5"
     },
@@ -84,9 +85,6 @@
         }
     },
     "config": {
-        "allow-plugins": {
-            "dealerdirect/phpcodesniffer-composer-installer": true
-        },
         "audit": {
             "abandoned": "fail"
         },
@@ -94,6 +92,6 @@
         "preferred-install": "dist",
         "sort-packages": true
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "prefer-stable": true
 }

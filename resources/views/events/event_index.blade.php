@@ -10,7 +10,7 @@
 @endsection
 
 @section('breadcrumbs')
-    <x-nav.breadcrumb/>
+    <x-bs::breadcrumb.item>@yield('title')</x-bs::breadcrumb.item>
 @endsection
 
 @section('content')

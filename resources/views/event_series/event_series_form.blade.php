@@ -14,8 +14,8 @@
 @endsection
 
 @section('breadcrumbs')
-    <x-nav.breadcrumb href="{{ route('event-series.index') }}">{{ __('Event series') }}</x-nav.breadcrumb>
-    <x-nav.breadcrumb/>
+    <x-bs::breadcrumb.item href="{{ route('event-series.index') }}">{{ __('Event series') }}</x-bs::breadcrumb.item>
+    <x-bs::breadcrumb.item>@yield('title')</x-bs::breadcrumb.item>
 @endsection
 
 @section('content')

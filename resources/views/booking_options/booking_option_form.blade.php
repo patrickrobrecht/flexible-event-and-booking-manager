@@ -15,14 +15,14 @@
 @endsection
 
 @section('breadcrumbs')
-    <x-nav.breadcrumb href="{{ route('events.index') }}">{{ __('Events') }}</x-nav.breadcrumb>
-    <x-nav.breadcrumb href="{{ route('events.show', $event) }}">{{ $event->name }}</x-nav.breadcrumb>
+    <x-bs::breadcrumb.item href="{{ route('events.index') }}">{{ __('Events') }}</x-bs::breadcrumb.item>
+    <x-bs::breadcrumb.item href="{{ route('events.show', $event) }}">{{ $event->name }}</x-bs::breadcrumb.item>
     @isset($bookingOption)
-        <x-nav.breadcrumb href="{{ route('booking-options.show', [$event, $bookingOption]) }}">
+        <x-bs::breadcrumb.item href="{{ route('booking-options.show', [$event, $bookingOption]) }}">
             {{ $bookingOption->name }}
-        </x-nav.breadcrumb>
+        </x-bs::breadcrumb.item>
     @endisset
-    <x-nav.breadcrumb/>
+    <x-bs::breadcrumb.item>@yield('title')</x-bs::breadcrumb.item>
 @endsection
 
 @section('content')

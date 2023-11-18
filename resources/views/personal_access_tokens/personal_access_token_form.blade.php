@@ -13,8 +13,8 @@
 @endsection
 
 @section('breadcrumbs')
-    <x-nav.breadcrumb href="{{ route('personal-access-tokens.index') }}">{{ __('Personal access tokens') }}</x-nav.breadcrumb>
-    <x-nav.breadcrumb/>
+    <x-bs::breadcrumb.item href="{{ route('personal-access-tokens.index') }}">{{ __('Personal access tokens') }}</x-bs::breadcrumb.item>
+    <x-bs::breadcrumb.item>@yield('title')</x-bs::breadcrumb.item>
 @endsection
 
 @section('content')

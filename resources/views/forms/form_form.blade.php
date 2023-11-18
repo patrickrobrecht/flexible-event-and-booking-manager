@@ -13,8 +13,8 @@
 @endsection
 
 @section('breadcrumbs')
-    <x-nav.breadcrumb href="{{ route('forms.index') }}">{{ __('Forms') }}</x-nav.breadcrumb>
-    <x-nav.breadcrumb/>
+    <x-bs::breadcrumb.item href="{{ route('forms.index') }}">{{ __('Forms') }}</x-bs::breadcrumb.item>
+    <x-bs::breadcrumb.item>@yield('title')</x-bs::breadcrumb.item>
 @endsection
 
 @section('content')

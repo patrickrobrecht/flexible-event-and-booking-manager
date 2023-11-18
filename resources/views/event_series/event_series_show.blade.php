@@ -10,11 +10,11 @@
 
 @section('breadcrumbs')
     @can('viewAny', \App\Models\EventSeries::class)
-        <x-nav.breadcrumb href="{{ route('event-series.index') }}">{{ __('Event series') }}</x-nav.breadcrumb>
+        <x-bs::breadcrumb.item href="{{ route('event-series.index') }}">{{ __('Event series') }}</x-bs::breadcrumb.item>
     @else
-        <x-nav.breadcrumb>{{ __('Event series') }}</x-nav.breadcrumb>
+        <x-bs::breadcrumb.item>>{{ __('Event series') }}</x-bs::breadcrumb.item>
     @endcan
-    <x-nav.breadcrumb/>
+    <x-bs::breadcrumb.item>@yield('title')</x-bs::breadcrumb.item>
 @endsection
 
 @section('headline-buttons')

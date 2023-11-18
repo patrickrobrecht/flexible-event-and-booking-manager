@@ -62,16 +62,16 @@
                             <a href="{{ route('events.show', $event->slug) }}">{{ $event->name }}</a>
                         </h2>
                     </div>
-                    <x-list.group class="list-group-flush">
-                        <x-list.item :flex="false">
+                    <x-bs::list :flush="true">
+                        <x-bs::list.item>
                             <i class="fa fa-fw fa-eye" title="{{ __('Visibility') }}"></i>
                             <x-badge.visibility :visibility="$event->visibility"/>
-                        </x-list.item>
-                        <x-list.item :flex="false">
+                        </x-bs::list.item>
+                        <x-bs::list.item>
                             <i class="fa fa-fw fa-clock" title="{{ __('Date') }}"></i>
                             <span class="text-end">@include('events.shared.event_dates')</span>
-                        </x-list.item>
-                        <x-list.item :flex="false">
+                        </x-bs::list.item>
+                        <x-bs::list.item>
                             <i class="fa fa-fw fa-location-pin" title="{{ __('Location') }}"></i>
                             <span class="d-inline-block">
                                 <div class="d-flex flex-column">
@@ -80,35 +80,39 @@
                                     @endforeach
                                 </div>
                             </span>
-                        </x-list.item>
-                        <x-list.item>
+                        </x-bs::list.item>
+                        <x-bs::list.item>
                             <span>
                                 <i class="fa fa-fw fa-sitemap"></i>
                                 {{ __('Organizations') }}
                             </span>
-                            <div class="text-end">
-                                <ul class="list-unstyled">
-                                    @foreach($event->organizations as $organization)
-                                        <li>{{ $organization->name }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        </x-list.item>
+                            <x-slot:end>
+                                <div class="text-end">
+                                    <ul class="list-unstyled">
+                                        @foreach($event->organizations as $organization)
+                                            <li>{{ $organization->name }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            </x-slot:end>
+                        </x-bs::list.item>
                         @isset($event->eventSeries)
-                            <x-list.item>
+                            <x-bs::list.item>
                                 <span>
                                     <i class="fa fa-fw fa-calendar-week"></i>
                                     {{ __('Part of the event series') }}
                                 </span>
-                                <span class="text-end">
-                                    <a href="{{ route('event-series.show', $event->eventSeries->slug) }}" target="_blank">
-                                        {{ $event->eventSeries->name }}
-                                    </a>
-                                </span>
-                            </x-list.item>
+                                <x-slot:end>
+                                    <span class="text-end">
+                                        <a href="{{ route('event-series.show', $event->eventSeries->slug) }}" target="_blank">
+                                            {{ $event->eventSeries->name }}
+                                        </a>
+                                    </span>
+                                </x-slot:end>
+                            </x-bs::list.item>
                         @endisset
                         @include('events.shared.event_booking_options')
-                    </x-list.group>
+                    </x-bs::list>
                     <div class="card-body">
                         @can('update', $event)
                             <x-button.edit href="{{ route('events.edit', $event) }}"/>

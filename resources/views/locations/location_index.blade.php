@@ -47,8 +47,8 @@
                     <div class="card-header">
                         <h2 class="card-title">{{ $location->nameOrAddress }}</h2>
                     </div>
-                    <x-list.group class="list-group-flush">
-                        <x-list.item :flex="false">
+                    <x-bs::list :flush="true">
+                        <x-bs::list.item>
                             <i class="fa fa-fw fa-road"></i>
                             <span class="d-inline-block">
                                 <div class="d-flex flex-column">
@@ -57,26 +57,30 @@
                                     @endforeach
                                 </div>
                             </span>
-                        </x-list.item>
-                        <x-list.item>
+                        </x-bs::list.item>
+                        <x-bs::list.item>
                             <span>
                                 <i class="fa fa-fw fa-calendar-days"></i>
                                 <a href="{{ route('events.index', ['filter[location_id]' => $location->id]) }}" target="_blank">
                                     {{ __('Events') }}
                                 </a>
                             </span>
-                            <x-badge.counter>{{ formatInt($location->events_count) }}</x-badge.counter>
-                        </x-list.item>
-                        <x-list.item>
+                            <x-slot:end>
+                                <x-badge.counter>{{ formatInt($location->events_count) }}</x-badge.counter>
+                            </x-slot:end>
+                        </x-bs::list.item>
+                        <x-bs::list.item>
                             <span>
                                 <i class="fa fa-fw fa-sitemap"></i>
                                 <a href="{{ route('organizations.index', ['filter[location_id]' => $location->id]) }}" target="_blank">
                                     {{ __('Organizations') }}
                                 </a>
                             </span>
-                            <x-badge.counter>{{ formatInt($location->organizations_count) }}</x-badge.counter>
-                        </x-list.item>
-                    </x-list.group>
+                            <x-slot:end>
+                                <x-badge.counter>{{ formatInt($location->organizations_count) }}</x-badge.counter>
+                            </x-slot:end>
+                        </x-bs::list.item>
+                    </x-bs::list>
                     <div class="card-body">
                         @can('update', $location)
                             <x-button.edit href="{{ route('locations.edit', $location) }}"/>

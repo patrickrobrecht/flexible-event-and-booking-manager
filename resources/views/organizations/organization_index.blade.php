@@ -50,17 +50,19 @@
                         <h2 class="card-title">{{ $organization->name }}</h2>
                         <x-badge.active-status :active="$organization->status" />
                     </div>
-                    <x-list.group class="list-group-flush">
-                        <x-list.item>
+                    <x-bs::list :flush="true">
+                        <x-bs::list.item>
                             <span>
                                 <i class="fa fa-fw fa-calendar-days"></i>
                                 <a href="{{ route('events.index', ['filter[organization_id]' => $organization->id]) }}" target="_blank">
                                     {{ __('Events') }}
                                 </a>
                             </span>
-                            <x-badge.counter>{{ formatInt($organization->events_count) }}</x-badge.counter>
-                        </x-list.item>
-                        <x-list.item :flex="false">
+                            <x-slot:end>
+                                <x-badge.counter>{{ formatInt($organization->events_count) }}</x-badge.counter>
+                            </x-slot:end>
+                        </x-bs::list.item>
+                        <x-bs::list.item>
                             <i class="fa fa-fw fa-location-pin"></i>
                             <span class="d-inline-block">
                                 <div class="d-flex flex-column">
@@ -69,26 +71,30 @@
                                     @endforeach
                                 </div>
                             </span>
-                        </x-list.item>
+                        </x-bs::list.item>
                         @isset($organization->register_entry)
-                            <x-list.item>
+                            <x-bs::list.item>
                                 <span>
                                     <i class="fa fa-fw fa-scale-balanced"></i>
                                     {{ __('Register entry') }}
                                 </span>
-                                <span class="text-end">{{ $organization->register_entry }}</span>
-                            </x-list.item>
+                                <x-slot:end>
+                                    <span class="text-end">{{ $organization->register_entry }}</span>
+                                </x-slot:end>
+                            </x-bs::list.item>
                         @endisset
                         @isset($organization->representatives)
-                            <x-list.item>
+                            <x-bs::list.item>
                                 <span>
                                     <i class="fa fa-fw fa-user-friends"></i>
                                     {{ __('Representatives') }}
                                 </span>
-                                <span class="text-end">{{ $organization->representatives }}</span>
-                            </x-list.item>
+                                <x-slot:end>
+                                    <span class="text-end">{{ $organization->representatives }}</span>
+                                </x-slot:end>
+                            </x-bs::list.item>
                         @endisset
-                    </x-list.group>
+                    </x-bs::list>
                     <div class="card-body">
                         @can('update', $organization)
                             <x-button.edit href="{{ route('organizations.edit', $organization) }}"/>

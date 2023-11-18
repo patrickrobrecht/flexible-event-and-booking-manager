@@ -37,9 +37,6 @@
                     <div class="card-header">
                         <h2 class="card-title">{{ $form->name }}</h2>
                     </div>
-                    <x-list.group class="list-group-flush">
-
-                    </x-list.group>
                     <div class="card-body">
                         @can('update', $form)
                             <x-button.edit href="{{ route('forms.edit', $form) }}"/>

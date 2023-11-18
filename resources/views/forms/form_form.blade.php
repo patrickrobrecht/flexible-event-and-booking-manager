@@ -30,17 +30,17 @@
             </div>
             @isset($form)
                 <div class="col-12 col-md-6">
-                    <x-list.group>
+                    <x-bs::list>
                         @foreach($form->bookingOptions as $bookingOption)
-                            <li class="list-group-item">
+                            <x-bs::list.item>
                                 <div>
                                     <a href="{{ route('events.show', $bookingOption->event) }}">{{ $bookingOption->event->name }}</a>
                                     (<a href="{{ route('booking-options.show', [$bookingOption->event, $bookingOption]) }}">{{ $bookingOption->name }}</a>)
                                 </div>
                                 @include('booking_options.shared.booking_option_period')
-                            </li>
+                            </x-bs::list.item>
                         @endforeach
-                    </x-list.group>
+                    </x-bs::list>
                 </div>
             @endisset
         </div>

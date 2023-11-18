@@ -48,9 +48,9 @@
             @include('events.shared.event_details')
         </div>
         <div class="col-12 col-md-8">
-            <x-list.group class="mb-3">
+            <x-bs::list class="mb-3">
                 @include('events.shared.event_booking_options')
-            </x-list.group>
+            </x-bs::list>
 
             @can('create', \App\Models\BookingOption::class)
                 <div class="mb-3">

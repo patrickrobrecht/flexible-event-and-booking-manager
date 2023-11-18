@@ -72,16 +72,16 @@
                         <h2 class="card-title">{{ $booking->first_name }} {{ $booking->last_name }}</h2>
                         <div class="card-subtitle text-muted">{{ $bookingOption->name }}</div>
                     </div>
-                    <x-list.group class="list-group-flush">
-                        <x-list.item :flex="false">
+                    <x-bs::list :flush="true">
+                        <x-bs::list.item>
                             <i class="fa fa-fw fa-clock" title="{{ __('Booking date') }}"></i>
                             @isset($booking->booked_at)
                                 {{ formatDateTime($booking->booked_at) }}
                             @else
                                 <x-bs::badge variant="danger">{{ __('Booking not completed yet') }}</x-bs::badge>
                             @endisset
-                        </x-list.item>
-                        <x-list.item :flex="false">
+                        </x-bs::list.item>
+                        <x-bs::list.item>
                             <i class="fa fa-fw fa-user" title="{{ __('Booked by') }}"></i>
                             @isset($booking->bookedByUser)
                                 <span title="{{ $booking->bookedByUser->email }}">{{ $booking->bookedByUser->first_name }} {{ $booking->bookedByUser->last_name }}</span>
@@ -95,8 +95,8 @@
                                     <x-bs::badge variant="danger">{{ __('not verified') }}</x-bs::badge>
                                 @endisset
                             @endisset
-                        </x-list.item>
-                        <x-list.item :flex="false">
+                        </x-bs::list.item>
+                        <x-bs::list.item>
                             <i class="fa fa-fw fa-euro" title="{{ __('Price') }}"></i>
                             @isset($booking->price)
                                 {{ formatDecimal($booking->price) }}&nbsp;€
@@ -112,16 +112,16 @@
                             @else
                                 <x-bs::badge variant="primary">{{ __('free of charge') }}</x-bs::badge>
                             @endisset
-                        </x-list.item>
-                        <x-list.item :flex="false">
+                        </x-bs::list.item>
+                        <x-bs::list.item>
                             <i class="fa fa-fw fa-at"></i>
                             {{ $booking->email }}
-                        </x-list.item>
-                        <x-list.item :flex="false">
+                        </x-bs::list.item>
+                        <x-bs::list.item>
                             <i class="fa fa-fw fa-phone"></i>
                             {{ $booking->phone ?? __('none') }}
-                        </x-list.item>
-                        <x-list.item :flex="false">
+                        </x-bs::list.item>
+                        <x-bs::list.item>
                             <i class="fa fa-fw fa-road"></i>
                             <span class="d-inline-block">
                                 <div class="d-flex flex-column">
@@ -134,8 +134,8 @@
                                     @endif
                                 </div>
                             </span>
-                        </x-list.item>
-                    </x-list.group>
+                        </x-bs::list.item>
+                    </x-bs::list>
                     <div class="card-body">
                         @can('view', $booking)
                             <x-bs::button.link variant="secondary" href="{{ route('bookings.show', $booking) }}">

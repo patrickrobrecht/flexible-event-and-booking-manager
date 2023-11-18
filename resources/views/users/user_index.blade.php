@@ -65,71 +65,83 @@
                     <div class="card-header">
                         <h2 class="card-title">{{ $user->name }}</h2>
                     </div>
-                    <x-list.group class="list-group-flush">
-                        <x-list.item>
+                    <x-bs::list :flush="true">
+                        <x-bs::list.item>
                             <span class="text-nowrap">
                                 <i class="fa fa-fw fa-at"></i>
                                 {{ __('E-mail') }}
                             </span>
-                            <span class="text-end">
-                                {{ $user->email }}
-                                @isset($user->email_verified_at)
-                                    <x-bs::badge variant="success">{{ __('verified') }}</x-bs::badge>
-                                @else
-                                    <x-bs::badge variant="danger">{{ __('not verified') }}</x-bs::badge>
-                                @endisset
-                            </span>
-                        </x-list.item>
+                            <x-slot:end>
+                                <span class="text-end">
+                                    {{ $user->email }}
+                                    @isset($user->email_verified_at)
+                                        <x-bs::badge variant="success">{{ __('verified') }}</x-bs::badge>
+                                    @else
+                                        <x-bs::badge variant="danger">{{ __('not verified') }}</x-bs::badge>
+                                    @endisset
+                                </span>
+                            </x-slot:end>
+                        </x-bs::list.item>
                         @isset($user->phone)
-                            <x-list.item>
+                            <x-bs::list.item>
                                 <span class="text-nowrap">
                                     <i class="fa fa-fw fa-phone"></i>
                                     {{ __('Phone number') }}
                                 </span>
-                                <span class="text-end">{{ $user->phone }}</span>
-                            </x-list.item>
+                                <x-slot:end>
+                                    <span class="text-end">{{ $user->phone }}</span>
+                                </x-slot:end>
+                            </x-bs::list.item>
                         @endisset
-                        <x-list.item>
+                        <x-bs::list.item>
                             <span class="text-nowrap">
                                 <i class="fa fa-fw fa-circle-question"></i>
                                 {{ __('Status') }}
                             </span>
-                            <span class="text-end">
-                                <x-badge.active-status :active="$user->status" />
-                            </span>
-                        </x-list.item>
-                        <x-list.item>
+                            <x-slot:end>
+                                <span class="text-end">
+                                    <x-badge.active-status :active="$user->status" />
+                                </span>
+                            </x-slot:end>
+                        </x-bs::list.item>
+                        <x-bs::list.item>
                             <span class="text-nowrap">
                                 <i class="fa fa-fw fa-user-group"></i>
                                 {{ __('User roles') }}
                             </span>
-                            <span class="text-end">
-                                @if($user->userRoles->count() === 0)
-                                    {{ __('none') }}
-                                @else
-                                    @foreach($user->userRoles->sortBy('name') as $userRole)
-                                        <x-bs::badge variant="primary">{{ $userRole->name }}</x-bs::badge>
-                                    @endforeach
-                                @endif
-                            </span>
-                        </x-list.item>
-                        <x-list.item>
+                            <x-slot:end>
+                                <span class="text-end">
+                                    @if($user->userRoles->count() === 0)
+                                        {{ __('none') }}
+                                    @else
+                                        @foreach($user->userRoles->sortBy('name') as $userRole)
+                                            <x-bs::badge variant="primary">{{ $userRole->name }}</x-bs::badge>
+                                        @endforeach
+                                    @endif
+                                </span>
+                            </x-slot:end>
+                        </x-bs::list.item>
+                        <x-bs::list.item>
                             <span class="text-nowrap">
                                 <i class="fa fa-fw fa-sign-in-alt"></i>
                                 {{ __('Last login') }}
                             </span>
-                            <span class="text-end">
-                                {{ $user->last_login_at ? formatDateTime($user->last_login_at) : __('never') }}
-                            </span>
-                        </x-list.item>
-                        <x-list.item>
+                            <x-slot:end>
+                                <span class="text-end">
+                                    {{ $user->last_login_at ? formatDateTime($user->last_login_at) : __('never') }}
+                                </span>
+                            </x-slot:end>
+                        </x-bs::list.item>
+                        <x-bs::list.item>
                             <span class="text-nowrap">
                                 <i class="fa fa-fw fa-file-contract"></i>
                                 {{ __('Bookings') }}
                             </span>
-                            <x-badge.counter>{{ formatInt($user->bookings_count) }}</x-badge.counter>
-                        </x-list.item>
-                    </x-list.group>
+                            <x-slot:end>
+                                <x-badge.counter>{{ formatInt($user->bookings_count) }}</x-badge.counter>
+                            </x-slot:end>
+                        </x-bs::list.item>
+                    </x-bs::list>
                     <div class="card-body">
                         @can('update', $user)
                             <x-button.edit href="{{ route('users.edit', $user) }}"/>

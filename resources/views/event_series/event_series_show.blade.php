@@ -45,16 +45,13 @@
             <div class="col-12 col-md-6">
                 <h2>{{ __('Event series') }}</h2>
 
-                <x-list.group class="list-unstyled">
+                <x-bs::list container="div">
                     @foreach($eventSeries->subEventSeries as $subEventSeries)
-                        <li>
-                            <a href="{{ route('event-series.show', $subEventSeries->slug) }}"
-                               class="list-group-item list-group-item-action">
-                                <strong>{{ $subEventSeries->name }}</strong>
-                            </a>
-                        </li>
+                        <x-bs::list.item container="a" variant="action" href="{{ route('event-series.show', $subEventSeries->slug) }}">
+                            <strong>{{ $subEventSeries->name }}</strong>
+                        </x-bs::list.item>
                     @endforeach
-                </x-list.group>
+                </x-bs::list>
 
                 @can('createChild', $eventSeries)
                     <div class="mt-3">

@@ -41,17 +41,19 @@
                     <div class="card-header">
                         <h2 class="card-title">{{ $userRole->name }}</h2>
                     </div>
-                    <x-list.group class="list-group-flush">
-                        <x-list.item>
+                    <x-bs::list :flush="true">
+                        <x-bs::list.item>
                             <span>
                                 <i class="fa fa-fw fa-users"></i>
                                 <a href="{{ route('users.index', ['filter[user_role_id]' => $userRole->id]) }}" target="_blank">
                                     {{ __('Users') }}
                                 </a>
                             </span>
-                            <x-badge.counter>{{ formatInt($userRole->users_count) }}</x-badge.counter>
-                        </x-list.item>
-                    </x-list.group>
+                            <x-slot:end>
+                                <x-badge.counter>{{ formatInt($userRole->users_count) }}</x-badge.counter>
+                            </x-slot:end>
+                        </x-bs::list.item>
+                    </x-bs::list>
                     <div class="card-body">
                         @can('update', $userRole)
                             <x-button.edit href="{{ route('user-roles.edit', $userRole) }}"/>

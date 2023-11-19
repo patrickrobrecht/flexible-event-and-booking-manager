@@ -45,8 +45,8 @@
                         @endcan
                         @can('forceDelete', $token)
                             <x-button.delete form="delete-{{ $token->id }}" />
-                            <x-form id="delete-{{ $token->id }}"
-                                    method="DELETE" action="{{ route('personal-access-tokens.destroy', $token) }}" />
+                            <x-bs::form id="delete-{{ $token->id }}" method="DELETE"
+                                        action="{{ route('personal-access-tokens.destroy', $token) }}"/>
                         @endcan
                     </div>
                 </div>

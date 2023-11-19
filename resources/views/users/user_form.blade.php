@@ -19,25 +19,18 @@
 @endsection
 
 @section('content')
-    <x-form method="{{ isset($editedUser) ? 'PUT' : 'POST' }}"
-            action="{{ isset($editedUser) ? route('users.update', $editedUser) : route('users.store') }}">
+    <x-bs::form method="{{ isset($editedUser) ? 'PUT' : 'POST' }}"
+                action="{{ isset($editedUser) ? route('users.update', $editedUser) : route('users.store') }}">
         <div class="row">
             <div class="col-12 col-md-6">
-                <x-form.row>
-                    <x-form.label for="first_name">{{ __('First name') }}</x-form.label>
-                    <x-form.input name="first_name" type="text"
-                                  :value="$editedUser->first_name ?? null" />
-                </x-form.row>
-                <x-form.row>
-                    <x-form.label for="last_name">{{ __('Last name') }}</x-form.label>
-                    <x-form.input name="last_name" type="text"
-                                  :value="$editedUser->last_name ?? null" />
-                </x-form.row>
-                <x-form.row>
-                    <x-form.label for="email">{{ __('E-mail') }}</x-form.label>
-                    <x-form.input name="email" type="email"
-                                  :value="$editedUser->email ?? null" />
-                </x-form.row>
+                <x-bs::form.field name="first_name" type="text"
+                                  :value="$editedUser->first_name ?? null">{{ __('First name') }}</x-bs::form.field>
+                <x-bs::form.field name="last_name" type="text"
+                                  :value="$editedUser->last_name ?? null">{{ __('Last name') }}</x-bs::form.field>
+                <x-bs::form.field name="phone" type="tel"
+                                  :value="$editedUser->phone ?? null">{{ __('Phone number') }}</x-bs::form.field>
+                <x-bs::form.field name="email" type="email"
+                                  :value="$editedUser->email ?? null">{{ __('E-mail') }}</x-bs::form.field>
                 @isset($editedUser->email_verified_at)
                     <x-bs::alert variant="primary">
                         {{ __('The e-mail address has been verified at :email_verified_at', [
@@ -47,45 +40,27 @@
                 @else
                     <x-bs::alert variant="danger">{{ __('The e-mail address has not been verified yet.') }}</x-bs::alert>
                 @endisset
-                <x-form.row>
-                    <x-form.label for="password">{{ __('New password') }}</x-form.label>
-                    <x-form.input name="password" type="password"
-                                  aria-describedby="passwordHelpBlock"
-                                  autocomplete="new-password" />
-                    <div id="passwordHelpBlock" class="form-text">
+                <x-bs::form.field name="password" type="password" autocomplete="new-password">
+                        {{ __('New password') }}
+                    <x-slot:hint>
                         @isset($editedUser->password)
                             {{ __('Leave empty to keep the current password.') }}
                         @else
                             <span class="fw-bold text-danger">{{ __('No password is currently set for this user.') }}</span>
                         @endisset
-                    </div>
-                </x-form.row>
-                <x-form.row>
-                    <x-form.label for="password_confirmation">{{ __('Confirm password') }}</x-form.label>
-                    <x-form.input name="password_confirmation" type="password"
-                                  autocomplete="new-password" />
-                </x-form.row>
-                <x-form.row>
-                    <x-form.label for="user_role_id">{{ __('User role') }}</x-form.label>
-                    <x-form.input id="user_role_id" name="user_role_id[]"
-                                  type="checkbox"
+                    </x-slot:hint>
+                </x-bs::form.field>
+                <x-bs::form.field name="password_confirmation" type="password"
+                                  autocomplete="new-password">{{ __('Confirm password') }}</x-bs::form.field>
+                <x-bs::form.field id="user_role_id" name="user_role_id[]" type="switch"
                                   :options="$userRoles->pluck('name', 'id')"
                                   :value="isset($editedUser) ? $editedUser->userRoles->pluck('id')->toArray() : []"
-                                  :valuesToInt="true" />
-                </x-form.row>
-                <x-form.row>
-                    <x-form.label for="status">{{ __('Status') }}</x-form.label>
-                    <x-form.select name="status"
-                                   :options="\App\Options\ActiveStatus::keysWithNames()"
-                                   :value="$editedUser->status->value ?? null" />
-                </x-form.row>
+                                  :valuesToInt="true">{{ __('User role') }}</x-bs::form.field>
+                <x-bs::form.field name="status" type="select"
+                                  :options="\App\Options\ActiveStatus::toOptions()"
+                                  :value="$editedUser->status->value ?? null">{{ __('Status') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6">
-                <x-form.row>
-                    <x-form.label for="phone">{{ __('Phone number') }}</x-form.label>
-                    <x-form.input name="phone" type="tel"
-                                  :value="$editedUser->phone ?? null" />
-                </x-form.row>
                 @include('_shared.address_fields_form', [
                     'address' => $editedUser ?? null,
                 ])
@@ -98,7 +73,7 @@
             </x-button.save>
             <x-button.cancel href="{{ route('users.index') }}"/>
         </x-bs::button.group>
-    </x-form>
+    </x-bs::form>
 
     <x-text.timestamp :model="$editedUser ?? null" />
 @endsection

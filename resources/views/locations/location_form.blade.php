@@ -18,20 +18,14 @@
 @endsection
 
 @section('content')
-    <x-form method="{{ isset($location) ? 'PUT' : 'POST' }}"
-            action="{{ isset($location) ? route('locations.update', $location) : route('locations.store') }}">
+    <x-bs::form method="{{ isset($location) ? 'PUT' : 'POST' }}"
+                action="{{ isset($location) ? route('locations.update', $location) : route('locations.store') }}">
         <div class="row">
             <div class="col-12 col-md-6">
-                <x-form.row>
-                    <x-form.label for="name">{{ __('Name') }}</x-form.label>
-                    <x-form.input name="name" type="text"
-                                  :value="$location->name ?? null" />
-                </x-form.row>
-                <x-form.row>
-                    <x-form.label for="website_url">{{ __('Website') }}</x-form.label>
-                    <x-form.input name="website_url" type="text"
-                                  :value="$event->website_url ?? null"/>
-                </x-form.row>
+                <x-bs::form.field name="name" type="text"
+                                  :value="$location->name ?? null">{{ __('Name') }}</x-bs::form.field>
+                <x-bs::form.field name="website_url" type="text"
+                                  :value="$location->website_url ?? null">{{ __('Website') }}</x-bs::form.field>
                 @include('_shared.address_fields_form')
             </div>
         </div>
@@ -42,7 +36,7 @@
             </x-button.save>
             <x-button.cancel href="{{ route('locations.index') }}"/>
         </x-bs::button.group>
-    </x-form>
+    </x-bs::form>
 
     <x-text.timestamp :model="$location ?? null" />
 @endsection

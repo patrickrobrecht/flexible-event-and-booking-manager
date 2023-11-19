@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\QueryInput;
 use App\Http\Requests\Filters\UserFilterRequest;
 use App\Http\Requests\UserRequest;
 use App\Models\User;
@@ -10,13 +9,14 @@ use App\Models\UserRole;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
+use Portavice\Bladestrap\Support\ValueHelper;
 
 class UserController extends Controller
 {
     public function index(UserFilterRequest $request): View
     {
         $this->authorize('viewAny', User::class);
-        QueryInput::setDefaults(User::defaultValuesForFilters());
+        ValueHelper::setDefaults(User::defaultValuesForFilters());
 
         return view('users.user_index', $this->formValues([
             'users' => User::filter()

@@ -28,28 +28,22 @@
 @endsection
 
 @section('content')
-    <x-form.filter method="GET">
+    <x-form.filter>
         @can('viewAnyPaymentStatus', \App\Models\Booking::class)
             <div class="row">
                 <div class="col-12 col-md-9">
-                    <x-form.row>
-                        <x-form.label for="search">{{ __('Search term') }}</x-form.label>
-                        <x-form.input id="search" name="filter[search]"/>
-                    </x-form.row>
+                    <x-bs::form.field id="search" name="filter[search]" type="text"
+                                      :from-query="true">{{ __('Search term') }}</x-bs::form.field>
                 </div>
                 <div class="col-12 col-md-3">
-                    <x-form.row>
-                        <x-form.label for="payment_status">{{ __('Payment status') }}</x-form.label>
-                        <x-form.select id="payment_status" name="filter[payment_status]"
-                                       :options="\App\Options\PaymentStatus::keysWithNamesAndAll()"/>
-                    </x-form.row>
+                    <x-bs::form.field id="payment_status" name="filter[payment_status]" type="select"
+                                      :options="\App\Options\PaymentStatus::toOptionsWithAll()"
+                                      :from-query="true">{{ __('Payment status') }}</x-bs::form.field>
                 </div>
             </div>
         @else
-            <x-form.row>
-                <x-form.label for="search">{{ __('Search term') }}</x-form.label>
-                <x-form.input id="search" name="filter[search]"/>
-            </x-form.row>
+            <x-bs::form.field id="search" name="filter[search]" type="text"
+                              :from-query="true">{{ __('Search term') }}</x-bs::form.field>
         @endcan
 
         <x-slot:addButtons>

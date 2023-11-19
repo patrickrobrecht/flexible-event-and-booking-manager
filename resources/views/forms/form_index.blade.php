@@ -21,11 +21,9 @@
         @endcan
     </x-bs::button.group>
 
-    <x-form.filter method="GET">
-       <x-form.row>
-           <x-form.label for="name">{{ __('Name') }}</x-form.label>
-           <x-form.input id="name" name="filter[name]"/>
-       </x-form.row>
+    <x-form.filter>
+        <x-bs::form.field id="name" name="filter[name]" type="text"
+                          :from-query="true">{{ __('Name') }}</x-bs::form.field>
     </x-form.filter>
 
     <x-alert.count class="mt-3" :count="$forms->total()"/>

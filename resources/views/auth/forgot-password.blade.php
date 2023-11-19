@@ -6,13 +6,9 @@
 
 @section('main')
     <x-card.centered>
-        <x-form method="POST" action="{{ route('password.email') }}">
-            <x-form.row>
-                <x-form.label for="email">{{ __('E-mail') }}</x-form.label>
-                <x-form.input name="email" type="email" required autofocus />
-            </x-form.row>
-
+        <x-bs::form method="POST" action="{{ route('password.email') }}">
+            <x-bs::form.field name="email" type="email" required autofocus>{{ __('E-mail') }}</x-bs::form.field>
             <x-form.button class="w-100">{{ __('E-mail password reset link') }}</x-form.button>
-        </x-form>
+        </x-bs::form>
     </x-card.centered>
 @endsection

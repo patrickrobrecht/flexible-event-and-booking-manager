@@ -8,8 +8,8 @@ enum Visibility: string
 {
     use NamedOption;
 
-    case Public = 'public';
     case Private = 'private';
+    case Public = 'public';
 
     public function getTranslatedName(): string
     {

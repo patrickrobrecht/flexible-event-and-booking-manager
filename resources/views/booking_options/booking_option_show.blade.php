@@ -63,7 +63,7 @@
                 @include('layouts.alerts')
 
                 @can('book', $bookingOption)
-                    <x-form method="POST" action="{{ route('bookings.store', [$event, $bookingOption]) }}">
+                    <x-bs::form method="POST" action="{{ route('bookings.store', [$event, $bookingOption]) }}">
                         @include('bookings.booking_form_fields', [
                             'booking' => null,
                             'bookingOption' => $bookingOption,
@@ -90,7 +90,7 @@
                                 {{ __('Book') }}
                             @endisset
                         </x-button.save>
-                    </x-form>
+                    </x-bs::form>
                 @endcan
             @endif
         </div>

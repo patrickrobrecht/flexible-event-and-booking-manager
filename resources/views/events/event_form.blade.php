@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @php
+    use Portavice\Bladestrap\Support\Options;
+
     /** @var ?\App\Models\Event $event */
 @endphp
 
@@ -18,86 +20,48 @@
 @endsection
 
 @section('content')
-    <x-form method="{{ isset($event) ? 'PUT' : 'POST' }}"
-            action="{{ isset($event) ? route('events.update', $event) : route('events.store') }}">
+    <x-bs::form method="{{ isset($event) ? 'PUT' : 'POST' }}"
+                action="{{ isset($event) ? route('events.update', $event) : route('events.store') }}">
         <div class="row">
             <div class="col-12 col-md-6">
-                <x-form.row>
-                    <x-form.label for="name">{{ __('Name') }}</x-form.label>
-                    <x-form.input name="name" type="text"
-                                  :value="$event->name ?? null"/>
-                </x-form.row>
-                <x-form.row>
-                    <x-form.label for="slug">{{ __('Slug') }}</x-form.label>
-                    <x-form.input name="slug" type="text" aria-describedby="slugHint"
-                                  :value="$event->slug ?? null"/>
-                    <div id="slugHint" class="form-text">
+                <x-bs::form.field name="name" type="text"
+                                  :value="$event->name ?? null">{{ __('Name') }}</x-bs::form.field>
+                <x-bs::form.field name="slug" type="text" aria-describedby="slugHint"
+                                  :value="$event->slug ?? null">
+                    {{ __('Slug') }}
+                    <x-slot:hint>
                         {!! __('This field defines the path in the URL, such as :url. If you leave it empty, is auto-generated for you.', [
                             'url' => isset($event->slug)
                                 ? sprintf('<a href="%s" target="_blank">%s</a>', route('events.show', $event), route('events.show', $event, false))
                                 : '<strong>' . route('events.show', Str::of(__('Name of the event'))->snake('-')) . '</strong>'
                         ]) !!}
-                    </div>
-                </x-form.row>
-                <x-form.row>
-                    <x-form.label for="description">{{ __('Description') }}</x-form.label>
-                    <x-form.input name="description" type="text"
-                                  :value="$event->description ?? null"/>
-                </x-form.row>
-                <x-form.row>
-                    <x-form.label for="website_url">{{ __('Website') }}</x-form.label>
-                    <x-form.input name="website_url" type="text"
-                                  :value="$event->website_url ?? null"/>
-                </x-form.row>
-                <x-form.row>
-                    <x-form.label for="visibility">{{ __('Visibility') }}</x-form.label>
-                    <x-form.select name="visibility"
-                                   :options="\App\Options\Visibility::keysWithNames()"
-                                   :value="$event->visibility->value ?? null" />
-                </x-form.row>
-                <x-form.row>
-                    <x-form.label for="started_at">{{ __('Start date') }}</x-form.label>
-                    <x-form.input name="started_at"
-                                  type="datetime-local"
-                                  :value="isset($event->started_at) ? $event->started_at->format('Y-m-d\TH:i') : null" />
-                </x-form.row>
-                <x-form.row>
-                    <x-form.label for="finished_at">{{ __('End date') }}</x-form.label>
-                    <x-form.input name="finished_at"
-                                  type="datetime-local"
-                                  :value="isset($event->finished_at) ? $event->finished_at->format('Y-m-d\TH:i') : null" />
-                </x-form.row>
+                    </x-slot:hint>
+                </x-bs::form.field>
+                <x-bs::form.field name="description" type="text"
+                                  :value="$event->description ?? null">{{ __('Description') }}</x-bs::form.field>
+                <x-bs::form.field name="website_url" type="text"
+                                  :value="$event->website_url ?? null">{{ __('Website') }}</x-bs::form.field>
+                <x-bs::form.field name="visibility" type="select"
+                                  :options="\App\Options\Visibility::toOptions()"
+                                  :value="$event->visibility->value ?? null">{{ __('Visibility') }}</x-bs::form.field>
+                <x-bs::form.field name="started_at" type="datetime-local"
+                                  :value="isset($event->started_at) ? $event->started_at->format('Y-m-d\TH:i') : null">{{ __('Start date') }}</x-bs::form.field>
+                <x-bs::form.field name="finished_at" type="datetime-local"
+                                  :value="isset($event->finished_at) ? $event->finished_at->format('Y-m-d\TH:i') : null">{{ __('End date') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6">
-                <x-form.row>
-                    <x-form.label for="location_id">{{ __('Location') }}</x-form.label>
-                    <x-form.select name="location_id"
-                                   :options="$locations->pluck('nameOrAddress', 'id')"
-                                   :value="$event->location_id ?? null"/>
-                </x-form.row>
-                <x-form.row>
-                    <x-form.label for="organization_id">{{ __('Organization') }}</x-form.label>
-                    <x-form.input id="organization_id" name="organization_id[]" type="checkbox"
-                                  :options="$organizations->pluck('name', 'id')"
-                                  :value="isset($event) ? $event->organizations->pluck('id')->toArray() : []"
-                                  :valuesToInt="true" />
-                </x-form.row>
-                <x-form.row>
-                    <x-form.label for="parent_event_id">{{ __('Part of the event') }}</x-form.label>
-                    <x-form.select name="parent_event_id"
-                                   :options="$events->except($event->id ?? null)->pluck('name', 'id')"
-                                   :value="$event->parent_event_id ?? null">
-                        <option value="">{{ __('none') }}</option>
-                    </x-form.select>
-                </x-form.row>
-                <x-form.row>
-                    <x-form.label for="event_series_id">{{ __('Part of the event series') }}</x-form.label>
-                    <x-form.select name="event_series_id"
-                                   :options="$eventSeries->pluck('name', 'id')"
-                                   :value="$event->event_series_id ?? null">
-                        <option value="">{{ __('none') }}</option>
-                    </x-form.select>
-                </x-form.row>
+                <x-bs::form.field name="location_id" type="select"
+                                  :options="$locations->pluck('nameOrAddress', 'id')"
+                                  :value="$event->location_id ?? null">{{ __('Location') }}</x-bs::form.field>
+                <x-bs::form.field id="organization_id" name="organization_id[]" type="checkbox"
+                                  :options="Options::fromModels($organizations, 'name')"
+                                  :value="isset($event) ? $event->organizations->pluck('id')->toArray() : []">{{ __('Organization') }}</x-bs::form.field>
+                <x-bs::form.field name="parent_event_id" type="select"
+                                  :options="Options::fromModels($events->except($event->id ?? null), 'name')->prepend(__('none'), '')"
+                                  :value="$event->parent_event_id ?? null">{{ __('Part of the event') }}</x-bs::form.field>
+                <x-bs::form.field name="event_series_id" type="select"
+                                  :options="Options::fromModels($eventSeries, 'name')->prepend(__('none'), '')"
+                                  :value="$event->event_series_id ?? null">{{ __('Part of the event series') }}</x-bs::form.field>
             </div>
         </div>
 
@@ -111,7 +75,7 @@
             </x-button.save>
             <x-button.cancel href="{{ route('events.index') }}"/>
         </x-bs::button.group>
-    </x-form>
+    </x-bs::form>
 
     <x-text.timestamp :model="$event ?? null"/>
 @endsection

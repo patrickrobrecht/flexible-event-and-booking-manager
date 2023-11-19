@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ace4e556bf992ee97700f94a04a8b9ab",
+    "content-hash": "6d74eacd45dc9c74d76d23f068200603",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -3046,12 +3046,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/portavice/bladestrap.git",
-                "reference": "e3c943fb503fe05f60cc1b0fcfe643644b8023d0"
+                "reference": "6276a0e52f61488bfea58599484f334398aac463"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/portavice/bladestrap/zipball/e3c943fb503fe05f60cc1b0fcfe643644b8023d0",
-                "reference": "e3c943fb503fe05f60cc1b0fcfe643644b8023d0",
+                "url": "https://api.github.com/repos/portavice/bladestrap/zipball/6276a0e52f61488bfea58599484f334398aac463",
+                "reference": "6276a0e52f61488bfea58599484f334398aac463",
                 "shasum": ""
             },
             "require": {
@@ -3096,7 +3096,7 @@
                 "issues": "https://github.com/portavice/bladestrap/issues",
                 "source": "https://github.com/portavice/bladestrap/tree/main"
             },
-            "time": "2023-11-14T10:25:41+00:00"
+            "time": "2023-11-19T21:10:22+00:00"
         },
         {
             "name": "psr/clock",
@@ -9275,7 +9275,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "portavice/bladestrap": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

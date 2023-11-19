@@ -18,15 +18,12 @@
 @endsection
 
 @section('content')
-    <x-form method="{{ isset($form) ? 'PUT' : 'POST' }}"
-            action="{{ isset($form) ? route('forms.update', $form) : route('forms.store') }}">
+    <x-bs::form method="{{ isset($form) ? 'PUT' : 'POST' }}"
+                action="{{ isset($form) ? route('forms.update', $form) : route('forms.store') }}">
         <div class="row">
             <div class="col-12 col-md-6">
-                <x-form.row>
-                    <x-form.label for="name">{{ __('Name') }}</x-form.label>
-                    <x-form.input name="name" type="text"
-                                  :value="$form->name ?? null"/>
-                </x-form.row>
+                <x-bs::form.field name="name" type="text"
+                                  :value="$form->name ?? null">{{ __('Name') }}</x-bs::form.field>
             </div>
             @isset($form)
                 <div class="col-12 col-md-6">
@@ -55,7 +52,7 @@
             </x-button.save>
             <x-button.cancel href="{{ route('forms.index') }}"/>
         </x-bs::button.group>
-    </x-form>
+    </x-bs::form>
 
     <x-text.timestamp :model="$form ?? null"/>
 @endsection

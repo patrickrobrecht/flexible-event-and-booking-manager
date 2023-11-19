@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @php
+    use Portavice\Bladestrap\Support\Options;
+
     /** @var \Illuminate\Pagination\LengthAwarePaginator|\App\Models\User[] $users */
     /** @var \Illuminate\Database\Eloquent\Collection|\App\Models\UserRole[] $userRoles */
 @endphp
@@ -22,36 +24,25 @@
         @endcan
     </x-bs::button.group>
 
-    <x-form.filter method="GET">
+    <x-form.filter>
         <div class="row">
             <div class="col-12 col-sm-6 col-lg">
-                <x-form.row>
-                    <x-form.label for="name">{{ __('Name') }}</x-form.label>
-                    <x-form.input id="name" name="filter[name]" />
-                </x-form.row>
+                <x-bs::form.field id="name" name="filter[name]" type="text"
+                                  :from-query="true">{{ __('Name') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-sm-6 col-lg">
-                <x-form.row>
-                    <x-form.label for="email">{{ __('E-mail') }}</x-form.label>
-                    <x-form.input id="email" name="filter[email]" />
-                </x-form.row>
+                <x-bs::form.field id="email" name="filter[email]" type="text"
+                                  :from-query="true">{{ __('E-mail') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-sm-6 col-lg">
-                <x-form.row>
-                    <x-form.label for="user_role_id">{{ __('User role') }}</x-form.label>
-                    <x-form.select id="user_role_id" name="filter[user_role_id]"
-                                   :options="$userRoles->pluck('name', 'id')">
-                        <option value="">{{ __('all') }}</option>
-                    </x-form.select>
-                </x-form.row>
+                <x-bs::form.field id="user_role_id" name="filter[user_role_id]" type="select"
+                                  :options="Options::fromModels($userRoles, 'name')->prepend(__('all'), '')"
+                                  :from-query="true">{{ __('User role') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-sm-6 col-lg">
-                <x-form.row>
-                    <x-form.label for="status">{{ __('Status') }}</x-form.label>
-                    <x-form.select id="status" name="filter[status]"
-                                   :options="\App\Options\ActiveStatus::keysWithNamesAndAll()"
-                                   :value="\App\Options\ActiveStatus::Active->value" />
-                </x-form.row>
+                <x-bs::form.field id="status" name="filter[status]" type="select"
+                                  :options="\App\Options\ActiveStatus::toOptionsWithAll()"
+                                  :from-query="true">{{ __('Status') }}</x-bs::form.field>
             </div>
         </div>
     </x-form.filter>

@@ -12,46 +12,30 @@
             </a>
         </x-bs::alert>
 
-        <x-form method="POST" action="{{ route('register') }}">
-            <x-form.row>
-                <x-form.label for="first_name">{{ __('First name') }}</x-form.label>
-                <x-form.input name="first_name" type="text" required autofocus />
-            </x-form.row>
-            <x-form.row>
-                <x-form.label for="last_name">{{ __('Last name') }}</x-form.label>
-                <x-form.input name="last_name" type="text" required />
-            </x-form.row>
-            <x-form.row>
-                <x-form.label for="email">{{ __('E-mail') }}</x-form.label>
-                <x-form.input name="email" type="email" required />
-            </x-form.row>
-            <x-form.row>
-                <x-form.label for="password">{{ __('Password') }}</x-form.label>
-                <x-form.input name="password" type="password" required
-                              autocomplete="current-password" />
-            </x-form.row>
-            <x-form.row>
-                <x-form.label for="password_confirmation">{{ __('Confirm password') }}</x-form.label>
-                <x-form.input name="password_confirmation" type="password" required />
-            </x-form.row>
-            <x-form.row>
-                <x-form.input name="remember" type="checkbox">{{ __('Remember me') }}</x-form.input>
-            </x-form.row>
+        <x-bs::form method="POST" action="{{ route('register') }}">
+            <x-bs::form.field name="first_name" type="text" required autofocus>{{ __('First name') }}</x-bs::form.field>
+            <x-bs::form.field name="last_name" type="text" required>{{ __('Last name') }}</x-bs::form.field>
+            <x-bs::form.field name="email" type="email" required>{{ __('E-mail') }}</x-bs::form.field>
+            <x-bs::form.field name="password" type="password" required
+                              autocomplete="current-password">{{ __('Password') }}</x-bs::form.field>
+            <x-bs::form.field name="password_confirmation" type="password" required>{{ __('Confirm password') }}</x-bs::form.field>
+            <x-bs::form.field name="remember" type="checkbox" :options="[1 => __('Remember me')]" cast="int"/>
             @php
                 $termsAndConditions = config('app.urls.terms_and_conditions');
             @endphp
             @if($termsAndConditions)
-                <x-form.row>
-                    <x-form.input name="terms_and_conditions" type="checkbox">
-                        {!! __('With my registration I accept the :linkStart general terms and conditions:linkEnd.', [
+                @php
+                    $options = [
+                        1 => __('With my registration I accept the :linkStart general terms and conditions:linkEnd.', [
                             'linkStart' => '<a class="alert-link" href="' . $termsAndConditions .'" target="_blank">',
                             'linkEnd' => '</a>',
-                        ]) !!}
-                    </x-form.input>
-                </x-form.row>
+                        ]),
+                    ];
+                @endphp
+                <x-bs::form.field name="terms_and_conditions" type="checkbox" :options="$options" cast="int"/>
             @endif
 
             <x-form.button class="w-100">{{ __('Register') }}</x-form.button>
-        </x-form>
+        </x-bs::form>
     </x-card.centered>
 @endsection

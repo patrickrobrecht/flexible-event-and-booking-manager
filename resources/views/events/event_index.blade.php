@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @php
+    use Portavice\Bladestrap\Support\Options;
+
     /** @var \Illuminate\Pagination\LengthAwarePaginator|\App\Models\Event[] $events */
     /** @var \Illuminate\Database\Eloquent\Collection|\App\Models\Location[] $locations */
 @endphp
@@ -22,31 +24,21 @@
         @endcan
     </x-bs::button.group>
 
-    <x-form.filter method="GET">
+    <x-form.filter>
         <div class="row">
             <div class="col-12 col-md-6">
-                <x-form.row>
-                    <x-form.label for="name">{{ __('Name') }}</x-form.label>
-                    <x-form.input id="name" name="filter[name]"/>
-                </x-form.row>
+                <x-bs::form.field id="name" name="filter[name]" type="text"
+                                  :from-query="true">{{ __('Name') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6 col-xl">
-                <x-form.row>
-                    <x-form.label for="location_id">{{ __('Location') }}</x-form.label>
-                    <x-form.select id="location_id" name="filter[location_id]"
-                                   :options="$locations->pluck('nameOrAddress', 'id')">
-                        <option value="">{{ __('all') }}</option>
-                    </x-form.select>
-                </x-form.row>
+                <x-bs::form.field id="location_id" name="filter[location_id]" type="select"
+                                  :options="Options::fromModels($locations, 'nameOrAddress')->prepend(__('all'), '')"
+                                  :from-query="true">{{ __('Location') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6 col-xl">
-                <x-form.row>
-                    <x-form.label for="organization_id">{{ __('Organization') }}</x-form.label>
-                    <x-form.select id="organization_id" name="filter[organization_id]"
-                                   :options="$organizations->pluck('name', 'id')">
-                        <option value="">{{ __('all') }}</option>
-                    </x-form.select>
-                </x-form.row>
+                <x-bs::form.field id="organization_id" name="filter[organization_id]" type="select"
+                                  :options="Options::fromModels($organizations, 'name')->prepend(__('all'), '')"
+                                  :from-query="true">{{ __('Organization') }}</x-bs::form.field>
             </div>
         </div>
     </x-form.filter>

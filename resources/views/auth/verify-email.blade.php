@@ -10,8 +10,8 @@
             {{ __("Before getting started, could you verify your e-mail address by clicking on the link we just emailed to you? If you didn't receive the email, we will gladly send you another.") }}
         </x-bs::alert>
 
-        <x-form method="POST" action="{{ route('verification.send') }}">
+        <x-bs::form method="POST" action="{{ route('verification.send') }}">
             <x-form.button class="w-100">{{ __('Resend verification e-mail') }}</x-form.button>
-        </x-form>
+        </x-bs::form>
     </x-card.centered>
 @endsection

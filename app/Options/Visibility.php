@@ -13,7 +13,7 @@ enum Visibility: string
 
     public function getTranslatedName(): string
     {
-        return match($this) {
+        return match ($this) {
             self::Public => __('public'),
             self::Private => __('private'),
         };

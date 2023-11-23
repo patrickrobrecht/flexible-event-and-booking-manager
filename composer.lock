@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6d74eacd45dc9c74d76d23f068200603",
+    "content-hash": "3e7c6d785893fb5c15a75b75ff3e5522",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -3042,16 +3042,16 @@
         },
         {
             "name": "portavice/bladestrap",
-            "version": "dev-main",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/portavice/bladestrap.git",
-                "reference": "6276a0e52f61488bfea58599484f334398aac463"
+                "reference": "9d7e4c6894da22307cf58c7fc28f7b8d2e778448"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/portavice/bladestrap/zipball/6276a0e52f61488bfea58599484f334398aac463",
-                "reference": "6276a0e52f61488bfea58599484f334398aac463",
+                "url": "https://api.github.com/repos/portavice/bladestrap/zipball/9d7e4c6894da22307cf58c7fc28f7b8d2e778448",
+                "reference": "9d7e4c6894da22307cf58c7fc28f7b8d2e778448",
                 "shasum": ""
             },
             "require": {
@@ -3062,11 +3062,10 @@
                 "php": "^8.1"
             },
             "require-dev": {
-                "orchestra/testbench": "^8.5",
+                "orchestra/testbench": "^8.15",
                 "phpunit/phpunit": "^10.4",
-                "portavice/laravel-pint-config": "1.0"
+                "portavice/laravel-pint-config": "2.0"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -3094,9 +3093,9 @@
             "description": "Blade components for Bootstrap 5",
             "support": {
                 "issues": "https://github.com/portavice/bladestrap/issues",
-                "source": "https://github.com/portavice/bladestrap/tree/main"
+                "source": "https://github.com/portavice/bladestrap/tree/v1.0.0"
             },
-            "time": "2023-11-19T21:10:22+00:00"
+            "time": "2023-11-22T11:04:30+00:00"
         },
         {
             "name": "psr/clock",
@@ -7894,16 +7893,16 @@
         },
         {
             "name": "portavice/laravel-pint-config",
-            "version": "v1.0.0",
+            "version": "v2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/portavice/laravel-pint-config.git",
-                "reference": "5d5fc5e816a9caabe3619ed4c5a6949a36369797"
+                "reference": "a8276fe0af35895d5aaad9370dfecfd19891cf7e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/portavice/laravel-pint-config/zipball/5d5fc5e816a9caabe3619ed4c5a6949a36369797",
-                "reference": "5d5fc5e816a9caabe3619ed4c5a6949a36369797",
+                "url": "https://api.github.com/repos/portavice/laravel-pint-config/zipball/a8276fe0af35895d5aaad9370dfecfd19891cf7e",
+                "reference": "a8276fe0af35895d5aaad9370dfecfd19891cf7e",
                 "shasum": ""
             },
             "require": {
@@ -7924,9 +7923,9 @@
             "description": "Laravel Pint configuration used at portavice",
             "support": {
                 "issues": "https://github.com/portavice/laravel-pint-config/issues",
-                "source": "https://github.com/portavice/laravel-pint-config/tree/v1.0.0"
+                "source": "https://github.com/portavice/laravel-pint-config/tree/v2.0.0"
             },
-            "time": "2023-11-08T08:31:06+00:00"
+            "time": "2023-11-14T12:15:49+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -9274,10 +9273,8 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "dev",
-    "stability-flags": {
-        "portavice/bladestrap": 20
-    },
+    "minimum-stability": "stable",
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

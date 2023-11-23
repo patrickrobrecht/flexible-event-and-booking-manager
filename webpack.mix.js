@@ -14,13 +14,15 @@ const convertToFileHash = require('laravel-mix-make-file-hash');
 mix.sass('resources/sass/app.scss', 'public/css');
 
 // Compress JavaScript files.
-if (mix.inProduction()) {
-    fs.readdirSync('./resources/js', {withFileTypes: true})
-        .filter(item => !item.isDirectory())
-        .map(item => item.name)
-        .forEach(file => mix.js('resources/js/' + file, 'public/js/' + file));
-} else {
-    mix.copy('resources/js/*.*', 'public/js');
+if (fs.existsSync('./resources/js')) {
+    if (mix.inProduction()) {
+        fs.readdirSync('./resources/js', {withFileTypes: true})
+            .filter(item => !item.isDirectory())
+            .map(item => item.name)
+            .forEach(file => mix.js('resources/js/' + file, 'public/js/' + file));
+    } else {
+        mix.copy('resources/js/*.*', 'public/js');
+    }
 }
 
 // Copy required libraries from node_modules.

@@ -3,10 +3,10 @@
     "scripts": {
         "cs": "npm run csCSS && npm run csJS",
         "csCSS": "stylelint resources/sass/*.scss",
-        "csJS": "eslint resources/js/*.js webpack.mix.js",
+        "csJS": "eslint webpack.mix.js",
         "csfix": "npm run csfixCSS && npm run csfixJS",
         "csfixCSS": "stylelint resources/sass/*.scss --fix",
-        "csfixJS": "eslint resources/js/*.js webpack.mix.js --fix",
+        "csfixJS": "eslint webpack.mix.js --fix",
         "dev": "npm run development",
         "development": "mix",
         "watch": "mix watch",

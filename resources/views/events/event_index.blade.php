@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @php
+    use Portavice\Bladestrap\Support\Options;
+
     /** @var \Illuminate\Pagination\LengthAwarePaginator|\App\Models\Event[] $events */
     /** @var \Illuminate\Database\Eloquent\Collection|\App\Models\Location[] $locations */
 @endphp
@@ -10,43 +12,33 @@
 @endsection
 
 @section('breadcrumbs')
-    <x-nav.breadcrumb/>
+    <x-bs::breadcrumb.item>@yield('title')</x-bs::breadcrumb.item>
 @endsection
 
 @section('content')
-    <x-button.group>
+    <x-bs::button.group>
         @can('create', \App\Models\Event::class)
             <x-button.create href="{{ route('events.create') }}">
                 {{ __('Create event') }}
             </x-button.create>
         @endcan
-    </x-button.group>
+    </x-bs::button.group>
 
-    <x-form.filter method="GET">
+    <x-form.filter>
         <div class="row">
             <div class="col-12 col-md-6">
-                <x-form.row>
-                    <x-form.label for="name">{{ __('Name') }}</x-form.label>
-                    <x-form.input id="name" name="filter[name]"/>
-                </x-form.row>
+                <x-bs::form.field id="name" name="filter[name]" type="text"
+                                  :from-query="true">{{ __('Name') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6 col-xl">
-                <x-form.row>
-                    <x-form.label for="location_id">{{ __('Location') }}</x-form.label>
-                    <x-form.select id="location_id" name="filter[location_id]"
-                                   :options="$locations->pluck('nameOrAddress', 'id')">
-                        <option value="">{{ __('all') }}</option>
-                    </x-form.select>
-                </x-form.row>
+                <x-bs::form.field id="location_id" name="filter[location_id]" type="select"
+                                  :options="Options::fromModels($locations, 'nameOrAddress')->prepend(__('all'), '')"
+                                  :from-query="true">{{ __('Location') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6 col-xl">
-                <x-form.row>
-                    <x-form.label for="organization_id">{{ __('Organization') }}</x-form.label>
-                    <x-form.select id="organization_id" name="filter[organization_id]"
-                                   :options="$organizations->pluck('name', 'id')">
-                        <option value="">{{ __('all') }}</option>
-                    </x-form.select>
-                </x-form.row>
+                <x-bs::form.field id="organization_id" name="filter[organization_id]" type="select"
+                                  :options="Options::fromModels($organizations, 'name')->prepend(__('all'), '')"
+                                  :from-query="true">{{ __('Organization') }}</x-bs::form.field>
             </div>
         </div>
     </x-form.filter>
@@ -62,16 +54,16 @@
                             <a href="{{ route('events.show', $event->slug) }}">{{ $event->name }}</a>
                         </h2>
                     </div>
-                    <x-list.group class="list-group-flush">
-                        <x-list.item :flex="false">
+                    <x-bs::list :flush="true">
+                        <x-bs::list.item>
                             <i class="fa fa-fw fa-eye" title="{{ __('Visibility') }}"></i>
                             <x-badge.visibility :visibility="$event->visibility"/>
-                        </x-list.item>
-                        <x-list.item :flex="false">
+                        </x-bs::list.item>
+                        <x-bs::list.item>
                             <i class="fa fa-fw fa-clock" title="{{ __('Date') }}"></i>
                             <span class="text-end">@include('events.shared.event_dates')</span>
-                        </x-list.item>
-                        <x-list.item :flex="false">
+                        </x-bs::list.item>
+                        <x-bs::list.item>
                             <i class="fa fa-fw fa-location-pin" title="{{ __('Location') }}"></i>
                             <span class="d-inline-block">
                                 <div class="d-flex flex-column">
@@ -80,35 +72,39 @@
                                     @endforeach
                                 </div>
                             </span>
-                        </x-list.item>
-                        <x-list.item>
+                        </x-bs::list.item>
+                        <x-bs::list.item>
                             <span>
                                 <i class="fa fa-fw fa-sitemap"></i>
                                 {{ __('Organizations') }}
                             </span>
-                            <div class="text-end">
-                                <ul class="list-unstyled">
-                                    @foreach($event->organizations as $organization)
-                                        <li>{{ $organization->name }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        </x-list.item>
+                            <x-slot:end>
+                                <div class="text-end">
+                                    <ul class="list-unstyled">
+                                        @foreach($event->organizations as $organization)
+                                            <li>{{ $organization->name }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            </x-slot:end>
+                        </x-bs::list.item>
                         @isset($event->eventSeries)
-                            <x-list.item>
+                            <x-bs::list.item>
                                 <span>
                                     <i class="fa fa-fw fa-calendar-week"></i>
                                     {{ __('Part of the event series') }}
                                 </span>
-                                <span class="text-end">
-                                    <a href="{{ route('event-series.show', $event->eventSeries->slug) }}" target="_blank">
-                                        {{ $event->eventSeries->name }}
-                                    </a>
-                                </span>
-                            </x-list.item>
+                                <x-slot:end>
+                                    <span class="text-end">
+                                        <a href="{{ route('event-series.show', $event->eventSeries->slug) }}" target="_blank">
+                                            {{ $event->eventSeries->name }}
+                                        </a>
+                                    </span>
+                                </x-slot:end>
+                            </x-bs::list.item>
                         @endisset
                         @include('events.shared.event_booking_options')
-                    </x-list.group>
+                    </x-bs::list>
                     <div class="card-body">
                         @can('update', $event)
                             <x-button.edit href="{{ route('events.edit', $event) }}"/>

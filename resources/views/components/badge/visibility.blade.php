@@ -3,15 +3,15 @@
 @endphp
 @switch($visibility)
     @case(\App\Options\Visibility::Public)
-        <span class="badge bg-success">
+        <x-bs::badge variant="success">
             <i class="fa fa-fw fa-lock-open"></i>
             {{ __('public') }}
-        </span>
+        </x-bs::badge>
     @break
     @case(\App\Options\Visibility::Private)
-        <span class="badge bg-danger">
+        <x-bs::badge variant="danger">
             <i class="fa fa-fw fa-lock"></i>
             {{ __('private') }}
-        </span>
+        </x-bs::badge>
     @break
 @endswitch

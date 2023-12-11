@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @php
+    use Portavice\Bladestrap\Support\Options;
+
     /** @var \Illuminate\Pagination\LengthAwarePaginator|\App\Models\User[] $users */
     /** @var \Illuminate\Database\Eloquent\Collection|\App\Models\UserRole[] $userRoles */
 @endphp
@@ -10,48 +12,37 @@
 @endsection
 
 @section('breadcrumbs')
-    <x-nav.breadcrumb/>
+    <x-bs::breadcrumb.item>@yield('title')</x-bs::breadcrumb.item>
 @endsection
 
 @section('content')
-    <x-button.group>
+    <x-bs::button.group>
         @can('create', \App\Models\User::class)
             <x-button.create href="{{ route('users.create') }}">
                 {{ __('Create user') }}
             </x-button.create>
         @endcan
-    </x-button.group>
+    </x-bs::button.group>
 
-    <x-form.filter method="GET">
+    <x-form.filter>
         <div class="row">
             <div class="col-12 col-sm-6 col-lg">
-                <x-form.row>
-                    <x-form.label for="name">{{ __('Name') }}</x-form.label>
-                    <x-form.input id="name" name="filter[name]" />
-                </x-form.row>
+                <x-bs::form.field id="name" name="filter[name]" type="text"
+                                  :from-query="true">{{ __('Name') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-sm-6 col-lg">
-                <x-form.row>
-                    <x-form.label for="email">{{ __('E-mail') }}</x-form.label>
-                    <x-form.input id="email" name="filter[email]" />
-                </x-form.row>
+                <x-bs::form.field id="email" name="filter[email]" type="text"
+                                  :from-query="true">{{ __('E-mail') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-sm-6 col-lg">
-                <x-form.row>
-                    <x-form.label for="user_role_id">{{ __('User role') }}</x-form.label>
-                    <x-form.select id="user_role_id" name="filter[user_role_id]"
-                                   :options="$userRoles->pluck('name', 'id')">
-                        <option value="">{{ __('all') }}</option>
-                    </x-form.select>
-                </x-form.row>
+                <x-bs::form.field id="user_role_id" name="filter[user_role_id]" type="select"
+                                  :options="Options::fromModels($userRoles, 'name')->prepend(__('all'), '')"
+                                  :from-query="true">{{ __('User role') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-sm-6 col-lg">
-                <x-form.row>
-                    <x-form.label for="status">{{ __('Status') }}</x-form.label>
-                    <x-form.select id="status" name="filter[status]"
-                                   :options="\App\Options\ActiveStatus::keysWithNamesAndAll()"
-                                   :value="\App\Options\ActiveStatus::Active->value" />
-                </x-form.row>
+                <x-bs::form.field id="status" name="filter[status]" type="select"
+                                  :options="\App\Options\ActiveStatus::toOptionsWithAll()"
+                                  :from-query="true">{{ __('Status') }}</x-bs::form.field>
             </div>
         </div>
     </x-form.filter>
@@ -65,71 +56,83 @@
                     <div class="card-header">
                         <h2 class="card-title">{{ $user->name }}</h2>
                     </div>
-                    <x-list.group class="list-group-flush">
-                        <x-list.item>
+                    <x-bs::list :flush="true">
+                        <x-bs::list.item>
                             <span class="text-nowrap">
                                 <i class="fa fa-fw fa-at"></i>
                                 {{ __('E-mail') }}
                             </span>
-                            <span class="text-end">
-                                {{ $user->email }}
-                                @isset($user->email_verified_at)
-                                    <span class="badge bg-primary">{{ __('verified') }}</span>
-                                @else
-                                    <span class="badge bg-danger">{{ __('not verified') }}</span>
-                                @endisset
-                            </span>
-                        </x-list.item>
+                            <x-slot:end>
+                                <span class="text-end">
+                                    {{ $user->email }}
+                                    @isset($user->email_verified_at)
+                                        <x-bs::badge variant="success">{{ __('verified') }}</x-bs::badge>
+                                    @else
+                                        <x-bs::badge variant="danger">{{ __('not verified') }}</x-bs::badge>
+                                    @endisset
+                                </span>
+                            </x-slot:end>
+                        </x-bs::list.item>
                         @isset($user->phone)
-                            <x-list.item>
+                            <x-bs::list.item>
                                 <span class="text-nowrap">
                                     <i class="fa fa-fw fa-phone"></i>
                                     {{ __('Phone number') }}
                                 </span>
-                                <span class="text-end">{{ $user->phone }}</span>
-                            </x-list.item>
+                                <x-slot:end>
+                                    <span class="text-end">{{ $user->phone }}</span>
+                                </x-slot:end>
+                            </x-bs::list.item>
                         @endisset
-                        <x-list.item>
+                        <x-bs::list.item>
                             <span class="text-nowrap">
                                 <i class="fa fa-fw fa-circle-question"></i>
                                 {{ __('Status') }}
                             </span>
-                            <span class="text-end">
-                                <x-badge.active-status :active="$user->status" />
-                            </span>
-                        </x-list.item>
-                        <x-list.item>
+                            <x-slot:end>
+                                <span class="text-end">
+                                    <x-badge.active-status :active="$user->status" />
+                                </span>
+                            </x-slot:end>
+                        </x-bs::list.item>
+                        <x-bs::list.item>
                             <span class="text-nowrap">
                                 <i class="fa fa-fw fa-user-group"></i>
                                 {{ __('User roles') }}
                             </span>
-                            <span class="text-end">
-                                @if($user->userRoles->count() === 0)
-                                    {{ __('none') }}
-                                @else
-                                    @foreach($user->userRoles->sortBy('name') as $userRole)
-                                        <span class="badge bg-primary">{{ $userRole->name }}</span>
-                                    @endforeach
-                                @endif
-                            </span>
-                        </x-list.item>
-                        <x-list.item>
+                            <x-slot:end>
+                                <span class="text-end">
+                                    @if($user->userRoles->count() === 0)
+                                        {{ __('none') }}
+                                    @else
+                                        @foreach($user->userRoles->sortBy('name') as $userRole)
+                                            <x-bs::badge variant="primary">{{ $userRole->name }}</x-bs::badge>
+                                        @endforeach
+                                    @endif
+                                </span>
+                            </x-slot:end>
+                        </x-bs::list.item>
+                        <x-bs::list.item>
                             <span class="text-nowrap">
                                 <i class="fa fa-fw fa-sign-in-alt"></i>
                                 {{ __('Last login') }}
                             </span>
-                            <span class="text-end">
-                                {{ $user->last_login_at ? formatDateTime($user->last_login_at) : __('never') }}
-                            </span>
-                        </x-list.item>
-                        <x-list.item>
+                            <x-slot:end>
+                                <span class="text-end">
+                                    {{ $user->last_login_at ? formatDateTime($user->last_login_at) : __('never') }}
+                                </span>
+                            </x-slot:end>
+                        </x-bs::list.item>
+                        <x-bs::list.item>
                             <span class="text-nowrap">
                                 <i class="fa fa-fw fa-file-contract"></i>
                                 {{ __('Bookings') }}
                             </span>
-                            <x-badge.counter>{{ formatInt($user->bookings_count) }}</x-badge.counter>
-                        </x-list.item>
-                    </x-list.group>
+                            <x-slot:end>
+                                <x-badge.counter>{{ formatInt($user->bookings_count) }}</x-badge.counter>
+                            </x-slot:end>
+                        </x-bs::list.item>
+                    </x-bs::list>
                     <div class="card-body">
                         @can('update', $user)
                             <x-button.edit href="{{ route('users.edit', $user) }}"/>

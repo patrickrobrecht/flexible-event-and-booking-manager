@@ -10,11 +10,11 @@
 
 @section('breadcrumbs')
     @can('viewAny', \App\Models\Event::class)
-        <x-nav.breadcrumb href="{{ route('events.index') }}">{{ __('Events') }}</x-nav.breadcrumb>
+        <x-bs::breadcrumb.item href="{{ route('events.index') }}">{{ __('Events') }}</x-bs::breadcrumb.item>
     @else
-        <x-nav.breadcrumb>{{ __('Events') }}</x-nav.breadcrumb>
+        <x-bs::breadcrumb.item>>{{ __('Events') }}</x-bs::breadcrumb.item>
     @endcan
-    <x-nav.breadcrumb/>
+    <x-bs::breadcrumb.item>@yield('title')</x-bs::breadcrumb.item>
 @endsection
 
 @section('headline-buttons')
@@ -25,22 +25,22 @@
 
 @section('content')
     @isset($event->eventSeries)
-        <span class="badge bg-primary">
+        <x-bs::badge variant="primary">
             <span>
                 <i class="fa fa-fw fa-calendar-week"></i>
                 {{ __('Part of the event series') }}
             </span>
             <a class="link-light" href="{{ route('event-series.show', $event->eventSeries->slug) }}">{{ $event->eventSeries->name }}</a>
-        </span>
+        </x-bs::badge>
     @endisset
     @isset($event->parentEvent)
-        <span class="badge bg-primary">
+        <x-bs::badge variant="primary">
             <span>
                 <i class="fa fa-fw fa-calendar-days"></i>
                 {{ __('Part of the event') }}
             </span>
             <a class="link-light" href="{{ route('events.show', $event->parentEvent) }}">{{ $event->parentEvent->name }}</a>
-        </span>
+        </x-bs::badge>
     @endisset
 
     <div class="row my-3">
@@ -48,9 +48,9 @@
             @include('events.shared.event_details')
         </div>
         <div class="col-12 col-md-8">
-            <x-list.group class="mb-3">
+            <x-bs::list class="mb-3">
                 @include('events.shared.event_booking_options')
-            </x-list.group>
+            </x-bs::list>
 
             @can('create', \App\Models\BookingOption::class)
                 <div class="mb-3">

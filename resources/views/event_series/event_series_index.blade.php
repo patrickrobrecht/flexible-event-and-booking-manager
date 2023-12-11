@@ -9,25 +9,23 @@
 @endsection
 
 @section('breadcrumbs')
-    <x-nav.breadcrumb/>
+    <x-bs::breadcrumb.item>@yield('title')</x-bs::breadcrumb.item>
 @endsection
 
 @section('content')
-    <x-button.group>
+    <x-bs::button.group>
         @can('create', \App\Models\EventSeries::class)
             <x-button.create href="{{ route('event-series.create') }}">
                 {{ __('Create event series') }}
             </x-button.create>
         @endcan
-    </x-button.group>
+    </x-bs::button.group>
 
-    <x-form.filter method="GET">
+    <x-form.filter>
         <div class="row">
             <div class="col-12 col-md-6">
-                <x-form.row>
-                    <x-form.label for="name">{{ __('Name') }}</x-form.label>
-                    <x-form.input id="name" name="filter[name]"/>
-                </x-form.row>
+                <x-bs::form.field id="name" name="filter[name]" type="text"
+                                  :from-query="true">{{ __('Name') }}</x-bs::form.field>
             </div>
         </div>
     </x-form.filter>
@@ -43,34 +41,38 @@
                             <a href="{{ route('event-series.show', $eventSeriesItem->slug) }}">{{ $eventSeriesItem->name }}</a>
                         </h2>
                     </div>
-                    <x-list.group class="list-group-flush">
-                        <x-list.item :flex="false">
+                    <x-bs::list :flush="true">
+                        <x-bs::list.item>
                             <i class="fa fa-fw fa-eye" title="{{ __('Visibility') }}"></i>
                             <x-badge.visibility :visibility="$eventSeriesItem->visibility"/>
-                        </x-list.item>
-                        <x-list.item>
+                        </x-bs::list.item>
+                        <x-bs::list.item>
                             <span>
                                 <i class="fa fa-fw fa-calendar-week"></i>
                                 {{ __('Part of the event series') }}
                             </span>
-                            <span>
-                                @isset($eventSeriesItem->parentEventSeries)
-                                    <a href="{{ route('event-series.show', $eventSeriesItem->parentEventSeries->slug) }}">
+                            <x-slot:end>
+                                <span>
+                                    @isset($eventSeriesItem->parentEventSeries)
+                                        <a href="{{ route('event-series.show', $eventSeriesItem->parentEventSeries->slug) }}">
                                         {{ $eventSeriesItem->parentEventSeries->name }}
                                     </a>
-                                @else
-                                    {{ __('none') }}
-                                @endif
-                            </span>
-                        </x-list.item>
-                        <x-list.item>
+                                    @else
+                                        {{ __('none') }}
+                                    @endif
+                                </span>
+                            </x-slot:end>
+                        </x-bs::list.item>
+                        <x-bs::list.item>
                             <span>
                                 <i class="fa fa-fw fa-calendar-days"></i>
                                 {{ __('Events') }}
                             </span>
-                            <x-badge.counter>{{ formatInt($eventSeriesItem->events_count) }}</x-badge.counter>
-                        </x-list.item>
-                    </x-list.group>
+                            <x-slot:end>
+                                <x-badge.counter>{{ formatInt($eventSeriesItem->events_count) }}</x-badge.counter>
+                            </x-slot:end>
+                        </x-bs::list.item>
+                    </x-bs::list>
                     <div class="card-body">
                         @can('update', $eventSeriesItem)
                             <x-button.edit href="{{ route('event-series.edit', $eventSeriesItem) }}"/>

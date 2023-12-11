@@ -12,17 +12,17 @@
 @endsection
 
 @section('breadcrumbs')
-    <x-nav.breadcrumb/>
+    <x-bs::breadcrumb.item>@yield('title')</x-bs::breadcrumb.item>
 @endsection
 
 @section('content')
-    <x-button.group>
+    <x-bs::button.group>
         @can('create', \App\Models\PersonalAccessToken::class)
             <x-button.create href="{{ route('personal-access-tokens.create') }}">
                 {{ __('Create personal access token') }}
             </x-button.create>
         @endcan
-    </x-button.group>
+    </x-bs::button.group>
 
     <x-alert.count class="mt-3" :count="$user->tokens->count()" />
 
@@ -35,7 +35,7 @@
                         <p class="card-subtitle text-muted">
                             {{ __('Last used') }}: {{ $token->last_used_at ? formatDateTime($token->last_used_at) : __('never') }}
                             @if(isset($token->expires_at) && $token->expires_at->isPast())
-                                <span class="badge bg-danger">{{ __('expired') }}</span>
+                                <x-bs::badge variant="danger">{{ __('expired') }}</x-bs::badge>
                             @endif
                         </p>
                     </div>
@@ -45,8 +45,8 @@
                         @endcan
                         @can('forceDelete', $token)
                             <x-button.delete form="delete-{{ $token->id }}" />
-                            <x-form id="delete-{{ $token->id }}"
-                                    method="DELETE" action="{{ route('personal-access-tokens.destroy', $token) }}" />
+                            <x-bs::form id="delete-{{ $token->id }}" method="DELETE"
+                                        action="{{ route('personal-access-tokens.destroy', $token) }}"/>
                         @endcan
                     </div>
                 </div>

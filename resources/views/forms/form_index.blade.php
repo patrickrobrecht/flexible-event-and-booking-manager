@@ -9,23 +9,21 @@
 @endsection
 
 @section('breadcrumbs')
-    <x-nav.breadcrumb/>
+    <x-bs::breadcrumb.item>@yield('title')</x-bs::breadcrumb.item>
 @endsection
 
 @section('content')
-    <x-button.group>
+    <x-bs::button.group>
         @can('create', \App\Models\Form::class)
             <x-button.create href="{{ route('forms.create') }}">
                 {{ __('Create form') }}
             </x-button.create>
         @endcan
-    </x-button.group>
+    </x-bs::button.group>
 
-    <x-form.filter method="GET">
-       <x-form.row>
-           <x-form.label for="name">{{ __('Name') }}</x-form.label>
-           <x-form.input id="name" name="filter[name]"/>
-       </x-form.row>
+    <x-form.filter>
+        <x-bs::form.field id="name" name="filter[name]" type="text"
+                          :from-query="true">{{ __('Name') }}</x-bs::form.field>
     </x-form.filter>
 
     <x-alert.count class="mt-3" :count="$forms->total()"/>
@@ -37,9 +35,6 @@
                     <div class="card-header">
                         <h2 class="card-title">{{ $form->name }}</h2>
                     </div>
-                    <x-list.group class="list-group-flush">
-
-                    </x-list.group>
                     <div class="card-body">
                         @can('update', $form)
                             <x-button.edit href="{{ route('forms.edit', $form) }}"/>

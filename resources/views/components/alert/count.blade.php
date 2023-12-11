@@ -2,11 +2,7 @@
     'count' => 0,
 ])
 @if($count === 0)
-    <p {{ $attributes->class('alert alert-danger') }}>
-        {{ trans_choice(':count results found.', $count) }}
-    </p>
+    <x-bs::alert variant="danger" :attributes="$attributes">{{ trans_choice(':count results found.', $count) }}</x-bs::alert>
 @else
-    <p {{ $attributes->class('alert alert-success') }}>
-        {{ trans_choice(':count results found.', $count, ['count' => formatInt($count)]) }}
-    </p>
+    <x-bs::alert variant="success" :attributes="$attributes">{{ trans_choice(':count results found.', $count, ['count' => formatInt($count)]) }}</x-bs::alert>
 @endif

@@ -3,21 +3,21 @@
 @endphp
 @switch($active)
     @case(\App\Options\ActiveStatus::Active)
-        <span class="badge bg-success">
+        <x-bs::badge variant="success">
             <i class="fa fa-check-circle"></i>
             {{ __('active') }}
-        </span>
+        </x-bs::badge>
     @break
     @case(\App\Options\ActiveStatus::Inactive)
-        <span class="badge bg-danger">
+        <x-bs::badge variant="danger">
             <i class="fa fa-power-off"></i>
             {{ __('inactive') }}
-        </span>
+        </x-bs::badge>
     @break
     @case(\App\Options\ActiveStatus::Archived)
-        <span class="badge bg-dark">
+        <x-bs::badge variant="dark">
             <i class="fa fa-archive"></i>
             {{ __('archived') }}
-        </span>
+        </x-bs::badge>
     @break
 @endswitch

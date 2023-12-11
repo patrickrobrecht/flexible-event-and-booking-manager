@@ -4,7 +4,7 @@
         @isset($booking->booked_at)
             {{ formatDateTime($booking->booked_at) }}
         @else
-            <span class="badge bg-primary">{{ __('Booking not completed yet') }}</span>
+            <x-bs::badge variant="danger">{{ __('Booking not completed yet') }}</x-bs::badge>
         @endisset
     </div>
     <div>
@@ -20,7 +20,7 @@
         @isset($booking->price)
             {{ formatDecimal($booking->price) }}&nbsp;€
         @else
-            <span class="badge bg-primary">{{ __('free of charge') }}</span>
+            <x-bs::badge variant="primary">{{ __('free of charge') }}</x-bs::badge>
         @endisset
     </div>
 </div>

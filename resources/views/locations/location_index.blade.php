@@ -9,31 +9,27 @@
 @endsection
 
 @section('breadcrumbs')
-    <x-nav.breadcrumb/>
+    <x-bs::breadcrumb.item>@yield('title')</x-bs::breadcrumb.item>
 @endsection
 
 @section('content')
-    <x-button.group>
+    <x-bs::button.group>
         @can('create', \App\Models\Location::class)
             <x-button.create href="{{ route('locations.create') }}">
                 {{ __('Create location') }}
             </x-button.create>
         @endcan
-    </x-button.group>
+    </x-bs::button.group>
 
-    <x-form.filter method="GET">
+    <x-form.filter>
         <div class="row">
             <div class="col-12 col-sm-6 col-lg">
-                <x-form.row>
-                    <x-form.label for="name">{{ __('Name') }}</x-form.label>
-                    <x-form.input id="name" name="filter[name]" />
-                </x-form.row>
+                <x-bs::form.field id="name" name="filter[name]" type="text"
+                                  :from-query="true">{{ __('Name') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-sm-6 col-lg">
-                <x-form.row>
-                    <x-form.label for="address">{{ __('Address') }}</x-form.label>
-                    <x-form.input id="address" name="filter[address]" />
-                </x-form.row>
+                <x-bs::form.field id="address" name="filter[address]" type="text"
+                                  :from-query="true">{{ __('Address') }}</x-bs::form.field>
             </div>
         </div>
     </x-form.filter>
@@ -47,8 +43,8 @@
                     <div class="card-header">
                         <h2 class="card-title">{{ $location->nameOrAddress }}</h2>
                     </div>
-                    <x-list.group class="list-group-flush">
-                        <x-list.item :flex="false">
+                    <x-bs::list :flush="true">
+                        <x-bs::list.item>
                             <i class="fa fa-fw fa-road"></i>
                             <span class="d-inline-block">
                                 <div class="d-flex flex-column">
@@ -57,26 +53,30 @@
                                     @endforeach
                                 </div>
                             </span>
-                        </x-list.item>
-                        <x-list.item>
+                        </x-bs::list.item>
+                        <x-bs::list.item>
                             <span>
                                 <i class="fa fa-fw fa-calendar-days"></i>
                                 <a href="{{ route('events.index', ['filter[location_id]' => $location->id]) }}" target="_blank">
                                     {{ __('Events') }}
                                 </a>
                             </span>
-                            <x-badge.counter>{{ formatInt($location->events_count) }}</x-badge.counter>
-                        </x-list.item>
-                        <x-list.item>
+                            <x-slot:end>
+                                <x-badge.counter>{{ formatInt($location->events_count) }}</x-badge.counter>
+                            </x-slot:end>
+                        </x-bs::list.item>
+                        <x-bs::list.item>
                             <span>
                                 <i class="fa fa-fw fa-sitemap"></i>
                                 <a href="{{ route('organizations.index', ['filter[location_id]' => $location->id]) }}" target="_blank">
                                     {{ __('Organizations') }}
                                 </a>
                             </span>
-                            <x-badge.counter>{{ formatInt($location->organizations_count) }}</x-badge.counter>
-                        </x-list.item>
-                    </x-list.group>
+                            <x-slot:end>
+                                <x-badge.counter>{{ formatInt($location->organizations_count) }}</x-badge.counter>
+                            </x-slot:end>
+                        </x-bs::list.item>
+                    </x-bs::list>
                     <div class="card-body">
                         @can('update', $location)
                             <x-button.edit href="{{ route('locations.edit', $location) }}"/>

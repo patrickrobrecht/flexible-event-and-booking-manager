@@ -9,9 +9,9 @@
 @endsection
 
 @section('breadcrumbs')
-    <x-nav.breadcrumb href="{{ route('events.index') }}">{{ __('Events') }}</x-nav.breadcrumb>
-    <x-nav.breadcrumb href="{{ route('events.show', $bookingOption->event) }}">{{ $bookingOption->event->name }}</x-nav.breadcrumb>
-    <x-nav.breadcrumb>{{ $bookingOption->name }}</x-nav.breadcrumb>
+    <x-bs::breadcrumb.item href="{{ route('events.index') }}">{{ __('Events') }}</x-bs::breadcrumb.item>
+    <x-bs::breadcrumb.item href="{{ route('events.show', $bookingOption->event) }}">{{ $bookingOption->event->name }}</x-bs::breadcrumb.item>
+    <x-bs::breadcrumb.item>{{ $bookingOption->name }}</x-bs::breadcrumb.item>
 @endsection
 
 @section('headline-buttons')
@@ -28,51 +28,49 @@
         <div class="col-12 col-md-8">
             @auth()
                 @if($bookingOption->isRestrictedBy(\App\Options\BookingRestriction::VerifiedEmailAddressRequired) && Auth::user()?->email_verified_at === null)
-                    <p class="alert alert-danger">
+                    <x-bs::alert variant="danger">
                         {{ __('Bookings are only available for logged-in users with a verified email address.') }}
                         <a href="{{ route('verification.notice') }}" class="alert-link">{{ __('Verify e-mail address') }}</a>
-                    </p>
+                    </x-bs::alert>
                 @endif
             @else
                 @if($bookingOption->isRestrictedBy(\App\Options\BookingRestriction::AccountRequired))
-                    <p class="alert alert-danger">
+                    <x-bs::alert variant="danger">
                         {{ __('Bookings are only available for logged-in users.') }}
                         <a href="{{ route('login') }}" class="alert-link">{{ __('Login') }}</a>
-                    </p>
+                    </x-bs::alert>
                 @else
-                    <p class="alert alert-danger">
+                    <x-bs::alert variant="danger">
                         {{ __('To be able to view bookings after submission, we recommend logging in or registering beforehand.') }}
                         {{ __('This is the only way we can assign your registration to your account and offer you additional functions such as the reuse of entries for the next booking or updating bookings in case of changes.') }}
-                    </p>
+                    </x-bs::alert>
                @endif
             @endauth
 
             @if(!isset($bookingOption->available_from) || $bookingOption->available_from->isFuture())
-                <p class="alert alert-danger">
-                    {{ __('Bookings are not possible yet.') }}
-                </p>
+                <x-bs::alert variant="danger">{{ __('Bookings are not possible yet.') }}</x-bs::alert>
             @elseif(isset($bookingOption->available_until) && $bookingOption->available_until->isPast())
-                <p class="alert alert-danger">
+                <x-bs::alert variant="danger">
                     {{ __('The booking period ended at :date.', ['date' => formatDateTime($bookingOption->available_until)]) }}
                     {{ __('Bookings are not possible anymore.') }}
-                </p>
+                </x-bs::alert>
             @elseif($bookingOption->hasReachedMaximumBookings())
-                <p class="alert alert-danger">
+                <x-bs::alert variant="danger">
                     {{ __('The maximum number of bookings has been reached.') }}
                     {{ __('Bookings are not possible anymore.') }}
-                </p>
+                </x-bs::alert>
             @else
                 @include('layouts.alerts')
 
                 @can('book', $bookingOption)
-                    <x-form method="POST" action="{{ route('bookings.store', [$event, $bookingOption]) }}">
+                    <x-bs::form method="POST" action="{{ route('bookings.store', [$event, $bookingOption]) }}">
                         @include('bookings.booking_form_fields', [
                             'booking' => null,
                             'bookingOption' => $bookingOption,
                         ])
 
                         @if(isset($bookingOption->price) && $bookingOption->price)
-                            <div class="alert alert-info">
+                            <x-bs::alert>
                                 {{ __('Please transfer :price to the following bank account:', [
                                     'price' => formatDecimal($bookingOption->price) . ' €',
                                 ]) }}
@@ -81,7 +79,7 @@
                                     <li>{{ __('Bank') }}: {{ config('app.bank_account.bank_name') }}</li>
                                     <li>{{ __('Account holder') }}: {{ config('app.bank_account.holder') }}</li>
                                 </ul>
-                            </div>
+                            </x-bs::alert>
                         @endif
 
                         <x-button.save>
@@ -92,7 +90,7 @@
                                 {{ __('Book') }}
                             @endisset
                         </x-button.save>
-                    </x-form>
+                    </x-bs::form>
                 @endcan
             @endif
         </div>

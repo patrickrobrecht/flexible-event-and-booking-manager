@@ -10,11 +10,11 @@
 
 @section('breadcrumbs')
     @can('viewAny', \App\Models\EventSeries::class)
-        <x-nav.breadcrumb href="{{ route('event-series.index') }}">{{ __('Event series') }}</x-nav.breadcrumb>
+        <x-bs::breadcrumb.item href="{{ route('event-series.index') }}">{{ __('Event series') }}</x-bs::breadcrumb.item>
     @else
-        <x-nav.breadcrumb>{{ __('Event series') }}</x-nav.breadcrumb>
+        <x-bs::breadcrumb.item>>{{ __('Event series') }}</x-bs::breadcrumb.item>
     @endcan
-    <x-nav.breadcrumb/>
+    <x-bs::breadcrumb.item>@yield('title')</x-bs::breadcrumb.item>
 @endsection
 
 @section('headline-buttons')
@@ -25,7 +25,7 @@
 
 @section('content')
     @isset($eventSeries->parentEventSeries)
-        <span class="badge bg-primary">
+        <x-bs::badge variant="primary">
             <span>
                 <i class="fa fa-fw fa-calendar-week"></i>
                 {{ __('Part of the event series') }}
@@ -33,7 +33,7 @@
             <a href="{{ route('event-series.show', $eventSeries->parentEventSeries->slug) }}" class="link-light">
                 {{ $eventSeries->parentEventSeries->name }}
             </a>
-        </span>
+        </x-bs::badge>
     @endisset
 
     <div class="row my-3">
@@ -45,16 +45,13 @@
             <div class="col-12 col-md-6">
                 <h2>{{ __('Event series') }}</h2>
 
-                <x-list.group class="list-unstyled">
+                <x-bs::list container="div">
                     @foreach($eventSeries->subEventSeries as $subEventSeries)
-                        <li>
-                            <a href="{{ route('event-series.show', $subEventSeries->slug) }}"
-                               class="list-group-item list-group-item-action">
-                                <strong>{{ $subEventSeries->name }}</strong>
-                            </a>
-                        </li>
+                        <x-bs::list.item container="a" variant="action" href="{{ route('event-series.show', $subEventSeries->slug) }}">
+                            <strong>{{ $subEventSeries->name }}</strong>
+                        </x-bs::list.item>
                     @endforeach
-                </x-list.group>
+                </x-bs::list>
 
                 @can('createChild', $eventSeries)
                     <div class="mt-3">

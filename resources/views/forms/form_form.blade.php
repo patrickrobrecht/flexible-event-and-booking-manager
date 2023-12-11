@@ -13,39 +13,36 @@
 @endsection
 
 @section('breadcrumbs')
-    <x-nav.breadcrumb href="{{ route('forms.index') }}">{{ __('Forms') }}</x-nav.breadcrumb>
-    <x-nav.breadcrumb/>
+    <x-bs::breadcrumb.item href="{{ route('forms.index') }}">{{ __('Forms') }}</x-bs::breadcrumb.item>
+    <x-bs::breadcrumb.item>@yield('title')</x-bs::breadcrumb.item>
 @endsection
 
 @section('content')
-    <x-form method="{{ isset($form) ? 'PUT' : 'POST' }}"
-            action="{{ isset($form) ? route('forms.update', $form) : route('forms.store') }}">
+    <x-bs::form method="{{ isset($form) ? 'PUT' : 'POST' }}"
+                action="{{ isset($form) ? route('forms.update', $form) : route('forms.store') }}">
         <div class="row">
             <div class="col-12 col-md-6">
-                <x-form.row>
-                    <x-form.label for="name">{{ __('Name') }}</x-form.label>
-                    <x-form.input name="name" type="text"
-                                  :value="$form->name ?? null"/>
-                </x-form.row>
+                <x-bs::form.field name="name" type="text"
+                                  :value="$form->name ?? null">{{ __('Name') }}</x-bs::form.field>
             </div>
             @isset($form)
                 <div class="col-12 col-md-6">
-                    <x-list.group>
+                    <x-bs::list>
                         @foreach($form->bookingOptions as $bookingOption)
-                            <li class="list-group-item">
+                            <x-bs::list.item>
                                 <div>
                                     <a href="{{ route('events.show', $bookingOption->event) }}">{{ $bookingOption->event->name }}</a>
                                     (<a href="{{ route('booking-options.show', [$bookingOption->event, $bookingOption]) }}">{{ $bookingOption->name }}</a>)
                                 </div>
                                 @include('booking_options.shared.booking_option_period')
-                            </li>
+                            </x-bs::list.item>
                         @endforeach
-                    </x-list.group>
+                    </x-bs::list>
                 </div>
             @endisset
         </div>
 
-        <x-button.group>
+        <x-bs::button.group>
             <x-button.save>
                 @isset($form)
                     {{ __( 'Save' ) }}
@@ -54,8 +51,8 @@
                 @endisset
             </x-button.save>
             <x-button.cancel href="{{ route('forms.index') }}"/>
-        </x-button.group>
-    </x-form>
+        </x-bs::button.group>
+    </x-bs::form>
 
     <x-text.timestamp :model="$form ?? null"/>
 @endsection

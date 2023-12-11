@@ -1,8 +1,8 @@
 @if(\Illuminate\Support\Facades\Session::has('success'))
-    <div class="alert alert-success">
+    <x-bs::alert variant="success">
         <i class="fa fa-check-circle"></i>
         {{ \Illuminate\Support\Facades\Session::get('success') }}
-    </div>
+    </x-bs::alert>
 @endif
 
 @if(\Illuminate\Support\Facades\Session::has('error'))
@@ -16,11 +16,11 @@
             $errorMessages = [];
         }
     @endphp
-    <div class="alert alert-danger">
+    <x-bs::alert variant="danger">
         <i class="fa fa-exclamation-triangle"></i>
         {{ $firstErrorMessage }}
         @foreach($errorMessages as $errorMessage)
             <div>{{ $errorMessage }}</div>
         @endforeach
-    </div>
+    </x-bs::alert>
 @endif

@@ -2,7 +2,7 @@
     /** @var \App\Models\Event $event */
 @endphp
 
-<x-list.group>
+<x-bs::list>
     @isset($event->description)
         <li class="list-group-item">
             {{ $event->description }}
@@ -53,4 +53,4 @@
             @endif
         </div>
     </li>
-</x-list.group>
+</x-bs::list>

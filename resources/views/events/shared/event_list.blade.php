@@ -6,9 +6,7 @@
 
 @if($events->count() === 0)
     @isset($noEventsMessage)
-        <p class="alert alert-danger">
-            {{ $noEventsMessage }}
-        </p>
+        <x-bs::alert variant="danger">{{ $noEventsMessage }}</x-bs::alert>
     @endisset
 @else
     <div class="list-group">

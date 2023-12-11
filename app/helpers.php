@@ -2,15 +2,6 @@
 
 use Carbon\Carbon;
 
-function fieldNameToArray(string $fieldName): string
-{
-    return str_replace(
-        ['[]', '[', ']'],
-        ['', '.', '',],
-        $fieldName
-    );
-}
-
 function formatDecimal(float $decimal, int $decimals = 2): string
 {
     return number_format($decimal, $decimals, ',', '.');

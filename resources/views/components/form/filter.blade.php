@@ -4,23 +4,25 @@
     'addButtons',
 ])
 @php
-    $show = $showByDefault || \App\Helpers\QueryInput::hasAny() || $errors->any();
+    $show = $showByDefault
+        || \Portavice\Bladestrap\Support\ValueHelper::hasAnyFromQueryOrDefault()
+        || $errors->any();
 @endphp
-<form id="{{ $id }}" method="GET" {{ $attributes->class(['my-3', 'collapse', 'show' => $show]) }}>
+<x-bs::form id="{{ $id }}" method="GET" {{ $attributes->class(['my-3', 'collapse', 'show' => $show]) }}>
     {{ $slot }}
 
-    <x-button.group>
-        <button type="submit" class="btn btn-outline-primary">
-            <i class="fa fa-search"></i>
+    <x-bs::button.group>
+        <x-bs::button type="submit" variant="outline-primary">
+            <i class="fa fa-fw fa-search"></i>
             {{ __('Search and filter') }}
-        </button>
+        </x-bs::button>
         @isset($addButtons)
             {{ $addButtons }}
         @endisset
-        <a href="{{ route(\Illuminate\Support\Facades\Route::currentRouteName(), \Illuminate\Support\Facades\Route::current()->parameters()) }}"
-           class="btn btn-secondary">
-            <i class="fa fa-undo"></i>
+        <x-bs::button.link variant="secondary"
+                           href="{{ route(\Illuminate\Support\Facades\Route::currentRouteName(), \Illuminate\Support\Facades\Route::current()->parameters()) }}">
+            <i class="fa fa-fw fa-undo"></i>
             {{ __('Reset') }}
-        </a>
-    </x-button.group>
-</form>
+        </x-bs::button.link>
+    </x-bs::button.group>
+</x-bs::form>

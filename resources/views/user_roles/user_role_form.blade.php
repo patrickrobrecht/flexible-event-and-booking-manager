@@ -13,44 +13,37 @@
 @endsection
 
 @section('breadcrumbs')
-    <x-nav.breadcrumb href="{{ route('user-roles.index') }}">{{ __('User roles') }}</x-nav.breadcrumb>
-    <x-nav.breadcrumb/>
+    <x-bs::breadcrumb.item href="{{ route('user-roles.index') }}">{{ __('User roles') }}</x-bs::breadcrumb.item>
+    <x-bs::breadcrumb.item>@yield('title')</x-bs::breadcrumb.item>
 @endsection
 
 @section('content')
     @isset($userRole)
         <div class="mb-3">
-            <span class="badge ba bg-primary">{{ formatTransChoice(':count users', $userRole->users()->count()) }}</span>
+            <x-bs::badge variant="primary">{{ formatTransChoice(':count users', $userRole->users()->count()) }}</x-bs::badge>
         </div>
     @endisset
 
-    <x-form method="{{ isset($userRole) ? 'PUT' : 'POST' }}"
-            action="{{ isset($userRole) ? route('user-roles.update', $userRole) : route('user-roles.store') }}">
+    <x-bs::form method="{{ isset($userRole) ? 'PUT' : 'POST' }}"
+                action="{{ isset($userRole) ? route('user-roles.update', $userRole) : route('user-roles.store') }}">
         <div class="row">
             <div class="col-12 col-md-6">
-                <x-form.row>
-                    <x-form.label for="name">{{ __('Name') }}</x-form.label>
-                    <x-form.input name="name" type="text"
-                                  :value="$userRole->name ?? null" />
-                </x-form.row>
+                <x-bs::form.field name="name" type="text"
+                                  :value="$userRole->name ?? null">{{ __('Name') }}</x-bs::form.field>
             </div>
         </div>
-        <x-form.row>
-            <x-form.label for="abilities">{{ __('Abilities') }}</x-form.label>
-            <div class="cols-lg-2 cols-xl-3 cols-xxl-4">
-                <x-form.input for="abilities" name="abilities[]" type="checkbox"
-                              :options="\App\Options\Ability::keysWithNames()"
-                              :value="$userRole->abilities ?? []" />
-            </div>
-        </x-form.row>
+        <x-bs::form.field id="abilities" name="abilities[]" type="switch"
+                          :options="\App\Options\Ability::toOptions()"
+                          :value="$userRole->abilities ?? []"
+                          check-container-class="cols-lg-2 cols-xl-3 cols-xxl-4">{{ __('Abilities') }}</x-bs::form.field>
 
-        <x-button.group>
+        <x-bs::button.group>
             <x-button.save>
                 @isset($userRole){{ __( 'Save' ) }} @else{{ __('Create') }}@endisset
             </x-button.save>
             <x-button.cancel href="{{ route('user-roles.index') }}"/>
-        </x-button.group>
-    </x-form>
+        </x-bs::button.group>
+    </x-bs::form>
 
     <x-text.timestamp :model="$userRole ?? null" />
 @endsection

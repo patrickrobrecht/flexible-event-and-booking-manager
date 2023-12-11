@@ -8,17 +8,17 @@
             $termsAndConditions = config('app.urls.terms_and_conditions');
         @endphp
         @if($legalNotice || $privacyStatement || $termsAndConditions)
-            <ul class="nav justify-content-center">
+            <x-bs::nav class="justify-content-center">
                 @if($legalNotice)
-                    <x-nav.item href="{{ $legalNotice }}">{{ __('Legal notice') }}</x-nav.item>
+                    <x-bs::nav.item href="{{ $legalNotice }}">{{ __('Legal notice') }}</x-bs::nav.item>
                 @endif
                 @if($privacyStatement)
-                    <x-nav.item href="{{ $privacyStatement }}">{{ __('Privacy') }}</x-nav.item>
+                    <x-bs::nav.item href="{{ $privacyStatement }}">{{ __('Privacy') }}</x-bs::nav.item>
                 @endif
                 @if($termsAndConditions)
-                    <x-nav.item href="{{ $termsAndConditions }}">{{ __('General terms and conditions') }}</x-nav.item>
+                    <x-bs::nav.item href="{{ $termsAndConditions }}">{{ __('General terms and conditions') }}</x-bs::nav.item>
                 @endif
-            </ul>
+            </x-bs::nav>
         @endif
     </div>
 </footer>

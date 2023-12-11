@@ -50,7 +50,7 @@ enum Ability: string
 
     public function getTranslatedName(): string
     {
-        return match($this) {
+        return match ($this) {
             self::EditAccount => __('Edit own account'),
             self::ManagePersonalAccessTokens => __('Manage personal access tokens'),
 

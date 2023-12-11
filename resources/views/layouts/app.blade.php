@@ -14,12 +14,10 @@
 
     <div class="container-fluid">
         @hasSection('breadcrumbs')
-            <nav class="mx-5 mt-3" aria-label="breadcrumb">
-                <ol class="breadcrumb bg-light rounded-pill p-2">
-                    <x-nav.breadcrumb href="{{ route('dashboard') }}">{{ __('Dashboard') }}</x-nav.breadcrumb>
-                    @yield('breadcrumbs')
-                </ol>
-            </nav>
+            <x-bs::breadcrumb container-class="mx-5 mt-3" class="bg-light rounded-pill p-2">
+                <x-bs::breadcrumb.item href="{{ route('dashboard') }}">{{ __('Dashboard') }}</x-bs::breadcrumb.item>
+                @yield('breadcrumbs')
+            </x-bs::breadcrumb>
         @endif
 
         <main class="mx-5 my-3">

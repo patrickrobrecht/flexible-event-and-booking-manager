@@ -11,6 +11,7 @@
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "phpoffice/phpspreadsheet": "^1.29",
+        "portavice/bladestrap": "1.0",
         "spatie/laravel-query-builder": "^5.6",
         "spatie/laravel-sluggable": "^3.5"
     },
@@ -22,7 +23,7 @@
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^7.10",
         "phpunit/phpunit": "^10.4",
-        "portavice/laravel-pint-config": "^1.0",
+        "portavice/laravel-pint-config": "^2.0",
         "spatie/laravel-ignition": "^2.3"
     },
     "autoload": {
@@ -84,9 +85,6 @@
         }
     },
     "config": {
-        "allow-plugins": {
-            "dealerdirect/phpcodesniffer-composer-installer": true
-        },
         "audit": {
             "abandoned": "fail"
         },

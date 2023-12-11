@@ -4,30 +4,11 @@ namespace App\Options\Traits;
 
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\In;
+use Portavice\Bladestrap\Support\Options;
 
 trait NamedOption
 {
     abstract public function getTranslatedName(): string;
-
-    public static function keysWithNames(): array
-    {
-        $all = [];
-        foreach (self::cases() as $enumCase) {
-            $all[$enumCase->value ?? $enumCase->name] = $enumCase->getTranslatedName();
-        }
-
-        return $all;
-    }
-
-    public static function keysWithNamesAndAll(): array
-    {
-        return array_replace(
-            [
-                '' => __('all'),
-            ],
-            self::keysWithNames()
-        );
-    }
 
     public static function exists(int|string $key): bool
     {
@@ -45,5 +26,15 @@ trait NamedOption
     public static function rule(): In
     {
         return Rule::in(self::keys());
+    }
+
+    public static function toOptions(): Options
+    {
+        return Options::fromEnum(static::class, 'getTranslatedName');
+    }
+
+    public static function toOptionsWithAll(): Options
+    {
+        return self::toOptions()->prepend(__('all'), '');
     }
 }

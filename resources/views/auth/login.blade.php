@@ -7,28 +7,20 @@
 @section('main')
     <x-card.centered>
         @if(config('app.features.registration'))
-            <div class="alert alert-primary mb-3">
+            <x-bs::alert variant="primary" class="mb-3">
                 {{ __('Not registered yet?') }}
 
                 <a class="alert-link" href="{{ route('register') }}">
                     {{ __('Register') }}
                 </a>
-            </div>
+            </x-bs::alert>
         @endif
 
-        <x-form method="POST" action="{{ route('login') }}">
-            <x-form.row>
-                <x-form.label for="email">{{ __('E-mail') }}</x-form.label>
-                <x-form.input name="email" type="email" required autofocus />
-            </x-form.row>
-            <x-form.row>
-                <x-form.label for="password">{{ __('Password') }}</x-form.label>
-                <x-form.input name="password" type="password" required
-                              autocomplete="current-password" />
-            </x-form.row>
-            <x-form.row>
-                <x-form.input name="remember" type="checkbox">{{ __('Remember me') }}</x-form.input>
-            </x-form.row>
+        <x-bs::form method="POST" action="{{ route('login') }}">
+            <x-bs::form.field name="email" type="email" required autofocus>{{ __('E-mail') }}</x-bs::form.field>
+            <x-bs::form.field name="password" type="password" required
+                              autocomplete="current-password">{{ __('Password') }}</x-bs::form.field>
+            <x-bs::form.field name="remember" type="checkbox" :options="[1 => __('Remember me')]" cast="int"/>
 
             <x-form.button class="w-100">{{ __('Login') }}</x-form.button>
 
@@ -39,6 +31,6 @@
                     </a>
                 </div>
             @endif
-        </x-form>
+        </x-bs::form>
     </x-card.centered>
 @endsection

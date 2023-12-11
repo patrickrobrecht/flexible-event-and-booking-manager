@@ -14,58 +14,45 @@
 @endsection
 
 @section('breadcrumbs')
-    <x-nav.breadcrumb href="{{ route('event-series.index') }}">{{ __('Event series') }}</x-nav.breadcrumb>
-    <x-nav.breadcrumb/>
+    <x-bs::breadcrumb.item href="{{ route('event-series.index') }}">{{ __('Event series') }}</x-bs::breadcrumb.item>
+    <x-bs::breadcrumb.item>@yield('title')</x-bs::breadcrumb.item>
 @endsection
 
 @section('content')
-    <x-form method="{{ isset($eventSeries) ? 'PUT' : 'POST' }}"
-            action="{{ isset($eventSeries) ? route('event-series.update', $eventSeries) : route('event-series.store') }}">
+    <x-bs::form method="{{ isset($eventSeries) ? 'PUT' : 'POST' }}"
+                action="{{ isset($eventSeries) ? route('event-series.update', $eventSeries) : route('event-series.store') }}">
         <div class="row">
             <div class="col-12 col-md-6">
-                <x-form.row>
-                    <x-form.label for="name">{{ __('Name') }}</x-form.label>
-                    <x-form.input name="name" type="text"
-                                  :value="$eventSeries->name ?? null"/>
-                </x-form.row>
-                <x-form.row>
-                    <x-form.label for="slug">{{ __('Slug') }}</x-form.label>
-                    <x-form.input name="slug" type="text" aria-describedby="slugHint"
-                                  :value="$eventSeries->slug ?? null"/>
-                    <div id="slugHint" class="form-text">
+                <x-bs::form.field name="name" type="text"
+                                  :value="$eventSeries->name ?? null">{{ __('Name') }}</x-bs::form.field>
+                <x-bs::form.field name="slug" type="text" aria-describedby="slugHint"
+                                  :value="$eventSeries->slug ?? null">
+                    {{ __('Slug') }}
+                    <x-slot:hint>
                         {!! __('This field defines the path in the URL, such as :url. If you leave it empty, is auto-generated for you.', [
                             'url' => isset($eventSeries->slug)
                                 ? sprintf('<a href="%s" target="_blank">%s</a>', route('event-series.show', $eventSeries), route('event-series.show', $eventSeries, false))
                                 : '<strong>' . route('event-series.show', Str::of(__('Name of the event series'))->snake('-')) . '</strong>'
                         ]) !!}
-                    </div>
-                </x-form.row>
-                <x-form.row>
-                    <x-form.label for="visibility">{{ __('Visibility') }}</x-form.label>
-                    <x-form.select name="visibility"
-                                   :options="\App\Options\Visibility::keysWithNames()"
-                                   :value="$eventSeries->visibility->value ?? null" />
-                </x-form.row>
+                    </x-slot:hint>
+                </x-bs::form.field>
+                <x-bs::form.field name="visibility" type="select"
+                                  :options="\App\Options\Visibility::toOptions()"
+                                  :value="$eventSeries->visibility->value ?? null">{{ __('Visibility') }}</x-bs::form.field>
+                <x-bs::form.field name="parent_event_series_id" type="select"
+                                  :options="$allEventSeries->except($eventSeries->id ?? null)->pluck('name', 'id')->prepend(__('none'), '')"
+                                  :value="$eventSeries->parent_event_series_id ?? null">{{ __('Part of the event series') }}</x-bs::form.field>
             </div>
 
-            <div class="col-12 col-md-6">
-                <x-form.row>
-                    <x-form.label for="parent_event_series_id">{{ __('Part of the event series') }}</x-form.label>
-                    <x-form.select name="parent_event_series_id"
-                                   :options="$allEventSeries->except($eventSeries->id ?? null)->pluck('name', 'id')"
-                                   :value="$eventSeries->parent_event_series_id ?? null">
-                        <option value="">{{ __('none') }}</option>
-                    </x-form.select>
-                </x-form.row>
-
-                @isset($eventSeries)
+            @isset($eventSeries)
+                <div class="col-12 col-md-6">
                     <h2>{{ __('Events') }}</h2>
                     @include('event_series.shared.events_in_series')
-                @endisset
-            </div>
+                </div>
+            @endisset
         </div>
 
-        <x-button.group>
+        <x-bs::button.group>
             <x-button.save>
                 @isset($eventSeries)
                     {{ __( 'Save' ) }}
@@ -74,8 +61,8 @@
                 @endisset
             </x-button.save>
             <x-button.cancel href="{{ route('event-series.index') }}"/>
-        </x-button.group>
-    </x-form>
+        </x-bs::button.group>
+    </x-bs::form>
 
     <x-text.timestamp :model="$eventSeries ?? null"/>
 @endsection

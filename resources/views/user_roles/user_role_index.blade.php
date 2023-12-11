@@ -9,25 +9,23 @@
 @endsection
 
 @section('breadcrumbs')
-    <x-nav.breadcrumb/>
+    <x-bs::breadcrumb.item>@yield('title')</x-bs::breadcrumb.item>
 @endsection
 
 @section('content')
-    <x-button.group>
+    <x-bs::button.group>
         @can('create', \App\Models\UserRole::class)
             <x-button.create href="{{ route('user-roles.create') }}">
                 {{ __('Create user role') }}
             </x-button.create>
         @endcan
-    </x-button.group>
+    </x-bs::button.group>
 
-    <x-form.filter method="GET">
+    <x-form.filter>
         <div class="row">
             <div class="col-12 col-sm-6 col-lg">
-                <x-form.row>
-                    <x-form.label for="name">{{ __('Name') }}</x-form.label>
-                    <x-form.input id="name" name="filter[name]" />
-                </x-form.row>
+                <x-bs::form.field id="name" name="filter[name]" type="text"
+                                  :from-query="true">{{ __('Name') }}</x-bs::form.field>
             </div>
         </div>
     </x-form.filter>
@@ -41,17 +39,19 @@
                     <div class="card-header">
                         <h2 class="card-title">{{ $userRole->name }}</h2>
                     </div>
-                    <x-list.group class="list-group-flush">
-                        <x-list.item>
+                    <x-bs::list :flush="true">
+                        <x-bs::list.item>
                             <span>
                                 <i class="fa fa-fw fa-users"></i>
                                 <a href="{{ route('users.index', ['filter[user_role_id]' => $userRole->id]) }}" target="_blank">
                                     {{ __('Users') }}
                                 </a>
                             </span>
-                            <x-badge.counter>{{ formatInt($userRole->users_count) }}</x-badge.counter>
-                        </x-list.item>
-                    </x-list.group>
+                            <x-slot:end>
+                                <x-badge.counter>{{ formatInt($userRole->users_count) }}</x-badge.counter>
+                            </x-slot:end>
+                        </x-bs::list.item>
+                    </x-bs::list>
                     <div class="card-body">
                         @can('update', $userRole)
                             <x-button.edit href="{{ route('user-roles.edit', $userRole) }}"/>

@@ -30,6 +30,7 @@ To get started, you need to install the following software:
 - a relational database, such as [MariaDB](https://mariadb.org/download/)
 
 ### Used technologies
+- [Bladestrap](https://github.com/portavice/bladestrap), Blade components for Bootstrap
 - [Bootstrap](https://getbootstrap.com/), a front-end toolkit
 - [Font Awesome](https://github.com/FortAwesome/Font-Awesome) for [icons](https://fontawesome.com/icons?d=gallery&m=free)
 - [Laravel](https://laravel.com/docs/10.x) framework

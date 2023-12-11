@@ -11,10 +11,10 @@
 @endsection
 
 @section('breadcrumbs')
-    <x-nav.breadcrumb href="{{ route('events.index') }}">{{ __('Events') }}</x-nav.breadcrumb>
-    <x-nav.breadcrumb href="{{ route('events.show', $event) }}">{{ $event->name }}</x-nav.breadcrumb>
-    <x-nav.breadcrumb href="{{ route('booking-options.show', [$event, $bookingOption]) }}">{{ $bookingOption->name }}</x-nav.breadcrumb>
-    <x-nav.breadcrumb>{{ __('Bookings') }}</x-nav.breadcrumb>
+    <x-bs::breadcrumb.item href="{{ route('events.index') }}">{{ __('Events') }}</x-bs::breadcrumb.item>
+    <x-bs::breadcrumb.item href="{{ route('events.show', $event) }}">{{ $event->name }}</x-bs::breadcrumb.item>
+    <x-bs::breadcrumb.item href="{{ route('booking-options.show', [$event, $bookingOption]) }}">{{ $bookingOption->name }}</x-bs::breadcrumb.item>
+    <x-bs::breadcrumb.item>{{ __('Bookings') }}</x-bs::breadcrumb.item>
 @endsection
 
 @section('headline')
@@ -28,28 +28,22 @@
 @endsection
 
 @section('content')
-    <x-form.filter method="GET">
+    <x-form.filter>
         @can('viewAnyPaymentStatus', \App\Models\Booking::class)
             <div class="row">
                 <div class="col-12 col-md-9">
-                    <x-form.row>
-                        <x-form.label for="search">{{ __('Search term') }}</x-form.label>
-                        <x-form.input id="search" name="filter[search]"/>
-                    </x-form.row>
+                    <x-bs::form.field id="search" name="filter[search]" type="text"
+                                      :from-query="true">{{ __('Search term') }}</x-bs::form.field>
                 </div>
                 <div class="col-12 col-md-3">
-                    <x-form.row>
-                        <x-form.label for="payment_status">{{ __('Payment status') }}</x-form.label>
-                        <x-form.select id="payment_status" name="filter[payment_status]"
-                                       :options="\App\Options\PaymentStatus::keysWithNamesAndAll()"/>
-                    </x-form.row>
+                    <x-bs::form.field id="payment_status" name="filter[payment_status]" type="select"
+                                      :options="\App\Options\PaymentStatus::toOptionsWithAll()"
+                                      :from-query="true">{{ __('Payment status') }}</x-bs::form.field>
                 </div>
             </div>
         @else
-            <x-form.row>
-                <x-form.label for="search">{{ __('Search term') }}</x-form.label>
-                <x-form.input id="search" name="filter[search]"/>
-            </x-form.row>
+            <x-bs::form.field id="search" name="filter[search]" type="text"
+                              :from-query="true">{{ __('Search term') }}</x-bs::form.field>
         @endcan
 
         <x-slot:addButtons>
@@ -72,16 +66,16 @@
                         <h2 class="card-title">{{ $booking->first_name }} {{ $booking->last_name }}</h2>
                         <div class="card-subtitle text-muted">{{ $bookingOption->name }}</div>
                     </div>
-                    <x-list.group class="list-group-flush">
-                        <x-list.item :flex="false">
+                    <x-bs::list :flush="true">
+                        <x-bs::list.item>
                             <i class="fa fa-fw fa-clock" title="{{ __('Booking date') }}"></i>
                             @isset($booking->booked_at)
                                 {{ formatDateTime($booking->booked_at) }}
                             @else
-                                <span class="badge bg-primary">{{ __('Booking not completed yet') }}</span>
+                                <x-bs::badge variant="danger">{{ __('Booking not completed yet') }}</x-bs::badge>
                             @endisset
-                        </x-list.item>
-                        <x-list.item :flex="false">
+                        </x-bs::list.item>
+                        <x-bs::list.item>
                             <i class="fa fa-fw fa-user" title="{{ __('Booked by') }}"></i>
                             @isset($booking->bookedByUser)
                                 <span title="{{ $booking->bookedByUser->email }}">{{ $booking->bookedByUser->first_name }} {{ $booking->bookedByUser->last_name }}</span>
@@ -90,38 +84,38 @@
                             @endisset
                             @isset($booking->bookedByUser)
                                 @isset($booking->bookedByUser->email_verified_at)
-                                    <span class="badge bg-primary">{{ __('verified') }}</span>
+                                    <x-bs::badge variant="success">{{ __('verified') }}</x-bs::badge>
                                 @else
-                                    <span class="badge bg-danger">{{ __('not verified') }}</span>
+                                    <x-bs::badge variant="danger">{{ __('not verified') }}</x-bs::badge>
                                 @endisset
                             @endisset
-                        </x-list.item>
-                        <x-list.item :flex="false">
+                        </x-bs::list.item>
+                        <x-bs::list.item>
                             <i class="fa fa-fw fa-euro" title="{{ __('Price') }}"></i>
                             @isset($booking->price)
                                 {{ formatDecimal($booking->price) }}&nbsp;€
                                 @can('viewPaymentStatus', $booking)
                                     @isset($booking->paid_at)
-                                        <span class="badge bg-primary">{{ __('paid') }} ({{ $booking->paid_at->isMidnight()
-                                        ? formatDate($booking->paid_at)
-                                        : formatDateTime($booking->paid_at) }})</span>
+                                        <x-bs::badge variant="success">{{ __('paid') }} ({{ $booking->paid_at->isMidnight()
+                                            ? formatDate($booking->paid_at)
+                                            : formatDateTime($booking->paid_at) }})</x-bs::badge>
                                     @else
-                                        <span class="badge bg-danger">{{ __('not paid yet') }}</span>
+                                        <x-bs::badge variant="danger">{{ __('not paid yet') }}</x-bs::badge>
                                     @endisset
                                 @endcan
                             @else
-                                <span class="badge bg-primary">{{ __('free of charge') }}</span>
+                                <x-bs::badge variant="primary">{{ __('free of charge') }}</x-bs::badge>
                             @endisset
-                        </x-list.item>
-                        <x-list.item :flex="false">
+                        </x-bs::list.item>
+                        <x-bs::list.item>
                             <i class="fa fa-fw fa-at"></i>
                             {{ $booking->email }}
-                        </x-list.item>
-                        <x-list.item :flex="false">
+                        </x-bs::list.item>
+                        <x-bs::list.item>
                             <i class="fa fa-fw fa-phone"></i>
                             {{ $booking->phone ?? __('none') }}
-                        </x-list.item>
-                        <x-list.item :flex="false">
+                        </x-bs::list.item>
+                        <x-bs::list.item>
                             <i class="fa fa-fw fa-road"></i>
                             <span class="d-inline-block">
                                 <div class="d-flex flex-column">
@@ -134,20 +128,20 @@
                                     @endif
                                 </div>
                             </span>
-                        </x-list.item>
-                    </x-list.group>
+                        </x-bs::list.item>
+                    </x-bs::list>
                     <div class="card-body">
                         @can('view', $booking)
-                            <x-button.secondary href="{{ route('bookings.show', $booking) }}">
+                            <x-bs::button.link variant="secondary" href="{{ route('bookings.show', $booking) }}">
                                 <i class="fa fa-eye"></i>
                                 {{ __('View') }}
-                            </x-button.secondary>
+                            </x-bs::button.link>
                         @endcan
                         @can('viewPDF', $booking)
-                            <x-button.secondary href="{{ route('bookings.show-pdf', $booking) }}">
+                            <x-bs::button.link variant="secondary" href="{{ route('bookings.show-pdf', $booking) }}">
                                 <i class="fa fa-file-pdf"></i>
                                 {{ __('PDF') }}
-                            </x-button.secondary>
+                            </x-bs::button.link>
                         @endcan
                         @can('update', $booking)
                             <x-button.edit href="{{ route('bookings.edit', $booking) }}"/>

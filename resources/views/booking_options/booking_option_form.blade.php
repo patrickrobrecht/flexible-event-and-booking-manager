@@ -52,7 +52,9 @@
                 <x-bs::form.field name="maximum_bookings" type="number" min="1" step="1"
                                   :value="$bookingOption->maximum_bookings ?? null">
                     {{ __('Maximum bookings') }}
-                    <x-slot:hint>{{ formatTransChoice('Currently :count bookings', $bookingOption->bookings()->count()) }}</x-slot:hint>
+                    @isset($bookingOption)
+                        <x-slot:hint>{{ formatTransChoice('Currently :count bookings', $bookingOption->bookings()->count()) }}</x-slot:hint>
+                    @endisset
                 </x-bs::form.field>
                 <x-bs::form.field name="available_from" type="datetime-local"
                                   :value="isset($bookingOption->available_from) ? $bookingOption->available_from->format('Y-m-d\TH:i') : null">{{ __('Start date') }}</x-bs::form.field>

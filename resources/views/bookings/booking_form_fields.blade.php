@@ -23,7 +23,7 @@
                     if ($field->type === 'hidden') {
                         $value = $field->allowed_values[0] ?? null;
                     } elseif ($field->isDate()) {
-                        $value = $value->format('Y-m-d');
+                        $value = $value?->format('Y-m-d');
                     } elseif ($field->isSingleCheckbox()) {
                         $allowedValues = [1 => $field->allowed_values[0] ?? $field->name];
                     }

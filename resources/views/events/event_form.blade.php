@@ -58,7 +58,8 @@
                                   :value="isset($event) ? $event->organizations->pluck('id')->toArray() : []">{{ __('Organization') }}</x-bs::form.field>
                 <x-bs::form.field name="parent_event_id" type="select"
                                   :options="Options::fromModels($events->except($event->id ?? null), 'name')->prepend(__('none'), '')"
-                                  :value="$event->parent_event_id ?? null">{{ __('Part of the event') }}</x-bs::form.field>
+                                  :value="$event->parent_event_id ?? null"
+                                  :from-query="\Illuminate\Support\Facades\Request::routeIs('events.create')">{{ __('Part of the event') }}</x-bs::form.field>
                 <x-bs::form.field name="event_series_id" type="select"
                                   :options="Options::fromModels($eventSeries, 'name')->prepend(__('none'), '')"
                                   :value="$event->event_series_id ?? null">{{ __('Part of the event series') }}</x-bs::form.field>

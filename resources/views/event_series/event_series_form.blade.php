@@ -40,8 +40,9 @@
                                   :options="\App\Options\Visibility::toOptions()"
                                   :value="$eventSeries->visibility->value ?? null">{{ __('Visibility') }}</x-bs::form.field>
                 <x-bs::form.field name="parent_event_series_id" type="select"
-                                  :options="$allEventSeries->except($eventSeries->id ?? null)->pluck('name', 'id')->prepend(__('none'), '')"
-                                  :value="$eventSeries->parent_event_series_id ?? null">{{ __('Part of the event series') }}</x-bs::form.field>
+                                  :options="\Portavice\Bladestrap\Support\Options::fromModels($allEventSeries->except($eventSeries->id ?? null), 'name')->prepend(__('none'), '')"
+                                  :value="$eventSeries->parent_event_series_id ?? null"
+                                  :from-query="\Illuminate\Support\Facades\Request::routeIs('event-series.create')">{{ __('Part of the event series') }}</x-bs::form.field>
             </div>
 
             @isset($eventSeries)

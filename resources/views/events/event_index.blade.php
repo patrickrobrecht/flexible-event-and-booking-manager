@@ -109,10 +109,14 @@
                         @can('update', $event)
                             <x-button.edit href="{{ route('events.edit', $event) }}"/>
                         @endcan
-
                         @can('create', \App\Models\BookingOption::class)
                             <x-button.create href="{{ route('booking-options.create', $event) }}">
                                 {{ __('Create booking option') }}
+                            </x-button.create>
+                        @endcan
+                        @can('createChild', $event)
+                            <x-button.create href="{{ route('events.create', ['parent_event_id' => $event->id]) }}">
+                                {{ __('Create event') }}
                             </x-button.create>
                         @endcan
                     </div>

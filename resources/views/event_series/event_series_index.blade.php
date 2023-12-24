@@ -77,6 +77,11 @@
                         @can('update', $eventSeriesItem)
                             <x-button.edit href="{{ route('event-series.edit', $eventSeriesItem) }}"/>
                         @endcan
+                        @can('createChild', $eventSeriesItem)
+                            <x-button.create href="{{ route('event-series.create', ['parent_event_series_id' => $eventSeriesItem->id]) }}">
+                                {{ __('Create event series') }}
+                            </x-button.create>
+                        @endcan
                     </div>
                     <div class="card-footer">
                         <x-text.updated-human-diff :model="$eventSeriesItem"/>

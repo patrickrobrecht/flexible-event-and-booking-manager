@@ -1,4 +1,12 @@
-<button type="submit" href="{{ $href ?? '#' }}" class="btn {{ $class ?? 'btn-primary' }}">
+<button {{ $attributes
+    ->class([
+        'btn',
+        $class ?? 'btn-primary',
+    ])
+    ->merge([
+        'href' => $href ?? '#',
+        'type' => 'submit',
+    ]) }}>
     <i class="fa fa-save"></i>
     @if(trim($slot))
         {{ $slot }}

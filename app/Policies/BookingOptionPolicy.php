@@ -40,7 +40,11 @@ class BookingOptionPolicy
             !isset($bookingOption->available_from)
             || $bookingOption->available_from->isFuture()
         ) {
-            return $this->deny(__('Bookings are not possible yet.'));
+            if (isset($bookingOption->available_from)) {
+                $message = ' ' . __('The booking period starts at :date.', ['date' => formatDateTime($bookingOption->available_from)]);
+            }
+
+            return $this->deny(__('Bookings are not possible yet.') . ($message ?? ''));
         }
 
         if (isset($bookingOption->available_until) && $bookingOption->available_until->isPast()) {

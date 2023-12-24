@@ -10,8 +10,10 @@ This application allows to manage events, their booking forms and bookings via a
 ## Features
 - Manage events and event series, locations, and organizations
 - Manage booking options and flexible booking forms which can be reused for multiple events
-- Bookings (confirmed via email)
-  - Guest bookings are supported, can be forbidden by enabling the restriction to logged-in users in the settings of the booking option.
+  - Users editing booking forms can see a preview for the booking forms if bookings are not enabled yet.
+- Bookings
+  - Confirmation via email
+  - Guest bookings are supported, but can be forbidden by enabling the restriction to logged-in users in the settings of the booking option.
   - Viewing/exporting all bookings and editing is limited to users with an administrative role.
   - Update booking comment and payment status
 - Login and logout, reset password, verify e-mail address, edit own account

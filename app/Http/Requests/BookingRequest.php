@@ -7,6 +7,7 @@ use App\Http\Requests\Traits\AuthorizationViaController;
 use App\Http\Requests\Traits\ValidatesAddressFields;
 use App\Models\Booking;
 use App\Models\BookingOption;
+use App\Options\FormElementType;
 use App\Policies\BookingPolicy;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -81,7 +82,7 @@ class BookingRequest extends FormRequest
 
         $rules = [];
         foreach ($this->booking_option->formFields as $field) {
-            if ($field->type === 'headline') {
+            if ($field->type->isStatic()) {
                 continue;
             }
 
@@ -90,16 +91,16 @@ class BookingRequest extends FormRequest
             ];
             $allowedValues = $field->allowed_values ?? [];
 
-            if ($field->type === 'checkbox' && count($allowedValues) > 1) {
+            if ($field->type === FormElementType::Checkbox && count($allowedValues) > 1) {
                 $rulesForField[] = 'array';
                 $rules[$field->input_name . '.*'] = Rule::in($allowedValues);
             } else {
                 $rulesForField[] = match ($field->type) {
-                    'date' => 'date_format:Y-m-d',
-                    'datetime-local' => 'date_format:Y-m-d\TH:i',
-                    'email' => $field->type,
-                    'number' => 'numeric',
-                    'radio', 'select' => Rule::in($allowedValues),
+                    FormElementType::Date => 'date_format:Y-m-d',
+                    FormElementType::DateTime => 'date_format:Y-m-d\TH:i',
+                    FormElementType::Email => 'email',
+                    FormElementType::Number => 'numeric',
+                    FormElementType::Radio, FormElementType::Select => Rule::in($allowedValues),
                     default => 'string',
                 };
             }

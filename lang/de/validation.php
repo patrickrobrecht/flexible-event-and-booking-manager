@@ -185,6 +185,7 @@ return [
         'password' => 'Passwort',
         'password_confirmation' => 'Passwort Bestätigung',
         'phone' => 'Telefonnummer',
+        'price' => 'Preis',
         'register_entry' => 'Registereintrag',
         'representatives' => 'Vertreter',
         'search' => 'Suchbegriff',

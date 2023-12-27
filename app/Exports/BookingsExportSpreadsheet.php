@@ -71,7 +71,7 @@ class BookingsExportSpreadsheet extends Spreadsheet
         }
 
         foreach ($this->bookingOption->formFields as $field) {
-            if ($field->type === 'headline') {
+            if ($field->type->isStatic()) {
                 continue;
             }
 
@@ -114,21 +114,11 @@ class BookingsExportSpreadsheet extends Spreadsheet
         }
 
         foreach ($this->bookingOption->formFields as $field) {
-            if ($field->type === 'headline') {
+            if ($field->type->isStatic()) {
                 continue;
             }
 
-            $value = $booking->getFieldValue($field);
-
-            if (is_array($value)) {
-                $value = implode(',', $value);
-            }
-
-            if ($field->type === 'date' && isset($value)) {
-                $value = $value->format('d.m.Y');
-            }
-
-            $columns[] = $value;
+            $columns[] = $booking->getFieldValueAsText($field);
         }
 
         return $columns;

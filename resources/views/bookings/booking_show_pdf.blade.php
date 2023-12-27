@@ -13,7 +13,7 @@
         }
 
         table {
-            width:100%;
+            width: 100%;
         }
 
         td {
@@ -91,42 +91,28 @@
     @if($bookingOption->formFields->isNotEmpty())
         <table>
             <tbody>
-                @foreach($bookingOption->formFields as $field)
-                    @if($field->type == 'headline')
-                        <tr>
-                            <td colspan="2">
-                                <h2>{{ $field->name }}</h2>
-                            </td>
-                        </tr>
-                    @else
-                        @php
-                            $label = $field->name;
-                            $value = $booking->getFieldValue($field) ?? '';
+            @foreach($bookingOption->formFields as $field)
+                @if(!$field->type->isFormField())
+                    <tr>
+                        <td colspan="2">
+                            <h2>{{ $field->name }}</h2>
+                        </td>
+                    </tr>
+                @else
+                    @php
+                        $label = $field->name;
+                        if ($field->isSingleCheckbox()) {
+                            $label = $field->allowed_values[0] ?? $field->name;
+                        }
 
-                            if ($field->type === 'checkbox' && ($field->allowed_values === null || count($field->allowed_values) === 1)) {
-                                $label = $field->allowed_values[0] ?? $field->name;
-                                $value = $value ? __('Yes') : __('No');
-                            }
-
-                            if (is_array($value)) {
-                                $value = implode(', ', $value);
-                            }
-
-                            $value = match ($field->type) {
-                                'date' => formatDate($value),
-                                default => $value,
-                            };
-
-                            if (!$value) {
-                                $value = '-';
-                            }
-                        @endphp
-                        <tr>
-                            <td class="label">{{ $label }}</td>
-                            <td class="underline">{{ $value }}</td>
-                        </tr>
-                    @endif
-                @endforeach
+                        $value = $booking->getFieldValueAsText($field) ?? '-';
+                    @endphp
+                    <tr>
+                        <td class="label">{{ $label }}</td>
+                        <td class="underline">{{ $value }}</td>
+                    </tr>
+                @endif
+            @endforeach
             </tbody>
         </table>
     @else
@@ -134,42 +120,42 @@
         <h2></h2>{{-- force margin --}}
         <table>
             <tbody>
-                <tr>
-                    <td class="label">{{ __('First name') }}</td>
-                    <td class="underline">{{ $booking->first_name }}</td>
-                </tr>
-                <tr>
-                    <td class="label">{{ __('Last name') }}</td>
-                    <td class="underline">{{ $booking->last_name }}</td>
-                </tr>
-                <tr>
-                    <td class="label">{{ __('Phone number') }}</td>
-                    <td class="underline">{{ $booking->phone ?? '-' }}</td>
-                </tr>
-                <tr>
-                    <td class="label">{{ __('E-mail') }}</td>
-                    <td class="underline">{{ $booking->email }}</td>
-                </tr>
-                <tr>
-                    <td class="label">{{ __('Street') }}</td>
-                    <td class="underline">{{ $booking->street ?? '-' }}</td>
-                </tr>
-                <tr>
-                    <td class="label">{{ __('House number') }}</td>
-                    <td class="underline">{{ $booking->house_number ?? '-' }}</td>
-                </tr>
-                <tr>
-                    <td class="label">{{ __('Postal code') }}</td>
-                    <td class="underline">{{ $booking->postal_code ?? '-' }}</td>
-                </tr>
-                <tr>
-                    <td class="label">{{ __('City') }}</td>
-                    <td class="underline">{{ $booking->city ?? '-' }}</td>
-                </tr>
-                <tr>
-                    <td class="label">{{ __('Country') }}</td>
-                    <td class="underline">{{ $booking->country ?? '-' }}</td>
-                </tr>
+            <tr>
+                <td class="label">{{ __('First name') }}</td>
+                <td class="underline">{{ $booking->first_name }}</td>
+            </tr>
+            <tr>
+                <td class="label">{{ __('Last name') }}</td>
+                <td class="underline">{{ $booking->last_name }}</td>
+            </tr>
+            <tr>
+                <td class="label">{{ __('Phone number') }}</td>
+                <td class="underline">{{ $booking->phone ?? '-' }}</td>
+            </tr>
+            <tr>
+                <td class="label">{{ __('E-mail') }}</td>
+                <td class="underline">{{ $booking->email }}</td>
+            </tr>
+            <tr>
+                <td class="label">{{ __('Street') }}</td>
+                <td class="underline">{{ $booking->street ?? '-' }}</td>
+            </tr>
+            <tr>
+                <td class="label">{{ __('House number') }}</td>
+                <td class="underline">{{ $booking->house_number ?? '-' }}</td>
+            </tr>
+            <tr>
+                <td class="label">{{ __('Postal code') }}</td>
+                <td class="underline">{{ $booking->postal_code ?? '-' }}</td>
+            </tr>
+            <tr>
+                <td class="label">{{ __('City') }}</td>
+                <td class="underline">{{ $booking->city ?? '-' }}</td>
+            </tr>
+            <tr>
+                <td class="label">{{ __('Country') }}</td>
+                <td class="underline">{{ $booking->country ?? '-' }}</td>
+            </tr>
             </tbody>
         </table>
     @endif

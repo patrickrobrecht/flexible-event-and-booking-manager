@@ -17,9 +17,7 @@
     <x-bs::breadcrumb.item href="{{ route('events.index') }}">{{ __('Events') }}</x-bs::breadcrumb.item>
     <x-bs::breadcrumb.item href="{{ route('events.show', $event) }}">{{ $event->name }}</x-bs::breadcrumb.item>
     @isset($bookingOption)
-        <x-bs::breadcrumb.item href="{{ route('booking-options.show', [$event, $bookingOption]) }}">
-            {{ $bookingOption->name }}
-        </x-bs::breadcrumb.item>
+        <x-bs::breadcrumb.item href="{{ route('booking-options.show', [$event, $bookingOption]) }}">{{ $bookingOption->name }}</x-bs::breadcrumb.item>
     @endisset
     <x-bs::breadcrumb.item>@yield('title')</x-bs::breadcrumb.item>
 @endsection
@@ -57,7 +55,10 @@
                 <x-bs::form.field name="available_until" type="datetime-local"
                                   :value="isset($bookingOption->available_until) ? $bookingOption->available_until->format('Y-m-d\TH:i') : null">{{ __('End date') }}</x-bs::form.field>
                 <x-bs::form.field name="price" type="number" min="0.01" step="0.01"
-                                  :value="$bookingOption->price ?? null">{{ __('Price') }}</x-bs::form.field>
+                                  :value="$bookingOption->price ?? null">
+                    {{ __('Price') }}
+                    <x-slot:appendText>€</x-slot:appendText>
+                </x-bs::form.field>
                 <x-bs::form.field id="restrictions" name="restrictions[]" type="switch"
                                   :options="\App\Options\BookingRestriction::toOptions()"
                                   :value="$bookingOption->restrictions ?? null">{{ __('Restrictions') }}</x-bs::form.field>

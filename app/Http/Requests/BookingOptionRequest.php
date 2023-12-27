@@ -72,6 +72,7 @@ class BookingOptionRequest extends FormRequest
                 'nullable',
                 'numeric',
                 'gte:0',
+                'lte:999999.99',
             ],
             'book_for_self_only' => [
                 'nullable',

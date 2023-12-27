@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Traits\Filterable;
 use App\Models\Traits\HasAddress;
+use App\Options\FormElementType;
 use App\Options\PaymentStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -106,7 +107,7 @@ class Booking extends Model
         }
 
         foreach ($this->bookingOption->formFields ?? [] as $field) {
-            if ($field->type === 'headline') {
+            if ($field->type->isStatic()) {
                 continue;
             }
 
@@ -149,11 +150,30 @@ class Booking extends Model
                 static fn (FormFieldValue $formFieldValue) => $formFieldValue->formField->column === null
                     && $formFieldValue->formField->is($formField)
             );
-        if ($fieldValue) {
-            return $fieldValue->getRealValue();
+        return $fieldValue?->getRealValue();
+    }
+
+    public function getFieldValueAsText(FormField $formField): ?string
+    {
+        $value = $this->getFieldValue($formField);
+
+        if (isset($value)) {
+            if (is_array($value)) {
+                return implode(',', $value);
+            }
+
+            if ($formField->isSingleCheckbox()) {
+                $value = $value ? __('Yes') : __('No');
+            }
+
+            $value = match ($formField->type) {
+                FormElementType::Date => formatDate($value),
+                FormElementType::DateTime => formatDateTime($value),
+                default => $value,
+            };
         }
 
-        return null;
+        return $value;
     }
 
     public static function allowedFilters(): array

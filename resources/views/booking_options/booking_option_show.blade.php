@@ -22,10 +22,10 @@
 
 @section('content')
     <div class="row">
-        <div class="col-12 col-md-4">
+        <div class="col-12 col-lg-4">
             @include('events.shared.event_details')
         </div>
-        <div class="col-12 col-md-8">
+        <div class="col-12 col-lg-8 pt-3 pt-lg-0">
             @auth
                 @if($bookingOption->isRestrictedBy(\App\Options\BookingRestriction::VerifiedEmailAddressRequired) && Auth::user()?->email_verified_at === null)
                     <x-bs::alert variant="danger">
@@ -80,7 +80,7 @@
                         </x-bs::alert>
                     @endif
 
-                    <x-button.save disabled>
+                    <x-button.save :disabled="$canBookResponse->denied()">
                         @isset($bookingOption->price)
                             {{ __('Book with costs') }}
                             ({{ formatDecimal($bookingOption->price) }}&nbsp;€)

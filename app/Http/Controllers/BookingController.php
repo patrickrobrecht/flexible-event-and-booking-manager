@@ -29,7 +29,7 @@ class BookingController extends Controller
         BookingFilterRequest $request
     ): StreamedResponse|View {
         $bookingOption->load([
-            'form.formFieldGroups.formFields',
+            'formFields',
         ]);
 
         $bookingsQuery = Booking::filter($bookingOption->bookings())
@@ -62,7 +62,7 @@ class BookingController extends Controller
 
         return view('bookings.booking_show', [
             'booking' => $booking->loadMissing([
-                'bookingOption.form.formFieldGroups.formFields',
+                'bookingOption.formFields',
             ]),
         ]);
     }
@@ -87,7 +87,7 @@ class BookingController extends Controller
             Storage::disk('local')->makeDirectory($directoryPath);
             Pdf::loadView('bookings.booking_show_pdf', [
                 'booking' => $booking->loadMissing([
-                    'bookingOption.form.formFieldGroups.formFields',
+                    'bookingOption.formFields',
                 ]),
             ])
                 ->addInfo([
@@ -139,7 +139,7 @@ class BookingController extends Controller
 
         return view('bookings.booking_form', [
             'booking' => $booking->loadMissing([
-                'bookingOption.form.formFieldGroups.formFields',
+                'bookingOption.formFields',
             ]),
         ]);
     }

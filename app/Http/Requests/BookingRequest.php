@@ -75,34 +75,36 @@ class BookingRequest extends FormRequest
             ];
         }
 
-        if (!isset($this->booking_option->form)) {
+        if ($this->booking_option->formFields->isEmpty()) {
             return array_replace($defaultRules, $commonRules, $this->rulesForAddressFields('nullable'));
         }
 
         $rules = [];
-        foreach ($this->booking_option->form->formFieldGroups as $group) {
-            foreach ($group->formFields as $field) {
-                $rulesForField = [
-                    $field->required ? 'required' : 'nullable',
-                ];
-                $allowedValues = $field->allowed_values ?? [];
-
-                if ($field->type === 'checkbox' && count($allowedValues) > 1) {
-                    $rulesForField[] = 'array';
-                    $rules[$field->input_name . '.*'] = Rule::in($allowedValues);
-                } else {
-                    $rulesForField[] = match ($field->type) {
-                        'date' => 'date_format:Y-m-d',
-                        'datetime-local' => 'date_format:Y-m-d\TH:i',
-                        'email' => $field->type,
-                        'number' => 'numeric',
-                        'radio', 'select' => Rule::in($allowedValues),
-                        default => 'string',
-                    };
-                }
-
-                $rules[$field->input_name] = array_merge($rulesForField, $field->validation_rules ?? []);
+        foreach ($this->booking_option->formFields as $field) {
+            if ($field->type === 'headline') {
+                continue;
             }
+
+            $rulesForField = [
+                $field->required ? 'required' : 'nullable',
+            ];
+            $allowedValues = $field->allowed_values ?? [];
+
+            if ($field->type === 'checkbox' && count($allowedValues) > 1) {
+                $rulesForField[] = 'array';
+                $rules[$field->input_name . '.*'] = Rule::in($allowedValues);
+            } else {
+                $rulesForField[] = match ($field->type) {
+                    'date' => 'date_format:Y-m-d',
+                    'datetime-local' => 'date_format:Y-m-d\TH:i',
+                    'email' => $field->type,
+                    'number' => 'numeric',
+                    'radio', 'select' => Rule::in($allowedValues),
+                    default => 'string',
+                };
+            }
+
+            $rules[$field->input_name] = array_merge($rulesForField, $field->validation_rules ?? []);
         }
 
         return array_replace($rules, $commonRules);
@@ -112,10 +114,8 @@ class BookingRequest extends FormRequest
     {
         $attributes = parent::attributes();
 
-        foreach ($this->booking_option->form->formFieldGroups ?? [] as $group) {
-            foreach ($group->formFields as $field) {
-                $attributes[$field->input_name] = $field->name;
-            }
+        foreach ($this->booking_option->formFields ?? [] as $field) {
+            $attributes[$field->input_name] = $field->name;
         }
 
         return $attributes;

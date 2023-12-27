@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property-read int $id
+ * @property int $sort
  * @property string $name
  * @property ?string $hint
  * @property ?string $container_class
@@ -22,7 +22,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *
  * @property string $input_name {@see self::inputName()}
  *
- * @property Form $form {@see self::form()}
  * @property Collection|FormFieldValue $formFieldValue {@see self::formFieldValues()}
  */
 class FormField extends Model
@@ -49,11 +48,6 @@ class FormField extends Model
     public function inputName(): Attribute
     {
         return new Attribute(fn () => $this->column ?? 'custom-' . $this->id);
-    }
-
-    public function form(): BelongsTo
-    {
-        return $this->belongsTo(Form::class);
     }
 
     public function formFieldValues(): HasMany

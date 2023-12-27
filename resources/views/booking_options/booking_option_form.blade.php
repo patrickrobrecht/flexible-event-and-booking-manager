@@ -3,7 +3,6 @@
 @php
     /** @var \App\Models\Event $event */
     /** @var ?\App\Models\BookingOption $bookingOption */
-    /** @var \Illuminate\Database\Eloquent\Collection|\App\Models\Form $forms */
 @endphp
 
 @section('title')
@@ -46,9 +45,6 @@
                                   :value="$bookingOption->description ?? null">{{ __('Description') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6">
-                <x-bs::form.field name="form_id" type="select"
-                                  :options="$forms->pluck('name', 'id')->prepend(__('none'), '')"
-                                  :value="$bookingOption->form_id ?? null">{{ __('Form') }}</x-bs::form.field>
                 <x-bs::form.field name="maximum_bookings" type="number" min="1" step="1"
                                   :value="$bookingOption->maximum_bookings ?? null">
                     {{ __('Maximum bookings') }}

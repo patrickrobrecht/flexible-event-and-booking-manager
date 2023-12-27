@@ -24,7 +24,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *
  * @property-read Collection|Booking[] $bookings {@see self::bookings()}
  * @property-read Event $event {@see self::event()}
- * @property-read Form $form {@see self::form()}
+ * @property-read Collection|FormField[] $formFields {@see self::formFields()}
  */
 class BookingOption extends Model
 {
@@ -71,17 +71,15 @@ class BookingOption extends Model
         return $this->belongsTo(Event::class, 'event_id');
     }
 
-    public function form(): BelongsTo
+    public function formFields(): HasMany
     {
-        return $this->belongsTo(Form::class, 'form_id');
+        return $this->hasMany(FormField::class, 'booking_option_id')
+                    ->orderBy('sort');
     }
 
     public function fillAndSave(array $validatedData): bool
     {
-        $this->fill($validatedData);
-        $this->form()->associate($validatedData['form_id'] ?? null);
-
-        return $this->save();
+        return $this->fill($validatedData)->save();
     }
 
     public function isRestrictedBy(BookingRestriction $restriction): bool

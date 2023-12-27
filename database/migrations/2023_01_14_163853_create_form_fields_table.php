@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('form_fields', static function (Blueprint $table) {
             $table->id();
-            $table->foreignId('form_field_group_id')->constrained('form_field_groups');
+            $table->foreignId('booking_option_id')->constrained('booking_options');
             $table->integer('sort');
             $table->string('name');
             $table->text('hint')->nullable();

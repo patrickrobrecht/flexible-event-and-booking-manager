@@ -88,14 +88,17 @@
         </tbody>
     </table>
 
-    @if($booking->bookingOption->form)
-        @foreach($booking->bookingOption->form->formFieldGroups as $group)
-            @if($group->show_name)
-                <h2>{{ $group->name }}</h2>
-            @endif
-            <table>
-                <tbody>
-                    @foreach ($group->formFields as $field)
+    @if($bookingOption->formFields->isNotEmpty())
+        <table>
+            <tbody>
+                @foreach($bookingOption->formFields as $field)
+                    @if($field->type == 'headline')
+                        <tr>
+                            <td colspan="2">
+                                <h2>{{ $field->name }}</h2>
+                            </td>
+                        </tr>
+                    @else
                         @php
                             $label = $field->name;
                             $value = $booking->getFieldValue($field) ?? '';
@@ -122,10 +125,10 @@
                             <td class="label">{{ $label }}</td>
                             <td class="underline">{{ $value }}</td>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        @endforeach
+                    @endif
+                @endforeach
+            </tbody>
+        </table>
     @else
         {{-- default form --}}
         <h2></h2>{{-- force margin --}}

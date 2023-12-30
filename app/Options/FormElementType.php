@@ -12,6 +12,7 @@ enum FormElementType: string
     case Date = 'date';
     case DateTime = 'datetime';
     case Email = 'email';
+    case File = 'file';
     case Checkbox = 'checkbox';
     case Hidden = 'hidden';
     case Number = 'number';
@@ -26,6 +27,7 @@ enum FormElementType: string
             self::Headline => __('headline'),
             self::Date => __('date field'),
             self::Email => __('email field'),
+            self::File => __('file upload field'),
             self::Checkbox => __('checkbox field'),
             self::Hidden => __('hidden field'),
             self::Number => __('number field'),

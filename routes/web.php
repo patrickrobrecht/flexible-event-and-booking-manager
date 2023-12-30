@@ -15,6 +15,7 @@ use App\Models\Booking;
 use App\Models\BookingOption;
 use App\Models\Event;
 use App\Models\EventSeries;
+use App\Models\FormFieldValue;
 use App\Models\Location;
 use App\Models\Organization;
 use App\Models\PersonalAccessToken;
@@ -39,6 +40,9 @@ Route::middleware('auth')->group(static function () {
          ->only(['show', 'edit', 'update']);
     Route::get('bookings/{booking}/pdf', [BookingController::class, 'showPdf'])
         ->name('bookings.show-pdf');
+    Route::model('form_field_value', FormFieldValue::class);
+    Route::get('bookings/{booking}/file/{form_field_value}', [BookingController::class, 'downloadFile'])
+         ->name('bookings.show-file');
 
     Route::resource('events', EventController::class)
          ->only(['index', 'create', 'store', 'edit', 'update']);

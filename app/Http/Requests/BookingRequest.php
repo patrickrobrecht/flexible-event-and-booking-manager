@@ -86,8 +86,12 @@ class BookingRequest extends FormRequest
                 continue;
             }
 
+            $isFileWithExistingUpload = $field->type === FormElementType::File
+                && isset($this->booking)
+                && $this->booking->getFieldValue($field) !== null;
+
             $rulesForField = [
-                $field->required ? 'required' : 'nullable',
+                $field->required && !$isFileWithExistingUpload ? 'required' : 'nullable',
             ];
             $allowedValues = $field->allowed_values ?? [];
 
@@ -99,6 +103,7 @@ class BookingRequest extends FormRequest
                     FormElementType::Date => 'date_format:Y-m-d',
                     FormElementType::DateTime => 'date_format:Y-m-d\TH:i',
                     FormElementType::Email => 'email',
+                    FormElementType::File => 'file',
                     FormElementType::Number => 'numeric',
                     FormElementType::Radio, FormElementType::Select => Rule::in($allowedValues),
                     default => 'string',

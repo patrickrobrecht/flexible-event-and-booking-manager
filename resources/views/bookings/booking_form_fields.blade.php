@@ -20,22 +20,42 @@
                     $inputName = $field->input_name . ($field->isMultiCheckbox() ? '[]' : '');
 
                     $value = $booking?->getFieldValue($field);
+                    $required = $field->required;
                     if ($field->type === \App\Options\FormElementType::Hidden) {
                         $value = $field->allowed_values[0] ?? null;
                     } elseif ($field->isDate()) {
                         $value = $value?->format('Y-m-d');
                     } elseif ($field->isSingleCheckbox()) {
-                        $allowedValues = [1 => $field->allowed_values[0] ?? $field->name];
+                        $allowedValues = \Portavice\Bladestrap\Support\Options::one($field->allowed_values[0] ?? $field->name);
+                    } elseif ($field->type === \App\Options\FormElementType::File) {
+                        $required = $required && !isset($value);
                     }
                 @endphp
                 <x-bs::form.field container-class="{{ $field->container_class ?? 'col-12' }}"
                                   name="{{ $inputName }}" type="{{ $field->type->value }}"
                                   :options="$allowedValues" :value="$value"
-                                  :required="$field->required"
-                                  :readonly="!$canEdit" :disabled="!$canEdit">
+                                  :disabled="!$canEdit" :readonly="!$canEdit" :required="$required">
                     {{ $field->name }} @if($field->required) * @endif
                     @if(isset($field->hint) && $field->type !== \App\Options\FormElementType::Hidden)
                         <x-slot:hint>{!! $field->hint !!}</x-slot:hint>
+                    @endif
+                    @if($field->type === \App\Options\FormElementType::File)
+                        <x-slot:appendText :container="!isset($value)">
+                            @isset($value)
+                                @php
+                                    $formFieldValue = $booking?->formFieldValues
+                                        ->first(
+                                            static fn (\App\Models\FormFieldValue $formFieldValue) => $formFieldValue->formField->column === null
+                                                && $formFieldValue->formField->is($field)
+                                        );
+                                @endphp
+                                <x-bs::button.link variant="primary" href="{{ route('bookings.show-file', [$booking, $formFieldValue]) }}">
+                                    <i class="fa fa-fw fa-download"></i> {{ __('Download file') }}
+                                </x-bs::button.link>
+                            @else
+                                {{ __('No file uploaded.') }}
+                            @endif
+                        </x-slot:appendText>
                     @endif
                 </x-bs::form.field>
             @endif

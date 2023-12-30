@@ -42,7 +42,7 @@
         <div class="col-12 col-md-8">
             @include('bookings.shared.booking_details')
 
-            <x-bs::form method="PUT" action="{{ route('bookings.update', $booking) }}">
+            <x-bs::form method="PUT" action="{{ route('bookings.update', $booking) }}" enctype="multipart/form-data">
                 @canany(['updateBookingComment', 'updatePaymentStatus'], $booking)
                     <div class="row">
                         @can('updateBookingComment', $booking)

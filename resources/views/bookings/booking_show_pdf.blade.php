@@ -106,6 +106,9 @@
                         }
 
                         $value = $booking->getFieldValueAsText($field) ?? '-';
+                        if ($field->type === \App\Options\FormElementType::File) {
+                            $value = isset($value) ? __('File uploaded.') : __('No file uploaded.');
+                        }
                     @endphp
                     <tr>
                         <td class="label">{{ $label }}</td>

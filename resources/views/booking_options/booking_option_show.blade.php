@@ -60,7 +60,7 @@
             @if($canBookResponse->allowed() || $canUpdate)
                 @include('layouts.alerts')
 
-                <x-bs::form method="POST" action="{{ route('bookings.store', [$event, $bookingOption]) }}">
+                <x-bs::form method="POST" action="{{ route('bookings.store', [$event, $bookingOption]) }}" enctype="multipart/form-data">
                     @include('bookings.booking_form_fields', [
                         'booking' => null,
                         'bookingOption' => $bookingOption,

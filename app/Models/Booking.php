@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Http\UploadedFile;
 use Spatie\QueryBuilder\AllowedFilter;
 
 /**
@@ -112,7 +113,23 @@ class Booking extends Model
             }
 
             if (!isset($field->column)) {
-                if (!$this->setFieldValue($field, $validatedData[$field->input_name] ?? null)) {
+                $value = $validatedData[$field->input_name] ?? null;
+                if ($value instanceof UploadedFile) {
+                    $fileName = str_replace(' ', '', implode('-', [
+                        $this->id,
+                        $this->first_name,
+                        $this->last_name,
+                        $field->id,
+                    ])) . '.' . $value->extension();
+                    $path = $value->storeAs($this->bookingOption->getFilePath(), $fileName);
+                    if ($path !== false) {
+                        $value = $path;
+                    } else {
+                        $value = null;
+                    }
+                }
+
+                if (!$this->setFieldValue($field, $value)) {
                     return false;
                 }
             }

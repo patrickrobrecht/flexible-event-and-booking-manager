@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3e7c6d785893fb5c15a75b75ff3e5522",
+    "content-hash": "aa8d66d54335e15ea925a8fba86380d4",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -3042,16 +3042,16 @@
         },
         {
             "name": "portavice/bladestrap",
-            "version": "v1.0.0",
+            "version": "v1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/portavice/bladestrap.git",
-                "reference": "9d7e4c6894da22307cf58c7fc28f7b8d2e778448"
+                "reference": "44f21d32a0b1026af50d6f9560a6206d66b1b1d5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/portavice/bladestrap/zipball/9d7e4c6894da22307cf58c7fc28f7b8d2e778448",
-                "reference": "9d7e4c6894da22307cf58c7fc28f7b8d2e778448",
+                "url": "https://api.github.com/repos/portavice/bladestrap/zipball/44f21d32a0b1026af50d6f9560a6206d66b1b1d5",
+                "reference": "44f21d32a0b1026af50d6f9560a6206d66b1b1d5",
                 "shasum": ""
             },
             "require": {
@@ -3093,9 +3093,9 @@
             "description": "Blade components for Bootstrap 5",
             "support": {
                 "issues": "https://github.com/portavice/bladestrap/issues",
-                "source": "https://github.com/portavice/bladestrap/tree/v1.0.0"
+                "source": "https://github.com/portavice/bladestrap/tree/v1.1.0"
             },
-            "time": "2023-11-22T11:04:30+00:00"
+            "time": "2023-12-30T21:26:40+00:00"
         },
         {
             "name": "psr/clock",

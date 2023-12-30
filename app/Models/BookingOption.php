@@ -82,6 +82,15 @@ class BookingOption extends Model
         return $this->fill($validatedData)->save();
     }
 
+    public function getFilePath(): string
+    {
+        return implode('/', [
+            'bookings',
+            $this->event_id,
+            $this->id,
+        ]);
+    }
+
     public function isRestrictedBy(BookingRestriction $restriction): bool
     {
         return in_array($restriction->value, $this->restrictions ?? [], true);

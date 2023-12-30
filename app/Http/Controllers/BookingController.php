@@ -10,6 +10,8 @@ use App\Http\Requests\Filters\BookingFilterRequest;
 use App\Models\Booking;
 use App\Models\BookingOption;
 use App\Models\Event;
+use App\Models\FormFieldValue;
+use App\Options\FormElementType;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
@@ -76,11 +78,7 @@ class BookingController extends Controller
             $booking->first_name,
             $booking->last_name,
         ])) . '.pdf';
-        $directoryPath = implode('/', [
-            'bookings',
-            $booking->bookingOption->event->id,
-            $booking->bookingOption->id,
-        ]);
+        $directoryPath = $booking->bookingOption->getFilePath();
         $filePath = $directoryPath . '/' . $fileName;
 
         if (!Storage::disk('local')->exists($filePath)) {
@@ -154,5 +152,19 @@ class BookingController extends Controller
         }
 
         return back();
+    }
+
+    public function downloadFile(Booking $booking, FormFieldValue $formFieldValue): StreamedResponse
+    {
+        $this->authorize('view', $booking);
+
+        if (
+            $booking->isNot($formFieldValue->booking)
+            || $formFieldValue->formField->type !== FormElementType::File
+        ) {
+            abort(404);
+        }
+
+        return Storage::download($formFieldValue->value);
     }
 }

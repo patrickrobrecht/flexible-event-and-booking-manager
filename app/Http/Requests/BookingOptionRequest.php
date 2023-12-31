@@ -55,10 +55,6 @@ class BookingOptionRequest extends FormRequest
                 'nullable',
                 'string',
             ],
-            'form_id' => [
-                'nullable',
-                Rule::exists('forms', 'id'),
-            ],
             'maximum_bookings' => [
                 'nullable',
                 'integer',
@@ -76,6 +72,7 @@ class BookingOptionRequest extends FormRequest
                 'nullable',
                 'numeric',
                 'gte:0',
+                'lte:999999.99',
             ],
             'book_for_self_only' => [
                 'nullable',

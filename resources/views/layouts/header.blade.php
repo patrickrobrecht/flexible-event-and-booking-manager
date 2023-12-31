@@ -30,14 +30,13 @@
 
                             $canViewEvents = $loggedInUser->can('viewAny', App\Models\Event::class);
                             $canViewEventSeries = $loggedInUser->can('viewAny', App\Models\EventSeries::class);
-                            $canViewForms = $loggedInUser->can('viewAny', App\Models\Form::class);
                             $canViewOrganizations = $loggedInUser->can('viewAny', App\Models\Organization::class);
                             $canViewLocations = $loggedInUser->can('viewAny', App\Models\Location::class);
 
                             $canViewUsers = $loggedInUser->can('viewAny', App\Models\User::class);
                             $canViewUserRoles = $loggedInUser->can('viewAny', App\Models\UserRole::class);
 
-                            $canAdmin = $canViewEvents || $canViewEventSeries || $canViewForms
+                            $canAdmin = $canViewEvents || $canViewEventSeries
                                 || $canViewOrganizations || $canViewLocations
                                 || $canViewUsers || $canViewUserRoles;
                         @endphp
@@ -56,12 +55,6 @@
                                         <x-bs::dropdown.item href="{{ route('event-series.index') }}">
                                             <i class="fa fa-fw fa-calendar-week"></i>
                                             {{ __('Event series') }}
-                                        </x-bs::dropdown.item>
-                                    @endif
-                                    @if($canViewForms)
-                                        <x-bs::dropdown.item href="{{ route('forms.index') }}">
-                                            <i class="fa fa-fw fa-table-list"></i>
-                                            {{ __('Forms') }}
                                         </x-bs::dropdown.item>
                                     @endif
                                     @if($canViewOrganizations)

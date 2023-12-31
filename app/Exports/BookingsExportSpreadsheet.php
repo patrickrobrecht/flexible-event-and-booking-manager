@@ -5,7 +5,6 @@ namespace App\Exports;
 use App\Models\Booking;
 use App\Models\BookingOption;
 use App\Models\Event;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use PhpOffice\PhpSpreadsheet\Cell\ColumnRange;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -57,7 +56,7 @@ class BookingsExportSpreadsheet extends Spreadsheet
             __('Paid at'),
         ];
 
-        if (!isset($this->bookingOption->form)) {
+        if ($this->bookingOption->formFields->isEmpty()) {
             return array_merge($columns, [
                 __('First name'),
                 __('Last name'),
@@ -71,10 +70,12 @@ class BookingsExportSpreadsheet extends Spreadsheet
             ]);
         }
 
-        foreach ($this->bookingOption->form->formFieldGroups as $group) {
-            foreach ($group->formFields as $field) {
-                $columns[] = $field->name;
+        foreach ($this->bookingOption->formFields as $field) {
+            if ($field->type->isStatic()) {
+                continue;
             }
+
+            $columns[] = $field->name;
         }
 
         return $columns;
@@ -98,7 +99,7 @@ class BookingsExportSpreadsheet extends Spreadsheet
                 : '',
         ];
 
-        if (!isset($this->bookingOption->form)) {
+        if ($this->bookingOption->formFields->isEmpty()) {
             return array_merge($columns, [
                 $booking->first_name,
                 $booking->last_name,
@@ -112,20 +113,12 @@ class BookingsExportSpreadsheet extends Spreadsheet
             ]);
         }
 
-        foreach ($this->bookingOption->form->formFieldGroups as $group) {
-            foreach ($group->formFields as $field) {
-                $value = $booking->getFieldValue($field);
-
-                if (is_array($value)) {
-                    $value = implode(',', $value);
-                }
-
-                if ($field->type === 'date') {
-                    $value = Carbon::createFromFormat('Y-m-d', $value)->format('d.m.Y');
-                }
-
-                $columns[] = $value;
+        foreach ($this->bookingOption->formFields as $field) {
+            if ($field->type->isStatic()) {
+                continue;
             }
+
+            $columns[] = $booking->getFieldValueAsText($field);
         }
 
         return $columns;

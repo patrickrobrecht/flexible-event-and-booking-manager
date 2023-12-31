@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Traits\Filterable;
 use App\Models\Traits\HasAddress;
+use App\Options\FormElementType;
 use App\Options\PaymentStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Http\UploadedFile;
 use Spatie\QueryBuilder\AllowedFilter;
 
 /**
@@ -105,12 +107,30 @@ class Booking extends Model
             return false;
         }
 
-        foreach ($this->bookingOption->form->formFieldGroups ?? [] as $group) {
-            foreach ($group->formFields as $field) {
-                if (!isset($field->column)) {
-                    if (!$this->setFieldValue($field, $validatedData[$field->input_name] ?? null)) {
-                        return false;
+        foreach ($this->bookingOption->formFields ?? [] as $field) {
+            if ($field->type->isStatic()) {
+                continue;
+            }
+
+            if (!isset($field->column)) {
+                $value = $validatedData[$field->input_name] ?? null;
+                if ($value instanceof UploadedFile) {
+                    $fileName = str_replace(' ', '', implode('-', [
+                        $this->id,
+                        $this->first_name,
+                        $this->last_name,
+                        $field->id,
+                    ])) . '.' . $value->extension();
+                    $path = $value->storeAs($this->bookingOption->getFilePath(), $fileName);
+                    if ($path !== false) {
+                        $value = $path;
+                    } else {
+                        $value = null;
                     }
+                }
+
+                if (!$this->setFieldValue($field, $value)) {
+                    return false;
                 }
             }
         }
@@ -147,11 +167,30 @@ class Booking extends Model
                 static fn (FormFieldValue $formFieldValue) => $formFieldValue->formField->column === null
                     && $formFieldValue->formField->is($formField)
             );
-        if ($fieldValue) {
-            return $fieldValue->getRealValue();
+        return $fieldValue?->getRealValue();
+    }
+
+    public function getFieldValueAsText(FormField $formField): ?string
+    {
+        $value = $this->getFieldValue($formField);
+
+        if (isset($value)) {
+            if (is_array($value)) {
+                return implode(',', $value);
+            }
+
+            if ($formField->isSingleCheckbox()) {
+                $value = $value ? __('Yes') : __('No');
+            }
+
+            $value = match ($formField->type) {
+                FormElementType::Date => formatDate($value),
+                FormElementType::DateTime => formatDateTime($value),
+                default => $value,
+            };
         }
 
-        return null;
+        return $value;
     }
 
     public static function allowedFilters(): array

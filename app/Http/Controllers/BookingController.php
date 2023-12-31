@@ -10,6 +10,8 @@ use App\Http\Requests\Filters\BookingFilterRequest;
 use App\Models\Booking;
 use App\Models\BookingOption;
 use App\Models\Event;
+use App\Models\FormFieldValue;
+use App\Options\FormElementType;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
@@ -29,7 +31,7 @@ class BookingController extends Controller
         BookingFilterRequest $request
     ): StreamedResponse|View {
         $bookingOption->load([
-            'form.formFieldGroups.formFields',
+            'formFields',
         ]);
 
         $bookingsQuery = Booking::filter($bookingOption->bookings())
@@ -62,7 +64,7 @@ class BookingController extends Controller
 
         return view('bookings.booking_show', [
             'booking' => $booking->loadMissing([
-                'bookingOption.form.formFieldGroups.formFields',
+                'bookingOption.formFields',
             ]),
         ]);
     }
@@ -76,18 +78,14 @@ class BookingController extends Controller
             $booking->first_name,
             $booking->last_name,
         ])) . '.pdf';
-        $directoryPath = implode('/', [
-            'bookings',
-            $booking->bookingOption->event->id,
-            $booking->bookingOption->id,
-        ]);
+        $directoryPath = $booking->bookingOption->getFilePath();
         $filePath = $directoryPath . '/' . $fileName;
 
         if (!Storage::disk('local')->exists($filePath)) {
             Storage::disk('local')->makeDirectory($directoryPath);
             Pdf::loadView('bookings.booking_show_pdf', [
                 'booking' => $booking->loadMissing([
-                    'bookingOption.form.formFieldGroups.formFields',
+                    'bookingOption.formFields',
                 ]),
             ])
                 ->addInfo([
@@ -139,7 +137,7 @@ class BookingController extends Controller
 
         return view('bookings.booking_form', [
             'booking' => $booking->loadMissing([
-                'bookingOption.form.formFieldGroups.formFields',
+                'bookingOption.formFields',
             ]),
         ]);
     }
@@ -154,5 +152,19 @@ class BookingController extends Controller
         }
 
         return back();
+    }
+
+    public function downloadFile(Booking $booking, FormFieldValue $formFieldValue): StreamedResponse
+    {
+        $this->authorize('view', $booking);
+
+        if (
+            $booking->isNot($formFieldValue->booking)
+            || $formFieldValue->formField->type !== FormElementType::File
+        ) {
+            abort(404);
+        }
+
+        return Storage::download($formFieldValue->value);
     }
 }

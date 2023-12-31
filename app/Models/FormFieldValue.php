@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Options\FormElementType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -37,7 +38,7 @@ class FormFieldValue extends Model
             $this->casts['value'] = 'json';
         } elseif ($this->formField->isSingleCheckbox()) {
             $this->casts['value'] = 'integer';
-        } elseif (in_array($this->formField->type, ['date', 'datetime'], true)) {
+        } elseif (in_array($this->formField->type, [FormElementType::Date, FormElementType::DateTime], true)) {
             $this->casts['value'] = 'datetime';
         }
     }

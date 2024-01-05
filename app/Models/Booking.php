@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Session;
 use Spatie\QueryBuilder\AllowedFilter;
 
 /**
@@ -114,7 +116,12 @@ class Booking extends Model
 
             if (!isset($field->column)) {
                 $value = $validatedData[$field->input_name] ?? null;
-                if ($value instanceof UploadedFile) {
+                if ($field->type === FormElementType::File) {
+                    if (!($value instanceof UploadedFile)) {
+                        // Don't update value if no file has been uploaded during the validated request.
+                        continue;
+                    }
+
                     $fileName = str_replace(' ', '', implode('-', [
                         $this->id,
                         $this->first_name,
@@ -122,10 +129,14 @@ class Booking extends Model
                         $field->id,
                     ])) . '.' . $value->extension();
                     $path = $value->storeAs($this->bookingOption->getFilePath(), $fileName);
-                    if ($path !== false) {
-                        $value = $path;
+                    if ($path === false) {
+                        $errors = Arr::wrap(Session::get('error'));
+                        $errors[] = __('Could not save file for :name.', [
+                            'name' => $field->name,
+                        ]);
+                        Session::flash('error', $errors);
                     } else {
-                        $value = null;
+                        $value = $path;
                     }
                 }
 

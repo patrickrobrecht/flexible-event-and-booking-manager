@@ -25,14 +25,14 @@
             @endphp
             @if($termsAndConditions)
                 @php
-                    $options = [
-                        1 => __('With my registration I accept the :linkStart general terms and conditions:linkEnd.', [
+                    $option = \Portavice\Bladestrap\Support\Options::one(
+                        __('With my registration I accept the :linkStart general terms and conditions:linkEnd.', [
                             'linkStart' => '<a class="alert-link" href="' . $termsAndConditions .'" target="_blank">',
                             'linkEnd' => '</a>',
-                        ]),
-                    ];
+                        ])
+                    );
                 @endphp
-                <x-bs::form.field name="terms_and_conditions" type="checkbox" :options="$options" cast="int"/>
+                <x-bs::form.field name="terms_and_conditions" type="checkbox" :options="$option" :allow-html="true"/>
             @endif
 
             <x-form.button class="w-100">{{ __('Register') }}</x-form.button>

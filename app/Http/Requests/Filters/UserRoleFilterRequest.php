@@ -27,7 +27,7 @@ class UserRoleFilterRequest extends FormRequest
             'filter.name' => $this->ruleForText(),
             'sort' => [
                 'nullable',
-                UserRole::allowedSorts()->getRule(),
+                UserRole::sortOptions()->getRule(),
             ],
         ];
     }

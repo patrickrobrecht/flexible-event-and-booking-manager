@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-use App\Models\Traits\Filterable;
+use App\Models\QueryBuilder\BuildsQueryFromRequest;
+use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\HasAddress;
 use App\Options\FormElementType;
 use App\Options\PaymentStatus;
@@ -16,6 +17,8 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Session;
 use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\AllowedSort;
+use Spatie\QueryBuilder\Enums\SortDirection;
 
 /**
  * @property-read int $id
@@ -34,7 +37,7 @@ use Spatie\QueryBuilder\AllowedFilter;
  */
 class Booking extends Model
 {
-    use Filterable;
+    use BuildsQueryFromRequest;
     use HasAddress;
 
     /**
@@ -212,5 +215,22 @@ class Booking extends Model
             /** @see self::scopePaymentStatus() */
             AllowedFilter::scope('payment_status', 'paymentStatus'),
         ];
+    }
+
+    public static function sortOptions(): SortOptions
+    {
+        return (new SortOptions())
+            ->addBothDirections(__('Time of booking'), AllowedSort::field('booked_at'), true)
+            ->addBothDirections(__('Time of last update'), AllowedSort::field('updated_at'))
+            ->addBothDirections(
+                __('Name'),
+                AllowedSort::callback(
+                    'name',
+                    fn (Builder $query, bool $descending, string $property) => $query
+                        ->orderBy('last_name', $descending ? SortDirection::DESCENDING : SortDirection::ASCENDING)
+                        ->orderBy('first_name', $descending ? SortDirection::DESCENDING : SortDirection::ASCENDING)
+                ),
+                true
+            );
     }
 }

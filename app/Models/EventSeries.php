@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-use App\Models\Traits\Filterable;
+use App\Models\QueryBuilder\BuildsQueryFromRequest;
+use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\HasSlugForRouting;
 use App\Options\Visibility;
 use Illuminate\Database\Eloquent\Collection;
@@ -24,7 +25,7 @@ use Spatie\QueryBuilder\AllowedFilter;
  */
 class EventSeries extends Model
 {
-    use Filterable;
+    use BuildsQueryFromRequest;
     use HasFactory;
     use HasSlugForRouting;
 
@@ -81,5 +82,10 @@ class EventSeries extends Model
         return [
             AllowedFilter::partial('name'),
         ];
+    }
+
+    public static function sortOptions(): SortOptions
+    {
+        return self::sortOptionsForNameAndTimeStamps();
     }
 }

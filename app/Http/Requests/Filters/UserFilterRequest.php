@@ -38,7 +38,7 @@ class UserFilterRequest extends FormRequest
             ],
             'sort' => [
                 'nullable',
-                User::allowedSorts()->getRule(),
+                User::sortOptions()->getRule(),
             ],
         ];
     }

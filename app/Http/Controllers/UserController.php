@@ -16,12 +16,10 @@ class UserController extends Controller
     public function index(UserFilterRequest $request): View
     {
         $this->authorize('viewAny', User::class);
-        ValueHelper::setDefaults(User::defaultValuesForFilters());
+        ValueHelper::setDefaults(User::defaultValuesForQuery());
 
         return view('users.user_index', $this->formValues([
-            'users' => User::filter()
-                ->orderBy('last_name')
-                ->orderBy('first_name')
+            'users' => User::buildQueryFromRequest()
                 ->with([
                     'userRoles',
                 ])

@@ -35,6 +35,11 @@
                                   :options="Options::fromModels($locations, 'nameOrAddress')->prepend(__('all'), '')"
                                   :from-query="true">{{ __('Location') }}</x-bs::form.field>
             </div>
+            <div class="col-12 col-md-6 col-xl-3">
+                <x-bs::form.field name="sort" type="select"
+                                  :options="\App\Models\Organization::sortOptions()->getNamesWithLabels()"
+                                  :from-query="true">{{ __('Sorting') }}</x-bs::form.field>
+            </div>
         </div>
     </x-form.filter>
 

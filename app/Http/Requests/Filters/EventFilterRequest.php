@@ -27,6 +27,12 @@ class EventFilterRequest extends FormRequest
             'filter.name' => $this->ruleForText(),
             'filter.location_id' => $this->ruleForForeignId('locations'),
             'filter.organization_id' => $this->ruleForForeignId('organizations'),
+            'filter.date_from' => $this->ruleForDate(),
+            'filter.date_until' => $this->ruleForDate('filter.date_from'),
+            'sort' => [
+                'nullable',
+                Event::sortOptions()->getRule(),
+            ],
         ];
     }
 }

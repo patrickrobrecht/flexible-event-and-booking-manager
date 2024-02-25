@@ -25,6 +25,10 @@ class EventSeriesFilterRequest extends FormRequest
     {
         return [
             'filter.name' => $this->ruleForText(),
+            'sort' => [
+                'nullable',
+                EventSeries::sortOptions()->getRule(),
+            ],
         ];
     }
 }

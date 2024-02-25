@@ -29,7 +29,7 @@
             </div>
             <div class="col-12 col-sm-6 col-lg-3">
                 <x-bs::form.field name="sort" type="select"
-                                  :options="\App\Models\UserRole::allowedSorts()->getNamesWithLabels()"
+                                  :options="\App\Models\UserRole::sortOptions()->getNamesWithLabels()"
                                   :from-query="true">{{ __('Sorting') }}</x-bs::form.field>
             </div>
         </div>

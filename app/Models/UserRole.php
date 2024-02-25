@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use App\Models\QueryBuilder\AllowedSorts;
-use App\Models\Traits\Filterable;
+use App\Models\QueryBuilder\BuildsQueryFromRequest;
+use App\Models\QueryBuilder\SortOptions;
 use App\Options\Ability;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -22,7 +22,7 @@ use Spatie\QueryBuilder\Enums\SortDirection;
  */
 class UserRole extends Model
 {
-    use Filterable;
+    use BuildsQueryFromRequest;
 
     protected $casts = [
         'abilities' => 'json',
@@ -58,11 +58,9 @@ class UserRole extends Model
         ];
     }
 
-    public static function allowedSorts(): AllowedSorts
+    public static function sortOptions(): SortOptions
     {
-        return (new AllowedSorts())
-            ->addBothDirections(__('Name'), AllowedSort::field('name'))
-            ->merge(self::allowedSortsByTimeStamps())
+        return self::sortOptionsForNameAndTimeStamps()
             ->addBothDirections(
                 __('Number of users'),
                 AllowedSort::callback(

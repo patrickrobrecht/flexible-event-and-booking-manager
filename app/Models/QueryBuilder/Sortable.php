@@ -2,7 +2,6 @@
 
 namespace App\Models\QueryBuilder;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\QueryBuilder\AllowedSort;
 
@@ -11,31 +10,60 @@ use Spatie\QueryBuilder\AllowedSort;
  */
 trait Sortable
 {
-    public function scopeOrderedByDefault(Builder $query): Builder
+    /**
+     * @return AllowedSort[]
+     */
+    public static function allowedSorts(): array
     {
-        $columns = self::defaultSorts();
-
-        foreach ($columns as $column) {
-            $query->orderBy($column);
-        }
-
-        return $query;
+        return self::sortOptions()->getAllowedSorts();
     }
 
-    public static function allowedSorts(): AllowedSorts
-    {
-        return self::allowedSortsByTimeStamps();
-    }
-
-    public static function allowedSortsByTimeStamps(): AllowedSorts
-    {
-        return (new AllowedSorts())
-            ->addBothDirections(__('Time of creation'), AllowedSort::field('created_at'))
-            ->addBothDirections(__('Time of last update'), AllowedSort::field('updated_at'));
-    }
-
+    /**
+     * @return AllowedSort[]
+     */
     public static function defaultSorts(): array
     {
-        return [];
+        return self::sortOptions()->getDefaultSorts();
+    }
+
+    public static function firstAllowedSort(): ?AllowedSort
+    {
+        $allowedSorts = self::allowedSorts();
+        $allowedSort = reset($allowedSorts);
+        if ($allowedSort instanceof AllowedSort) {
+            return $allowedSort;
+        }
+
+        return null;
+    }
+
+    public static function firstDefaultSort(): ?AllowedSort
+    {
+        $defaultSorts = self::defaultSorts();
+        $defaultSort = reset($defaultSorts);
+        if ($defaultSort instanceof AllowedSort) {
+            return $defaultSort;
+        }
+
+        return null;
+    }
+
+    public static function sortOptions(): SortOptions
+    {
+        return self::sortOptionsForTimeStamps();
+    }
+
+    public static function sortOptionsForNameAndTimeStamps(): SortOptions
+    {
+        return (new SortOptions())
+            ->addBothDirections(__('Name'), AllowedSort::field('name'))
+            ->merge(self::sortOptionsForTimeStamps());
+    }
+
+    public static function sortOptionsForTimeStamps(): SortOptions
+    {
+        return (new SortOptions())
+            ->addBothDirections(__('Time of creation'), AllowedSort::field('created_at'))
+            ->addBothDirections(__('Time of last update'), AllowedSort::field('updated_at'));
     }
 }

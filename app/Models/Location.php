@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-use App\Models\Traits\Filterable;
+use App\Models\QueryBuilder\BuildsQueryFromRequest;
+use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\HasAddress;
 use App\Models\Traits\HasWebsite;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -24,7 +25,7 @@ use Spatie\QueryBuilder\AllowedFilter;
  */
 class Location extends Model
 {
-    use Filterable;
+    use BuildsQueryFromRequest;
     use HasAddress;
     use HasFactory;
     use HasWebsite;
@@ -82,5 +83,10 @@ class Location extends Model
             /** @see HasAddress::scopeAddressFields() */
             AllowedFilter::scope('address', 'addressFields'),
         ];
+    }
+
+    public static function sortOptions(): SortOptions
+    {
+        return self::sortOptionsForNameAndTimeStamps();
     }
 }

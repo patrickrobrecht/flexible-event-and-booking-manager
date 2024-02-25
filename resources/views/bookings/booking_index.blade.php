@@ -29,22 +29,24 @@
 
 @section('content')
     <x-form.filter>
-        @can('viewAnyPaymentStatus', \App\Models\Booking::class)
-            <div class="row">
-                <div class="col-12 col-md-9">
-                    <x-bs::form.field id="search" name="filter[search]" type="text"
-                                      :from-query="true">{{ __('Search term') }}</x-bs::form.field>
-                </div>
+        <div class="row">
+            <div class="col-12 col-md-6">
+                <x-bs::form.field id="search" name="filter[search]" type="text"
+                                  :from-query="true">{{ __('Search term') }}</x-bs::form.field>
+            </div>
+            @can('viewAnyPaymentStatus', \App\Models\Booking::class)
                 <div class="col-12 col-md-3">
                     <x-bs::form.field id="payment_status" name="filter[payment_status]" type="select"
                                       :options="\App\Options\PaymentStatus::toOptionsWithAll()"
                                       :from-query="true">{{ __('Payment status') }}</x-bs::form.field>
                 </div>
+            @endcan
+            <div class="col-12 col-md-6 col-xl-3">
+                <x-bs::form.field name="sort" type="select"
+                                  :options="\App\Models\Booking::sortOptions()->getNamesWithLabels()"
+                                  :from-query="true">{{ __('Sorting') }}</x-bs::form.field>
             </div>
-        @else
-            <x-bs::form.field id="search" name="filter[search]" type="text"
-                              :from-query="true">{{ __('Search term') }}</x-bs::form.field>
-        @endcan
+        </div>
 
         <x-slot:addButtons>
             @can('exportAny', \App\Models\Booking::class)

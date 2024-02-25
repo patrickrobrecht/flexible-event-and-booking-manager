@@ -6,12 +6,17 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\In;
 use Spatie\QueryBuilder\AllowedSort;
 
-class AllowedSorts
+class SortOptions
 {
     /**
      * @var AllowedSort[]
      */
     private array $allowedSorts = [];
+
+    /**
+     * @var AllowedSort[]
+     */
+    private array $defaultSorts = [];
 
     /**
      * @var array<string,string>
@@ -25,20 +30,36 @@ class AllowedSorts
         return $this;
     }
 
-    public function addOneDirection(string $label, AllowedSort $allowedSort): self
+    private function addSort(AllowedSort $allowedSort, bool $asDefault): void
     {
         $this->allowedSorts[] = $allowedSort;
+
+        if ($asDefault) {
+            $this->defaultSorts[] = $allowedSort;
+        }
+    }
+
+    public function addAscending(string $label, AllowedSort $allowedSort, bool $asDefault = false): self
+    {
+        $this->addSort($allowedSort, $asDefault);
 
         return $this->addLabel($allowedSort->getName(), $label);
     }
 
-    public function addBothDirections(string $label, AllowedSort $allowedSort): self
+    public function addBothDirections(string $label, AllowedSort $allowedSort, bool $asDefault = false): self
     {
-        $this->allowedSorts[] = $allowedSort;
+        $this->addSort($allowedSort, $asDefault);
 
         return $this
             ->addLabel($allowedSort->getName(), $label . ' ' . __('ascending'))
             ->addLabel('-' . $allowedSort->getName(), $label . ' ' . __('descending'));
+    }
+
+    public function addDescending(string $label, AllowedSort $allowedSort, bool $asDefault = false): self
+    {
+        $this->addSort($allowedSort, $asDefault);
+
+        return $this->addLabel('-' . $allowedSort->getName(), $label);
     }
 
     /**
@@ -47,6 +68,14 @@ class AllowedSorts
     public function getAllowedSorts(): array
     {
         return $this->allowedSorts;
+    }
+
+    /**
+     * @return AllowedSort[]
+     */
+    public function getDefaultSorts(): array
+    {
+        return $this->defaultSorts;
     }
 
     /**
@@ -62,7 +91,7 @@ class AllowedSorts
         return Rule::in(array_keys($this->namesToLabels));
     }
 
-    public function merge(AllowedSorts $allowedSorts): self
+    public function merge(self $allowedSorts): self
     {
         $this->allowedSorts = [
             ...$this->allowedSorts,

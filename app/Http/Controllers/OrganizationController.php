@@ -9,15 +9,17 @@ use App\Models\Organization;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
+use Portavice\Bladestrap\Support\ValueHelper;
 
 class OrganizationController extends Controller
 {
     public function index(OrganizationFilterRequest $request): View
     {
         $this->authorize('viewAny', Organization::class);
+        ValueHelper::setDefaults(Organization::defaultValuesForQuery());
 
         return view('organizations.organization_index', $this->formValues([
-            'organizations' => Organization::filter()
+            'organizations' => Organization::buildQueryFromRequest()
                 ->with([
                     'location',
                 ])

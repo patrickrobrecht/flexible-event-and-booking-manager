@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Portavice\Bladestrap\Support\ValueHelper;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class BookingController extends Controller
@@ -30,11 +31,13 @@ class BookingController extends Controller
         BookingOption $bookingOption,
         BookingFilterRequest $request
     ): StreamedResponse|View {
+        ValueHelper::setDefaults(Booking::defaultValuesForQuery());
+
         $bookingOption->load([
             'formFields',
         ]);
 
-        $bookingsQuery = Booking::filter($bookingOption->bookings())
+        $bookingsQuery = Booking::buildQueryFromRequest($bookingOption->bookings())
             ->with([
                 'bookedByUser',
             ]);

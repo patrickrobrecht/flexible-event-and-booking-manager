@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-use App\Models\Traits\Filterable;
+use App\Models\QueryBuilder\BuildsQueryFromRequest;
+use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\HasLocation;
 use App\Models\Traits\HasWebsite;
 use App\Options\ActiveStatus;
@@ -25,7 +26,7 @@ use Spatie\QueryBuilder\AllowedFilter;
  */
 class Organization extends Model
 {
-    use Filterable;
+    use BuildsQueryFromRequest;
     use HasFactory;
     use HasLocation;
     use HasWebsite;
@@ -80,5 +81,10 @@ class Organization extends Model
             AllowedFilter::partial('name'),
             AllowedFilter::exact('location_id'),
         ];
+    }
+
+    public static function sortOptions(): SortOptions
+    {
+        return self::sortOptionsForNameAndTimeStamps();
     }
 }

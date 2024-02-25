@@ -2,13 +2,16 @@
 
 namespace App\Models;
 
-use App\Models\Traits\Filterable;
+use App\Models\QueryBuilder\BuildsQueryFromRequest;
+use App\Models\QueryBuilder\SortOptions;
 use App\Options\Ability;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\AllowedSort;
+use Spatie\QueryBuilder\Enums\SortDirection;
 
 /**
  * @property-read int $id
@@ -19,8 +22,7 @@ use Spatie\QueryBuilder\AllowedFilter;
  */
 class UserRole extends Model
 {
-    use Filterable;
-    use HasFactory;
+    use BuildsQueryFromRequest;
 
     protected $casts = [
         'abilities' => 'json',
@@ -54,5 +56,19 @@ class UserRole extends Model
         return [
             AllowedFilter::partial('name'),
         ];
+    }
+
+    public static function sortOptions(): SortOptions
+    {
+        return self::sortOptionsForNameAndTimeStamps()
+            ->addBothDirections(
+                __('Number of users'),
+                AllowedSort::callback(
+                    'users_count',
+                    fn (Builder $query, bool $descending, string $property) => $query
+                        ->withCount('users')
+                        ->orderBy('users_count', $descending ? SortDirection::DESCENDING : SortDirection::ASCENDING)
+                )
+            );
     }
 }

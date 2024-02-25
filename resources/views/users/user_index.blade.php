@@ -26,28 +26,33 @@
 
     <x-form.filter>
         <div class="row">
-            <div class="col-12 col-sm-6 col-lg">
+            <div class="col-12 col-sm-6 col-lg-3">
                 <x-bs::form.field id="name" name="filter[name]" type="text"
                                   :from-query="true">{{ __('Name') }}</x-bs::form.field>
             </div>
-            <div class="col-12 col-sm-6 col-lg">
+            <div class="col-12 col-sm-6 col-lg-3">
                 <x-bs::form.field id="email" name="filter[email]" type="text"
                                   :from-query="true">{{ __('E-mail') }}</x-bs::form.field>
             </div>
-            <div class="col-12 col-sm-6 col-lg">
+            <div class="col-12 col-sm-6 col-lg-3">
                 <x-bs::form.field id="user_role_id" name="filter[user_role_id]" type="select"
                                   :options="Options::fromModels($userRoles, 'name')->prepend(__('all'), '')"
                                   :from-query="true">{{ __('User role') }}</x-bs::form.field>
             </div>
-            <div class="col-12 col-sm-6 col-lg">
+            <div class="col-12 col-sm-6 col-lg-3">
                 <x-bs::form.field id="status" name="filter[status]" type="select"
                                   :options="\App\Options\ActiveStatus::toOptionsWithAll()"
                                   :from-query="true">{{ __('Status') }}</x-bs::form.field>
             </div>
+            <div class="col-12 col-sm-6 col-lg-3">
+                <x-bs::form.field name="sort" type="select"
+                                  :options="\App\Models\User::sortOptions()->getNamesWithLabels()"
+                                  :from-query="true">{{ __('Sorting') }}</x-bs::form.field>
+            </div>
         </div>
     </x-form.filter>
 
-    <x-alert.count class="mt-3" :count="$users->total()" />
+    <x-alert.count class="mt-3" :count="$users->total()"/>
 
     <div class="row my-3">
         @foreach($users as $user)

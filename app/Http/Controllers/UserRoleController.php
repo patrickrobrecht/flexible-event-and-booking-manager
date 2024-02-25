@@ -9,19 +9,20 @@ use App\Models\UserRole;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
+use Portavice\Bladestrap\Support\ValueHelper;
 
 class UserRoleController extends Controller
 {
     public function index(UserRoleFilterRequest $request): View
     {
         $this->authorize('viewAny', UserRole::class);
+        ValueHelper::setDefaults(UserRole::defaultValuesForQuery());
 
         return view('user_roles.user_role_index', [
-            'userRoles' => UserRole::filter()
+            'userRoles' => UserRole::buildQueryFromRequest()
                 ->withCount([
                     'users',
                 ])
-                ->orderBy('name')
                 ->paginate(),
         ]);
     }

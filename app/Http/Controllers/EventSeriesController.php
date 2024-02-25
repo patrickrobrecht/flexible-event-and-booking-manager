@@ -8,15 +8,17 @@ use App\Models\EventSeries;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
+use Portavice\Bladestrap\Support\ValueHelper;
 
 class EventSeriesController extends Controller
 {
     public function index(EventSeriesFilterRequest $request): View
     {
         $this->authorize('viewAny', EventSeries::class);
+        ValueHelper::setDefaults(EventSeries::defaultValuesForQuery());
 
         return view('event_series.event_series_index', [
-            'eventSeries' => EventSeries::filter()
+            'eventSeries' => EventSeries::buildQueryFromRequest()
                 ->with([
                     'parentEventSeries',
                 ])

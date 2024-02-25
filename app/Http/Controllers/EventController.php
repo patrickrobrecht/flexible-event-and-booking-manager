@@ -12,15 +12,17 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
+use Portavice\Bladestrap\Support\ValueHelper;
 
 class EventController extends Controller
 {
     public function index(EventFilterRequest $request): View
     {
         $this->authorize('viewAny', Event::class);
+        ValueHelper::setDefaults(Event::defaultValuesForQuery());
 
         return view('events.event_index', $this->formValuesForFilter([
-            'events' => Event::filter()
+            'events' => Event::buildQueryFromRequest()
                 ->with([
                     'bookingOptions' => static fn (HasMany $query) => $query->withCount([
                         'bookings',

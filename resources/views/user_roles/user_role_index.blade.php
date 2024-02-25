@@ -23,9 +23,14 @@
 
     <x-form.filter>
         <div class="row">
-            <div class="col-12 col-sm-6 col-lg">
+            <div class="col-12 col-sm-6 col-lg-9">
                 <x-bs::form.field id="name" name="filter[name]" type="text"
                                   :from-query="true">{{ __('Name') }}</x-bs::form.field>
+            </div>
+            <div class="col-12 col-sm-6 col-lg-3">
+                <x-bs::form.field name="sort" type="select"
+                                  :options="\App\Models\UserRole::sortOptions()->getNamesWithLabels()"
+                                  :from-query="true">{{ __('Sorting') }}</x-bs::form.field>
             </div>
         </div>
     </x-form.filter>

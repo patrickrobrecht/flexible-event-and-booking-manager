@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-use App\Models\Traits\Filterable;
+use App\Models\QueryBuilder\BuildsQueryFromRequest;
+use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\HasAddress;
 use App\Models\Traits\Searchable;
 use App\Notifications\ResetPasswordNotification;
@@ -23,6 +24,8 @@ use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Sanctum\PersonalAccessToken;
 use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\AllowedSort;
+use Spatie\QueryBuilder\Enums\SortDirection;
 
 /**
  * @property-read int $id
@@ -44,7 +47,7 @@ use Spatie\QueryBuilder\AllowedFilter;
  */
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use Filterable;
+    use BuildsQueryFromRequest;
     use HasAddress;
     use HasApiTokens;
     use HasFactory;
@@ -110,7 +113,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function userRoles(): BelongsToMany
     {
         return $this->belongsToMany(UserRole::class)
-                    ->withTimestamps();
+            ->withTimestamps();
     }
 
     public function scopeEmail(Builder $query, ...$searchTerms): Builder
@@ -171,6 +174,7 @@ class User extends Authenticatable implements MustVerifyEmail
                 }
             }
         }
+
         return false;
     }
 
@@ -197,11 +201,29 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-    public static function defaultSorts(): array
+    public static function sortOptions(): SortOptions
     {
-        return [
-            'last_name',
-            'first_name',
-        ];
+        return (new SortOptions())
+            ->addBothDirections(
+                __('Name'),
+                AllowedSort::callback(
+                    'name',
+                    fn (Builder $query, bool $descending, string $property) => $query
+                        ->orderBy('last_name', $descending ? SortDirection::DESCENDING : SortDirection::ASCENDING)
+                        ->orderBy('first_name', $descending ? SortDirection::DESCENDING : SortDirection::ASCENDING)
+                ),
+                true
+            )
+            ->merge(self::sortOptionsForTimeStamps())
+            ->addBothDirections(__('Time of last login'), AllowedSort::field('last_login_at'))
+            ->addBothDirections(
+                __('Number of event bookings'),
+                AllowedSort::callback(
+                    'bookings_count',
+                    fn (Builder $query, bool $descending, string $property) => $query
+                        ->withCount('bookings')
+                        ->orderBy('bookings_count', $descending ? SortDirection::DESCENDING : SortDirection::ASCENDING)
+                )
+            );
     }
 }

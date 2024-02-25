@@ -26,19 +26,42 @@
 
     <x-form.filter>
         <div class="row">
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="name" name="filter[name]" type="text"
                                   :from-query="true">{{ __('Name') }}</x-bs::form.field>
             </div>
-            <div class="col-12 col-md-6 col-xl">
+            <div class="col-12 col-md-6 col-xl-3">
+                <x-bs::form.field id="visibility" name="filter[visibility]" type="select"
+                                  :options="\App\Options\Visibility::toOptionsWithAll()"
+                                  :from-query="true">{{ __('Visibility') }}</x-bs::form.field>
+            </div>
+            <div class="col-12 col-md-6 col-xl-3">
+                <x-bs::form.field id="date_from" name="filter[date_from]" type="date"
+                                  :from-query="true">{{ __('Start of the period') }}</x-bs::form.field>
+            </div>
+            <div class="col-12 col-md-6 col-xl-3">
+                <x-bs::form.field id="date_until" name="filter[date_until]" type="date"
+                                  :from-query="true">{{ __('End of the period') }}</x-bs::form.field>
+            </div>
+            <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="location_id" name="filter[location_id]" type="select"
                                   :options="Options::fromModels($locations, 'nameOrAddress')->prepend(__('all'), '')"
                                   :from-query="true">{{ __('Location') }}</x-bs::form.field>
             </div>
-            <div class="col-12 col-md-6 col-xl">
+            <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="organization_id" name="filter[organization_id]" type="select"
                                   :options="Options::fromModels($organizations, 'name')->prepend(__('all'), '')"
                                   :from-query="true">{{ __('Organization') }}</x-bs::form.field>
+            </div>
+            <div class="col-12 col-md-6 col-xl-3">
+                <x-bs::form.field id="event_type" name="filter[event_type]" type="select"
+                                  :options="\App\Options\EventType::toOptionsWithAll()"
+                                  :from-query="true">{{ __('Event type') }}</x-bs::form.field>
+            </div>
+            <div class="col-12 col-md-6 col-xl-3">
+                <x-bs::form.field name="sort" type="select"
+                                  :options="\App\Models\Event::sortOptions()->getNamesWithLabels()"
+                                  :from-query="true">{{ __('Sorting') }}</x-bs::form.field>
             </div>
         </div>
     </x-form.filter>

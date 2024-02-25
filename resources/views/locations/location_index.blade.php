@@ -31,6 +31,11 @@
                 <x-bs::form.field id="address" name="filter[address]" type="text"
                                   :from-query="true">{{ __('Address') }}</x-bs::form.field>
             </div>
+            <div class="col-12 col-md-6 col-xl-3">
+                <x-bs::form.field name="sort" type="select"
+                                  :options="\App\Models\Location::sortOptions()->getNamesWithLabels()"
+                                  :from-query="true">{{ __('Sorting') }}</x-bs::form.field>
+            </div>
         </div>
     </x-form.filter>
 

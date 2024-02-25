@@ -9,15 +9,17 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
+use Portavice\Bladestrap\Support\ValueHelper;
 
 class LocationController extends Controller
 {
     public function index(LocationFilterRequest $request): View
     {
         $this->authorize('viewAny', Location::class);
+        ValueHelper::setDefaults(Location::defaultValuesForQuery());
 
         return view('locations.location_index', [
-            'locations' => Location::filter()
+            'locations' => Location::buildQueryFromRequest()
                 ->withCount([
                     'events',
                     'organizations',

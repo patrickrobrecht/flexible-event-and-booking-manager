@@ -5,6 +5,7 @@ namespace App\Http\Requests\Filters;
 use App\Http\Controllers\UserRoleController;
 use App\Http\Requests\Traits\AuthorizationViaController;
 use App\Http\Requests\Traits\FiltersList;
+use App\Models\UserRole;
 use App\Policies\UserRolePolicy;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -24,6 +25,10 @@ class UserRoleFilterRequest extends FormRequest
     {
         return [
             'filter.name' => $this->ruleForText(),
+            'sort' => [
+                'nullable',
+                UserRole::sortOptions()->getRule(),
+            ],
         ];
     }
 }

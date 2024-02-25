@@ -7,6 +7,7 @@ use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\HasLocation;
 use App\Models\Traits\HasSlugForRouting;
 use App\Models\Traits\HasWebsite;
+use App\Options\EventType;
 use App\Options\Visibility;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -122,6 +123,21 @@ class Event extends Model
             );
     }
 
+    public function scopeEventType(Builder $query, EventType|string $eventType): Builder
+    {
+        if (is_string($eventType)) {
+            $eventType = EventType::tryFrom($eventType);
+        }
+
+        return match ($eventType) {
+            EventType::MainEvent => $query->whereNull('parent_event_id'),
+            EventType::PartOfEvent => $query->whereNotNull('parent_event_id'),
+            EventType::EventWithParts => $query->whereHas('subEvents'),
+            EventType::EventWithoutParts => $query->whereDoesntHave('subEvents'),
+            default => $query,
+        };
+    }
+
     public function fillAndSave(array $validatedData): bool
     {
         $this->fill($validatedData);
@@ -137,13 +153,17 @@ class Event extends Model
     {
         return [
             AllowedFilter::partial('name'),
-            AllowedFilter::exact('location_id'),
-            AllowedFilter::exact('organization_id', 'organizations.id'),
+            AllowedFilter::exact('visibility'),
             /** @see self::scopeDateFrom() */
             AllowedFilter::scope('date_from')
                 ->default(Carbon::today()->format('Y-m-d')),
             /** @see self::scopeDateUntil() */
             AllowedFilter::scope('date_until'),
+            AllowedFilter::exact('location_id'),
+            AllowedFilter::exact('organization_id', 'organizations.id'),
+            /** @see self::scopeEventType() */
+            AllowedFilter::scope('event_type')
+                ->default(EventType::MainEvent->value),
         ];
     }
 

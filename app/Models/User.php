@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\QueryBuilder\AllowedSorts;
 use App\Models\Traits\Filterable;
 use App\Models\Traits\HasAddress;
 use App\Models\Traits\Searchable;
@@ -23,6 +24,8 @@ use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Sanctum\PersonalAccessToken;
 use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\AllowedSort;
+use Spatie\QueryBuilder\Enums\SortDirection;
 
 /**
  * @property-read int $id
@@ -110,7 +113,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function userRoles(): BelongsToMany
     {
         return $this->belongsToMany(UserRole::class)
-                    ->withTimestamps();
+            ->withTimestamps();
     }
 
     public function scopeEmail(Builder $query, ...$searchTerms): Builder
@@ -171,6 +174,7 @@ class User extends Authenticatable implements MustVerifyEmail
                 }
             }
         }
+
         return false;
     }
 
@@ -195,6 +199,31 @@ class User extends Authenticatable implements MustVerifyEmail
             AllowedFilter::exact('status')
                 ->default(ActiveStatus::Active->value),
         ];
+    }
+
+    public static function allowedSorts(): AllowedSorts
+    {
+        return (new AllowedSorts())
+            ->addBothDirections(
+                __('Name'),
+                AllowedSort::callback(
+                    'name',
+                    fn (Builder $query, bool $descending, string $property) => $query
+                        ->orderBy('last_name', $descending ? SortDirection::DESCENDING : SortDirection::ASCENDING)
+                        ->orderBy('first_name', $descending ? SortDirection::DESCENDING : SortDirection::ASCENDING)
+                )
+            )
+            ->merge(self::allowedSortsByTimeStamps())
+            ->addBothDirections(__('Time of last login'), AllowedSort::field('last_login_at'))
+            ->addBothDirections(
+                __('Number of event bookings'),
+                AllowedSort::callback(
+                    'bookings_count',
+                    fn (Builder $query, bool $descending, string $property) => $query
+                        ->withCount('bookings')
+                        ->orderBy('bookings_count', $descending ? SortDirection::DESCENDING : SortDirection::ASCENDING)
+                )
+            );
     }
 
     public static function defaultSorts(): array

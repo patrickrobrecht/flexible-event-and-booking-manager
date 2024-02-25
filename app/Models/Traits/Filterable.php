@@ -2,6 +2,7 @@
 
 namespace App\Models\Traits;
 
+use App\Models\QueryBuilder\Sortable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -13,16 +14,7 @@ use Spatie\QueryBuilder\QueryBuilder;
  */
 trait Filterable
 {
-    public function scopeOrderedByDefault(Builder $query): Builder
-    {
-        $columns = self::defaultSorts();
-
-        foreach ($columns as $column) {
-            $query->orderBy($column);
-        }
-
-        return $query;
-    }
+    use Sortable;
 
     /**
      * @return AllowedFilter[]
@@ -32,7 +24,8 @@ trait Filterable
     public static function filter(Builder|Relation|string|null $subject = null): QueryBuilder
     {
         $query = QueryBuilder::for($subject ?? self::class)
-            ->allowedFilters(self::allowedFilters());
+            ->allowedFilters(self::allowedFilters())
+            ->allowedSorts(self::allowedSorts()->getAllowedSorts());
 
         $sorts = self::defaultSorts();
 
@@ -53,10 +46,5 @@ trait Filterable
             }
         }
         return $defaults;
-    }
-
-    public static function defaultSorts(): array
-    {
-        return [];
     }
 }

@@ -36,6 +36,10 @@ class UserFilterRequest extends FormRequest
                 'nullable',
                 ActiveStatus::rule(),
             ],
+            'sort' => [
+                'nullable',
+                User::allowedSorts()->getRule(),
+            ],
         ];
     }
 }

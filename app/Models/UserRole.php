@@ -2,13 +2,16 @@
 
 namespace App\Models;
 
+use App\Models\QueryBuilder\AllowedSorts;
 use App\Models\Traits\Filterable;
 use App\Options\Ability;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\AllowedSort;
+use Spatie\QueryBuilder\Enums\SortDirection;
 
 /**
  * @property-read int $id
@@ -20,7 +23,6 @@ use Spatie\QueryBuilder\AllowedFilter;
 class UserRole extends Model
 {
     use Filterable;
-    use HasFactory;
 
     protected $casts = [
         'abilities' => 'json',
@@ -54,5 +56,21 @@ class UserRole extends Model
         return [
             AllowedFilter::partial('name'),
         ];
+    }
+
+    public static function allowedSorts(): AllowedSorts
+    {
+        return (new AllowedSorts())
+            ->addBothDirections(__('Name'), AllowedSort::field('name'))
+            ->merge(self::allowedSortsByTimeStamps())
+            ->addBothDirections(
+                __('Number of users'),
+                AllowedSort::callback(
+                    'users_count',
+                    fn (Builder $query, bool $descending, string $property) => $query
+                        ->withCount('users')
+                        ->orderBy('users_count', $descending ? SortDirection::DESCENDING : SortDirection::ASCENDING)
+                )
+            );
     }
 }

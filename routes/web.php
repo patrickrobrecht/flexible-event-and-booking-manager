@@ -6,6 +6,7 @@ use App\Http\Controllers\BookingOptionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\EventSeriesController;
+use App\Http\Controllers\GroupController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\PersonalAccessTokenController;
@@ -50,6 +51,8 @@ Route::middleware('auth')->group(static function () {
          ->only(['show', 'create', 'store', 'edit', 'update']);
     Route::resource('events/{event:slug}/{booking_option:slug}/bookings', BookingController::class)
          ->only(['index']);
+    Route::resource('events/{event:slug}/groups', GroupController::class)
+        ->only(['index']);
 
     Route::model('event_series', EventSeries::class);
     Route::resource('event-series', EventSeriesController::class)

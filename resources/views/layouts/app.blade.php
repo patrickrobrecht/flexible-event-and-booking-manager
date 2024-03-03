@@ -8,6 +8,7 @@
     <title>@yield('title')</title>
 
     <link rel="stylesheet" href="{{ mix('css/app.css') }}">
+    @livewireStyles
 </head>
 <body>
     @include('layouts.header')
@@ -49,6 +50,8 @@
 
     @section('scripts')
         <script src="{{ mix('/lib/bootstrap.bundle.min.js') }}"></script>
+        @livewireScripts
+        <script src="{{ mix('/lib/alpinejs.min.js') }}" defer></script>
         @stack('scripts')
     @show
 </body>

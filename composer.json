@@ -10,6 +10,7 @@
         "laravel/framework": "^10.39",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
+        "livewire/livewire": "^3.4",
         "phpoffice/phpspreadsheet": "^1.29",
         "portavice/bladestrap": "^1.1.1",
         "spatie/laravel-query-builder": "^5.6",

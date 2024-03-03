@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
@@ -34,6 +35,7 @@ use Spatie\QueryBuilder\Enums\SortDirection;
  * @property-read ?User $bookedByUser {@see self::bookedByUser()}
  * @property-read BookingOption $bookingOption {@see self::bookingOption()}
  * @property-read Collection|FormFieldValue[] $formFieldValues {@see self::formFieldValues()}
+ * @property-read Collection|Group[] $groups {@see self::groups()}
  */
 class Booking extends Model
 {
@@ -86,6 +88,12 @@ class Booking extends Model
     {
         return $this->hasMany(FormFieldValue::class)
                     ->with('formField');
+    }
+
+    public function groups(): BelongsToMany
+    {
+        return $this->belongsToMany(Group::class)
+            ->withTimestamps();
     }
 
     public function scopePaymentStatus(Builder $query, int|PaymentStatus $paymentStatus)
@@ -150,6 +158,11 @@ class Booking extends Model
         }
 
         return true;
+    }
+
+    public function getGroup(Event $event): ?Group
+    {
+        return $this->groups->first(fn (Group $group) => $group->event_id === $event->id);
     }
 
     public function setFieldValue(FormField $formField, mixed $value): bool

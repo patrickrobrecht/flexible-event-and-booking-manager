@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\Enums\SortDirection;
@@ -31,7 +32,9 @@ use Spatie\QueryBuilder\Enums\SortDirection;
  * @property ?Carbon $finished_at
  *
  * @property-read Collection|BookingOption[] $bookingOptions {@see Event::bookingOptions()}
+ * @property-read Collection|Booking[] $bookings {@see Event::bookings()}
  * @property-read ?EventSeries $eventSeries {@see Event::eventSeries()}
+ * @property-read Collection|Group[] $groups {@see self::groups()}
  * @property-read Collection|Organization[] $organizations {@see Event::organizations()}
  * @property-read ?Event $parentEvent {@see Event::parentEvent()}
  * @property-read Collection|Event[] $subEvents {@see Event::subEvents()}
@@ -75,6 +78,16 @@ class Event extends Model
     public function bookingOptions(): HasMany
     {
         return $this->hasMany(BookingOption::class, 'event_id');
+    }
+
+    public function bookings(): HasManyThrough
+    {
+        return $this->hasManyThrough(Booking::class, BookingOption::class);
+    }
+
+    public function groups(): HasMany
+    {
+        return $this->hasMany(Group::class, 'event_id');
     }
 
     public function eventSeries(): BelongsTo

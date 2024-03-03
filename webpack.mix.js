@@ -31,6 +31,7 @@ let filesFromLibraries = [
     'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js',
 ];
 mix.copy(filesFromLibraries, 'public/lib');
+mix.copy('node_modules/alpinejs/dist/cdn.min.js', 'public/lib/alpinejs.min.js');
 
 if (mix.inProduction()) {
     // Settings only for production environment.

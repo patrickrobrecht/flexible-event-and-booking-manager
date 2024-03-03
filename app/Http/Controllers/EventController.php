@@ -32,6 +32,9 @@ class EventController extends Controller
                     'organizations',
                     'parentEvent',
                 ])
+                ->withCount([
+                    'groups',
+                ])
                 ->paginate(),
         ]));
     }

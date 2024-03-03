@@ -9,8 +9,6 @@
         value ? modal.show() : modal.hide();
     });
 }">
-    @include('layouts.alerts')
-
     <div class="row">
         <div class="col-12 col-md-6 col-xl-3">
             <x-bs::form.field name="sort" type="select"
@@ -18,60 +16,87 @@
                               wire:model.live="sort">{{ __('Sorting') }}</x-bs::form.field>
         </div>
     </div>
-    <div class="row">
-        <div class="col-12 col-md-6 col-lg-4 col-xxl-3 mb-3"
-             x-on:dragover.prevent="allowDrop($event)"
-             x-on:drop.prevent="drop($event, -1)">
-            <div class="card shadow-sm rounded">
-                <div class="card-header bg-danger text-bg-danger">
-                    <h2 class="card-title">{{ __('Without group') }}</h2>
-                </div>
-                <x-bs::list :flush="true" data-group-id="-1">
-                    @foreach(($bookingsWithoutGroup ?? \Illuminate\Database\Eloquent\Collection::empty()) as $booking)
-                        @include('livewire.manage-groups-booking')
-                    @endforeach
-                </x-bs::list>
-            </div>
-        </div>
 
-        @foreach($groups as $group)
-            @php
-                /** @var \Illuminate\Database\Eloquent\Collection|\App\Models\Booking[] $bookings */
-                $bookings = $group['bookings'] ?? \Illuminate\Database\Eloquent\Collection::empty();
-            @endphp
-            <div class="col-12 col-md-6 col-lg-4 col-xxl-3 mb-3"
-                 x-on:dragover.prevent="allowDrop($event)"
-                 x-on:drop.prevent="drop($event, {{ $group->id }})">
-                <div class="card">
-                    <div @class([
-                        'card-header',
-                        $bookings->isEmpty() ? 'bg-secondary text-bg-secondary' : 'bg-primary text-bg-primary',
-                    ])>
-                        <h2 class="card-title">{{ $group->name }}</h2>
-                        @isset($group->description)
-                            <p class="card-subtitle">{{ $group->description }}</p>
-                        @endisset
+    @include('layouts.alerts')
+
+    <div class="row">
+        <div class="col-12 col-md-6 col-lg-4 col-xxl-3">
+            @can('create', \App\Models\Group::class)
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h2 class="card-title">{{ __('Create group') }}</h2>
                     </div>
-                    <x-bs::list :flush="true" data-group-id="{{ $group->id }}">
-                        @foreach($bookings as $booking)
+                    <form class="card-body" wire:submit.prevent="createGroup">
+                        <x-bs::form.field name="form.name" type="text" maxlength="255" wire:model="form.name">{{ __('Name') }}</x-bs::form.field>
+                        <x-bs::form.field name="form.description" type="textarea" maxlength="255" wire:model="form.description">{{ __('Description') }}</x-bs::form.field>
+                        <x-bs::button><i class="fa fa-plus"></i> {{ __('Create') }}</x-bs::button>
+                        <x-spinners.saving wire:target="createGroup"/>
+                    </form>
+                </div>
+            @endcan
+            <div class="mb-3"
+                 x-on:dragover.prevent="allowDrop($event)"
+                 x-on:drop.prevent="drop($event, -1)">
+                <div class="card">
+                    <div class="card-header bg-danger text-bg-danger">
+                        <h2 class="card-title">{{ __('Without group') }} ({{ formatInt($bookingsWithoutGroup->count()) }})</h2>
+                    </div>
+                    <x-bs::list :flush="true" data-group-id="-1">
+                        @foreach(($bookingsWithoutGroup ?? \Illuminate\Database\Eloquent\Collection::empty()) as $booking)
                             @include('livewire.manage-groups-booking')
                         @endforeach
                     </x-bs::list>
-                    <div class="card-body">
-                        @can('update', $group)
-                            <x-bs::button type="button" wire:click="editGroup({{ $group->id }})">
-                                <i class="fa fa-edit"></i> {{ __('Edit') }}
-                            </x-bs::button>
-                        @endcan
-                        @can('forceDelete', $group)
-                            <x-bs::button type="button" variant="danger" x-on:click="showModal = true; groupIdToDelete = {{ $group->id }}; groupNameToDelete = '{{ $group->name }}';">
-                                <i class="fa fa-minus-circle"></i> {{ __('Delete') }}
-                            </x-bs::button>
-                        @endcan
-                    </div>
                 </div>
             </div>
-        @endforeach
+        </div>
+        <div class="col-12 col-md-6 col-lg-8 col-xxl-9">
+            <div class="row">
+                @foreach($groups as $group)
+                    @php
+                        /** @var \Illuminate\Database\Eloquent\Collection|\App\Models\Booking[] $bookings */
+                        $bookings = $group['bookings'] ?? \Illuminate\Database\Eloquent\Collection::empty();
+                    @endphp
+                    <div class="col-12 col-lg-6 mb-3"
+                         wire:key="{{ 'group' . $group->id }}"
+                         x-on:dragover.prevent="allowDrop($event)"
+                         x-on:drop.prevent="drop($event, {{ $group->id }})">
+                        <div class="card">
+                            <div class="card-header bg-secondary text-bg-secondary">
+                                <h2 class="card-title">{{ $group->name }} ({{ formatInt($bookings->count()) }})</h2>
+                                @isset($group->description)
+                                    <p class="card-subtitle">{{ $group->description }}</p>
+                                @endisset
+                            </div>
+                            <x-bs::list :flush="true" data-group-id="{{ $group->id }}">
+                                @foreach($bookings as $booking)
+                                    @include('livewire.manage-groups-booking')
+                                @endforeach
+                            </x-bs::list>
+                            <div class="card-body">
+                                @can('update', $group)
+                                    @php
+                                        $editFormId = 'edit-form-' . $group->id;
+                                    @endphp
+                                    <x-bs::button.link data-bs-toggle="collapse" href="{{ '#' . $editFormId }}">
+                                        <i class="fa fa-edit"></i> {{ __('Edit') }}
+                                    </x-bs::button.link>
+                                @endcan
+                                @can('forceDelete', $group)
+                                    <x-bs::button type="button" variant="danger" x-on:click="showModal = true; groupIdToDelete = {{ $group->id }}; groupNameToDelete = '{{ $group->name }}';">
+                                        <i class="fa fa-minus-circle"></i> {{ __('Delete') }}
+                                    </x-bs::button>
+                                @endcan
+                                @can('update', $group)
+                                    <div id="{{ $editFormId }}" class="collapse mt-3">
+                                        <livewire:groups.edit-group :group="$group" wire:key="{{ $group->id }}"/>
+                                    </div>
+                                @endcan
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
     </div>
     <script>
         function dragStart(event, bookingId) {
@@ -88,6 +113,7 @@
             @this.call('moveBooking', bookingId, groupId);
         }
     </script>
+
     {{-- Delete Confirmation Modal --}}
     <div x-ref="deleteModal" id="deleteConfirmationModal" class="modal fade" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -99,9 +125,10 @@
                 <div class="modal-body">{{ __('Are you sure you want to delete this group?') }}</div>
                 <div class="modal-footer">
                     <x-bs::button type="button" data-bs-dismiss="modal" @click="showModal = false;"><i class="fa fa-window-close"></i> {{ __('Cancel') }}</x-bs::button>
-                    <x-bs::button type="button" variant="danger" @click="showModal = false; $wire.call('deleteGroup', groupIdToDelete);">
+                    <x-bs::button type="button" variant="danger" @click="$wire.deleteGroup(groupIdToDelete); showModal = false;">
                         <i class="fa fa-minus-circle"></i> {{ __('Delete') }}
                     </x-bs::button>
+                    <x-spinners.deleting/>
                 </div>
             </div>
         </div>

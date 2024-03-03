@@ -87,7 +87,8 @@ class Event extends Model
 
     public function groups(): HasMany
     {
-        return $this->hasMany(Group::class, 'event_id');
+        return $this->hasMany(Group::class, 'event_id')
+            ->orderBy('name');
     }
 
     public function eventSeries(): BelongsTo

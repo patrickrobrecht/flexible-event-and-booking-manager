@@ -21,6 +21,11 @@
     @can('update', $event)
         <x-button.edit href="{{ route('events.edit', $event) }}"/>
     @endcan
+    @can('viewAny', [\App\Models\Group::class, $event])
+        <x-bs::button.link href="{{ route('groups.index', $event) }}">
+            {{ __('Groups') }} <x-bs::badge variant="danger">{{ formatInt($event->groups_count) }}</x-bs::badge>
+        </x-bs::button.link>
+    @endcan
 @endsection
 
 @section('content')

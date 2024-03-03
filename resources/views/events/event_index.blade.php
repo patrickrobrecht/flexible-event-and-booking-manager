@@ -132,6 +132,11 @@
                         @can('update', $event)
                             <x-button.edit href="{{ route('events.edit', $event) }}"/>
                         @endcan
+                        @can('viewAny', [\App\Models\Group::class, $event])
+                            <x-bs::button.link href="{{ route('groups.index', $event) }}">
+                                {{ __('Groups') }} <x-bs::badge variant="danger">{{ formatInt($event->groups_count) }}</x-bs::badge>
+                            </x-bs::button.link>
+                        @endcan>
                         @can('create', \App\Models\BookingOption::class)
                             <x-button.create href="{{ route('booking-options.create', $event) }}">
                                 {{ __('Create booking option') }}
@@ -141,11 +146,6 @@
                             <x-button.create href="{{ route('events.create', ['parent_event_id' => $event->id]) }}">
                                 {{ __('Create event') }}
                             </x-button.create>
-                        @endcan
-                        @can('viewAny', [\App\Models\Group::class, $event])
-                            <x-bs::button.link href="{{ route('groups.index', $event) }}">
-                                {{ __('Groups') }} <x-bs::badge variant="danger">{{ formatInt($event->groups_count) }}</x-bs::badge>
-                            </x-bs::button.link>
                         @endcan
                     </div>
                     <div class="card-footer">

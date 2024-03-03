@@ -1,13 +1,15 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Groups;
 
+use App\Livewire\Forms\GroupForm;
 use App\Models\Booking;
 use App\Models\Event;
 use App\Models\Group;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class ManageGroups extends Component
@@ -22,6 +24,8 @@ class ManageGroups extends Component
 
     public string $sort = 'name';
 
+    public GroupForm $form;
+
     public function mount(Event $event): void
     {
         $this->event = $event;
@@ -32,6 +36,7 @@ class ManageGroups extends Component
     private function loadData(): void
     {
         $this->event->load([
+            'bookings.bookingOption',
             'bookings.groups',
             'groups',
         ]);
@@ -43,18 +48,47 @@ class ManageGroups extends Component
         );
     }
 
-    public function createGroup()
+    /**
+     * Handle create form submission.
+     */
+    public function createGroup(): void
     {
+        $this->authorize('create', Group::class);
+
+        $validated = $this->form->validateGroupForEvent($this->event, null);
+
+        $group = new Group();
+        $group->event()->associate($this->event);
+        if ($group->fill($validated)->save()) {
+            $this->updateGroupInList($group);
+
+            Session::flash('success', __('Group :name created successfully.', [
+                'name' => $group->name,
+            ]));
+
+            $this->form->reset();
+        }
     }
 
-    public function editGroup($groupId)
+    private function updateGroupInList(Group $group): void
     {
+        $this->groups[$group->id] = $group;
+        $this->groups = $this->groups->sortBy('name');
+    }
+
+    #[On('group-updated')]
+    public function updateGroup(Group $group): void
+    {
+        $this->updateGroupInList($group);
+
+        Session::flash('success', __('Group :name updated successfully.', [
+            'name' => $group->name,
+        ]));
     }
 
     public function deleteGroup($groupId): void
     {
-        /** @var Group $group */
-        $group = $this->groups[$groupId] ?? null;
+        $group = $this->getGroupById($groupId);
         if ($group) {
             $this->authorize('forceDelete', $group);
             $this->groups->forget($groupId);
@@ -65,12 +99,17 @@ class ManageGroups extends Component
         }
     }
 
+    public function getGroupById($groupId): ?Group
+    {
+        return $this->groups[$groupId] ?? null;
+    }
+
     public function moveBooking($bookingId, $groupId): void
     {
         $groupId = (int) $groupId;
 
         /** @var Booking $booking */
-        $booking = Booking::query()->find($bookingId);
+        $booking = Booking::query()->find((int) $bookingId);
         if ($booking) {
             $oldGroup = $booking->getGroup($this->event);
             if (isset($oldGroup)) {
@@ -94,10 +133,7 @@ class ManageGroups extends Component
     {
         $this->sortBookings();
 
-        return view('livewire.manage-groups', [
-            'bookingsWithoutGroup' => $this->bookingsWithoutGroup,
-            'groups' => $this->groups,
-        ]);
+        return view('livewire.manage-groups');
     }
 
     /**

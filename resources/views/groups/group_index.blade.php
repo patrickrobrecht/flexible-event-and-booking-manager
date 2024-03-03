@@ -19,5 +19,5 @@
 @endsection
 
 @section('content')
-    <livewire:manage-groups :event="$event"/>
+    <livewire:groups.manage-groups :event="$event"/>
 @endsection

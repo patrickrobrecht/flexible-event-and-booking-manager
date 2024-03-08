@@ -14,6 +14,7 @@ use App\Models\FormFieldValue;
 use App\Options\FormElementType;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -40,6 +41,7 @@ class BookingController extends Controller
         $bookingsQuery = Booking::buildQueryFromRequest($bookingOption->bookings())
             ->with([
                 'bookedByUser',
+                'groups' => fn (BelongsToMany $groups) => $groups->where('event_id', '=', $event->id),
             ]);
 
         if ($request->query('output') === 'export') {
@@ -55,7 +57,9 @@ class BookingController extends Controller
         $this->authorize('viewAny', Booking::class);
 
         return view('bookings.booking_index', [
-            'event' => $event,
+            'event' => $event->load([
+                'groups',
+            ]),
             'bookingOption' => $bookingOption,
             'bookings' => $bookingsQuery->paginate(),
         ]);

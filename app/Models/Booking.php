@@ -96,6 +96,16 @@ class Booking extends Model
             ->withTimestamps();
     }
 
+    public function scopeGroup(Builder $query, Group|int $group): Builder
+    {
+        $groupId = is_int($group) ? $group : $group->id;
+
+        return $query->whereHas(
+            'groups',
+            fn (Builder $groupQuery) => $groupQuery->where('group_id', '=', $groupId)
+        );
+    }
+
     public function scopePaymentStatus(Builder $query, int|PaymentStatus $paymentStatus)
     {
         $payment = is_int($paymentStatus)
@@ -225,6 +235,8 @@ class Booking extends Model
         return [
             /** @see self::scopeSearchAll() */
             AllowedFilter::scope('search', 'searchAll'),
+            /** @see self::scopeGroup() */
+            AllowedFilter::scope('group_id', 'group'),
             /** @see self::scopePaymentStatus() */
             AllowedFilter::scope('payment_status', 'paymentStatus'),
         ];

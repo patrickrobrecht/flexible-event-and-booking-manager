@@ -23,7 +23,7 @@
     @endcan
     @can('viewAny', [\App\Models\Group::class, $event])
         <x-bs::button.link href="{{ route('groups.index', $event) }}">
-            {{ __('Groups') }} <x-bs::badge variant="danger">{{ formatInt($event->groups_count) }}</x-bs::badge>
+            <i class="fa fa-fw fa-user-group"></i> {{ __('Groups') }} <x-bs::badge variant="danger">{{ formatInt($event->groups_count) }}</x-bs::badge>
         </x-bs::button.link>
     @endcan
 @endsection

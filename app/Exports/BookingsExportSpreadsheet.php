@@ -54,6 +54,7 @@ class BookingsExportSpreadsheet extends Spreadsheet
             __('User'),
             __('Price'),
             __('Paid at'),
+            __('Group'),
         ];
 
         if ($this->bookingOption->formFields->isEmpty()) {
@@ -97,6 +98,7 @@ class BookingsExportSpreadsheet extends Spreadsheet
             $booking->paid_at
                 ? $booking->paid_at->format('d.m.Y H:i')
                 : '',
+            $booking->getGroup($this->event)?->name ?? __('none'),
         ];
 
         if ($this->bookingOption->formFields->isEmpty()) {

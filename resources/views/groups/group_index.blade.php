@@ -21,3 +21,12 @@
 @section('content')
     <livewire:groups.manage-groups :event="$event"/>
 @endsection
+
+@push('styles')
+    @livewireStyles
+@endpush
+
+@push('scripts')
+    @livewireScripts
+    <script src="{{ mix('/lib/alpinejs.min.js') }}" defer></script>
+@endpush

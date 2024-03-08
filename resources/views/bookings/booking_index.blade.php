@@ -4,6 +4,8 @@
     /** @var \App\Models\Event $event */
     /** @var \App\Models\BookingOption $bookingOption */
     /** @var \Illuminate\Database\Eloquent\Collection|\App\Models\Booking[] $bookings */
+
+    $hasGroups = $event->groups->isNotEmpty();
 @endphp
 
 @section('title')
@@ -25,23 +27,35 @@
     @can('create', $bookingOption)
         <x-button.create href="{{ route('booking-options.show', [$event, $bookingOption]) }}">{{ __('Book') }}</x-button.create>
     @endcan
+    @can('viewAny', [\App\Models\Group::class, $event])
+        <x-bs::button.link href="{{ route('groups.index', $event) }}">
+            <i class="fa fa-fw fa-user-group"></i> {{ __('Groups') }} <x-bs::badge variant="danger">{{ formatInt($event->groups->count()) }}</x-bs::badge>
+        </x-bs::button.link>
+    @endcan
 @endsection
 
 @section('content')
     <x-form.filter>
         <div class="row">
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-lg-3">
                 <x-bs::form.field id="search" name="filter[search]" type="text"
                                   :from-query="true">{{ __('Search term') }}</x-bs::form.field>
             </div>
             @can('viewAnyPaymentStatus', \App\Models\Booking::class)
-                <div class="col-12 col-md-3">
+                <div class="col-12 col-lg-3">
                     <x-bs::form.field id="payment_status" name="filter[payment_status]" type="select"
                                       :options="\App\Options\PaymentStatus::toOptionsWithAll()"
                                       :from-query="true">{{ __('Payment status') }}</x-bs::form.field>
                 </div>
             @endcan
-            <div class="col-12 col-md-6 col-xl-3">
+            @if($hasGroups)
+                <div class="col-12 col-lg-3">
+                    <x-bs::form.field id="group_id" name="filter[group_id]" type="select"
+                                      :options="\Portavice\Bladestrap\Support\Options::fromModels($event->groups, 'name')->prepend(__('all'), '')"
+                                      :from-query="true">{{ __('Group') }}</x-bs::form.field>
+                </div>
+            @endif
+            <div class="col-12 col-lg-3">
                 <x-bs::form.field name="sort" type="select"
                                   :options="\App\Models\Booking::sortOptions()->getNamesWithLabels()"
                                   :from-query="true">{{ __('Sorting') }}</x-bs::form.field>
@@ -69,6 +83,12 @@
                         <div class="card-subtitle text-muted">{{ $bookingOption->name }}</div>
                     </div>
                     <x-bs::list :flush="true">
+                        @if($hasGroups)
+                            <x-bs::list.item>
+                                <i class="fa fa-fw fa-user-group" title="{{ __('Group') }}"></i>
+                                {{ $booking->getGroup($event)?->name ?? __('none') }}
+                            </x-bs::list.item>
+                        @endif
                         <x-bs::list.item>
                             <i class="fa fa-fw fa-clock" title="{{ __('Booking date') }}"></i>
                             @isset($booking->booked_at)

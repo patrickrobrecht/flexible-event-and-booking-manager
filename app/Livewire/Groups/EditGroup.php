@@ -20,6 +20,8 @@ class EditGroup extends Component
 
     public function save(): void
     {
+        $this->authorize('update', $this->group);
+
         if ($this->form->update()) {
             /** Call @see ManageGroups::updateGroup() */
             $this->dispatch('group-updated', group: $this->group);

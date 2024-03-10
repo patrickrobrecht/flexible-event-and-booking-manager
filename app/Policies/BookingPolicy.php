@@ -97,6 +97,11 @@ class BookingPolicy
         return $this->deny();
     }
 
+    public function manageGroup(User $user, Booking $booking): Response
+    {
+        return $this->requireAbility($user, Ability::ManageGroupsOfEvent);
+    }
+
     public function exportAny(User $user): Response
     {
         return $this->requireAbility($user, Ability::ExportBookingsOfEvent);

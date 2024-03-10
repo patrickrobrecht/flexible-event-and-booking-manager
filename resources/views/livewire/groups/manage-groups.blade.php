@@ -55,6 +55,7 @@
                     @php
                         /** @var \Illuminate\Database\Eloquent\Collection|\App\Models\Booking[] $bookings */
                         $bookings = $group['bookings'] ?? \Illuminate\Database\Eloquent\Collection::empty();
+                        $editFormId = 'edit-form-' . $group->id;
                     @endphp
                     <div class="col-12 col-lg-6 col-xl-4 mb-3"
                          wire:key="{{ 'group' . $group->id }}"
@@ -74,9 +75,6 @@
                             </x-bs::list>
                             <div class="card-body">
                                 @can('update', $group)
-                                    @php
-                                        $editFormId = 'edit-form-' . $group->id;
-                                    @endphp
                                     <x-bs::button.link data-bs-toggle="collapse" href="{{ '#' . $editFormId }}">
                                         <i class="fa fa-edit"></i> {{ __('Edit') }}
                                     </x-bs::button.link>
@@ -86,12 +84,12 @@
                                         <i class="fa fa-minus-circle"></i> {{ __('Delete') }}
                                     </x-bs::button>
                                 @endcan
-                                @can('update', $group)
-                                    <div id="{{ $editFormId }}" class="collapse mt-3">
-                                        <livewire:groups.edit-group :group="$group" wire:key="{{ $group->id }}"/>
-                                    </div>
-                                @endcan
                             </div>
+                            @can('update', $group)
+                                <div id="{{ $editFormId }}" class="card-body collapse">
+                                    <livewire:groups.edit-group :group="$group" wire:key="{{ 'edit-group' . $group->id }}"/>
+                                </div>
+                            @endcan
                         </div>
                     </div>
                 @endforeach

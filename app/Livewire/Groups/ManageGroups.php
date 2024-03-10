@@ -79,6 +79,8 @@ class ManageGroups extends Component
     #[On('group-updated')]
     public function updateGroup(Group $group): void
     {
+        $this->authorize('update', $group);
+
         $this->updateGroupInList($group);
 
         Session::flash('success', __('Group :name updated successfully.', [
@@ -99,7 +101,7 @@ class ManageGroups extends Component
         }
     }
 
-    public function getGroupById($groupId): ?Group
+    private function getGroupById($groupId): ?Group
     {
         return $this->groups[$groupId] ?? null;
     }
@@ -111,6 +113,8 @@ class ManageGroups extends Component
         /** @var Booking $booking */
         $booking = Booking::query()->find((int) $bookingId);
         if ($booking) {
+            $this->authorize('manageGroup', $booking);
+
             $oldGroup = $booking->getGroup($this->event);
             if (isset($oldGroup)) {
                 if ($oldGroup->id === $groupId) {

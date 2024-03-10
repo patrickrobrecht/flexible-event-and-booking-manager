@@ -50,7 +50,7 @@ class GroupPolicy
             return $this->deny();
         }
 
-        return $this->create($user);
+        return $this->requireAbility($user, Ability::ManageGroupsOfEvent);
     }
 
     /**

@@ -23,7 +23,7 @@ class BookingOptionController extends Controller
 
     public function create(Event $event): View
     {
-        $this->authorize('create', BookingOption::class);
+        $this->authorize('create', [BookingOption::class, $event]);
 
         return view('booking_options.booking_option_form', [
             'event' => $event,
@@ -32,7 +32,7 @@ class BookingOptionController extends Controller
 
     public function store(Event $event, BookingOptionRequest $request): RedirectResponse
     {
-        $this->authorize('create', BookingOption::class);
+        $this->authorize('create', [BookingOption::class, $event]);
 
         $bookingOption = new BookingOption();
         $bookingOption->event()->associate($event);

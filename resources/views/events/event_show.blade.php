@@ -57,7 +57,7 @@
                 @include('events.shared.event_booking_options')
             </x-bs::list>
 
-            @can('create', \App\Models\BookingOption::class)
+            @can('create', [\App\Models\BookingOption::class, $event])
                 <div class="mb-3">
                     <x-button.create href="{{ route('booking-options.create', $event) }}">
                         {{ __('Create booking option') }}

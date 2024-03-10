@@ -30,7 +30,7 @@
                         @section('headline')
                             <h1>@yield('title')</h1>
                         @show
-                        <div class="ms-auto">
+                        <div class="ms-auto text-nowrap">
                             @section('headline-buttons')
                             @show
                         </div>

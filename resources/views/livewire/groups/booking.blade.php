@@ -3,7 +3,11 @@
                  wire:key="{{ 'booking' . $booking->id }}"
                  x-on:dragstart="dragStart($event, {{ $booking->id }})">
     <div>
-        <strong>{{ $booking->first_name }} {{ $booking->last_name }}</strong>
+        @can('view', $booking)
+            <a class="fw-bold" href="{{ route('bookings.show', $booking) }}" target="_blank">{{ $booking->first_name }} {{ $booking->last_name }}</a>
+        @else
+            <strong>{{ $booking->first_name }} {{ $booking->last_name }}</strong>
+        @endcan
         <small>({{ $booking->bookingOption->name }})</small>
     </div>
     <div>

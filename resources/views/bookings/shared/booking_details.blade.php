@@ -1,26 +1,52 @@
-<div class="vstack mb-3">
-    <div>
-        <i class="fa fa-fw fa-clock" title="{{ __('Booking date') }}"></i>
-        @isset($booking->booked_at)
-            {{ formatDateTime($booking->booked_at) }}
-        @else
-            <x-bs::badge variant="danger">{{ __('Booking not completed yet') }}</x-bs::badge>
-        @endisset
+<div class="row">
+    <div class="col-12 col-md-6 vstack mb-3">
+        <div>
+            <i class="fa fa-fw fa-clock" title="{{ __('Booking date') }}"></i>
+            @isset($booking->booked_at)
+                {{ formatDateTime($booking->booked_at) }}
+            @else
+                <x-bs::badge variant="danger">{{ __('Booking not completed yet') }}</x-bs::badge>
+            @endisset
+        </div>
+        <div>
+            <i class="fa fa-fw fa-user" title="{{ __('Booked by') }}"></i>
+            @isset($booking->bookedByUser)
+                {{ $booking->bookedByUser->first_name }} {{ $booking->bookedByUser->last_name }}
+            @else
+                {{ __('Guest') }}
+            @endisset
+        </div>
+        <div>
+            <i class="fa fa-fw fa-euro" title="{{ __('Price') }}"></i>
+            @isset($booking->price)
+                {{ formatDecimal($booking->price) }}&nbsp;€
+            @else
+                <x-bs::badge variant="primary">{{ __('free of charge') }}</x-bs::badge>
+            @endisset
+        </div>
     </div>
-    <div>
-        <i class="fa fa-fw fa-user" title="{{ __('Booked by') }}"></i>
-        @isset($booking->bookedByUser)
-            {{ $booking->bookedByUser->first_name }} {{ $booking->bookedByUser->last_name }}
-        @else
-            {{ __('Guest') }}
-        @endisset
-    </div>
-    <div>
-        <i class="fa fa-fw fa-euro" title="{{ __('Price') }}"></i>
-        @isset($booking->price)
-            {{ formatDecimal($booking->price) }}&nbsp;€
-        @else
-            <x-bs::badge variant="primary">{{ __('free of charge') }}</x-bs::badge>
-        @endisset
-    </div>
+    @if($booking->groups->isNotEmpty())
+        @php
+            $groups = $booking->groups
+                ->filter(fn (\App\Models\Group $group) => \Illuminate\Support\Facades\Auth::user()->can('view', $group->event))
+                ->sortBy(fn (\App\Models\Group $group) => [
+                    $group->event->is($booking->bookingOption->event) ? 0 : 1,
+                    $group->event->name,
+                ]);
+        @endphp
+        <div class="col-12 col-md-6">
+            <x-bs::list>
+                @foreach($groups as $group)
+                    <x-bs::list.item>
+                        {{ $group->name }}
+                        @if($group->event->isNot($booking->bookingOption->event))
+                           <x-slot:end>
+                               <a href="{{ route('events.show', $group->event) }}" target="_blank">{{ $group->event->name }}</a>
+                           </x-slot:end>
+                        @endif
+                    </x-bs::list.item>
+                @endforeach
+            </x-bs::list>
+        </div>
+    @endif
 </div>

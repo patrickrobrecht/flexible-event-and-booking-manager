@@ -9,15 +9,17 @@ This application allows to manage events, their booking forms and bookings via a
 
 ## Features
 - Manage events and event series, locations, and organizations
-- Manage booking options and flexible booking forms which can be reused for multiple events
+  - Events and series can have a parent event (series). 
+- Manage booking options and their booking forms (for events without a parent event)
   - Users editing booking forms can see a preview for the booking forms if bookings are not enabled yet.
 - Bookings
   - Confirmation via email
   - Guest bookings are supported, but can be forbidden by enabling the restriction to logged-in users in the settings of the booking option.
   - Viewing/exporting all bookings and editing is limited to users with an administrative role.
   - Update booking comment and payment status
+  - Manage groups of events with bookings (sub events have bookings from parent event)
 - Login and logout, reset password, verify e-mail address, edit own account
-- User and user role management
+- Manage users and flexible roles
 - Manage personal access tokens (for [Laravel Sanctum](https://laravel.com/docs/10.x/sanctum))
 - Registration (if enabled via `.env`)
 - Footer links for legal notice, privacy, terms and conditions configurable via `.env`

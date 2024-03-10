@@ -163,6 +163,20 @@ class Event extends Model
             && $this->organizations()->sync($validatedData['organization_id'] ?? []);
     }
 
+    public function getBookings(): Collection
+    {
+        if (isset($this->parentEvent)) {
+            return $this->parentEvent->getBookings();
+        }
+
+        $this->loadMissing([
+            'bookings.bookingOption',
+            'bookings.groups',
+        ]);
+
+        return $this->bookings;
+    }
+
     public static function allowedFilters(): array
     {
         return [

@@ -137,7 +137,7 @@
                                 <i class="fa fa-fw fa-user-group"></i> {{ __('Groups') }} <x-bs::badge variant="danger">{{ formatInt($event->groups_count) }}</x-bs::badge>
                             </x-bs::button.link>
                         @endcan
-                        @can('create', \App\Models\BookingOption::class)
+                        @can('create', [\App\Models\BookingOption::class, $event])
                             <x-button.create href="{{ route('booking-options.create', $event) }}">
                                 {{ __('Create booking option') }}
                             </x-button.create>

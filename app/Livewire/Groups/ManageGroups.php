@@ -36,14 +36,13 @@ class ManageGroups extends Component
     private function loadData(): void
     {
         $this->event->load([
-            'bookings.bookingOption',
-            'bookings.groups',
+            /** Bookings loaded by @see Event::getBookings() */
             'groups.event',
         ]);
 
         $this->groups = $this->event->groups->keyBy('id');
 
-        $this->bookingsWithoutGroup = $this->event->bookings->filter(
+        $this->bookingsWithoutGroup = $this->event->getBookings()->filter(
             fn (Booking $booking) => $booking->getGroup($this->event) === null
         );
     }
@@ -153,7 +152,7 @@ class ManageGroups extends Component
         $this->groups = $this->groups
             ->map(function (Group $group) {
                 $group['bookings'] = $this->sortBookingsInGroup(
-                    $this->event->bookings->filter(
+                    $this->event->getBookings()->filter(
                         fn (Booking $booking) => $booking->getGroup($this->event)?->is($group)
                     )
                 );

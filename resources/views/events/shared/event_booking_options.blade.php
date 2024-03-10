@@ -3,20 +3,22 @@
 @endphp
 @foreach($event->bookingOptions as $bookingOption)
     <x-bs::list.item>
-        <a href="{{ route('booking-options.show', [$event, $bookingOption]) }}">{{ $bookingOption->name }}</a>
-        <x-bs::badge variant="primary">
-            @isset($bookingOption->price)
-                {{ formatDecimal($bookingOption->price) }}&nbsp;€
-            @else
-                {{ __('free of charge') }}
-            @endisset
-        </x-bs::badge>
+        <div>
+            <a href="{{ route('booking-options.show', [$event, $bookingOption]) }}">{{ $bookingOption->name }}</a>
+            <x-bs::badge variant="primary">
+                @isset($bookingOption->price)
+                    {{ formatDecimal($bookingOption->price) }}&nbsp;€
+                @else
+                    {{ __('free of charge') }}
+                @endisset
+            </x-bs::badge>
+        </div>
         @isset($bookingOption->description)
             <p class="lead">{{ $bookingOption->description }}</p>
         @endisset
         @include('booking_options.shared.booking_option_period')
         <x-bs::button.group class="mt-3">
-            @can('create', $bookingOption)
+            @can('create', [\App\Models\BookingOption::class, $event])
                 <x-button.create href="{{ route('booking-options.show', [$event, $bookingOption]) }}">{{ __('Book') }}</x-button.create>
             @endcan
             @can('viewAny', \App\Models\Booking::class)

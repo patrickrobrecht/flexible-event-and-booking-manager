@@ -6,13 +6,14 @@ use App\Livewire\Groups\EditGroup;
 use App\Models\Event;
 use App\Models\Group;
 use App\Models\Location;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Tests\TestCase;
+use Tests\Traits\ActsAsUser;
 
 class EditGroupTest extends TestCase
 {
-    use RefreshDatabase;
+    use ActsAsUser;
 
     public function testComponentRendersCorrectly(): void
     {
@@ -20,10 +21,12 @@ class EditGroupTest extends TestCase
             ->assertStatus(200);
     }
 
-    public function testComponentUpdatesGroup(): void
+    public function testGroupUpdated(): void
     {
         $group = $this->fakeGroupWithEventAndSiblingGroup();
         $this->assertNull($group->description);
+
+        $this->actingAsAdmin();
 
         Livewire::test(EditGroup::class, ['group' => $group])
             ->set('form.description', 'Test Description')
@@ -41,9 +44,11 @@ class EditGroupTest extends TestCase
         $this->assertNull($group->description);
     }
 
-    public function testComponentValidatesGroup(): void
+    public function testGroupValidated(): void
     {
         $group = $this->fakeGroupWithEventAndSiblingGroup();
+
+        $this->actingAsAdmin();
 
         Livewire::test(EditGroup::class, ['group' => $group])
             ->set('form.name')
@@ -60,7 +65,7 @@ class EditGroupTest extends TestCase
             ]);
 
         Livewire::test(EditGroup::class, ['group' => $group])
-            ->set('form.description', \Illuminate\Support\Str::random(257))
+            ->set('form.description', Str::random(257))
             ->call('save')
             ->assertHasErrors([
                 'form.description' => 'max:255',

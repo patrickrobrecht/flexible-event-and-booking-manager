@@ -13,8 +13,8 @@ class UserRoleSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->createUserRole(__('Administrator'), Ability::cases());
-        $this->createUserRole(__('User'), [
+        $this->createUserRole('Administrator', Ability::cases());
+        $this->createUserRole('User', [
             Ability::EditAccount,
         ]);
     }

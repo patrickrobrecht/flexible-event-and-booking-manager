@@ -242,6 +242,20 @@ class Booking extends Model
         ];
     }
 
+    /**
+     * @param Collection<self> $bookings
+     * @return Collection<self>
+     */
+    public static function sort(Collection $bookings, string $sort): Collection
+    {
+        $column = ltrim($sort, '-');
+        if ($column === 'name') {
+            $column = fn (self $booking) => $booking->last_name . ', ' . $booking->first_name;
+        }
+
+        return $bookings->sortBy($column, descending: str_starts_with($sort, '-'));
+    }
+
     public static function sortOptions(): SortOptions
     {
         return (new SortOptions())

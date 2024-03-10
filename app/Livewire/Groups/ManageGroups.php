@@ -38,7 +38,7 @@ class ManageGroups extends Component
         $this->event->load([
             'bookings.bookingOption',
             'bookings.groups',
-            'groups',
+            'groups.event',
         ]);
 
         $this->groups = $this->event->groups->keyBy('id');
@@ -133,7 +133,7 @@ class ManageGroups extends Component
     {
         $this->sortBookings();
 
-        return view('livewire.manage-groups');
+        return view('livewire.groups.manage-groups');
     }
 
     /**
@@ -166,11 +166,6 @@ class ManageGroups extends Component
      */
     private function sortBookingsInGroup(Collection $bookings): Collection
     {
-        $column = ltrim($this->sort, '-');
-        if ($column === 'name') {
-            $column = fn (Booking $booking) => $booking->last_name . ', ' . $booking->first_name;
-        }
-
-        return $bookings->sortBy($column, descending: str_starts_with($this->sort, '-'));
+        return Booking::sort($bookings, $this->sort);
     }
 }

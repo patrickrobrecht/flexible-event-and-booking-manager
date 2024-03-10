@@ -80,4 +80,9 @@ class GroupPolicy
 
         return $this->update($user, $group);
     }
+
+    public function exportAny(User $user): Response
+    {
+        return $this->requireAbility($user, Ability::ExportGroupsOfEvent);
+    }
 }

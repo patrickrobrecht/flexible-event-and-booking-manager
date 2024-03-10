@@ -13,7 +13,7 @@
         <div class="col-12 col-md-6 col-xl-3">
             <x-bs::form.field name="sort" type="select"
                               :options="\App\Models\Booking::sortOptions()->getNamesWithLabels()"
-                              wire:model.live="sort">{{ __('Sorting') }}</x-bs::form.field>
+                              wire:model.live="sort" form="export-form">{{ __('Sorting') }}</x-bs::form.field>
         </div>
     </div>
 
@@ -43,7 +43,7 @@
                     </div>
                     <x-bs::list :flush="true" data-group-id="-1">
                         @foreach(($bookingsWithoutGroup ?? \Illuminate\Database\Eloquent\Collection::empty()) as $booking)
-                            @include('livewire.manage-groups-booking')
+                            @include('livewire.groups.booking')
                         @endforeach
                     </x-bs::list>
                 </div>
@@ -56,7 +56,7 @@
                         /** @var \Illuminate\Database\Eloquent\Collection|\App\Models\Booking[] $bookings */
                         $bookings = $group['bookings'] ?? \Illuminate\Database\Eloquent\Collection::empty();
                     @endphp
-                    <div class="col-12 col-lg-6 mb-3"
+                    <div class="col-12 col-lg-6 col-xl-4 mb-3"
                          wire:key="{{ 'group' . $group->id }}"
                          x-on:dragover.prevent="allowDrop($event)"
                          x-on:drop.prevent="drop($event, {{ $group->id }})">
@@ -69,7 +69,7 @@
                             </div>
                             <x-bs::list :flush="true" data-group-id="{{ $group->id }}">
                                 @foreach($bookings as $booking)
-                                    @include('livewire.manage-groups-booking')
+                                    @include('livewire.groups.booking')
                                 @endforeach
                             </x-bs::list>
                             <div class="card-body">

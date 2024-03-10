@@ -2,16 +2,17 @@
 
 namespace App\Exports;
 
+use App\Exports\Traits\ExportsToExcel;
 use App\Models\Booking;
 use App\Models\BookingOption;
 use App\Models\Event;
 use Illuminate\Database\Eloquent\Collection;
-use PhpOffice\PhpSpreadsheet\Cell\ColumnRange;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class BookingsExportSpreadsheet extends Spreadsheet
 {
+    use ExportsToExcel;
+
     /**
      * @param Collection<Booking> $bookings
      */
@@ -22,26 +23,13 @@ class BookingsExportSpreadsheet extends Spreadsheet
     ) {
         parent::__construct();
 
-        $sheet = $this->getActiveSheet();
-        $sheet->setTitle(substr($this->bookingOption->name, 0, 31));
-
-        $data = $this->getData();
-        $sheet->fromArray($data);
-
-        $this->formatColumns($sheet, count($data[0]));
-    }
-
-    private function getData(): array
-    {
-        $data = [
+        self::fillSheetFromCollection(
+            $this->getActiveSheet(),
+            $this->bookingOption->name,
+            $this->bookings,
             $this->getHeaderColumns(),
-        ];
-
-        foreach ($this->bookings as $booking) {
-            $data[] = $this->getColumnsForRow($booking);
-        }
-
-        return $data;
+            fn (Booking $booking) => $this->getColumnsForRow($booking)
+        );
     }
 
     private function getHeaderColumns(): array
@@ -124,13 +112,5 @@ class BookingsExportSpreadsheet extends Spreadsheet
         }
 
         return $columns;
-    }
-
-    private function formatColumns(Worksheet $worksheet, int $columnCount): void
-    {
-        $worksheet->setAutoFilter(ColumnRange::fromColumnIndexes(1, $columnCount));
-        foreach (range(1, $columnCount) as $column) {
-            $worksheet->getColumnDimensionByColumn($column)->setAutoSize(true);
-        }
     }
 }

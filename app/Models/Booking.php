@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
@@ -34,6 +35,7 @@ use Spatie\QueryBuilder\Enums\SortDirection;
  * @property-read ?User $bookedByUser {@see self::bookedByUser()}
  * @property-read BookingOption $bookingOption {@see self::bookingOption()}
  * @property-read Collection|FormFieldValue[] $formFieldValues {@see self::formFieldValues()}
+ * @property-read Collection|Group[] $groups {@see self::groups()}
  */
 class Booking extends Model
 {
@@ -86,6 +88,22 @@ class Booking extends Model
     {
         return $this->hasMany(FormFieldValue::class)
                     ->with('formField');
+    }
+
+    public function groups(): BelongsToMany
+    {
+        return $this->belongsToMany(Group::class)
+            ->withTimestamps();
+    }
+
+    public function scopeGroup(Builder $query, Group|int $group): Builder
+    {
+        $groupId = is_int($group) ? $group : $group->id;
+
+        return $query->whereHas(
+            'groups',
+            fn (Builder $groupQuery) => $groupQuery->where('group_id', '=', $groupId)
+        );
     }
 
     public function scopePaymentStatus(Builder $query, int|PaymentStatus $paymentStatus)
@@ -152,6 +170,11 @@ class Booking extends Model
         return true;
     }
 
+    public function getGroup(Event $event): ?Group
+    {
+        return $this->groups->first(fn (Group $group) => $group->event_id === $event->id);
+    }
+
     public function setFieldValue(FormField $formField, mixed $value): bool
     {
         $formFieldValue = $this->formFieldValues->loadMissing(['formField'])->first(
@@ -212,9 +235,25 @@ class Booking extends Model
         return [
             /** @see self::scopeSearchAll() */
             AllowedFilter::scope('search', 'searchAll'),
+            /** @see self::scopeGroup() */
+            AllowedFilter::scope('group_id', 'group'),
             /** @see self::scopePaymentStatus() */
             AllowedFilter::scope('payment_status', 'paymentStatus'),
         ];
+    }
+
+    /**
+     * @param Collection<self> $bookings
+     * @return Collection<self>
+     */
+    public static function sort(Collection $bookings, string $sort): Collection
+    {
+        $column = ltrim($sort, '-');
+        if ($column === 'name') {
+            $column = fn (self $booking) => $booking->last_name . ', ' . $booking->first_name;
+        }
+
+        return $bookings->sortBy($column, descending: str_starts_with($sort, '-'));
     }
 
     public static function sortOptions(): SortOptions

@@ -9,6 +9,7 @@ use App\Models\Booking;
 use App\Options\PaymentStatus;
 use App\Policies\BookingPolicy;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 /**
  * Filter for {@see Booking}s
@@ -24,11 +25,24 @@ class BookingFilterRequest extends FormRequest
      */
     public function rules(): array
     {
+        $groupExistsRule = Rule::exists('groups', 'id');
+        if (isset($this->event)) {
+            $groupExistsRule->where('event_id', $this->event->id);
+        }
+
         return [
             'filter.search' => $this->ruleForText(),
             'filter.payment_status' => [
                 'nullable',
                 PaymentStatus::rule(),
+            ],
+            'filter.group_id' => [
+                'nullable',
+                $groupExistsRule,
+            ],
+            'sort' => [
+                'nullable',
+                Booking::sortOptions()->getRule(),
             ],
         ];
     }

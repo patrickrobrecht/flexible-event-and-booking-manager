@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\BookingOption;
+use App\Models\Event;
 use App\Models\User;
 use App\Options\Ability;
 use App\Options\BookingRestriction;
@@ -83,8 +84,12 @@ class BookingOptionPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): Response
+    public function create(User $user, Event $event): Response
     {
+        if (isset($event->parentEvent)) {
+            return $this->deny();
+        }
+
         return $this->requireAbility($user, Ability::ManageBookingOptionsOfEvent);
     }
 
@@ -93,7 +98,7 @@ class BookingOptionPolicy
      */
     public function update(User $user, BookingOption $bookingOption): Response
     {
-        return $this->create($user);
+        return $this->requireAbility($user, Ability::ManageBookingOptionsOfEvent);
     }
 
     /**

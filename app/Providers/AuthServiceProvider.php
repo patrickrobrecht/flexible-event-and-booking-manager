@@ -6,6 +6,7 @@ use App\Models\Booking;
 use App\Models\BookingOption;
 use App\Models\Event;
 use App\Models\EventSeries;
+use App\Models\Group;
 use App\Models\Location;
 use App\Models\Organization;
 use App\Models\PersonalAccessToken;
@@ -15,6 +16,7 @@ use App\Policies\BookingOptionPolicy;
 use App\Policies\BookingPolicy;
 use App\Policies\EventPolicy;
 use App\Policies\EventSeriesPolicy;
+use App\Policies\GroupPolicy;
 use App\Policies\LocationPolicy;
 use App\Policies\OrganizationPolicy;
 use App\Policies\PersonalAccessTokenPolicy;
@@ -34,6 +36,7 @@ class AuthServiceProvider extends ServiceProvider
         BookingOption::class => BookingOptionPolicy::class,
         Event::class => EventPolicy::class,
         EventSeries::class => EventSeriesPolicy::class,
+        Group::class => GroupPolicy::class,
         Location::class => LocationPolicy::class,
         Organization::class => OrganizationPolicy::class,
         PersonalAccessToken::class => PersonalAccessTokenPolicy::class,

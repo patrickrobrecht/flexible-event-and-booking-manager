@@ -8,6 +8,7 @@
     <title>@yield('title')</title>
 
     <link rel="stylesheet" href="{{ mix('css/app.css') }}">
+    @stack('styles')
 </head>
 <body>
     @include('layouts.header')
@@ -29,7 +30,7 @@
                         @section('headline')
                             <h1>@yield('title')</h1>
                         @show
-                        <div class="ms-auto">
+                        <div class="ms-auto text-nowrap">
                             @section('headline-buttons')
                             @show
                         </div>

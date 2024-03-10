@@ -24,3 +24,10 @@ $fa-font-path: '/lib';
         }
     }
 }
+
+/*
+ * Draggable behavior
+ */
+.draggable-item {
+    cursor: move;
+}

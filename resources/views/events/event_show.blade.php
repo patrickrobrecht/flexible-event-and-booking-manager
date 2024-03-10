@@ -21,6 +21,11 @@
     @can('update', $event)
         <x-button.edit href="{{ route('events.edit', $event) }}"/>
     @endcan
+    @can('viewAny', [\App\Models\Group::class, $event])
+        <x-bs::button.link href="{{ route('groups.index', $event) }}">
+            <i class="fa fa-fw fa-user-group"></i> {{ __('Groups') }} <x-bs::badge variant="danger">{{ formatInt($event->groups_count) }}</x-bs::badge>
+        </x-bs::button.link>
+    @endcan
 @endsection
 
 @section('content')
@@ -52,7 +57,7 @@
                 @include('events.shared.event_booking_options')
             </x-bs::list>
 
-            @can('create', \App\Models\BookingOption::class)
+            @can('create', [\App\Models\BookingOption::class, $event])
                 <div class="mb-3">
                     <x-button.create href="{{ route('booking-options.create', $event) }}">
                         {{ __('Create booking option') }}

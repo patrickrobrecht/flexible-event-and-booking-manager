@@ -30,11 +30,12 @@ class BookingPolicy
      */
     public function view(User $user, Booking $booking): Response
     {
-        if ($user->is($booking->bookedByUser)) {
-            return $this->allow();
+        $viewAny = $this->viewAny($user);
+        if ($viewAny->allowed()) {
+            return $viewAny;
         }
 
-        return $this->viewAny($user);
+        return $this->response($user->is($booking->bookedByUser));
     }
 
     public function viewPDF(User $user, Booking $booking): Response
@@ -95,6 +96,11 @@ class BookingPolicy
     public function forceDelete(User $user, Booking $booking): Response
     {
         return $this->deny();
+    }
+
+    public function manageGroup(User $user, Booking $booking): Response
+    {
+        return $this->requireAbility($user, Ability::ManageGroupsOfEvent);
     }
 
     public function exportAny(User $user): Response

@@ -32,6 +32,9 @@ class EventController extends Controller
                     'organizations',
                     'parentEvent',
                 ])
+                ->withCount([
+                    'groups',
+                ])
                 ->paginate(),
         ]));
     }
@@ -41,12 +44,16 @@ class EventController extends Controller
         $this->authorize('view', $event);
 
         return view('events.event_show', [
-            'event' => $event->loadMissing([
-                'bookingOptions' => static fn (HasMany $query) => $query->withCount([
-                    'bookings',
+            'event' => $event
+                ->loadMissing([
+                    'bookingOptions' => static fn (HasMany $query) => $query->withCount([
+                        'bookings',
+                    ]),
+                    'subEvents.location',
+                ])
+                ->loadCount([
+                    'groups',
                 ]),
-                'subEvents.location',
-            ]),
         ]);
     }
 

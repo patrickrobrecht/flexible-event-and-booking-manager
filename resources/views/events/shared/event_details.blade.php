@@ -4,31 +4,25 @@
 
 <x-bs::list>
     @isset($event->description)
-        <li class="list-group-item">
-            {{ $event->description }}
-        </li>
+        <x-bs::list.item>{{ $event->description }}</x-bs::list.item>
     @endisset
     @isset($event->website_url)
-        <li class="list-group-item">
+        <x-bs::list.item>
             <a href="{{ $event->website_url }}" target="_blank">{{ __('Website') }}</a>
-        </li>
+        </x-bs::list.item>
     @endisset
-    <li class="list-group-item d-flex">
-                    <span class="me-3">
-                        <i class="fa fa-fw fa-eye" title="{{ __('Visibility') }}"></i>
-                    </span>
-        <div><x-badge.visibility :visibility="$event->visibility"/></div>
-    </li>
-    <li class="list-group-item d-flex">
-                    <span class="me-3">
-                        <i class="fa fa-fw fa-clock" title="{{ __('Date') }}"></i>
-                    </span>
-        <div>@include('events.shared.event_dates')</div>
-    </li>
-    <li class="list-group-item d-flex">
-                    <span class="me-3">
-                        <i class="fa fa-fw fa-location-pin" title="{{ __('Address') }}"></i>
-                    </span>
+    <x-bs::list.item>
+        <span class="me-3"><i class="fa fa-fw fa-eye" title="{{ __('Visibility') }}"></i></span>
+        <x-badge.visibility :visibility="$event->visibility"/>
+    </x-bs::list.item>
+    <x-bs::list.item>
+        <span class="me-3"><i class="fa fa-fw fa-clock" title="{{ __('Date') }}"></i></span>
+        @include('events.shared.event_dates')
+    </x-bs::list.item>
+    <x-bs::list.item class="d-flex">
+        <span class="me-3">
+            <i class="fa fa-fw fa-location-pin" title="{{ __('Address') }}"></i>
+        </span>
         <div>
             @foreach($event->location->fullAddressBlock as $line)
                 {{ $line }}@if(!$loop->last)
@@ -36,11 +30,9 @@
                 @endif
             @endforeach
         </div>
-    </li>
-    <li class="list-group-item d-flex">
-                    <span class="me-3">
-                        <i class="fa fa-fw fa-sitemap" title="{{ __('Organizations') }}"></i>
-                    </span>
+    </x-bs::list.item>
+    <x-bs::list.item class="d-flex">
+        <span class="me-3"><i class="fa fa-fw fa-sitemap" title="{{ __('Organizations') }}"></i></span>
         <div>
             @if($event->organizations->count() === 0)
                 {{ __('none') }}
@@ -52,5 +44,5 @@
                 </ul>
             @endif
         </div>
-    </li>
+    </x-bs::list.item>
 </x-bs::list>

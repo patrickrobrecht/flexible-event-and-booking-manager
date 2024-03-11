@@ -14,6 +14,9 @@
     @else
         <x-bs::breadcrumb.item>>{{ __('Event series') }}</x-bs::breadcrumb.item>
     @endcan
+    @isset($eventSeries->parentEventSeries)
+        <x-bs::breadcrumb.item href="{{ route('event-series.show', $eventSeries->parentEventSeries) }}">{{ $eventSeries->parentEventSeries->name }}</x-bs::breadcrumb.item>
+    @endisset
     <x-bs::breadcrumb.item>@yield('title')</x-bs::breadcrumb.item>
 @endsection
 
@@ -49,6 +52,9 @@
                     @foreach($eventSeries->subEventSeries as $subEventSeries)
                         <x-bs::list.item container="a" variant="action" href="{{ route('event-series.show', $subEventSeries->slug) }}">
                             <strong>{{ $subEventSeries->name }}</strong>
+                            <x-slot:end>
+                                <x-bs::badge>{{ formatTransChoice(':count events', $subEventSeries->events_count) }}</x-bs::badge>
+                            </x-slot:end>
                         </x-bs::list.item>
                     @endforeach
                 </x-bs::list>

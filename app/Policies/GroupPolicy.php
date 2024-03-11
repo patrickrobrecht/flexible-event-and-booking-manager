@@ -16,9 +16,9 @@ class GroupPolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user, Event $event): Response
+    public function viewAny(User $user): Response
     {
-        return $this->requireAbility($user, Ability::ViewBookingsOfEvent);
+        return $this->deny();
     }
 
     /**
@@ -79,10 +79,5 @@ class GroupPolicy
         }
 
         return $this->update($user, $group);
-    }
-
-    public function exportAny(User $user): Response
-    {
-        return $this->requireAbility($user, Ability::ExportGroupsOfEvent);
     }
 }

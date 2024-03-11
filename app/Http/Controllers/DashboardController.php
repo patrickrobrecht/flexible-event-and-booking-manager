@@ -21,6 +21,9 @@ class DashboardController extends Controller
             ->with([
                 'location',
             ])
+            ->withCount([
+                'groups',
+            ])
             ->get();
 
         /** @var ?User $user */

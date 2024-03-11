@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\EventSeriesRequest;
 use App\Http\Requests\Filters\EventSeriesFilterRequest;
 use App\Models\EventSeries;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
@@ -35,7 +36,13 @@ class EventSeriesController extends Controller
 
         return view('event_series.event_series_show', [
             'eventSeries' => $eventSeries->loadMissing([
+                'events' => fn (HasMany $events) => $events->withCount([
+                    'groups',
+                ]),
                 'events.location',
+                'subEventSeries' => fn (HasMany $subEventSeries) => $subEventSeries->withCount([
+                    'events',
+                ]),
             ]),
         ]);
     }
@@ -65,7 +72,11 @@ class EventSeriesController extends Controller
         $this->authorize('update', $eventSeries);
 
         return view('event_series.event_series_form', $this->formValues([
-            'eventSeries' => $eventSeries,
+            'eventSeries' => $eventSeries->loadMissing([
+                'events' => fn (HasMany $events) => $events->withCount([
+                    'groups',
+                ]),
+            ]),
         ]));
     }
 

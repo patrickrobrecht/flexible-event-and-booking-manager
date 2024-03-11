@@ -35,6 +35,11 @@ class EventPolicy
         return $this->requireAbility($user, Ability::ViewPrivateEvents);
     }
 
+    public function viewGroups(User $user, Event $event): Response
+    {
+        return $this->requireAbility($user, Ability::ViewBookingsOfEvent);
+    }
+
     /**
      * Determine whether the user can create models.
      */
@@ -81,5 +86,10 @@ class EventPolicy
     public function forceDelete(User $user, Event $event): Response
     {
         return $this->deny();
+    }
+
+    public function exportGroups(User $user): Response
+    {
+        return $this->requireAbility($user, Ability::ExportGroupsOfEvent);
     }
 }

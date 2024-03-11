@@ -22,7 +22,7 @@
 @endsection
 
 @section('headline-buttons')
-    @can('exportAny', [\App\Models\Group::class, $event])
+    @can('exportGroups', $event)
         <form method="GET" id="export-form">
             <button type="submit" class="btn btn-primary" name="output" value="export">
                 <i class="fa fa-download"></i>

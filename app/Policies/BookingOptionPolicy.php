@@ -35,6 +35,11 @@ class BookingOptionPolicy
         return $this->response(isset($user) && $user->can('view', $bookingOption->event));
     }
 
+    public function viewBookings(User $user): Response
+    {
+        return $this->requireAbility($user, Ability::ViewBookingsOfEvent);
+    }
+
     public function book(?User $user, BookingOption $bookingOption): Response
     {
         if (
@@ -123,5 +128,10 @@ class BookingOptionPolicy
     public function forceDelete(User $user, BookingOption $bookingOption): Response
     {
         return $this->deny();
+    }
+
+    public function exportBookings(User $user): Response
+    {
+        return $this->requireAbility($user, Ability::ExportBookingsOfEvent);
     }
 }

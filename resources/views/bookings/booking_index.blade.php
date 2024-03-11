@@ -24,11 +24,11 @@
 @endsection
 
 @section('headline-buttons')
-    @can('create', $bookingOption)
+    @can('book', $bookingOption)
         <x-button.create href="{{ route('booking-options.show', [$event, $bookingOption]) }}">{{ __('Book') }}</x-button.create>
     @endcan
-    @can('viewAny', [\App\Models\Group::class, $event])
-        <x-bs::button.link href="{{ route('groups.index', $event) }}">
+    @can('viewGroups', $event)
+        <x-bs::button.link href="{{ route('groups.index', $event) }}" variant="secondary">
             <i class="fa fa-fw fa-user-group"></i> {{ __('Groups') }} <x-bs::badge variant="danger">{{ formatInt($event->groups->count()) }}</x-bs::badge>
         </x-bs::button.link>
     @endcan
@@ -63,7 +63,7 @@
         </div>
 
         <x-slot:addButtons>
-            @can('exportAny', \App\Models\Booking::class)
+            @can('exportBookings', $bookingOption)
                 <button type="submit" class="btn btn-primary" name="output" value="export">
                     <i class="fa fa-download"></i>
                     {{ __('Export') }}
@@ -114,20 +114,7 @@
                         </x-bs::list.item>
                         <x-bs::list.item>
                             <i class="fa fa-fw fa-euro" title="{{ __('Price') }}"></i>
-                            @isset($booking->price)
-                                {{ formatDecimal($booking->price) }}&nbsp;€
-                                @can('viewPaymentStatus', $booking)
-                                    @isset($booking->paid_at)
-                                        <x-bs::badge variant="success">{{ __('paid') }} ({{ $booking->paid_at->isMidnight()
-                                            ? formatDate($booking->paid_at)
-                                            : formatDateTime($booking->paid_at) }})</x-bs::badge>
-                                    @else
-                                        <x-bs::badge variant="danger">{{ __('not paid yet') }}</x-bs::badge>
-                                    @endisset
-                                @endcan
-                            @else
-                                <x-bs::badge variant="primary">{{ __('free of charge') }}</x-bs::badge>
-                            @endisset
+                            @include('bookings.shared.payment-status')
                         </x-bs::list.item>
                         <x-bs::list.item>
                             <i class="fa fa-fw fa-at"></i>

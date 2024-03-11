@@ -1,4 +1,5 @@
 {
+    ":count events": "{0} keine Veranstaltungen|{1} eine Veranstaltung|[2,*] :count Veranstaltungen",
     ":count results found.": "{0} Keine Ergebnisse gefunden.|{1} Ein Ergebnis gefunden.|[2,*] :count Ergebnisse gefunden.",
     ":count users": "{0} keine Benutzer|{1} ein Benutzer|[2,*] :count Benutzer",
     ":start until :end": ":start bis :end",

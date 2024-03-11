@@ -34,11 +34,16 @@ To get started, you need to install the following software:
 - a relational database, such as [MariaDB](https://mariadb.org/download/)
 
 ### Used technologies
+- [Alpine.js](https://alpinejs.dev/) to extend Livewire with some additional JavaScript
 - [Bladestrap](https://github.com/portavice/bladestrap), Blade components for Bootstrap
 - [Bootstrap](https://getbootstrap.com/), a front-end toolkit
 - [Font Awesome](https://github.com/FortAwesome/Font-Awesome) for [icons](https://fontawesome.com/icons?d=gallery&m=free)
 - [Laravel](https://laravel.com/docs/10.x) framework
+- [Laravel Dompdf](https://github.com/barryvdh/laravel-dompdf) for PDF export
+- [Laravel Livewire](https://livewire.laravel.com/docs/) for dynamic UI without leading PHP
 - [Laravel Query Builder](https://spatie.be/docs/laravel-query-builder/v5/introduction) for custom filtering and sorting
+- [PhpSpreadsheet](https://phpspreadsheet.readthedocs.io/en/latest/) for Excel exports
+- [Laravel Sluggable](https://github.com/spatie/laravel-sluggable) to autogenerate slugs
 
 ### How to develop
 To setup/update your development environment:

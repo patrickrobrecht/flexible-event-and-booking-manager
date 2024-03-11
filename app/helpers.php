@@ -27,12 +27,22 @@ function formatTime(Carbon $date): string
     return $date->format('H:i');
 }
 
-function formatTransChoice($key, $count, $replace = [], $locale = null): string
+function formatTransChoice(string $key, float|int $count, array $replace = [], ?string $locale = null): string
 {
     return trans_choice(
         $key,
         $count,
         array_merge(['count' => formatInt($count)], $replace),
+        $locale
+    );
+}
+
+function formatTransChoiceDecimal(string $key, float|int $count, int $decimals = 2, array $replace = [], ?string $locale = null): string
+{
+    return trans_choice(
+        $key,
+        $count,
+        array_merge(['count' => formatDecimal($count, $decimals)], $replace),
         $locale
     );
 }

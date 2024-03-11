@@ -24,11 +24,14 @@ class ManageGroups extends Component
 
     public string $sort = 'name';
 
+    public array $bookingOptionIds;
+
     public GroupForm $form;
 
     public function mount(Event $event): void
     {
         $this->event = $event;
+        $this->bookingOptionIds = $event->bookingOptions->pluck('id')->toArray();
 
         $this->loadData();
     }
@@ -145,6 +148,14 @@ class ManageGroups extends Component
     public function updatedSort(): void
     {
         $this->sortBookings();
+    }
+
+    /**
+     * React on changes of $this->bookingOptions.
+     */
+    public function updatedBookingOptions(): void
+    {
+        $this->bookingOptionIds = array_map('intval', $this->bookingOptionIds);
     }
 
     private function sortBookings(): void

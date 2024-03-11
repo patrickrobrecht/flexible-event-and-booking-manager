@@ -9,6 +9,7 @@ use App\Options\FormElementType;
 use App\Options\PaymentStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -31,6 +32,11 @@ use Spatie\QueryBuilder\Enums\SortDirection;
  * @property ?float $price
  * @property ?Carbon $paid_at
  * @property ?string $comment
+ *
+ * @property-read int $booking_option_id
+ *
+ * @property-read ?float $age {@see self::age}
+ * @property-read ?Carbon $birthday {@see self::birthday()}
  *
  * @property-read ?User $bookedByUser {@see self::bookedByUser()}
  * @property-read BookingOption $bookingOption {@see self::bookingOption()}
@@ -68,11 +74,29 @@ class Booking extends Model
      * @var array<string, string>
      */
     protected $casts = [
+        'booking_option_id' => 'integer',
         'booked_at' => 'datetime',
         'paid_at' => 'datetime',
     ];
 
     protected $perPage = 12;
+
+    public function age(): Attribute
+    {
+        return Attribute::get(fn () => Carbon::now()->floatDiffInYears($this->birthday));
+    }
+
+    public function birthday(): Attribute
+    {
+        return Attribute::get(function () {
+            $formField = $this->bookingOption->formFields->where('name', '=', 'Geburtsdatum')->first();
+            if (isset($formField)) {
+                return $this->getFieldValue($formField);
+            }
+
+            return null;
+        });
+    }
 
     public function bookedByUser()
     {

@@ -45,7 +45,7 @@ class BookingController extends Controller
             ]);
 
         if ($request->query('output') === 'export') {
-            $this->authorize('exportAny', Booking::class);
+            $this->authorize('exportBookings', $bookingOption);
 
             $fileName = $event->slug . '-' . $bookingOption->slug;
             return $this->streamExcelExport(
@@ -54,7 +54,7 @@ class BookingController extends Controller
             );
         }
 
-        $this->authorize('viewAny', Booking::class);
+        $this->authorize('viewBookings', $bookingOption);
 
         return view('bookings.booking_index', [
             'event' => $event->load([

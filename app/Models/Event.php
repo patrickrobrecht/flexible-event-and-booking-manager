@@ -68,6 +68,7 @@ class Event extends Model
      * @var array<string, string>
      */
     protected $casts = [
+        'groups_count' => 'integer',
         'visibility' => Visibility::class,
         'started_at' => 'datetime',
         'finished_at' => 'datetime',

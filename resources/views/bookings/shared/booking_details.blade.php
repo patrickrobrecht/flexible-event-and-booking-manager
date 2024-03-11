@@ -18,30 +18,31 @@
         </div>
         <div>
             <i class="fa fa-fw fa-euro" title="{{ __('Price') }}"></i>
-            @isset($booking->price)
-                {{ formatDecimal($booking->price) }}&nbsp;€
-            @else
-                <x-bs::badge variant="primary">{{ __('free of charge') }}</x-bs::badge>
-            @endisset
+            @include('bookings.shared.payment-status')
         </div>
     </div>
     @if($booking->groups->isNotEmpty())
         @php
             $groups = $booking->groups
-                ->filter(fn (\App\Models\Group $group) => \Illuminate\Support\Facades\Auth::user()->can('view', $group->event))
+                ->filter(fn (\App\Models\Group $group) => \Illuminate\Support\Facades\Auth::user()?->can('view', $group->event))
                 ->sortBy(fn (\App\Models\Group $group) => [
                     $group->event->is($booking->bookingOption->event) ? 0 : 1,
                     $group->event->name,
                 ]);
         @endphp
         <div class="col-12 col-md-6">
-            <x-bs::list>
+            <h2>{{ __('Groups') }}</h2>
+            <x-bs::list class="mb-3">
                 @foreach($groups as $group)
                     <x-bs::list.item>
-                        {{ $group->name }}
+                        @can('viewGroups', $group->event)
+                            <a href="{{ route('groups.index', $event) }}">{{ $group->name }}</a>
+                        @else
+                            {{ $group->name }}
+                        @endcan
                         @if($group->event->isNot($booking->bookingOption->event))
                            <x-slot:end>
-                               <a href="{{ route('events.show', $group->event) }}" target="_blank">{{ $group->event->name }}</a>
+                               <a href="{{ route('events.show', $group->event) }}">{{ $group->event->name }}</a>
                            </x-slot:end>
                         @endif
                     </x-bs::list.item>

@@ -49,6 +49,13 @@ class EventController extends Controller
                     'bookingOptions' => static fn (HasMany $query) => $query->withCount([
                         'bookings',
                     ]),
+                    'parentEvent.subEvents' => static fn (HasMany $query) => $query->withCount([
+                        'groups',
+                    ]),
+                    'parentEvent.subEvents.location',
+                    'subEvents' => static fn (HasMany $query) => $query->withCount([
+                        'groups',
+                    ]),
                     'subEvents.location',
                 ])
                 ->loadCount([

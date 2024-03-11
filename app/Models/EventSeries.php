@@ -35,6 +35,7 @@ class EventSeries extends Model
      * @var array<string, string>
      */
     protected $casts = [
+        'events_count' => 'integer',
         'visibility' => Visibility::class,
     ];
 

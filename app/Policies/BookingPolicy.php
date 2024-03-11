@@ -35,7 +35,7 @@ class BookingPolicy
             return $viewAny;
         }
 
-        return $this->response($user->is($booking->bookedByUser));
+        return $this->viewOnlyOwnBooking($user, $booking);
     }
 
     public function viewPDF(User $user, Booking $booking): Response
@@ -45,7 +45,17 @@ class BookingPolicy
 
     public function viewPaymentStatus(User $user, Booking $booking): Response
     {
-        return $this->viewAnyPaymentStatus($user);
+        $viewAny = $this->viewAnyPaymentStatus($user);
+        if ($viewAny->allowed()) {
+            return $viewAny;
+        }
+
+        return $this->viewOnlyOwnBooking($user, $booking);
+    }
+
+    private function viewOnlyOwnBooking(User $user, Booking $booking): Response
+    {
+        return $this->response($user->is($booking->bookedByUser));
     }
 
     /**
@@ -101,10 +111,5 @@ class BookingPolicy
     public function manageGroup(User $user, Booking $booking): Response
     {
         return $this->requireAbility($user, Ability::ManageGroupsOfEvent);
-    }
-
-    public function exportAny(User $user): Response
-    {
-        return $this->requireAbility($user, Ability::ExportBookingsOfEvent);
     }
 }

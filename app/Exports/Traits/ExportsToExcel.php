@@ -36,7 +36,7 @@ trait ExportsToExcel
         array $headerColumns,
         \Closure $rowProvider
     ): void {
-        $worksheet->setTitle(substr($title, 0, 31));
+        $worksheet->setTitle(substr(str_replace(['*', ':', '/', '\\', '?', '[', ']'], '', $title), 0, 31));
         $worksheet->fromArray([
             [$title],
             [],

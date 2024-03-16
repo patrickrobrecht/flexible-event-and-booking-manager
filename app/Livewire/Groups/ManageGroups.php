@@ -10,17 +10,21 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
+use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
 class ManageGroups extends Component
 {
+    #[Locked]
     public Event $event;
 
     /** @var Collection<Group> */
+    #[Locked]
     public Collection $groups;
 
     /** @var Collection<Booking> */
+    #[Locked]
     public Collection $bookingsWithoutGroup;
 
     public string $sort = 'name';
@@ -78,7 +82,7 @@ class ManageGroups extends Component
     private function updateGroupInList(Group $group): void
     {
         $this->groups[$group->id] = $group;
-        $this->groups = $this->groups->sortBy('name');
+        $this->groups = $this->groups->sortBy('name', SORT_STRING | SORT_FLAG_CASE);
     }
 
     #[On('group-updated')]

@@ -291,6 +291,7 @@ class Booking extends Model
                         ->orderBy('first_name', $descending ? SortDirection::DESCENDING : SortDirection::ASCENDING)
                 ),
                 true
-            );
+            )
+            ->addBothDirections(__('Date of birth'), AllowedSort::field('date_of_birth'));
     }
 }

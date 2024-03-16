@@ -150,7 +150,7 @@ class ManageGroups extends Component
     }
 
     /**
-     * React on changes of $this->sort.
+     * React on changes of {@see self::$sort}
      */
     public function updatedSort(): void
     {
@@ -158,9 +158,9 @@ class ManageGroups extends Component
     }
 
     /**
-     * React on changes of $this->bookingOptions.
+     * React on changes of {@see self::$bookingOptionIds}.
      */
-    public function updatedBookingOptions(): void
+    public function updatedBookingOptionIds(): void
     {
         $this->bookingOptionIds = array_map('intval', $this->bookingOptionIds);
     }

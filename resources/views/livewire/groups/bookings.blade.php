@@ -4,7 +4,7 @@
             $bookingsForOption = $bookings->filter(fn (\App\Models\Booking $booking) => $booking->booking_option_id === $bookingOption->id);
             $averageAge = $averageAge = $bookingsForOption->average('age');
         @endphp
-        @if(in_array($bookingOption->id, $bookingOptionIds, true))
+        @if(in_array($bookingOption->id, $bookingOptionIds, true) && $bookingsForOption->count() > 0)
             <x-bs::list.item variant="primary">
                 {{ $bookingOption->name }} ({{ formatInt($bookingsForOption->count()) }})
                 @isset($averageAge)

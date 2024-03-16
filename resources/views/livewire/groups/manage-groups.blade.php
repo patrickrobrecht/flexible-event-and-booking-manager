@@ -16,8 +16,19 @@
                               wire:model.live="sort" form="export-form">{{ __('Sorting') }}</x-bs::form.field>
         </div>
         <div class="col-12 col-md-6 col-xl-3">
+            @php
+                $bookingOptions = \Portavice\Bladestrap\Support\Options::fromModels(
+                    $event->bookingOptions,
+                    fn (\App\Models\BookingOption $bookingOption) => sprintf(
+                        '<a href="%s" target="_blank"">%s</a> (%s)',
+                        route('bookings.index', [$event, $bookingOption]),
+                        $bookingOption->name,
+                        formatInt($bookingOption->bookings_count ?? $bookingOption->bookings()->count())
+                    )
+                );
+            @endphp
             <x-bs::form.field name="booking_options" type="checkbox"
-                              :options="\Portavice\Bladestrap\Support\Options::fromModels($event->bookingOptions, 'name')"
+                              :options="$bookingOptions" :allow-html="true"
                               wire:model.live="bookingOptionIds">{{ __('Booking options') }}</x-bs::form.field>
         </div>
     </div>

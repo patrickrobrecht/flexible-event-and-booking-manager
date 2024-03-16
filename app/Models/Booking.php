@@ -7,6 +7,7 @@ use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\HasAddress;
 use App\Options\FormElementType;
 use App\Options\PaymentStatus;
+use App\Options\TrashedFilter;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -15,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Session;
@@ -28,15 +30,16 @@ use Spatie\QueryBuilder\Enums\SortDirection;
  * @property string $last_name
  * @property string $email
  * @property ?string $phone
+ * @property ?Carbon $date_of_birth
  * @property ?Carbon $booked_at
  * @property ?float $price
  * @property ?Carbon $paid_at
  * @property ?string $comment
+ * @property ?Carbon $deleted_at
  *
  * @property-read int $booking_option_id
  *
  * @property-read ?float $age {@see self::age}
- * @property-read ?Carbon $birthday {@see self::birthday()}
  *
  * @property-read ?User $bookedByUser {@see self::bookedByUser()}
  * @property-read BookingOption $bookingOption {@see self::bookingOption()}
@@ -47,6 +50,7 @@ class Booking extends Model
 {
     use BuildsQueryFromRequest;
     use HasAddress;
+    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -63,6 +67,7 @@ class Booking extends Model
         'postal_code',
         'city',
         'country',
+        'date_of_birth',
         'booked_at',
         'paid_at',
         'comment',
@@ -75,27 +80,17 @@ class Booking extends Model
      */
     protected $casts = [
         'booking_option_id' => 'integer',
+        'date_of_birth' => 'date',
         'booked_at' => 'datetime',
         'paid_at' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
     protected $perPage = 12;
 
     public function age(): Attribute
     {
-        return Attribute::get(fn () => Carbon::now()->floatDiffInYears($this->birthday));
-    }
-
-    public function birthday(): Attribute
-    {
-        return Attribute::get(function () {
-            $formField = $this->bookingOption->formFields->where('name', '=', 'Geburtsdatum')->first();
-            if (isset($formField)) {
-                return $this->getFieldValue($formField);
-            }
-
-            return null;
-        });
+        return Attribute::get(fn () => Carbon::now()->floatDiffInYears($this->date_of_birth));
     }
 
     public function bookedByUser()
@@ -219,7 +214,7 @@ class Booking extends Model
     public function getFieldValue(FormField $formField): mixed
     {
         if (isset($formField->column)) {
-            return $this->attributes[$formField->column] ?? null;
+            return $this->{$formField->column} ?? null;
         }
 
         /** @var ?FormFieldValue $fieldValue */
@@ -263,6 +258,8 @@ class Booking extends Model
             AllowedFilter::scope('group_id', 'group'),
             /** @see self::scopePaymentStatus() */
             AllowedFilter::scope('payment_status', 'paymentStatus'),
+            AllowedFilter::trashed()
+                ->default(TrashedFilter::WithoutTrashed->value),
         ];
     }
 

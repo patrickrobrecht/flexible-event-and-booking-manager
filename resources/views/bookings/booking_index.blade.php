@@ -56,6 +56,11 @@
                 </div>
             @endif
             <div class="col-12 col-lg-3">
+                <x-bs::form.field id="trashed" name="filter[trashed]" type="select"
+                                  :options="\App\Options\TrashedFilter::toOptions()"
+                                  :from-query="true">{{ __('Group') }}</x-bs::form.field>
+            </div>
+            <div class="col-12 col-lg-3">
                 <x-bs::form.field name="sort" type="select"
                                   :options="\App\Models\Booking::sortOptions()->getNamesWithLabels()"
                                   :from-query="true">{{ __('Sorting') }}</x-bs::form.field>
@@ -154,6 +159,15 @@
                         @endcan
                         @can('update', $booking)
                             <x-button.edit href="{{ route('bookings.edit', $booking) }}"/>
+                        @endcan
+                        @can('delete', $booking)
+                            <x-button.delete form="delete-{{ $booking->id }}"/>
+                            <x-bs::form id="delete-{{ $booking->id }}" method="DELETE"
+                                        action="{{ route('bookings.delete', $booking) }}"/>
+                        @elsecan('restore', $booking)
+                            <x-button.restore form="restore-{{ $booking->id }}" />
+                            <x-bs::form id="restore-{{ $booking->id }}" method="PATCH"
+                                        action="{{ route('bookings.restore', $booking) }}"/>
                         @endcan
                     </div>
                     <div class="card-footer">

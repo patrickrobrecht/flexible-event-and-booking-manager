@@ -48,6 +48,11 @@ class BookingRequest extends FormRequest
                 'string',
                 'max:255',
             ],
+            'date_of_birth' => [
+                'nullable',
+                'date_format:Y-m-d',
+                'after:1900-01-01',
+            ],
             'phone' => [
                 'nullable',
                 'string',

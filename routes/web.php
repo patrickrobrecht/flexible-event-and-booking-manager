@@ -38,33 +38,39 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth')->group(static function () {
     Route::model('bookings', Booking::class);
     Route::resource('bookings', BookingController::class)
-         ->only(['show', 'edit', 'update']);
+        ->only(['show', 'edit', 'update'])
+        ->withTrashed();
+    Route::delete('/bookings/{booking}', [BookingController::class, 'delete'])
+        ->name('bookings.delete');
+    Route::patch('/bookings/{booking}/restore', [BookingController::class, 'restore'])
+        ->name('bookings.restore')
+        ->withTrashed();
     Route::get('bookings/{booking}/pdf', [BookingController::class, 'showPdf'])
         ->name('bookings.show-pdf');
     Route::model('form_field_value', FormFieldValue::class);
     Route::get('bookings/{booking}/file/{form_field_value}', [BookingController::class, 'downloadFile'])
-         ->name('bookings.show-file');
+        ->name('bookings.show-file');
 
     Route::resource('events', EventController::class)
-         ->only(['index', 'create', 'store', 'edit', 'update']);
+        ->only(['index', 'create', 'store', 'edit', 'update']);
     Route::resource('events/{event:slug}/booking-options', BookingOptionController::class)
-         ->only(['show', 'create', 'store', 'edit', 'update']);
+        ->only(['show', 'create', 'store', 'edit', 'update']);
     Route::resource('events/{event:slug}/{booking_option:slug}/bookings', BookingController::class)
-         ->only(['index']);
+        ->only(['index']);
     Route::resource('events/{event:slug}/groups', GroupController::class)
         ->only(['index']);
 
     Route::model('event_series', EventSeries::class);
     Route::resource('event-series', EventSeriesController::class)
-         ->only(['index', 'show', 'create', 'store', 'edit', 'update']);
+        ->only(['index', 'show', 'create', 'store', 'edit', 'update']);
 
     Route::model('location', Location::class);
     Route::resource('locations', LocationController::class)
-         ->only(['index', 'create', 'store', 'edit', 'update']);
+        ->only(['index', 'create', 'store', 'edit', 'update']);
 
     Route::model('organization', Organization::class);
     Route::resource('organizations', OrganizationController::class)
-         ->only(['index', 'create', 'store', 'edit', 'update']);
+        ->only(['index', 'create', 'store', 'edit', 'update']);
 
     Route::model('personal_access_token', PersonalAccessToken::class);
     Route::resource('personal-access-tokens', PersonalAccessTokenController::class)
@@ -86,17 +92,17 @@ Route::middleware('auth')->group(static function () {
 });
 
 Route::get('/', [DashboardController::class, 'index'])
-     ->name('dashboard');
+    ->name('dashboard');
 
 Route::model('event', Event::class);
 Route::resource('events', EventController::class)
-     ->only(['show']);
+    ->only(['show']);
 
 Route::model('booking_option', BookingOption::class);
 Route::resource('events/{event:slug}/booking-options', BookingOptionController::class)
-     ->only(['show']);
+    ->only(['show']);
 
 Route::resource('events/{event:slug}/{booking_option:slug}/bookings', BookingController::class)
-     ->only(['store']);
+    ->only(['store']);
 
 require __DIR__ . '/auth.php';

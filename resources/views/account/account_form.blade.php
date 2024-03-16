@@ -12,13 +12,27 @@
 @section('content')
     <x-bs::form method="PUT" action="{{ route('account.update') }}">
         <div class="row">
-            <div class="col-12 col-md-6">
-                <x-bs::form.field name="first_name" type="text"
-                                  :value="$user->first_name ?? null">{{ __('First name') }}</x-bs::form.field>
-                <x-bs::form.field name="last_name" type="text"
-                                  :value="$user->last_name ?? null">{{ __('Last name') }}</x-bs::form.field>
-                <x-bs::form.field name="phone" type="text"
-                                  :value="$user->phone ?? null">{{ __('Phone number') }}</x-bs::form.field>
+            <div class="col-12 col-lg-6">
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <x-bs::form.field name="first_name" type="text"
+                                          :value="$user->first_name ?? null">{{ __('First name') }}</x-bs::form.field>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <x-bs::form.field name="last_name" type="text"
+                                          :value="$user->last_name ?? null">{{ __('Last name') }}</x-bs::form.field>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <x-bs::form.field name="date_of_birth" type="date"
+                                          :value="$user?->date_of_birth?->format('Y-m-d') ?? null">{{ __('Date of birth') }}</x-bs::form.field>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <x-bs::form.field name="phone" type="text"
+                                          :value="$user->phone ?? null">{{ __('Phone number') }}</x-bs::form.field>
+                    </div>
+                </div>
                 <x-bs::form.field name="email" type="email"
                                   :value="$user->email ?? null">{{ __('E-mail') }}</x-bs::form.field>
                 @isset($user->email_verified_at)
@@ -40,7 +54,7 @@
                 <x-bs::form.field name="password_confirmation" type="password"
                                   autocomplete="new-password">{{ __('Confirm password') }}</x-bs::form.field>
             </div>
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-lg-6">
                 @include('_shared.address_fields_form', [
                     'address' => $user,
                 ])

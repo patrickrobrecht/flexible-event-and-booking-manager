@@ -174,4 +174,26 @@ class BookingController extends Controller
 
         return Storage::download($formFieldValue->value);
     }
+
+    public function delete(Booking $booking)
+    {
+        $this->authorize('delete', $booking);
+
+        if ($booking->delete()) {
+            Session::flash('success', __('Deleted successfully.'));
+        }
+
+        return back();
+    }
+
+    public function restore(Booking $booking)
+    {
+        $this->authorize('restore', $booking);
+
+        if ($booking->restore()) {
+            Session::flash('success', __('Restored successfully.'));
+        }
+
+        return back();
+    }
 }

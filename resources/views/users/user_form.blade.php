@@ -22,13 +22,27 @@
     <x-bs::form method="{{ isset($editedUser) ? 'PUT' : 'POST' }}"
                 action="{{ isset($editedUser) ? route('users.update', $editedUser) : route('users.store') }}">
         <div class="row">
-            <div class="col-12 col-md-6">
-                <x-bs::form.field name="first_name" type="text"
-                                  :value="$editedUser->first_name ?? null">{{ __('First name') }}</x-bs::form.field>
-                <x-bs::form.field name="last_name" type="text"
-                                  :value="$editedUser->last_name ?? null">{{ __('Last name') }}</x-bs::form.field>
-                <x-bs::form.field name="phone" type="tel"
-                                  :value="$editedUser->phone ?? null">{{ __('Phone number') }}</x-bs::form.field>
+            <div class="col-12 col-lg-6">
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <x-bs::form.field name="first_name" type="text"
+                                          :value="$editedUser->first_name ?? null">{{ __('First name') }}</x-bs::form.field>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <x-bs::form.field name="last_name" type="text"
+                                          :value="$editedUser->last_name ?? null">{{ __('Last name') }}</x-bs::form.field>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <x-bs::form.field name="date_of_birth" type="date"
+                                          :value="$editedUser?->date_of_birth?->format('Y-m-d') ?? null">{{ __('Date of birth') }}</x-bs::form.field>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <x-bs::form.field name="phone" type="tel"
+                                          :value="$editedUser->phone ?? null">{{ __('Phone number') }}</x-bs::form.field>
+                    </div>
+                </div>
                 <x-bs::form.field name="email" type="email"
                                   :value="$editedUser->email ?? null">{{ __('E-mail') }}</x-bs::form.field>
                 @isset($editedUser->email_verified_at)
@@ -60,7 +74,7 @@
                                   :options="\App\Options\ActiveStatus::toOptions()"
                                   :value="$editedUser->status->value ?? null">{{ __('Status') }}</x-bs::form.field>
             </div>
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-lg-6">
                 @include('_shared.address_fields_form', [
                     'address' => $editedUser ?? null,
                 ])

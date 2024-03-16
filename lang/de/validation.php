@@ -164,6 +164,7 @@ return [
         'current_password' => 'Derzeitiges Passwort',
         'date' => 'Datum',
         'date_from' => 'Beginn des Zeitraums',
+        'date_of_birth' => 'Geburtsdatum',
         'date_until' => 'Ende des Zeitraums',
         'day' => 'Tag',
         'description' => 'Beschreibung',

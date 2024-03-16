@@ -15,6 +15,22 @@
                               :options="\App\Models\Booking::sortOptions()->getNamesWithLabels()"
                               wire:model.live="sort" form="export-form">{{ __('Sorting') }}</x-bs::form.field>
         </div>
+        <div class="col-12 col-md-6 col-xl-3">
+            @php
+                $bookingOptions = \Portavice\Bladestrap\Support\Options::fromModels(
+                    $event->bookingOptions,
+                    fn (\App\Models\BookingOption $bookingOption) => sprintf(
+                        '<a href="%s" target="_blank"">%s</a> (%s)',
+                        route('bookings.index', [$event, $bookingOption]),
+                        $bookingOption->name,
+                        formatInt($bookingOption->bookings_count ?? $bookingOption->bookings()->count())
+                    )
+                );
+            @endphp
+            <x-bs::form.field name="booking_options" type="checkbox"
+                              :options="$bookingOptions" :allow-html="true"
+                              wire:model.live="bookingOptionIds">{{ __('Booking options') }}</x-bs::form.field>
+        </div>
     </div>
 
     @include('layouts.alerts')
@@ -42,9 +58,10 @@
                         <h2 class="card-title">{{ __('Without group') }} ({{ formatInt($bookingsWithoutGroup->count()) }})</h2>
                     </div>
                     <x-bs::list :flush="true" data-group-id="-1">
-                        @foreach(($bookingsWithoutGroup ?? \Illuminate\Database\Eloquent\Collection::empty()) as $booking)
-                            @include('livewire.groups.booking')
-                        @endforeach
+                        @include('livewire.groups.bookings', [
+                            'bookings' => $bookingsWithoutGroup ?? \Illuminate\Database\Eloquent\Collection::empty(),
+                            'groupId' => -1,
+                        ])
                     </x-bs::list>
                 </div>
             </div>
@@ -63,16 +80,15 @@
                          x-on:drop.prevent="drop($event, {{ $group->id }})">
                         <div class="card">
                             <div class="card-header bg-secondary text-bg-secondary">
-                                <h2 class="card-title">{{ $group->name }} ({{ formatInt($bookings->count()) }})</h2>
+                                <h2 class="card-title">{{ $group->name }}</h2>
                                 @isset($group->description)
                                     <p class="card-subtitle">{{ $group->description }}</p>
                                 @endisset
                             </div>
-                            <x-bs::list :flush="true" data-group-id="{{ $group->id }}">
-                                @foreach($bookings as $booking)
-                                    @include('livewire.groups.booking')
-                                @endforeach
-                            </x-bs::list>
+                            @include('livewire.groups.bookings', [
+                                'bookings' => $bookings,
+                                'groupId' => $group->id,
+                            ])
                             <div class="card-body">
                                 @can('update', $group)
                                     <x-bs::button.link data-bs-toggle="collapse" href="{{ '#' . $editFormId }}">

@@ -29,16 +29,14 @@ class EditGroupTest extends TestCase
         $this->actingAsAdmin();
 
         Livewire::test(EditGroup::class, ['group' => $group])
-            ->set('form.description', 'Test Description')
-            ->call('save');
+            ->set('form.description', 'Test Description');
 
         $group->refresh();
         $this->assertEquals('Test Description', $group->description);
 
         Livewire::test(EditGroup::class, ['group' => $group])
             ->set('form.name', 'Another Name')
-            ->set('form.description')
-            ->call('save');
+            ->set('form.description');
         $group->refresh();
         $this->assertEquals('Another Name', $group->name);
         $this->assertNull($group->description);
@@ -52,21 +50,18 @@ class EditGroupTest extends TestCase
 
         Livewire::test(EditGroup::class, ['group' => $group])
             ->set('form.name')
-            ->call('save')
             ->assertHasErrors([
                 'form.name' => 'required',
             ]);
 
         Livewire::test(EditGroup::class, ['group' => $group])
             ->set('form.name', 'Test Group 1')
-            ->call('save')
             ->assertHasErrors([
                 'form.name' => 'unique',
             ]);
 
         Livewire::test(EditGroup::class, ['group' => $group])
             ->set('form.description', Str::random(257))
-            ->call('save')
             ->assertHasErrors([
                 'form.description' => 'max:255',
             ]);

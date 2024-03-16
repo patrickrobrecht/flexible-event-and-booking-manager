@@ -89,7 +89,11 @@ class BookingPolicy
      */
     public function delete(User $user, Booking $booking): Response
     {
-        return $this->deny();
+        if ($booking->trashed()) {
+            return $this->deny();
+        }
+
+        return $this->requireAbility($user, Ability::DeleteAndRestoreBookingsOfEvent);
     }
 
     /**
@@ -97,7 +101,11 @@ class BookingPolicy
      */
     public function restore(User $user, Booking $booking): Response
     {
-        return $this->deny();
+        if (!$booking->trashed()) {
+            return $this->deny();
+        }
+
+        return $this->requireAbility($user, Ability::DeleteAndRestoreBookingsOfEvent);
     }
 
     /**

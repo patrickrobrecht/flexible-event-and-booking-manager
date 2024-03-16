@@ -7,35 +7,45 @@ use App\Models\Booking;
 use App\Models\Event;
 use App\Models\Group;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
+use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
 class ManageGroups extends Component
 {
+    #[Locked]
     public Event $event;
 
     /** @var Collection<Group> */
+    #[Locked]
     public Collection $groups;
 
     /** @var Collection<Booking> */
+    #[Locked]
     public Collection $bookingsWithoutGroup;
 
     public string $sort = 'name';
+
+    public array $bookingOptionIds;
 
     public GroupForm $form;
 
     public function mount(Event $event): void
     {
         $this->event = $event;
-
         $this->loadData();
+        $this->bookingOptionIds = $event->bookingOptions->pluck('id')->toArray();
     }
 
     private function loadData(): void
     {
         $this->event->load([
+            'bookingOptions' => fn (HasMany $bookingOptionsQuery) => $bookingOptionsQuery->withCount([
+                'bookings',
+            ]),
             /** Bookings loaded by @see Event::getBookings() */
             'groups.event',
         ]);
@@ -72,7 +82,7 @@ class ManageGroups extends Component
     private function updateGroupInList(Group $group): void
     {
         $this->groups[$group->id] = $group;
-        $this->groups = $this->groups->sortBy('name');
+        $this->groups = $this->groups->sortBy('name', SORT_STRING | SORT_FLAG_CASE);
     }
 
     #[On('group-updated')]
@@ -111,7 +121,7 @@ class ManageGroups extends Component
 
         /** @var Booking $booking */
         $booking = Booking::query()->find((int) $bookingId);
-        if ($booking) {
+        if (isset($booking) && $booking->bookingOption->event->is($this->event)) {
             $this->authorize('manageGroup', $booking);
 
             $oldGroup = $booking->getGroup($this->event);
@@ -140,11 +150,19 @@ class ManageGroups extends Component
     }
 
     /**
-     * React on changes of $this->sort.
+     * React on changes of {@see self::$sort}
      */
     public function updatedSort(): void
     {
         $this->sortBookings();
+    }
+
+    /**
+     * React on changes of {@see self::$bookingOptionIds}.
+     */
+    public function updatedBookingOptionIds(): void
+    {
+        $this->bookingOptionIds = array_map('intval', $this->bookingOptionIds);
     }
 
     private function sortBookings(): void

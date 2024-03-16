@@ -24,6 +24,7 @@ return [
         '_t',
         '@lang',
         'formatTransChoice',
+        'formatTransChoiceDecimal',
         'trans_choice',
     ],
 

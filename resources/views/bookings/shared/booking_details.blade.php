@@ -1,3 +1,9 @@
+@if($booking->trashed())
+    <x-bs::alert variant="danger" class="fw-bold">
+        <i class="fa fa-warning"></i> {{ __('This booking has been deleted.') }}
+    </x-bs::alert>
+@endif
+
 <div class="row">
     <div class="col-12 col-md-6 vstack mb-3">
         <div>

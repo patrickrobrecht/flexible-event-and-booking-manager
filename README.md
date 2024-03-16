@@ -15,9 +15,12 @@ This application allows to manage events, their booking forms and bookings via a
 - Bookings
   - Confirmation via email
   - Guest bookings are supported, but can be forbidden by enabling the restriction to logged-in users in the settings of the booking option.
-  - Viewing/exporting all bookings and editing is limited to users with an administrative role.
-  - Update booking comment and payment status
-  - Manage groups of events with bookings (sub events have bookings from parent event)
+  - Users with the corresponding access rights can view, export, edit, delete and restore bookings.
+    They can also add a booking comment and set the payment status.
+- Group participants for events with bookings
+  - Bookings are automatically grouped by their booking option.
+  - If a date of birth is submitted, the age of each participant and average age of each group is shown.
+  - Sub events have the bookings from parent event.
 - Login and logout, reset password, verify e-mail address, edit own account
 - Manage users and flexible roles
 - Manage personal access tokens (for [Laravel Sanctum](https://laravel.com/docs/10.x/sanctum))

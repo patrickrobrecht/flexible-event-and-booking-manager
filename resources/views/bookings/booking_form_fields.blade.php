@@ -73,8 +73,16 @@
                               :value="$booking->last_name ?? null">{{ __('Last name') }}</x-bs::form.field>
         </div>
     </div>
-    <x-bs::form.field name="phone" type="tel"
-                      :value="$booking->phone ?? null">{{ __('Phone number') }}</x-bs::form.field>
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <x-bs::form.field name="date_of_birth" type="date"
+                              :value="$booking?->date_of_birth?->format('Y-m-d') ?? null">{{ __('Date of birth') }}</x-bs::form.field>
+        </div>
+        <div class="col-12 col-md-6">
+            <x-bs::form.field name="phone" type="tel"
+                              :value="$booking->phone ?? null">{{ __('Phone number') }}</x-bs::form.field>
+        </div>
+    </div>
     <x-bs::form.field name="email" type="email"
                       :value="$booking->email ?? null">{{ __('E-mail') }}</x-bs::form.field>
 

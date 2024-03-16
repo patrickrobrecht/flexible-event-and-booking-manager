@@ -31,6 +31,7 @@ use Spatie\QueryBuilder\Enums\SortDirection;
  * @property-read int $id
  * @property string $first_name
  * @property string $last_name
+ * @property ?Carbon $date_of_birth
  * @property ?string $phone
  * @property string $email
  * @property-read ?Carbon $email_verified_at
@@ -68,6 +69,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'postal_code',
         'city',
         'country',
+        'date_of_birth',
         'email',
         'status',
     ];
@@ -88,6 +90,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array<string, string>
      */
     protected $casts = [
+        'date_of_birth' => 'date',
         'email_verified_at' => 'datetime',
         'status' => ActiveStatus::class,
         'last_login_at' => 'datetime',

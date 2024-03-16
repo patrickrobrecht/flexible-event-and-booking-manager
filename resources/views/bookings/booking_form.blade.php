@@ -26,12 +26,12 @@
 @endsection
 
 @section('headline-buttons')
-    @can('viewPDF', $booking)
-        <x-bs::button.link variant="secondary" href="{{ route('bookings.show-pdf', $booking) }}">
-            <i class="fa fa-file-pdf"></i>
-            {{ __('PDF') }}
+    @can('view', $booking)
+        <x-bs::button.link variant="secondary" href="{{ route('bookings.show', $booking) }}">
+            <i class="fa fa-eye"></i> {{ __('View') }}
         </x-bs::button.link>
     @endcan
+    @include('bookings.shared.booking_buttons')
 @endsection
 
 @section('content')

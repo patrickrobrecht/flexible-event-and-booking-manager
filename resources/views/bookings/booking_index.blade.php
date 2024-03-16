@@ -83,9 +83,12 @@
         @foreach($bookings as $booking)
             <div class="col-12 col-md-6 col-lg-4 col-xxl-3 mb-3">
                 <div class="card">
-                    <div class="card-header">
+                    <div @class([
+                        'card-header',
+                        'text-bg-danger' => $booking->trashed(),
+                    ])>
                         <h2 class="card-title">{{ $booking->first_name }} {{ $booking->last_name }}</h2>
-                        <div class="card-subtitle text-muted">{{ $bookingOption->name }}</div>
+                        <div class="card-subtitle">{{ $bookingOption->name }}</div>
                     </div>
                     <x-bs::list :flush="true">
                         @if($hasGroups)
@@ -147,14 +150,12 @@
                     <div class="card-body">
                         @can('view', $booking)
                             <x-bs::button.link variant="secondary" href="{{ route('bookings.show', $booking) }}">
-                                <i class="fa fa-eye"></i>
-                                {{ __('View') }}
+                                <i class="fa fa-eye"></i> {{ __('View') }}
                             </x-bs::button.link>
                         @endcan
                         @can('viewPDF', $booking)
                             <x-bs::button.link variant="secondary" href="{{ route('bookings.show-pdf', $booking) }}">
-                                <i class="fa fa-file-pdf"></i>
-                                {{ __('PDF') }}
+                                <i class="fa fa-file-pdf"></i> {{ __('PDF') }}
                             </x-bs::button.link>
                         @endcan
                         @can('update', $booking)
@@ -165,7 +166,7 @@
                             <x-bs::form id="delete-{{ $booking->id }}" method="DELETE"
                                         action="{{ route('bookings.delete', $booking) }}"/>
                         @elsecan('restore', $booking)
-                            <x-button.restore form="restore-{{ $booking->id }}" />
+                            <x-button.restore form="restore-{{ $booking->id }}"/>
                             <x-bs::form id="restore-{{ $booking->id }}" method="PATCH"
                                         action="{{ route('bookings.restore', $booking) }}"/>
                         @endcan

@@ -59,6 +59,8 @@ Route::middleware('auth')->group(static function () {
         ->only(['index']);
     Route::resource('events/{event:slug}/groups', GroupController::class)
         ->only(['index']);
+    Route::post('events/{event:slug}/groups/generate', [GroupController::class, 'generate'])
+        ->name('groups.generate');
 
     Route::model('event_series', EventSeries::class);
     Route::resource('event-series', EventSeriesController::class)

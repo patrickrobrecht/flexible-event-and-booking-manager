@@ -1,5 +1,5 @@
 <x-bs::list :flush="true" data-group-id="{{ $groupId }}">
-    @foreach($event->bookingOptions as $bookingOption)
+    @foreach($event->getBookingOptions() as $bookingOption)
         @php
             $bookingsForOption = $bookings->filter(fn (\App\Models\Booking $booking) => $booking->booking_option_id === $bookingOption->id);
             $averageAge = $averageAge = $bookingsForOption->average('age');
@@ -18,11 +18,21 @@
                                  wire:key="{{ 'booking' . $booking->id }}"
                                  x-on:dragstart="dragStart($event, {{ $booking->id }})">
                     <div class="d-flex justify-content-between align-items-center">
-                        @can('view', $booking)
-                            <a class="fw-bold" href="{{ route('bookings.show', $booking) }}" target="_blank">{{ $booking->first_name }} {{ $booking->last_name }}</a>
-                        @else
-                            <strong>{{ $booking->first_name }} {{ $booking->last_name }}</strong>
-                        @endcan
+                        <span>
+                            @can('view', $booking)
+                                <a class="fw-bold" href="{{ route('bookings.show', $booking) }}" target="_blank">{{ $booking->first_name }} {{ $booking->last_name }}</a>
+                            @else
+                                <strong>{{ $booking->first_name }} {{ $booking->last_name }}</strong>
+                            @endcan
+                            @isset($event->parentEvent)
+                                @php
+                                    $group = $booking->getGroup($event->parentEvent);
+                                @endphp
+                                @isset($group)
+                                    ({{ $group->name }})
+                                @endisset
+                            @endisset
+                        </span>
                         @isset($booking->age)
                             <span>
                                 <x-bs::badge>{{ formatTransChoiceDecimal(':count years', $booking->age, 1) }}</x-bs::badge>

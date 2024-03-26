@@ -2,7 +2,6 @@
 
 namespace App\Policies;
 
-use App\Models\Event;
 use App\Models\Group;
 use App\Models\User;
 use App\Options\Ability;
@@ -34,10 +33,6 @@ class GroupPolicy
      */
     public function create(User $user): Response
     {
-        if (!$user->can('create', Event::class)) {
-            return $this->deny();
-        }
-
         return $this->requireAbility($user, Ability::ManageGroupsOfEvent);
     }
 
@@ -46,10 +41,6 @@ class GroupPolicy
      */
     public function update(User $user, Group $group): Response
     {
-        if (!$user->can('update', $group->event)) {
-            return $this->deny();
-        }
-
         return $this->requireAbility($user, Ability::ManageGroupsOfEvent);
     }
 

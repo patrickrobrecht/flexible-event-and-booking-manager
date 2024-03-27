@@ -98,6 +98,7 @@ class ManageGroups extends Component
         $group = $this->getGroupById($groupId);
         if ($group) {
             $this->authorize('forceDelete', $group);
+            $group->bookings()->sync([]); // Required for soft-deleted bookings.
             $this->groups->forget($groupId);
             $group->delete();
             Session::flash('success', __('Group :name deleted successfully.', [

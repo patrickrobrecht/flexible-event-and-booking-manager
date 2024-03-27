@@ -89,23 +89,25 @@
                                 'bookings' => $bookings,
                                 'groupId' => $group->id,
                             ])
-                            <div class="card-body">
-                                @can('update', $group)
-                                    <x-bs::button.link data-bs-toggle="collapse" href="{{ '#' . $editFormId }}">
-                                        <i class="fa fa-edit"></i> {{ __('Edit') }}
-                                    </x-bs::button.link>
-                                @endcan
-                                @can('forceDelete', $group)
-                                    <x-bs::button type="button" variant="danger" x-on:click="showModal = true; groupIdToDelete = {{ $group->id }}; groupNameToDelete = '{{ $group->name }}';">
-                                        <i class="fa fa-minus-circle"></i> {{ __('Delete') }}
-                                    </x-bs::button>
-                                @endcan
-                            </div>
-                            @can('update', $group)
-                                <div id="{{ $editFormId }}" class="card-body collapse">
-                                    <livewire:groups.edit-group :group="$group" wire:key="{{ 'edit-group' . $group->id }}"/>
+                            @canany(['update', 'forceDelete'], $group)
+                                <div class="card-body">
+                                    @can('update', $group)
+                                        <x-bs::button.link data-bs-toggle="collapse" href="{{ '#' . $editFormId }}">
+                                            <i class="fa fa-edit"></i> {{ __('Edit') }}
+                                        </x-bs::button.link>
+                                    @endcan
+                                    @can('forceDelete', $group)
+                                        <x-bs::button type="button" variant="danger" x-on:click="showModal = true; groupIdToDelete = {{ $group->id }}; groupNameToDelete = '{{ $group->name }}';">
+                                            <i class="fa fa-minus-circle"></i> {{ __('Delete') }}
+                                        </x-bs::button>
+                                    @endcan
                                 </div>
-                            @endcan
+                                @can('update', $group)
+                                    <div id="{{ $editFormId }}" class="card-body collapse">
+                                        <livewire:groups.edit-group :group="$group" wire:key="{{ 'edit-group' . $group->id }}"/>
+                                    </div>
+                                @endcan
+                            @endcanany
                         </div>
                     </div>
                 @endforeach

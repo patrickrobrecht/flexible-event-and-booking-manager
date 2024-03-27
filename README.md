@@ -21,6 +21,7 @@ This application allows to manage events, their booking forms and bookings via a
   - Bookings are automatically grouped by their booking option.
   - If a date of birth is submitted, the age of each participant and average age of each group is shown.
   - Sub events have the bookings from parent event.
+  - Generate groups (randomized or age-based)
 - Login and logout, reset password, verify e-mail address, edit own account
 - Manage users and flexible roles
 - Manage personal access tokens (for [Laravel Sanctum](https://laravel.com/docs/10.x/sanctum))

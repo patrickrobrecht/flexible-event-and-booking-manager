@@ -12,6 +12,8 @@ use App\Models\Group;
 use App\Options\GroupGenerationMethod;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -62,6 +64,14 @@ class GroupController extends Controller
                 in_array($booking->bookingOption->id, $bookingOptionIds, true)
             ));
 
+        $parentGroupIdsToExclude = $request->validated('exclude_parent_group_id');
+        if (isset($event->parentEvent) && count($parentGroupIdsToExclude) > 0) {
+            $bookings = $bookings
+                ->filter(fn (Booking $booking) => (
+                    !in_array($booking->getGroup($event->parentEvent)?->id, $parentGroupIdsToExclude, true)
+                ));
+        }
+
         $generatedGroups = $method->generateGroups($groupsCount, $bookings);
         foreach ($generatedGroups as $groupIndex => $groupMembers) {
             $group = $event->groups()
@@ -79,6 +89,25 @@ class GroupController extends Controller
                 $groupMember->groups()->attach($group);
             }
         }
+
+        return redirect(route('groups.index', $event));
+    }
+
+    public function destroyAll(Event $event): RedirectResponse
+    {
+        $this->authorize('forceDeleteAny', Group::class);
+
+        if (Request::input('name') !== $event->name) {
+            throw ValidationException::withMessages([
+                'name' => __('The name of the event is not correct.'),
+            ])->errorBag('delete');
+        }
+
+        // Remove bookings from groups.
+        $event->groups->each(fn (Group $group) => $group->bookings()->sync([]));
+
+        // Delete the (empty) groups.
+        $event->groups()->delete();
 
         return redirect(route('groups.index', $event));
     }

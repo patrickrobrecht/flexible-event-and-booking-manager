@@ -61,6 +61,8 @@ Route::middleware('auth')->group(static function () {
         ->only(['index']);
     Route::post('events/{event:slug}/groups/generate', [GroupController::class, 'generate'])
         ->name('groups.generate');
+    Route::delete('events/{event:slug}/groups', [GroupController::class, 'destroyAll'])
+        ->name('groups.deleteAll');
 
     Route::model('event_series', EventSeries::class);
     Route::resource('event-series', EventSeriesController::class)

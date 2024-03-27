@@ -31,6 +31,12 @@ class GenerateGroupsRequest extends FormRequest
                     ? $this->booking_option_id
                     : []
             ),
+            'exclude_parent_group_id' => array_map(
+                'intval',
+                isset($this->exclude_parent_group_id) && is_array($this->exclude_parent_group_id)
+                    ? $this->exclude_parent_group_id
+                    : []
+            ),
         ]);
     }
 
@@ -45,11 +51,16 @@ class GenerateGroupsRequest extends FormRequest
             $this->input('booking_option_id'),
             $this->event->getBookingOptions()->pluck('id')->toArray()
         );
+
         $bookingsCount = ($this->event->parentEvent ?? $this->event)
             ->bookings()
             ->whereIn('booking_option_id', $selectedBookingOptionIds)
             ->count();
         $maxGroupsCount = ceil($bookingsCount / 2) + 1;
+
+        $parentGroupIds = isset($this->event->parentEvent)
+            ? $this->event->parentEvent->groups()->pluck('id')->toArray()
+            : [];
 
         return [
             'method' => [
@@ -68,6 +79,14 @@ class GenerateGroupsRequest extends FormRequest
             'booking_option_id.*' => [
                 'integer',
                 Rule::in($this->event->getBookingOptions()->pluck('id')),
+            ],
+            'exclude_parent_group_id' => [
+                'array',
+                count($parentGroupIds) === 0 ? 'prohibited' : 'nullable',
+            ],
+            'exclude_parent_group_id.*' => [
+                'integer',
+                Rule::in($parentGroupIds),
             ],
         ];
     }

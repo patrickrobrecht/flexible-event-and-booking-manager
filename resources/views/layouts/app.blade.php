@@ -26,11 +26,11 @@
 
             @section('main')
                 @hasSection('headline-buttons')
-                    <div class="hstack gap-3">
+                    <div class="d-lg-flex align-items-end">
                         @section('headline')
                             <h1>@yield('title')</h1>
                         @show
-                        <div class="ms-auto text-nowrap">
+                        <div class="mb-3 mb-lg-0 ms-auto text-nowrap">
                             @section('headline-buttons')
                             @show
                         </div>

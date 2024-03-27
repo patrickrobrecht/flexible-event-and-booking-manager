@@ -18,7 +18,7 @@
         <div class="col-12 col-md-6 col-xl-3">
             @php
                 $bookingOptions = \Portavice\Bladestrap\Support\Options::fromModels(
-                    $event->bookingOptions,
+                    $event->getBookingOptions(),
                     fn (\App\Models\BookingOption $bookingOption) => sprintf(
                         '<a href="%s" target="_blank"">%s</a> (%s)',
                         route('bookings.index', [$event, $bookingOption]),
@@ -136,7 +136,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title text-danger" id="deleteConfirmationModalLabel" x-text="groupNameToDelete"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="showModal = false;"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}" @click="showModal = false;"></button>
                 </div>
                 <div class="modal-body">{{ __('Are you sure you want to delete this group?') }}</div>
                 <div class="modal-footer">

@@ -36,12 +36,17 @@ class GroupPolicy
         return $this->requireAbility($user, Ability::ManageGroupsOfEvent);
     }
 
+    public function updateAny(User $user): Response
+    {
+        return $this->requireAbility($user, Ability::ManageGroupsOfEvent);
+    }
+
     /**
      * Determine whether the user can update the model.
      */
     public function update(User $user, Group $group): Response
     {
-        return $this->requireAbility($user, Ability::ManageGroupsOfEvent);
+        return $this->updateAny($user);
     }
 
     /**
@@ -58,6 +63,11 @@ class GroupPolicy
     public function restore(User $user, Group $group): Response
     {
         return $this->deny();
+    }
+
+    public function forceDeleteAny(User $user): Response
+    {
+        return $this->updateAny($user);
     }
 
     /**

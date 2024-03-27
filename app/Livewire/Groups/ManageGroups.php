@@ -7,7 +7,6 @@ use App\Models\Booking;
 use App\Models\Event;
 use App\Models\Group;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
 use Livewire\Attributes\Locked;
@@ -37,19 +36,16 @@ class ManageGroups extends Component
     {
         $this->event = $event;
         $this->loadData();
-        $this->bookingOptionIds = $event->bookingOptions->pluck('id')->toArray();
+        $this->bookingOptionIds = $this->event->getBookingOptions()->pluck('id')->toArray();
     }
 
     private function loadData(): void
     {
-        $this->event->load([
-            'bookingOptions' => fn (HasMany $bookingOptionsQuery) => $bookingOptionsQuery->withCount([
-                'bookings',
-            ]),
+        $this->event->loadMissing([
+            /** Bookings loaded by @see Event::getBookingOptions() */
             /** Bookings loaded by @see Event::getBookings() */
             'groups.event',
         ]);
-
         $this->groups = $this->event->groups->keyBy('id');
 
         $this->bookingsWithoutGroup = $this->event->getBookings()->filter(
@@ -122,7 +118,7 @@ class ManageGroups extends Component
 
         /** @var Booking $booking */
         $booking = Booking::query()->find((int) $bookingId);
-        if (isset($booking) && $booking->bookingOption->event->is($this->event)) {
+        if (isset($booking) && $booking->bookingOption->event->is($this->event->parentEvent ?? $this->event)) {
             $this->authorize('manageGroup', $booking);
 
             $oldGroup = $booking->getGroup($this->event);

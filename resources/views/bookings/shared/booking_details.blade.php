@@ -27,33 +27,35 @@
             @include('bookings.shared.payment-status')
         </div>
     </div>
-    @if($booking->groups->isNotEmpty())
-        @php
-            $groups = $booking->groups
-                ->filter(fn (\App\Models\Group $group) => \Illuminate\Support\Facades\Auth::user()?->can('view', $group->event))
-                ->sortBy(fn (\App\Models\Group $group) => [
-                    $group->event->is($booking->bookingOption->event) ? 0 : 1,
-                    $group->event->name,
-                ]);
-        @endphp
-        <div class="col-12 col-md-6">
-            <h2>{{ __('Groups') }}</h2>
-            <x-bs::list class="mb-3">
-                @foreach($groups as $group)
-                    <x-bs::list.item>
-                        @can('viewGroups', $group->event)
-                            <a href="{{ route('groups.index', $event) }}">{{ $group->name }}</a>
-                        @else
-                            {{ $group->name }}
-                        @endcan
-                        @if($group->event->isNot($booking->bookingOption->event))
-                           <x-slot:end>
-                               <a href="{{ route('events.show', $group->event) }}">{{ $group->event->name }}</a>
-                           </x-slot:end>
-                        @endif
-                    </x-bs::list.item>
-                @endforeach
-            </x-bs::list>
-        </div>
-    @endif
+    @can('viewGroups', $booking->bookingOption->event)
+        @if($booking->groups->isNotEmpty())
+            @php
+                $groups = $booking->groups
+                    ->filter(fn (\App\Models\Group $group) => \Illuminate\Support\Facades\Auth::user()?->can('view', $group->event))
+                    ->sortBy(fn (\App\Models\Group $group) => [
+                        $group->event->is($booking->bookingOption->event) ? 0 : 1,
+                        $group->event->name,
+                    ]);
+            @endphp
+            <div class="col-12 col-md-6">
+                <h2>{{ __('Groups') }}</h2>
+                <x-bs::list class="mb-3">
+                    @foreach($groups as $group)
+                        <x-bs::list.item>
+                            @can('viewGroups', $group->event)
+                                <a href="{{ route('groups.index', $event) }}">{{ $group->name }}</a>
+                            @else
+                                {{ $group->name }}
+                            @endcan
+                            @if($group->event->isNot($booking->bookingOption->event))
+                               <x-slot:end>
+                                   <a href="{{ route('events.show', $group->event) }}">{{ $group->event->name }}</a>
+                               </x-slot:end>
+                            @endif
+                        </x-bs::list.item>
+                    @endforeach
+                </x-bs::list>
+            </div>
+        @endif
+    @endcan
 </div>

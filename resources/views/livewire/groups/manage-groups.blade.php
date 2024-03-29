@@ -21,7 +21,7 @@
                     $event->getBookingOptions(),
                     fn (\App\Models\BookingOption $bookingOption) => sprintf(
                         '<a href="%s" target="_blank"">%s</a> (%s)',
-                        route('bookings.index', [$event, $bookingOption]),
+                        route('bookings.index', [$event->parentEvent ?? $event, $bookingOption]),
                         $bookingOption->name,
                         formatInt($bookingOption->bookings_count ?? $bookingOption->bookings()->count())
                     )

@@ -5,9 +5,9 @@ namespace App\Models;
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\HasAddress;
+use App\Options\DeletedFilter;
 use App\Options\FormElementType;
 use App\Options\PaymentStatus;
-use App\Options\TrashedFilter;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -259,7 +259,7 @@ class Booking extends Model
             /** @see self::scopePaymentStatus() */
             AllowedFilter::scope('payment_status', 'paymentStatus'),
             AllowedFilter::trashed()
-                ->default(TrashedFilter::WithoutTrashed->value),
+                ->default(DeletedFilter::HideDeleted->value),
         ];
     }
 

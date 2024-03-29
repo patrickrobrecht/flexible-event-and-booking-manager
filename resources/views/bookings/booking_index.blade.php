@@ -57,8 +57,8 @@
             @endif
             <div class="col-12 col-lg-3">
                 <x-bs::form.field id="trashed" name="filter[trashed]" type="select"
-                                  :options="\App\Options\TrashedFilter::toOptions()"
-                                  :from-query="true">{{ __('Group') }}</x-bs::form.field>
+                                  :options="\App\Options\DeletedFilter::toOptions()"
+                                  :from-query="true">{{ __('Show trashed?') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-lg-3">
                 <x-bs::form.field name="sort" type="select"

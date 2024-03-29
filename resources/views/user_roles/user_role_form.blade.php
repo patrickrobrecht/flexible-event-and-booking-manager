@@ -14,7 +14,9 @@
 
 @section('breadcrumbs')
     <x-bs::breadcrumb.item href="{{ route('user-roles.index') }}">{{ __('User roles') }}</x-bs::breadcrumb.item>
-    <x-bs::breadcrumb.item>@yield('title')</x-bs::breadcrumb.item>
+    @isset($userRole)
+        <x-bs::breadcrumb.item>{{ $userRole->name }}</x-bs::breadcrumb.item>
+    @endisset
 @endsection
 
 @section('content')

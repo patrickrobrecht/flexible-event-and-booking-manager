@@ -14,7 +14,9 @@
 
 @section('breadcrumbs')
     <x-bs::breadcrumb.item href="{{ route('organizations.index') }}">{{ __('Organizations') }}</x-bs::breadcrumb.item>
-    <x-bs::breadcrumb.item>@yield('title')</x-bs::breadcrumb.item>
+    @isset($organization)
+        <x-bs::breadcrumb.item>{{ $organization->name }}</x-bs::breadcrumb.item>
+    @endisset
 @endsection
 
 @section('content')

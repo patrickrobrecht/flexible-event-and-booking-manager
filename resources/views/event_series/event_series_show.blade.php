@@ -12,7 +12,7 @@
     @can('viewAny', \App\Models\EventSeries::class)
         <x-bs::breadcrumb.item href="{{ route('event-series.index') }}">{{ __('Event series') }}</x-bs::breadcrumb.item>
     @else
-        <x-bs::breadcrumb.item>>{{ __('Event series') }}</x-bs::breadcrumb.item>
+        <x-bs::breadcrumb.item>{{ __('Event series') }}</x-bs::breadcrumb.item>
     @endcan
     @isset($eventSeries->parentEventSeries)
         <x-bs::breadcrumb.item href="{{ route('event-series.show', $eventSeries->parentEventSeries) }}">{{ $eventSeries->parentEventSeries->name }}</x-bs::breadcrumb.item>

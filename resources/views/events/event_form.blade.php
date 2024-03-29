@@ -4,6 +4,14 @@
     use Portavice\Bladestrap\Support\Options;
 
     /** @var ?\App\Models\Event $event */
+    /** @var \Illuminate\Database\Eloquent\Collection<\App\Models\Event> $events */
+
+    /** @var ?\App\Models\Event $parentEvent */
+    $parentEvent = $event->parentEvent ?? null;
+    if ($parentEvent === null) {
+        $parentEventId = (int) \Portavice\Bladestrap\Support\ValueHelper::getFromQueryOrDefault('parent_event_id');
+        $parentEvent = $events->firstWhere('id', '=', $parentEventId);
+    }
 @endphp
 
 @section('title')
@@ -16,10 +24,12 @@
 
 @section('breadcrumbs')
     <x-bs::breadcrumb.item href="{{ route('events.index') }}">{{ __('Events') }}</x-bs::breadcrumb.item>
-    @isset($event->parentEvent)
-        <x-bs::breadcrumb.item href="{{ route('events.show', $event->parentEvent) }}">{{ $event->parentEvent->name }}</x-bs::breadcrumb.item>
+    @isset($parentEvent)
+        <x-bs::breadcrumb.item href="{{ route('events.show', $parentEvent) }}">{{ $parentEvent->name }}</x-bs::breadcrumb.item>
     @endisset
-    <x-bs::breadcrumb.item>@yield('title')</x-bs::breadcrumb.item>
+    @isset($event)
+        <x-bs::breadcrumb.item href="{{ route('events.show', $event) }}">{{ $event->name }}</x-bs::breadcrumb.item>
+    @endisset
 @endsection
 
 @section('content')

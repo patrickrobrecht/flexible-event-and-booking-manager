@@ -15,7 +15,9 @@
 
 @section('breadcrumbs')
     <x-bs::breadcrumb.item href="{{ route('users.index') }}">{{ __('Users') }}</x-bs::breadcrumb.item>
-    <x-bs::breadcrumb.item>@yield('title')</x-bs::breadcrumb.item>
+    @isset($editedUser)
+        <x-bs::breadcrumb.item>{{ $editedUser->name }}</x-bs::breadcrumb.item>
+    @endisset
 @endsection
 
 @section('content')
@@ -36,7 +38,7 @@
                 <div class="row">
                     <div class="col-12 col-md-6">
                         <x-bs::form.field name="date_of_birth" type="date"
-                                          :value="$editedUser?->date_of_birth?->format('Y-m-d') ?? null">{{ __('Date of birth') }}</x-bs::form.field>
+                                          :value="($editedUser ?? null)?->date_of_birth?->format('Y-m-d') ?? null">{{ __('Date of birth') }}</x-bs::form.field>
                     </div>
                     <div class="col-12 col-md-6">
                         <x-bs::form.field name="phone" type="tel"

@@ -3,6 +3,13 @@
 @php
     /** @var ?\App\Models\EventSeries $eventSeries */
     /** @var \Illuminate\Database\Eloquent\Collection|\App\Models\EventSeries[] $allEventSeries */
+
+    /** @var ?\App\Models\EventSeries $parentEventSeries */
+    $parentEventSeries = $eventSeries->parentEventSeries ?? null;
+    if ($parentEventSeries === null) {
+        $parentEventSeriesId = (int) \Portavice\Bladestrap\Support\ValueHelper::getFromQueryOrDefault('parent_event_series_id');
+        $parentEventSeries = $allEventSeries->firstWhere('id', '=', $parentEventSeriesId);
+    }
 @endphp
 
 @section('title')
@@ -15,10 +22,12 @@
 
 @section('breadcrumbs')
     <x-bs::breadcrumb.item href="{{ route('event-series.index') }}">{{ __('Event series') }}</x-bs::breadcrumb.item>
-    @isset($eventSeries->parentEventSeries)
-        <x-bs::breadcrumb.item href="{{ route('event-series.show', $eventSeries->parentEventSeries) }}">{{ $eventSeries->parentEventSeries->name }}</x-bs::breadcrumb.item>
+    @isset($parentEventSeries)
+        <x-bs::breadcrumb.item href="{{ route('event-series.show', $parentEventSeries) }}">{{ $parentEventSeries->name }}</x-bs::breadcrumb.item>
     @endisset
-    <x-bs::breadcrumb.item>@yield('title')</x-bs::breadcrumb.item>
+    @isset($eventSeries)
+        <x-bs::breadcrumb.item href="{{ route('event-series.show', $eventSeries) }}">{{ $eventSeries->name }}</x-bs::breadcrumb.item>
+    @endisset
 @endsection
 
 @section('content')

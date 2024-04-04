@@ -46,6 +46,7 @@ return [
     'ends_with' => ':attribute muss eine der folgenden Endungen aufweisen: :values',
     'enum' => 'Der ausgewählte Wert ist ungültig.',
     'exists' => 'Der gewählte Wert für :attribute ist ungültig.',
+    'extensions' => 'Das Feld :attribute muss eine der folgenden Erweiterungen haben: :values.',
     'file' => ':attribute muss eine Datei sein.',
     'filled' => ':attribute muss ausgefüllt sein.',
     'gt' => [
@@ -171,6 +172,7 @@ return [
         'email' => 'E-Mail-Adresse',
         'event_type' => 'Art der Veranstaltung',
         'expires_at' => 'Ablaufdatum',
+        'file' => 'Datei',
         'first_name' => 'Vorname',
         'groups_count' => 'Anzahl der Gruppen',
         'height' => 'Höhe',

@@ -92,6 +92,44 @@
                     </x-button.create>
                 </div>
             @endcan
+
+            @canany(['viewAny', 'create'], [\App\Models\Document::class, $event])
+                <section class="mt-5">
+                    <h2>{{ __('Documents') }}</h2>
+                    @can('viewAny', [\App\Models\Document::class, $event])
+                        @include('documents.shared.document_list', [
+                            'documents' => $event->documents,
+                        ])
+                    @endcan
+                    @can('create', [\App\Models\Document::class, $event])
+                        <x-bs::modal.button modal="add-document-modal" variant="primary" class="mt-3">
+                            <i class="fa fa-fw fa-plus"></i> {{ __('Add document') }}
+                        </x-bs::modal.button>
+                        <x-bs::modal id="add-document-modal" :close-button-title="__('Cancel')" class="modal-xl">
+                            <x-slot:title>{{ __('Add document') }}</x-slot:title>
+                            <x-bs::form id="add-document-form"
+                                        method="POST" action="{{ route('events.documents.store', $event) }}"
+                                        enctype="multipart/form-data">
+                                @include('documents.shared.document_form_fields', [
+                                    'document' => null,
+                                ])
+                            </x-bs::form>
+                            <x-slot:footer>
+                                <x-bs::button form="add-document-form">
+                                    <i class="fa fa-fw fa-plus"></i> {{ __('Add document') }}
+                                </x-bs::button>
+                            </x-slot:footer>
+                        </x-bs::modal>
+                        @if($errors->any())
+                            <script>
+                                document.addEventListener('DOMContentLoaded', () => {
+                                    (new bootstrap.Modal(document.getElementById('add-document-modal'))).show();
+                                });
+                            </script>
+                        @endif
+                    @endcan
+                </section>
+            @endcanany
         </div>
     </div>
 

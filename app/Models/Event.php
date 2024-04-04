@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
+use App\Models\Traits\HasDocuments;
 use App\Models\Traits\HasLocation;
 use App\Models\Traits\HasSlugForRouting;
 use App\Models\Traits\HasWebsite;
@@ -42,6 +43,7 @@ use Spatie\QueryBuilder\Enums\SortDirection;
 class Event extends Model
 {
     use BuildsQueryFromRequest;
+    use HasDocuments;
     use HasFactory;
     use HasLocation;
     use HasSlugForRouting;
@@ -191,6 +193,16 @@ class Event extends Model
         ]);
 
         return $this->bookings;
+    }
+
+    public function getRoute(): string
+    {
+        return route('events.show', $this);
+    }
+
+    public function getStoragePath(): string
+    {
+        return 'events/' . $this->id;
     }
 
     public static function allowedFilters(): array

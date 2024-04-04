@@ -25,6 +25,10 @@ enum Ability: string
     case EditPaymentStatus = 'events.edit_payment_status';
     case ManageGroupsOfEvent = 'events.manage_groups';
     case ExportGroupsOfEvent = 'events.export_groups';
+    case ViewDocumentsForEvents = 'events.documents.view';
+    case AddDocumentsForEvents = 'events.documents.create';
+    case UpdateDocumentsForEvents = 'events.documents.update';
+    case DeleteDocumentsForEvents = 'events.documents.delete';
 
     case ViewEventSeries = 'event_series.view';
     case ViewPrivateEventSeries = 'event_series.view_private';
@@ -67,6 +71,10 @@ enum Ability: string
             self::EditPaymentStatus => __('Edit payment status'),
             self::ManageGroupsOfEvent => __('Manage groups of event'),
             self::ExportGroupsOfEvent => __('Export groups of event'),
+            self::ViewDocumentsForEvents => __('View documents for events'),
+            self::AddDocumentsForEvents => __('Add documents for events'),
+            self::UpdateDocumentsForEvents => __('Update documents for events'),
+            self::DeleteDocumentsForEvents => __('Delete documents for events'),
 
             self::ViewEventSeries => __('View event series'),
             self::ViewPrivateEventSeries => __('View private event series'),

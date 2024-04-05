@@ -57,25 +57,41 @@
             @include('events.shared.event_details')
         </div>
         <div class="col-12 col-md-8">
-            @if($event->bookingOptions->count() > 0)
-                <x-bs::list>
-                    @include('events.shared.event_booking_options')
-                </x-bs::list>
+            @php
+                $bookingOptionsToShow = $event->bookingOptions->isNotEmpty()
+                    || Auth::user()?->can('create', [\App\Models\BookingOption::class, $event])
+            @endphp
+            @if($bookingOptionsToShow)
+                @if($event->bookingOptions->count() > 0)
+                    <x-bs::list>
+                        @include('events.shared.event_booking_options')
+                    </x-bs::list>
+                @endif
+                @can('create', [\App\Models\BookingOption::class, $event])
+                    <div @class([
+                        'mt-3' => $event->bookingOptions->isNotEmpty(),
+                    ])>
+                        <x-button.create href="{{ route('booking-options.create', $event) }}">
+                            {{ __('Create booking option') }}
+                        </x-button.create>
+                    </div>
+                @endcan
             @endif
-            @can('create', [\App\Models\BookingOption::class, $event])
-                <div class="mt-3">
-                    <x-button.create href="{{ route('booking-options.create', $event) }}">
-                        {{ __('Create booking option') }}
-                    </x-button.create>
-                </div>
-            @endcan
 
+            @php
+                $eventsSectionEmpty = true;
+            @endphp
             @isset($event->parentEvent)
                 @php
                     $siblingEvents = $event->parentEvent->subEvents->keyBy('id')->except($event->id);
                 @endphp
                 @if($siblingEvents->isNotEmpty())
-                    <section class="mt-4">
+                    @php
+                        $eventsSectionEmpty = false;
+                    @endphp
+                    <section @class([
+                        'mt-4' => $bookingOptionsToShow,
+                    ])>
                         <h2>{{ __('Other sub events of :name', [
                             'name' => $event->parentEvent->name,
                         ]) }}</h2>
@@ -85,7 +101,12 @@
                     </section>
                 @endif
             @elseif($event->subEvents->isNotEmpty() || Auth::user()?->can('createChild', $event))
-                <section class="mt-4">
+                @php
+                    $eventsSectionEmpty = false;
+                @endphp
+                <section @class([
+                    'mt-4' => $bookingOptionsToShow,
+                ])>
                     <h2>{{ __('Sub events') }}</h2>
                     @if($event->subEvents->isNotEmpty())
                         @include('events.shared.event_list', [
@@ -103,7 +124,9 @@
             @endif
 
             @canany(['viewAny', 'create'], [\App\Models\Document::class, $event])
-                <section class="mt-4">
+                <section @class([
+                    'mt-4' => $bookingOptionsToShow || !$eventsSectionEmpty,
+                ])>
                     <h2>{{ __('Documents') }}</h2>
                 @can('viewAny', [\App\Models\Document::class, $event])
                     @include('documents.shared.document_list', [

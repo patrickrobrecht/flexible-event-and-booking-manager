@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\DocumentRequest;
 use App\Models\Document;
 use App\Models\Event;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\EventSeries;
+use App\Models\Organization;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
@@ -21,7 +22,21 @@ class DocumentController extends Controller
         return $this->store($request, $event, route('events.show', $event));
     }
 
-    private function store(DocumentRequest $request, Model $reference, string $routeForReference): RedirectResponse
+    public function storeForEventSeries(DocumentRequest $request, EventSeries $eventSeries): RedirectResponse
+    {
+        $this->authorize('create', [Document::class, $eventSeries]);
+
+        return $this->store($request, $eventSeries, route('event-series.show', $eventSeries));
+    }
+
+    public function storeForOrganization(DocumentRequest $request, Organization $organization): RedirectResponse
+    {
+        $this->authorize('create', [Document::class, $organization]);
+
+        return $this->store($request, $organization, route('organizations.show', $organization));
+    }
+
+    private function store(DocumentRequest $request, Event|EventSeries|Organization $reference, string $routeForReference): RedirectResponse
     {
         $document = new Document();
         $document->reference()->associate($reference);

@@ -7,7 +7,8 @@
         <x-bs::list.item>{{ $event->description }}</x-bs::list.item>
     @endisset
     @isset($event->website_url)
-        <x-bs::list.item>
+        <x-bs::list.item class="d-flex">
+            <span class="me-3"><i class="fa fa-fw fa-display"></i></span>
             <a href="{{ $event->website_url }}" target="_blank">{{ __('Website') }}</a>
         </x-bs::list.item>
     @endisset
@@ -39,7 +40,11 @@
             @else
                 <ul class="list-unstyled">
                     @foreach($event->organizations as $organization)
-                        <li>{{ $organization->name }}</li>
+                        @can('view', $organization)
+                            <li><a href="{{ route('organizations.show', $organization) }}">{{ $organization->name }}</a></li>
+                        @else
+                            <li>{{ $organization->name }}</li>
+                        @endcan
                     @endforeach
                 </ul>
             @endif

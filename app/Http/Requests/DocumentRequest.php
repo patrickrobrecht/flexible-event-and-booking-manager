@@ -87,6 +87,14 @@ class DocumentRequest extends FormRequest
             return $this->event;
         }
 
+        if ($this->routeIs('event-series.documents.store')) {
+            return $this->event_series;
+        }
+
+        if ($this->routeIs('organizations.documents.store')) {
+            return $this->organization;
+        }
+
         throw new \InvalidArgumentException("{$this->route()->getName()} not supported");
     }
 

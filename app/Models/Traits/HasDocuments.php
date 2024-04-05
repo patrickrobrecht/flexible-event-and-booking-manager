@@ -20,6 +20,11 @@ trait HasDocuments
             ->orderBy('title');
     }
 
+    public function getDocumentStoragePath(): string
+    {
+        return $this->getStoragePath() . '/documents';
+    }
+
     abstract public function getRoute(): string;
 
     abstract public function getStoragePath(): string;

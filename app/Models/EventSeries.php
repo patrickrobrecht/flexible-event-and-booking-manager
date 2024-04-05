@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
+use App\Models\Traits\HasDocuments;
 use App\Models\Traits\HasSlugForRouting;
 use App\Options\Visibility;
 use Illuminate\Database\Eloquent\Collection;
@@ -26,6 +27,7 @@ use Spatie\QueryBuilder\AllowedFilter;
 class EventSeries extends Model
 {
     use BuildsQueryFromRequest;
+    use HasDocuments;
     use HasFactory;
     use HasSlugForRouting;
 
@@ -76,6 +78,16 @@ class EventSeries extends Model
         $this->parentEventSeries()->associate($validatedData['parent_event_series_id'] ?? null);
 
         return $this->save();
+    }
+
+    public function getRoute(): string
+    {
+        return route('event-series.show', $this);
+    }
+
+    public function getStoragePath(): string
+    {
+        return 'event-series/' . $this->id;
     }
 
     public static function allowedFilters(): array

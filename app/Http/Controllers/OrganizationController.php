@@ -50,6 +50,15 @@ class OrganizationController extends Controller
         return back();
     }
 
+    public function show(Organization $organization): View
+    {
+        $this->authorize('view', $organization);
+
+        return view('organizations.organization_show', [
+            'organization' => $organization,
+        ]);
+    }
+
     public function edit(Organization $organization): View
     {
         $this->authorize('update', $organization);

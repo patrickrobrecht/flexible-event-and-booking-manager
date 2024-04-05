@@ -4,6 +4,8 @@ namespace App\Policies;
 
 use App\Models\Document;
 use App\Models\Event;
+use App\Models\EventSeries;
+use App\Models\Organization;
 use App\Models\User;
 use App\Options\Ability;
 use App\Policies\Traits\ChecksAbilities;
@@ -16,13 +18,18 @@ class DocumentPolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user, Event $event): Response
+    public function viewAny(User $user, Event|EventSeries|Organization $reference): Response
     {
-        if ($user->cannot('view', $event)) {
+        if ($user->cannot('view', $reference)) {
             return $this->deny();
         }
 
-        return $this->requireAbility($user, Ability::AddDocumentsForEvents);
+        return match ($reference::class) {
+            Event::class => $this->requireAbility($user, Ability::ViewDocumentsOfEvents),
+            EventSeries::class => $this->requireAbility($user, Ability::ViewDocumentsOfEventSeries),
+            Organization::class => $this->requireAbility($user, Ability::ViewDocumentsOfOrganizations),
+            default => $this->deny(),
+        };
     }
 
     /**
@@ -41,13 +48,18 @@ class DocumentPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user, Event $event): Response
+    public function create(User $user, Event|EventSeries|Organization $reference): Response
     {
-        if ($user->cannot('view', $event)) {
+        if ($user->cannot('view', $reference)) {
             return $this->deny();
         }
 
-        return $this->requireAbility($user, Ability::AddDocumentsForEvents);
+        return match ($reference::class) {
+            Event::class => $this->requireAbility($user, Ability::AddDocumentsToEvents),
+            EventSeries::class => $this->requireAbility($user, Ability::AddDocumentsToEventSeries),
+            Organization::class => $this->requireAbility($user, Ability::AddDocumentsToOrganizations),
+            default => $this->deny(),
+        };
     }
 
     /**
@@ -59,7 +71,12 @@ class DocumentPolicy
             return $this->deny();
         }
 
-        return $this->requireAbility($user, Ability::UpdateDocumentsForEvents);
+        return match ($document->reference::class) {
+            Event::class => $this->requireAbility($user, Ability::EditDocumentsOfEvents),
+            EventSeries::class => $this->requireAbility($user, Ability::EditDocumentsOfEventSeries),
+            Organization::class => $this->requireAbility($user, Ability::EditDocumentsOfOrganizations),
+            default => $this->deny(),
+        };
     }
 
     /**
@@ -87,6 +104,11 @@ class DocumentPolicy
             return $this->deny();
         }
 
-        return $this->requireAbility($user, Ability::DeleteDocumentsForEvents);
+        return match ($document->reference::class) {
+            Event::class => $this->requireAbility($user, Ability::DeleteDocumentsOfEvents),
+            EventSeries::class => $this->requireAbility($user, Ability::DeleteDocumentsOfEventSeries),
+            Organization::class => $this->requireAbility($user, Ability::DeleteDocumentsOfOrganizations),
+            default => $this->deny(),
+        };
     }
 }

@@ -34,7 +34,7 @@ class Document extends Model
         /** @var UploadedFile $file */
         $file = $validatedData['file'] ?? null;
         if ($file) {
-            $this->path = $file->storeAs($this->reference->getStoragePath() . '/documents', $file->getClientOriginalName());
+            $this->path = $file->storeAs($this->reference->getDocumentStoragePath(), $file->getClientOriginalName());
         }
 
         return $this->save();

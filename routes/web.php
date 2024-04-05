@@ -59,6 +59,7 @@ Route::middleware('auth')->group(static function () {
     Route::get('documents/{document}', [DocumentController::class, 'download'])
         ->name('documents.download');
 
+    Route::model('event', Event::class);
     Route::resource('events', EventController::class)
         ->only(['index', 'create', 'store', 'edit', 'update']);
     Route::prefix('events/{event:slug}')->group(function () {
@@ -78,7 +79,11 @@ Route::middleware('auth')->group(static function () {
 
     Route::model('event_series', EventSeries::class);
     Route::resource('event-series', EventSeriesController::class)
-        ->only(['index', 'show', 'create', 'store', 'edit', 'update']);
+        ->only(['index', 'create', 'store', 'edit', 'update']);
+    Route::prefix('event-series/{event_series:slug}')->group(function () {
+        Route::post('documents', [DocumentController::class, 'storeForEventSeries'])
+            ->name('event-series.documents.store');
+    });
 
     Route::model('location', Location::class);
     Route::resource('locations', LocationController::class)
@@ -87,6 +92,10 @@ Route::middleware('auth')->group(static function () {
     Route::model('organization', Organization::class);
     Route::resource('organizations', OrganizationController::class)
         ->only(['index', 'create', 'store', 'edit', 'update']);
+    Route::prefix('organizations/{organization}')->group(function () {
+        Route::post('documents', [DocumentController::class, 'storeForOrganization'])
+            ->name('organizations.documents.store');
+    });
 
     Route::model('personal_access_token', PersonalAccessToken::class);
     Route::resource('personal-access-tokens', PersonalAccessTokenController::class)
@@ -107,11 +116,15 @@ Route::middleware('auth')->group(static function () {
         ->name('account.update');
 });
 
+// Pages that can be public
 Route::get('/', [DashboardController::class, 'index'])
     ->name('dashboard');
 
-Route::model('event', Event::class);
 Route::resource('events', EventController::class)
+    ->only(['show']);
+Route::resource('event-series', EventSeriesController::class)
+    ->only(['show']);
+Route::resource('organizations', OrganizationController::class)
     ->only(['show']);
 
 Route::model('booking_option', BookingOption::class);

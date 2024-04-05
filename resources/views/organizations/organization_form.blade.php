@@ -33,8 +33,8 @@
                                   :value="$organization->register_entry ?? null">{{ __('Register entry') }}</x-bs::form.field>
                 <x-bs::form.field name="representatives" type="text"
                                   :value="$organization->representatives ?? null">{{ __('Representatives') }}</x-bs::form.field>
-                <x-bs::form.field name="website_url" type="text"
-                                  :value="$event->website_url ?? null">{{ __('Website') }}</x-bs::form.field>
+                <x-bs::form.field name="website_url" type="url"
+                                  :value="$organization->website_url ?? null">{{ __('Website') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6">
                 <x-bs::form.field name="location_id" type="select"

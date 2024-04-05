@@ -6,17 +6,20 @@
     <x-bs::list>
         @foreach($documents as $document)
             <x-bs::list.item>
-                <div class="fw-bold">{{ $document->title }}</div>
+                <div class="fw-bold">
+                    <i class="{{ $document->file_type->getIconClass() }}"></i>
+                    {{ $document->title }}
+                </div>
                 @isset($document->description)
                     <div class="text-muted">{{ $document->description }}</div>
                 @endisset
+                <div class="mt-1">
+                    <i class="fa fa-fw fa-user"></i>
+                    @include('documents.shared.document_uploaded_by')
+                </div>
                 @canany(['download', 'update', 'forceDelete'], $document)
                     <x-bs::button.group class="mt-3">
-                        @can('download', $document)
-                            <x-bs::button.link variant="secondary" href="{{ route('documents.download', $document) }}">
-                                <i class="fa fa-fw fa-download"></i> {{ __('Download file') }}
-                            </x-bs::button.link>
-                        @endcan
+                        @include('documents.shared.document_download_link')
                         @can('update', $document)
                             <x-button.edit href="{{ route('documents.edit', $document) }}"/>
                         @endcan

@@ -9,25 +9,16 @@
 @endsection
 
 @section('breadcrumbs')
-    @if($document->reference::class === \App\Models\Event::class)
-        @php
-            $event = $document->reference;
-            $parentEvent = $event->parentEvent ?? null;
-        @endphp
-        <x-bs::breadcrumb.item href="{{ route('events.index') }}">{{ __('Events') }}</x-bs::breadcrumb.item>
-        @isset($parentEvent)
-            <x-bs::breadcrumb.item href="{{ route('events.show', $parentEvent) }}">{{ $parentEvent->name }}</x-bs::breadcrumb.item>
-        @endisset
-        @isset($event)
-            <x-bs::breadcrumb.item href="{{ route('events.show', $event) }}">{{ $event->name }}</x-bs::breadcrumb.item>
-        @endisset
-    @endif
-    <x-bs::breadcrumb.item>{{ __('Documents') }}</x-bs::breadcrumb.item>
-    @can('download', $document)
-        <x-bs::breadcrumb.item href="{{ route('documents.download', $document) }}">{{ $document->title }}</x-bs::breadcrumb.item>
+    @include('documents.shared.document_breadcrumbs')
+    @can('view', $document)
+        <x-bs::breadcrumb.item href="{{ route('documents.show', $document) }}">{{ $document->title }}</x-bs::breadcrumb.item>
     @else
         <x-bs::breadcrumb.item>{{ $document->title }}</x-bs::breadcrumb.item>
     @endif
+@endsection
+
+@section('headline')
+    <h1><i class="{{ $document->file_type->getIconClass() }}"></i> @yield('title')</h1>
 @endsection
 
 @section('headline-buttons')
@@ -47,6 +38,10 @@
             <x-button.cancel href="{{ route('events.show', $document->reference->getRoute()) }}"/>
         </x-bs::button.group>
     </x-bs::form>
+
+    <div class="my-5">
+        @include('documents.shared.document_embed')
+    </div>
 
     <x-text.timestamp :model="$document"/>
 @endsection

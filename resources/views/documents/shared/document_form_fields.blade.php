@@ -7,7 +7,7 @@
             $maxFileSizeAsText = \App\Http\Requests\DocumentRequest::getMaxFileSizeInMegaBytes() . ' MB';
         @endphp
         <x-bs::form.field name="file"
-                          type="file" :accept="\App\Http\Requests\DocumentRequest::getAllowedExtensionsForHtmlAccept()"
+                          type="file" :accept="\App\Options\FileType::extensionsForHtmlAccept()"
                           data-max-file-size="{{ \App\Http\Requests\DocumentRequest::getMaxFileSizeInBytes() }}"
                           x-ref="file" @change="() => {
                 alert = false;
@@ -39,6 +39,13 @@
             @endif
             <x-slot:hint>{{ __('Maximum file size') }}: {{ $maxFileSizeAsText }}</x-slot:hint>
         </x-bs::form.field>
+        @isset($document)
+            <div class="mt-1">
+                <i class="fa fa-fw fa-user"></i>
+                @include('documents.shared.document_uploaded_by')
+            </div>
+            <p class="strong">{{ __("If you do not upload a new file, the current file will remain.") }}</p>
+        @endisset
         <x-bs::alert variant="danger" x-show="alert !== false" x-text="alert"></x-bs::alert>
     </div>
     <div class="col-12 col-xl-6">

@@ -13,10 +13,7 @@
 @endsection
 
 @section('breadcrumbs')
-    <x-bs::breadcrumb.item href="{{ route('organizations.index') }}">{{ __('Organizations') }}</x-bs::breadcrumb.item>
-    @isset($organization)
-        <x-bs::breadcrumb.item>{{ $organization->name }}</x-bs::breadcrumb.item>
-    @endisset
+    @include('organizations.shared.organization_breadcrumbs')
 @endsection
 
 @section('content')

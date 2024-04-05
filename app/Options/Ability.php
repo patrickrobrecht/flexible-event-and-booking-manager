@@ -51,6 +51,8 @@ enum Ability: string
     case EditDocumentsOfOrganizations = 'organizations.documents.edit';
     case DeleteDocumentsOfOrganizations = 'organizations.documents.delete';
 
+    case ViewDocuments = 'documents.view';
+
     case ViewUsers = 'users.view';
     case CreateUsers = 'users.create';
     case EditUsers = 'users.edit';
@@ -104,6 +106,8 @@ enum Ability: string
             self::AddDocumentsToOrganizations => __('Add documents to organizations'),
             self::EditDocumentsOfOrganizations => __('Update documents of organizations'),
             self::DeleteDocumentsOfOrganizations => __('Delete documents of organizations'),
+
+            self::ViewDocuments => __('View documents'),
 
             self::ViewUsers => __('View users'),
             self::CreateUsers => __('Create users'),

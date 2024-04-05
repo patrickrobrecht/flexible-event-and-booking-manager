@@ -55,9 +55,13 @@ Route::middleware('auth')->group(static function () {
 
     Route::model('document', Document::class);
     Route::resource('documents', DocumentController::class)
-        ->only(['edit', 'update', 'destroy']);
-    Route::get('documents/{document}', [DocumentController::class, 'download'])
-        ->name('documents.download');
+        ->only(['index', 'show', 'edit', 'update', 'destroy']);
+    Route::prefix('documents/{document}')->group(function () {
+        Route::get('download', [DocumentController::class, 'download'])
+            ->name('documents.download');
+        Route::get('stream', [DocumentController::class, 'stream'])
+            ->name('documents.stream');
+    });
 
     Route::model('event', Event::class);
     Route::resource('events', EventController::class)

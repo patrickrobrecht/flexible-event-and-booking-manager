@@ -15,6 +15,20 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DocumentController extends Controller
 {
+    public function index()
+    {
+        $this->authorize('viewAny', Document::class);
+
+        return view('documents.document_index', [
+            'documents' => Document::buildQueryFromRequest()
+                ->with([
+                    'reference',
+                    'uploadedByUser',
+                ])
+                ->paginate(20),
+        ]);
+    }
+
     public function storeForEvent(DocumentRequest $request, Event $event): RedirectResponse
     {
         $this->authorize('create', [Document::class, $event]);
@@ -48,11 +62,27 @@ class DocumentController extends Controller
         return back();
     }
 
+    public function show(Document $document): View
+    {
+        $this->authorize('view', $document);
+
+        return view('documents.document_show', [
+            'document' => $document,
+        ]);
+    }
+
     public function download(Document $document): StreamedResponse
     {
         $this->authorize('view', $document);
 
         return Storage::download($document->path);
+    }
+
+    public function stream(Document $document)
+    {
+        $this->authorize('view', $document);
+
+        return Storage::response($document->path);
     }
 
     public function edit(Document $document): View

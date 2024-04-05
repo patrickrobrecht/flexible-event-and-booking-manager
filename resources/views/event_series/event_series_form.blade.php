@@ -21,13 +21,7 @@
 @endsection
 
 @section('breadcrumbs')
-    <x-bs::breadcrumb.item href="{{ route('event-series.index') }}">{{ __('Event series') }}</x-bs::breadcrumb.item>
-    @isset($parentEventSeries)
-        <x-bs::breadcrumb.item href="{{ route('event-series.show', $parentEventSeries) }}">{{ $parentEventSeries->name }}</x-bs::breadcrumb.item>
-    @endisset
-    @isset($eventSeries)
-        <x-bs::breadcrumb.item href="{{ route('event-series.show', $eventSeries) }}">{{ $eventSeries->name }}</x-bs::breadcrumb.item>
-    @endisset
+    @include('event_series.shared.event_series_breadcrumbs')
 @endsection
 
 @section('content')

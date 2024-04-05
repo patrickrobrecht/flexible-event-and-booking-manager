@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Http\Requests\Traits\ValidatesFiles;
 use App\Models\Document;
 use App\Models\Traits\HasDocuments;
+use App\Options\FileType;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Http\FormRequest;
@@ -17,25 +18,6 @@ class DocumentRequest extends FormRequest
 {
     use ValidatesFiles;
 
-    public const FILE_EXTENSIONS = [
-        'doc',
-        'docx',
-        'jpeg',
-        'jpg',
-        'md',
-        'odp',
-        'ods',
-        'odt',
-        'pdf',
-        'png',
-        'ppt',
-        'pptx',
-        'svg',
-        'txt',
-        'xls',
-        'xlsx',
-    ];
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -43,8 +25,9 @@ class DocumentRequest extends FormRequest
      */
     public function rules(): array
     {
+        $fileExtensions = FileType::extensions();
         $mimeTypes = [
-            ...self::getMimeTypesFromExtensions(self::FILE_EXTENSIONS),
+            ...self::getMimeTypesFromExtensions($fileExtensions),
             'application/octet-stream',
             'application/x-empty',
         ];
@@ -70,7 +53,7 @@ class DocumentRequest extends FormRequest
             'file' => [
                 $this->routeIs('create') ? 'required' : 'nullable',
                 'file',
-                'extensions:' . implode(',', self::FILE_EXTENSIONS),
+                'extensions:' . implode(',', $fileExtensions),
                 'mimetypes:' . implode(',', $mimeTypes),
                 self::getMaxFileSizeRule(),
             ],
@@ -96,10 +79,5 @@ class DocumentRequest extends FormRequest
         }
 
         throw new \InvalidArgumentException("{$this->route()->getName()} not supported");
-    }
-
-    public static function getAllowedExtensionsForHtmlAccept(): string
-    {
-        return self::getExtensionsForHtmlAccept(self::FILE_EXTENSIONS);
     }
 }

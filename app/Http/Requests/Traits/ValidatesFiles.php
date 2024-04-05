@@ -6,17 +6,6 @@ use Symfony\Component\Mime\MimeTypes;
 
 trait ValidatesFiles
 {
-    public static function getExtensionsForHtmlAccept(array $extensions): string
-    {
-        return implode(
-            ',',
-            array_map(
-                fn (string $extension) => '.' . $extension,
-                $extensions
-            )
-        );
-    }
-
     public static function getMaxFileSizeInBytes(): int
     {
         return min(

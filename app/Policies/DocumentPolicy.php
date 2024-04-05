@@ -18,8 +18,12 @@ class DocumentPolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user, Event|EventSeries|Organization $reference): Response
+    public function viewAny(User $user, Event|EventSeries|Organization|null $reference = null): Response
     {
+        if ($reference === null) {
+            return $this->requireAbility($user, Ability::ViewDocuments);
+        }
+
         if ($user->cannot('view', $reference)) {
             return $this->deny();
         }

@@ -28,9 +28,9 @@
                             <x-badge.visibility :visibility="$event->visibility"/>
                         </div>
                     @endif
-                    <div class="text-muted">
-                        {{ $event->description }}
-                    </div>
+                    @isset($event->description)
+                        <div class="text-muted">{{ $event->description }}</div>
+                    @endisset
                     @canany(['update', 'viewGroups'], $event)
                         <x-bs::button.group class="mt-3">
                             @can('update', $event)

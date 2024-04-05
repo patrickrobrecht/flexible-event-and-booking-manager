@@ -57,12 +57,12 @@
         </div>
         <div class="col-12 col-md-8">
             @if($event->bookingOptions->count() > 0)
-                <x-bs::list class="mb-3">
+                <x-bs::list>
                     @include('events.shared.event_booking_options')
                 </x-bs::list>
             @endif
             @can('create', [\App\Models\BookingOption::class, $event])
-                <div class="mb-3">
+                <div class="mt-3">
                     <x-button.create href="{{ route('booking-options.create', $event) }}">
                         {{ __('Create booking option') }}
                     </x-button.create>
@@ -73,28 +73,36 @@
                 @php
                     $siblingEvents = $event->parentEvent->subEvents->keyBy('id')->except($event->id);
                 @endphp
-                @if($siblingEvents->count() > 0)
-                    @include('events.shared.event_list', [
-                        'events' => $siblingEvents,
-                    ])
+                @if($siblingEvents->isNotEmpty())
+                    <section class="mt-4">
+                        <h2>{{ __('Other sub events of :name', [
+                            'name' => $event->parentEvent->name,
+                        ]) }}</h2>
+                        @include('events.shared.event_list', [
+                            'events' => $siblingEvents,
+                        ])
+                    </section>
                 @endif
-            @else
-                @if($event->subEvents->count() > 0)
-                    @include('events.shared.event_list', [
-                        'events' => $event->subEvents,
-                    ])
-                @endif
+            @elseif($event->subEvents->isNotEmpty() || Auth::user()?->can('createChild', $event))
+                <section class="mt-4">
+                    <h2>{{ __('Sub events') }}</h2>
+                    @if($event->subEvents->isNotEmpty())
+                        @include('events.shared.event_list', [
+                            'events' => $event->subEvents,
+                        ])
+                    @endif
+                    @can('createChild', $event)
+                        <div class="mt-3">
+                            <x-button.create href="{{ route('events.create', ['parent_event_id' => $event->id]) }}">
+                                {{ __('Create event') }}
+                            </x-button.create>
+                        </div>
+                    @endcan
+                </section>
             @endif
-            @can('createChild', $event)
-                <div class="mt-3">
-                    <x-button.create href="{{ route('events.create', ['parent_event_id' => $event->id]) }}">
-                        {{ __('Create event') }}
-                    </x-button.create>
-                </div>
-            @endcan
 
             @canany(['viewAny', 'create'], [\App\Models\Document::class, $event])
-                <section class="mt-5">
+                <section class="mt-4">
                     <h2>{{ __('Documents') }}</h2>
                     @can('viewAny', [\App\Models\Document::class, $event])
                         @include('documents.shared.document_list', [

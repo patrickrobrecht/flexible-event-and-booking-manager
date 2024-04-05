@@ -6,11 +6,13 @@ use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\HasDocuments;
 use App\Options\FileType;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedSort;
 
@@ -55,9 +57,21 @@ class Document extends Model
         /** @var UploadedFile $file */
         $file = $validatedData['file'] ?? null;
         if ($file) {
-            $this->path = $file->storeAs($this->reference->getDocumentStoragePath(), $file->getClientOriginalName());
             $this->file_type = FileType::tryFromExtension($file->getClientOriginalExtension()) ?? FileType::Text;
             $this->uploadedByUser()->associate(Auth::user());
+
+            $targetDirectory = $this->reference->getDocumentStoragePath();
+            if ($this->exists) {
+                $this->path = $file->storeAs($targetDirectory, $this->id . '-' . $file->getClientOriginalName());
+            } else {
+                $tempFileName = 'tmp-' . Carbon::now()->format('Ymd-His') . '-' . $file->getClientOriginalName();
+                $this->path = $file->storeAs($targetDirectory, $tempFileName);
+                $this->save();
+
+                $newFileName = $this->id . '-' . $file->getClientOriginalName();
+                Storage::move($targetDirectory . '/' . $tempFileName, $targetDirectory . '/' . $newFileName);
+                $this->path = $targetDirectory . '/' . $newFileName;
+            }
         }
 
         return $this->save();

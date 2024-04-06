@@ -44,6 +44,7 @@ class EventSeriesController extends Controller
                 ]),
                 'events.location',
                 'subEventSeries' => fn (HasMany $subEventSeries) => $subEventSeries->withCount([
+                    'documents',
                     'events',
                 ]),
             ]),
@@ -77,6 +78,7 @@ class EventSeriesController extends Controller
         return view('event_series.event_series_form', $this->formValues([
             'eventSeries' => $eventSeries->loadMissing([
                 'events' => fn (HasMany $events) => $events->withCount([
+                    'documents',
                     'groups',
                 ]),
             ]),

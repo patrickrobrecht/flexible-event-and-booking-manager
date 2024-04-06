@@ -8,7 +8,11 @@
             <x-bs::list.item>
                 <div class="fw-bold">
                     <i class="{{ $document->file_type->getIconClass() }}" title="{{ $document->file_type->getTranslatedName() }}"></i>
-                    {{ $document->title }}
+                    @can('view', $document)
+                        <a href="{{ route('documents.show', $document) }}">{{ $document->title }}</a>
+                    @else
+                        {{ $document->title }}
+                    @endcan
                     <x-badge.approval-status :approval-status="$document->approval_status" class="ms-3"/>
                 </div>
                 @isset($document->description)

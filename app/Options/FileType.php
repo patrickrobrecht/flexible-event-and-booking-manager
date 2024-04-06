@@ -45,6 +45,7 @@ enum FileType: string
             ],
             self::Audio => [
                 'aac',
+                'mp3',
                 'ogg',
                 'wav',
             ],

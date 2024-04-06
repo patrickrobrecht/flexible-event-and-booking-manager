@@ -79,18 +79,34 @@
             @endif
 
             @php
-                $eventsSectionEmpty = true;
+                $documentSectionEmpty = true;
             @endphp
+            @canany(['viewAny', 'create'], [\App\Models\Document::class, $event])
+                @php
+                    $documentSectionEmpty = false;
+                @endphp
+                <section id="documents" @class([
+                    'mt-4' => $bookingOptionsToShow,
+                ])>
+                    <h2>{{ __('Documents') }}</h2>
+                    @can('viewAny', [\App\Models\Document::class, $event])
+                        @include('documents.shared.document_list', [
+                            'documents' => $event->documents,
+                        ])
+                    @endcan
+                    @include('documents.shared.document_add_modal', [
+                        'reference' => $event,
+                        'routeForAddDocument' => route('events.documents.store', $event),
+                    ])
+            @endcanany
+
             @isset($event->parentEvent)
                 @php
                     $siblingEvents = $event->parentEvent->subEvents->keyBy('id')->except($event->id);
                 @endphp
                 @if($siblingEvents->isNotEmpty())
-                    @php
-                        $eventsSectionEmpty = false;
-                    @endphp
                     <section @class([
-                        'mt-4' => $bookingOptionsToShow,
+                        'mt-4' => $bookingOptionsToShow || !$documentSectionEmpty,
                     ])>
                         <h2>{{ __('Other sub events of :name', [
                             'name' => $event->parentEvent->name,
@@ -100,44 +116,31 @@
                         ])
                     </section>
                 @endif
-            @elseif($event->subEvents->isNotEmpty() || Auth::user()?->can('createChild', $event))
+            @else
                 @php
-                    $eventsSectionEmpty = false;
+                    $subEvents = $event->subEvents
+                        ->filter(fn (\App\Models\Event $subEvent) => \Illuminate\Support\Facades\Gate::check('view', $subEvent));
                 @endphp
-                <section @class([
-                    'mt-4' => $bookingOptionsToShow,
-                ])>
-                    <h2>{{ __('Sub events') }}</h2>
-                    @if($event->subEvents->isNotEmpty())
-                        @include('events.shared.event_list', [
-                            'events' => $event->subEvents,
-                        ])
-                    @endif
-                    @can('createChild', $event)
-                        <div class="mt-3">
-                            <x-button.create href="{{ route('events.create', ['parent_event_id' => $event->id]) }}">
-                                {{ __('Create event') }}
-                            </x-button.create>
-                        </div>
-                    @endcan
-                </section>
+                @if($subEvents->isNotEmpty() || Auth::user()?->can('createChild', $event))
+                    <section @class([
+                        'mt-4' => $bookingOptionsToShow || !$documentSectionEmpty,
+                    ])>
+                        <h2>{{ __('Sub events') }}</h2>
+                        @if($subEvents->isNotEmpty())
+                            @include('events.shared.event_list', [
+                                'events' => $event->subEvents,
+                            ])
+                        @endif
+                        @can('createChild', $event)
+                            <div class="mt-3">
+                                <x-button.create href="{{ route('events.create', ['parent_event_id' => $event->id]) }}">
+                                    {{ __('Create event') }}
+                                </x-button.create>
+                            </div>
+                        @endcan
+                    </section>
+                @endif
             @endif
-
-            @canany(['viewAny', 'create'], [\App\Models\Document::class, $event])
-                <section id="documents" @class([
-                    'mt-4' => $bookingOptionsToShow || !$eventsSectionEmpty,
-                ])>
-                    <h2>{{ __('Documents') }}</h2>
-                @can('viewAny', [\App\Models\Document::class, $event])
-                    @include('documents.shared.document_list', [
-                        'documents' => $event->documents,
-                    ])
-                @endcan
-                @include('documents.shared.document_add_modal', [
-                    'reference' => $event,
-                    'routeForAddDocument' => route('events.documents.store', $event),
-                ])
-            @endcanany
         </div>
     </div>
 

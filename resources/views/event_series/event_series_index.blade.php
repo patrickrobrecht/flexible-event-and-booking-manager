@@ -52,29 +52,49 @@
                             <x-badge.visibility :visibility="$eventSeriesItem->visibility"/>
                         </x-bs::list.item>
                         <x-bs::list.item>
-                            <span>
-                                <i class="fa fa-fw fa-calendar-week"></i>
-                                {{ __('Part of the event series') }}
+                            @isset($eventSeriesItem->parentEventSeries)
+                                <span class="text-nowrap"><i class="fa fa-fw fa-calendar-week"></i> {{ __('Part of the event series') }}</span>
+                                <x-slot:end>
+                                    <a href="{{ route('event-series.show', $eventSeriesItem->parentEventSeries->slug) }}">{{ $eventSeriesItem->parentEventSeries->name }}</a>
+                                </x-slot:end>
+                            @else
+                                <span class="text-nowrap">
+                                    <i class="fa fa-fw fa-calendar-week"></i>
+                                    @can('viewAny', [\App\Models\Document::class, $eventSeriesItem])
+                                        <a href="{{ route('event-series.show', $eventSeriesItem->slug) }}#series">{{ __('Event series') }}</a>
+                                    @else
+                                        {{ __('Event series') }}
+                                    @endcan
+                                </span>
+                                <x-slot:end>
+                                    <x-bs::badge>{{ formatInt($eventSeriesItem->sub_event_series_count) }}</x-bs::badge>
+                                </x-slot:end>
+                            @endisset
+                        </x-bs::list.item>
+                        <x-bs::list.item>
+                            <span class="text-nowrap">
+                                <i class="fa fa-fw fa-calendar-days"></i>
+                                @can('viewAny', [\App\Models\Document::class, $eventSeriesItem])
+                                    <a href="{{ route('event-series.show', $eventSeriesItem->slug) }}#events">{{ __('Events') }}</a>
+                                @else
+                                    {{ __('Events') }}
+                                @endcan
                             </span>
                             <x-slot:end>
-                                <span>
-                                    @isset($eventSeriesItem->parentEventSeries)
-                                        <a href="{{ route('event-series.show', $eventSeriesItem->parentEventSeries->slug) }}">
-                                        {{ $eventSeriesItem->parentEventSeries->name }}
-                                    </a>
-                                    @else
-                                        {{ __('none') }}
-                                    @endif
-                                </span>
+                                <x-bs::badge>{{ formatInt($eventSeriesItem->events_count) }}</x-bs::badge>
                             </x-slot:end>
                         </x-bs::list.item>
                         <x-bs::list.item>
-                            <span>
-                                <i class="fa fa-fw fa-calendar-days"></i>
-                                {{ __('Events') }}
+                            <span class="text-nowrap">
+                                <i class="fa fa-fw fa-file"></i>
+                                @can('viewAny', [\App\Models\Document::class, $eventSeriesItem])
+                                    <a href="{{ route('event-series.show', $eventSeriesItem->slug) }}#documents">{{ __('Documents') }}</a>
+                                @else
+                                    {{ __('Documents') }}
+                                @endcan
                             </span>
                             <x-slot:end>
-                                <x-badge.counter>{{ formatInt($eventSeriesItem->events_count) }}</x-badge.counter>
+                                <x-bs::badge>{{ formatInt($eventSeriesItem->documents_count) }}</x-bs::badge>
                             </x-slot:end>
                         </x-bs::list.item>
                     </x-bs::list>

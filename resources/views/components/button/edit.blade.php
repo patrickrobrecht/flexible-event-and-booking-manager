@@ -1,4 +1,4 @@
-<a href="{{ $href ?? '#' }}" class="btn {{ $class ?? 'btn-primary' }}">
+<a href="{{ $href ?? '#' }}" {{ $attributes->class('btn btn-primary') }}>
     <i class="fa fa-edit"></i>
     @if(trim($slot))
         {{ $slot }}

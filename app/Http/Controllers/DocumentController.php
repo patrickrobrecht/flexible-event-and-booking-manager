@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\DocumentRequest;
+use App\Http\Requests\Filters\DocumentFilterRequest;
 use App\Models\Document;
 use App\Models\Event;
 use App\Models\EventSeries;
@@ -15,7 +16,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DocumentController extends Controller
 {
-    public function index()
+    public function index(DocumentFilterRequest $request)
     {
         $this->authorize('viewAny', Document::class);
 

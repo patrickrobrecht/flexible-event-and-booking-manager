@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('file_type');
             $table->foreignId('uploaded_by_user_id')->constrained('users');
             $table->morphs('reference');
+            $table->unsignedTinyInteger('approval_status');
             $table->timestamps();
         });
     }

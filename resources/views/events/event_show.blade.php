@@ -53,10 +53,10 @@
     @endisset
 
     <div class="row my-3">
-        <div class="col-12 col-md-4">
+        <div class="col-12 col-lg-4">
             @include('events.shared.event_details')
         </div>
-        <div class="col-12 col-md-8">
+        <div class="col-12 col-lg-8 mt-4 mt-lg-0">
             @php
                 $bookingOptionsToShow = $event->bookingOptions->isNotEmpty()
                     || Auth::user()?->can('create', [\App\Models\BookingOption::class, $event])
@@ -124,7 +124,7 @@
             @endif
 
             @canany(['viewAny', 'create'], [\App\Models\Document::class, $event])
-                <section @class([
+                <section id="documents" @class([
                     'mt-4' => $bookingOptionsToShow || !$eventsSectionEmpty,
                 ])>
                     <h2>{{ __('Documents') }}</h2>

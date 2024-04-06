@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\HasDocuments;
+use App\Options\ApprovalStatus;
 use App\Options\FileType;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -22,6 +23,7 @@ use Spatie\QueryBuilder\AllowedSort;
  * @property ?string $description
  * @property string $path
  * @property FileType $file_type
+ * @property ApprovalStatus $approval_status
  *
  * @property-read HasDocuments|Event $reference {@see self::reference()}
  * @property-read User $uploadedByUser {@see self::uploadedByUser()}
@@ -33,11 +35,13 @@ class Document extends Model
     protected $casts = [
         'file_type' => FileType::class,
         'uploaded_by_user_id' => 'integer',
+        'approval_status' => ApprovalStatus::class,
     ];
 
     protected $fillable = [
         'title',
         'description',
+        'approval_status',
     ];
 
     public function reference(): MorphTo
@@ -82,6 +86,7 @@ class Document extends Model
         return [
             AllowedFilter::partial('title'),
             AllowedFilter::exact('file_type'),
+            AllowedFilter::exact('approval_status'),
         ];
     }
 

@@ -47,7 +47,7 @@
 
     <div class="row my-3">
         @foreach($organizations as $organization)
-            <div class="col-12 col-md-6 mb-3">
+            <div class="col-12 col-lg-6 mb-3">
                 <div class="card">
                     <div class="card-header">
                         <h2 class="card-title">
@@ -62,7 +62,7 @@
                                 <a href="{{ route('events.index', ['filter[organization_id]' => $organization->id]) }}" target="_blank">{{ __('Events') }}</a>
                             </span>
                             <x-slot:end>
-                                <x-badge.counter>{{ formatInt($organization->events_count) }}</x-badge.counter>
+                                <x-bs::badge>{{ formatInt($organization->events_count) }}</x-bs::badge>
                             </x-slot:end>
                         </x-bs::list.item>
                         @isset($organization->website_url)
@@ -97,6 +97,19 @@
                                 </x-slot:end>
                             </x-bs::list.item>
                         @endisset
+                        <x-bs::list.item>
+                            <span class="text-nowrap">
+                                <i class="fa fa-fw fa-file"></i>
+                                @can('viewAny', [\App\Models\Document::class, $organization])
+                                    <a href="{{ route('organizations.show', $organization) }}#documents">{{ __('Documents') }}</a>
+                                @else
+                                    {{ __('Documents') }}
+                                @endcan
+                            </span>
+                            <x-slot:end>
+                                <x-bs::badge>{{ formatInt($organization->documents_count) }}</x-bs::badge>
+                            </x-slot:end>
+                        </x-bs::list.item>
                     </x-bs::list>
                     <div class="card-body">
                         @can('update', $organization)

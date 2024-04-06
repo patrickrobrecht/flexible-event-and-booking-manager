@@ -40,18 +40,18 @@
     @endisset
 
     <div class="row my-3">
-        <div class="col-12 col-md-6">
+        <div id="events" class="col-12 col-xl-6 col-xxl-4">
             <h2>{{ __('Events') }}</h2>
             @include('event_series.shared.events_in_series')
         </div>
         @php
             $subEventSeriesList = $eventSeries->subEventSeries
                 ->filter(fn (\App\Models\EventSeries $subEventSeries) => \Illuminate\Support\Facades\Gate::check('view', $subEventSeries));
+            $hasSubEventSeriesToShow = $subEventSeriesList->count() > 0 || Auth::user()?->can('createChild', $eventSeries);
         @endphp
-        @if($subEventSeriesList->count() > 0 || Auth::user()?->can('createChild', $eventSeries))
-            <div class="col-12 col-md-6">
+        @if($hasSubEventSeriesToShow)
+            <div id="series" class="col-12 col-xl-6 col-xxl-4 mt-4 mt-xl-0">
                 <h2>{{ __('Event series') }}</h2>
-
                 <x-bs::list container="div">
                     @foreach($subEventSeriesList as $subEventSeries)
                         <x-bs::list.item container="a" variant="action" href="{{ route('event-series.show', $subEventSeries->slug) }}">
@@ -71,9 +71,11 @@
                 @endcan
             </div>
         @endif
-
         @canany(['viewAny', 'create'], [\App\Models\Document::class, $eventSeries])
-            <section class="mt-4">
+            <div id="documents" @class([
+                'col-12 col-xl-6 col-xxl-4',
+                'mt-4 mt-xxl-0' => $hasSubEventSeriesToShow,
+            ])>
                 <h2>{{ __('Documents') }}</h2>
             @can('viewAny', [\App\Models\Document::class, $eventSeries])
                 @include('documents.shared.document_list', [

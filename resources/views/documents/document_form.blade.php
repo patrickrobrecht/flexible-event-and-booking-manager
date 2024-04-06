@@ -18,7 +18,7 @@
 @endsection
 
 @section('headline')
-    <h1><i class="{{ $document->file_type->getIconClass() }}"></i> @yield('title')</h1>
+    <h1><i class="{{ $document->file_type->getIconClass() }}" title="{{ $document->file_type->getTranslatedName() }}"></i> @yield('title')</h1>
 @endsection
 
 @section('headline-buttons')

@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Http\Requests\Traits\ValidatesFiles;
 use App\Models\Document;
 use App\Models\Traits\HasDocuments;
+use App\Options\ApprovalStatus;
 use App\Options\FileType;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Database\Eloquent\Model;
@@ -51,11 +52,15 @@ class DocumentRequest extends FormRequest
                 'different:title',
             ],
             'file' => [
-                $this->routeIs('create') ? 'required' : 'nullable',
+                $this->routeIs('*.documents.store') ? 'required' : 'nullable',
                 'file',
                 'extensions:' . implode(',', $fileExtensions),
                 'mimetypes:' . implode(',', $mimeTypes),
                 self::getMaxFileSizeRule(),
+            ],
+            'approval_status' => [
+                'required',
+                ApprovalStatus::rule(),
             ],
         ];
     }

@@ -22,6 +22,7 @@ class DashboardController extends Controller
                 'location',
             ])
             ->withCount([
+                'documents',
                 'groups',
             ])
             ->get();

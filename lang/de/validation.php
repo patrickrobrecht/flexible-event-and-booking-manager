@@ -161,6 +161,7 @@ return [
     'attributes' => [
         'abilities' => 'Berechtigungen',
         'address' => 'Adresse',
+        'approval_status' => 'Freigabestatus',
         'comment' => 'Kommentar',
         'current_password' => 'Derzeitiges Passwort',
         'date' => 'Datum',
@@ -173,6 +174,7 @@ return [
         'event_type' => 'Art der Veranstaltung',
         'expires_at' => 'Ablaufdatum',
         'file' => 'Datei',
+        'file_type' => 'Dateiformat',
         'first_name' => 'Vorname',
         'groups_count' => 'Anzahl der Gruppen',
         'height' => 'Höhe',

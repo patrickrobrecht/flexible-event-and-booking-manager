@@ -15,7 +15,7 @@
 @section('content')
     <x-form.filter>
         <div class="row">
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-sm-6 col-lg-3">
                 <x-bs::form.field id="name" name="filter[title]" type="text"
                                   :from-query="true">{{ __('Title') }}</x-bs::form.field>
             </div>
@@ -23,6 +23,11 @@
                 <x-bs::form.field id="file_type" name="filter[file_type]" type="select"
                                   :options="\App\Options\FileType::toOptionsWithAll()"
                                   :from-query="true">{{ __('File type') }}</x-bs::form.field>
+            </div>
+            <div class="col-12 col-sm-6 col-lg-3">
+                <x-bs::form.field id="approval_status" name="filter[approval_status]" type="select"
+                                  :options="\App\Options\ApprovalStatus::toOptionsWithAll()"
+                                  :from-query="true">{{ __('Approval status') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-sm-6 col-lg-3">
                 <x-bs::form.field name="sort" type="select"
@@ -40,7 +45,7 @@
                 <div class="card">
                     <div class="card-header">
                         <h2 class="card-title">
-                            <i class="{{ $document->file_type->getIconClass() }} text-primary"></i>
+                            <i class="{{ $document->file_type->getIconClass() }} text-primary" title="{{ $document->file_type->getTranslatedName() }}"></i>
                             @can('view', $document)
                                 <a href="{{ route('documents.show', $document) }}">{{ $document->title }}</a>
                             @else
@@ -83,6 +88,9 @@
                         <x-bs::list.item>
                             <i class="fa fa-fw fa-user"></i>
                             @include('documents.shared.document_uploaded_by')
+                        </x-bs::list.item>
+                        <x-bs::list.item>
+                            <x-badge.approval-status :approval-status="$document->approval_status"/>
                         </x-bs::list.item>
                     </x-bs::list>
                     @canany(['download', 'update'], $document)

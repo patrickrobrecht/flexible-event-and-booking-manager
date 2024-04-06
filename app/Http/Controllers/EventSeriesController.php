@@ -24,7 +24,9 @@ class EventSeriesController extends Controller
                     'parentEventSeries',
                 ])
                 ->withCount([
+                    'documents',
                     'events',
+                    'subEventSeries',
                 ])
                 ->paginate(),
         ]);
@@ -37,6 +39,7 @@ class EventSeriesController extends Controller
         return view('event_series.event_series_show', [
             'eventSeries' => $eventSeries->loadMissing([
                 'events' => fn (HasMany $events) => $events->withCount([
+                    'documents',
                     'groups',
                 ]),
                 'events.location',

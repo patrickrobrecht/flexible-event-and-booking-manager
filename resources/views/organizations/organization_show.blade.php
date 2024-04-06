@@ -30,7 +30,7 @@
         </div>
         <div class="col-12 col-md-8">
             @canany(['viewAny', 'create'], [\App\Models\Document::class, $organization])
-                <section>
+                <section id="documents">
                     <h2>{{ __('Documents') }}</h2>
                 @can('viewAny', [\App\Models\Document::class, $organization])
                     @include('documents.shared.document_list', [

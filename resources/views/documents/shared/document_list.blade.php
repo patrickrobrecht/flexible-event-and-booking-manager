@@ -7,8 +7,9 @@
         @foreach($documents as $document)
             <x-bs::list.item>
                 <div class="fw-bold">
-                    <i class="{{ $document->file_type->getIconClass() }}"></i>
+                    <i class="{{ $document->file_type->getIconClass() }}" title="{{ $document->file_type->getTranslatedName() }}"></i>
                     {{ $document->title }}
+                    <x-badge.approval-status :approval-status="$document->approval_status" class="ms-3"/>
                 </div>
                 @isset($document->description)
                     <div class="text-muted">{{ $document->description }}</div>
@@ -21,7 +22,7 @@
                     <x-bs::button.group class="mt-3">
                         @include('documents.shared.document_download_link')
                         @can('update', $document)
-                            <x-button.edit href="{{ route('documents.edit', $document) }}"/>
+                            <x-button.edit href="{{ route('documents.edit', $document) }}" class="text-nowrap"/>
                         @endcan
                         @include('documents.shared.document_delete_modal_button')
                     </x-bs::button.group>

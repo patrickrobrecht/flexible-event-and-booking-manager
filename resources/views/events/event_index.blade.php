@@ -97,15 +97,16 @@
                             </span>
                         </x-bs::list.item>
                         <x-bs::list.item>
-                            <span>
-                                <i class="fa fa-fw fa-sitemap"></i>
-                                {{ __('Organizations') }}
-                            </span>
+                            <span class="text-nowrap"><i class="fa fa-fw fa-sitemap"></i> {{ __('Organizations') }}</span>
                             <x-slot:end>
                                 <div class="text-end">
                                     <ul class="list-unstyled">
                                         @foreach($event->organizations as $organization)
-                                            <li>{{ $organization->name }}</li>
+                                            @can('view', $organization)
+                                                <li><a href="{{ route('organizations.show', $organization) }}">{{ $organization->name }}</a></li>
+                                            @else
+                                                <li>{{ $organization->name }}</li>
+                                            @endif
                                         @endforeach
                                     </ul>
                                 </div>
@@ -113,10 +114,7 @@
                         </x-bs::list.item>
                         @isset($event->eventSeries)
                             <x-bs::list.item>
-                                <span>
-                                    <i class="fa fa-fw fa-calendar-week"></i>
-                                    {{ __('Part of the event series') }}
-                                </span>
+                                <span class="text-nowrap"><i class="fa fa-fw fa-calendar-week"></i> {{ __('Part of the event series') }}</span>
                                 <x-slot:end>
                                     <span class="text-end">
                                         <a href="{{ route('event-series.show', $event->eventSeries->slug) }}" target="_blank">
@@ -126,6 +124,19 @@
                                 </x-slot:end>
                             </x-bs::list.item>
                         @endisset
+                        <x-bs::list.item>
+                            <span class="text-nowrap">
+                                <i class="fa fa-fw fa-file"></i>
+                                @can('viewAny', [\App\Models\Document::class, $event])
+                                    <a href="{{ route('events.show', $event->slug) }}#documents">{{ __('Documents') }}</a>
+                                @else
+                                    {{ __('Documents') }}
+                                @endcan
+                            </span>
+                            <x-slot:end>
+                                <x-bs::badge>{{ formatInt($event->documents_count) }}</x-bs::badge>
+                            </x-slot:end>
+                        </x-bs::list.item>
                         @include('events.shared.event_booking_options')
                     </x-bs::list>
                     <div class="card-body">

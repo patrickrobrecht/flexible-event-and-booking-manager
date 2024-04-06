@@ -28,16 +28,21 @@
                             <x-badge.visibility :visibility="$event->visibility"/>
                         </div>
                     @endif
-                    <div class="text-muted">
-                        {{ $event->description }}
-                    </div>
+                    @isset($event->description)
+                        <div class="text-muted">{{ $event->description }}</div>
+                    @endisset
                     @canany(['update', 'viewGroups'], $event)
                         <x-bs::button.group class="mt-3">
                             @can('update', $event)
-                                <x-button.edit href="{{ route('events.edit', $event) }}"/>
+                                <x-button.edit href="{{ route('events.edit', $event) }}" class="text-nowrap"/>
+                            @endcan
+                            @can('viewAny', [\App\Models\Document::class, $event])
+                                <x-bs::button.link href="{{ route('events.show', $event) }}#documents" variant="secondary" class="text-nowrap">
+                                    <i class="fa fa-fw fa-file"></i> {{ __('Documents') }} <x-bs::badge variant="danger">{{ formatInt($event->documents_count) }}</x-bs::badge>
+                                </x-bs::button.link>
                             @endcan
                             @can('viewGroups', $event)
-                                <x-bs::button.link href="{{ route('groups.index', $event) }}" variant="secondary">
+                                <x-bs::button.link href="{{ route('groups.index', $event) }}" variant="secondary" class="text-nowrap">
                                     <i class="fa fa-fw fa-user-group"></i> {{ __('Groups') }} <x-bs::badge variant="danger">{{ formatInt($event->groups_count) }}</x-bs::badge>
                                 </x-bs::button.link>
                             @endcan

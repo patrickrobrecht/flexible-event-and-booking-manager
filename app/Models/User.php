@@ -113,6 +113,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Booking::class, 'booked_by_user_id');
     }
 
+    public function documents(): HasMany
+    {
+        return $this->hasMany(Document::class, 'uploaded_by_user_id');
+    }
+
     public function userRoles(): BelongsToMany
     {
         return $this->belongsToMany(UserRole::class)

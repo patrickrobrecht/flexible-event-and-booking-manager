@@ -32,6 +32,7 @@
                             $canViewEventSeries = $loggedInUser->can('viewAny', App\Models\EventSeries::class);
                             $canViewOrganizations = $loggedInUser->can('viewAny', App\Models\Organization::class);
                             $canViewLocations = $loggedInUser->can('viewAny', App\Models\Location::class);
+                            $canViewDocuments = $loggedInUser->can('viewAny', \App\Models\Document::class);
 
                             $canViewUsers = $loggedInUser->can('viewAny', App\Models\User::class);
                             $canViewUserRoles = $loggedInUser->can('viewAny', App\Models\UserRole::class);
@@ -67,6 +68,12 @@
                                         <x-bs::dropdown.item href="{{ route('locations.index') }}">
                                             <i class="fa fa-fw fa-location-pin"></i>
                                             {{ __('Locations') }}
+                                        </x-bs::dropdown.item>
+                                    @endif
+                                    @if($canViewDocuments)
+                                        <x-bs::dropdown.item href="{{ route('documents.index') }}">
+                                            <i class="fa fa-fw fa-file"></i>
+                                            {{ __('Documents') }}
                                         </x-bs::dropdown.item>
                                     @endif
                                     @if($canViewUsers || $canViewUserRoles)

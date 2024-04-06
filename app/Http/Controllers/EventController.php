@@ -33,6 +33,7 @@ class EventController extends Controller
                     'parentEvent',
                 ])
                 ->withCount([
+                    'documents',
                     'groups',
                 ])
                 ->paginate(),
@@ -49,11 +50,15 @@ class EventController extends Controller
                     'bookingOptions' => static fn (HasMany $query) => $query->withCount([
                         'bookings',
                     ]),
+                    'documents.reference',
+                    'documents.uploadedByUser',
                     'parentEvent.subEvents' => static fn (HasMany $query) => $query->withCount([
+                        'documents',
                         'groups',
                     ]),
                     'parentEvent.subEvents.location',
                     'subEvents' => static fn (HasMany $query) => $query->withCount([
+                        'documents',
                         'groups',
                     ]),
                     'subEvents.location',

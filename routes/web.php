@@ -4,6 +4,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\BookingOptionController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\EventSeriesController;
 use App\Http\Controllers\GroupController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserRoleController;
 use App\Models\Booking;
 use App\Models\BookingOption;
+use App\Models\Document;
 use App\Models\Event;
 use App\Models\EventSeries;
 use App\Models\FormFieldValue;
@@ -51,22 +53,41 @@ Route::middleware('auth')->group(static function () {
     Route::get('bookings/{booking}/file/{form_field_value}', [BookingController::class, 'downloadFile'])
         ->name('bookings.show-file');
 
+    Route::model('document', Document::class);
+    Route::resource('documents', DocumentController::class)
+        ->only(['index', 'show', 'edit', 'update', 'destroy']);
+    Route::prefix('documents/{document}')->group(function () {
+        Route::get('download', [DocumentController::class, 'download'])
+            ->name('documents.download');
+        Route::get('stream', [DocumentController::class, 'stream'])
+            ->name('documents.stream');
+    });
+
+    Route::model('event', Event::class);
     Route::resource('events', EventController::class)
         ->only(['index', 'create', 'store', 'edit', 'update']);
-    Route::resource('events/{event:slug}/booking-options', BookingOptionController::class)
-        ->only(['show', 'create', 'store', 'edit', 'update']);
-    Route::resource('events/{event:slug}/{booking_option:slug}/bookings', BookingController::class)
-        ->only(['index']);
-    Route::resource('events/{event:slug}/groups', GroupController::class)
-        ->only(['index']);
-    Route::post('events/{event:slug}/groups/generate', [GroupController::class, 'generate'])
-        ->name('groups.generate');
-    Route::delete('events/{event:slug}/groups', [GroupController::class, 'destroyAll'])
-        ->name('groups.deleteAll');
+    Route::prefix('events/{event:slug}')->group(function () {
+        Route::resource('{booking_option:slug}/bookings', BookingController::class)
+            ->only(['index']);
+        Route::resource('booking-options', BookingOptionController::class)
+            ->only(['show', 'create', 'store', 'edit', 'update']);
+        Route::resource('groups', GroupController::class)
+            ->only(['index']);
+        Route::post('groups/generate', [GroupController::class, 'generate'])
+            ->name('groups.generate');
+        Route::delete('groups', [GroupController::class, 'destroyAll'])
+            ->name('groups.deleteAll');
+        Route::post('documents', [DocumentController::class, 'storeForEvent'])
+            ->name('events.documents.store');
+    });
 
     Route::model('event_series', EventSeries::class);
     Route::resource('event-series', EventSeriesController::class)
-        ->only(['index', 'show', 'create', 'store', 'edit', 'update']);
+        ->only(['index', 'create', 'store', 'edit', 'update']);
+    Route::prefix('event-series/{event_series:slug}')->group(function () {
+        Route::post('documents', [DocumentController::class, 'storeForEventSeries'])
+            ->name('event-series.documents.store');
+    });
 
     Route::model('location', Location::class);
     Route::resource('locations', LocationController::class)
@@ -75,6 +96,10 @@ Route::middleware('auth')->group(static function () {
     Route::model('organization', Organization::class);
     Route::resource('organizations', OrganizationController::class)
         ->only(['index', 'create', 'store', 'edit', 'update']);
+    Route::prefix('organizations/{organization}')->group(function () {
+        Route::post('documents', [DocumentController::class, 'storeForOrganization'])
+            ->name('organizations.documents.store');
+    });
 
     Route::model('personal_access_token', PersonalAccessToken::class);
     Route::resource('personal-access-tokens', PersonalAccessTokenController::class)
@@ -95,11 +120,15 @@ Route::middleware('auth')->group(static function () {
         ->name('account.update');
 });
 
+// Pages that can be public
 Route::get('/', [DashboardController::class, 'index'])
     ->name('dashboard');
 
-Route::model('event', Event::class);
 Route::resource('events', EventController::class)
+    ->only(['show']);
+Route::resource('event-series', EventSeriesController::class)
+    ->only(['show']);
+Route::resource('organizations', OrganizationController::class)
     ->only(['show']);
 
 Route::model('booking_option', BookingOption::class);

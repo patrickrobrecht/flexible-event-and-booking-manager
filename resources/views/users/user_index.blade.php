@@ -130,11 +130,18 @@
                         </x-bs::list.item>
                         <x-bs::list.item>
                             <span class="text-nowrap">
-                                <i class="fa fa-fw fa-file-contract"></i>
-                                {{ __('Bookings') }}
+                                <i class="fa fa-fw fa-file-contract"></i> {{ __('Bookings') }}
                             </span>
                             <x-slot:end>
                                 <x-badge.counter>{{ formatInt($user->bookings_count) }}</x-badge.counter>
+                            </x-slot:end>
+                        </x-bs::list.item>
+                        <x-bs::list.item>
+                            <span class="text-nowrap">
+                                <i class="fa fa-fw fa-file-contract"></i> {{ __('Documents') }}
+                            </span>
+                            <x-slot:end>
+                                <x-badge.counter>{{ formatInt($user->documents_count) }}</x-badge.counter>
                             </x-slot:end>
                         </x-bs::list.item>
                     </x-bs::list>

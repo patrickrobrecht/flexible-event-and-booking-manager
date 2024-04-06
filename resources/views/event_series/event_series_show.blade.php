@@ -40,16 +40,20 @@
     @endisset
 
     <div class="row my-3">
-        <div class="col-12 col-md-6">
+        <div id="events" class="col-12 col-xl-6 col-xxl-4">
             <h2>{{ __('Events') }}</h2>
             @include('event_series.shared.events_in_series')
         </div>
-        @if($eventSeries->subEventSeries->count() > 0 || Auth::user()->can('createChild', $eventSeries))
-            <div class="col-12 col-md-6">
+        @php
+            $subEventSeriesList = $eventSeries->subEventSeries
+                ->filter(fn (\App\Models\EventSeries $subEventSeries) => \Illuminate\Support\Facades\Gate::check('view', $subEventSeries));
+            $hasSubEventSeriesToShow = $subEventSeriesList->count() > 0 || Auth::user()?->can('createChild', $eventSeries);
+        @endphp
+        @if($hasSubEventSeriesToShow)
+            <div id="series" class="col-12 col-xl-6 col-xxl-4 mt-4 mt-xl-0">
                 <h2>{{ __('Event series') }}</h2>
-
                 <x-bs::list container="div">
-                    @foreach($eventSeries->subEventSeries as $subEventSeries)
+                    @foreach($subEventSeriesList as $subEventSeries)
                         <x-bs::list.item container="a" variant="action" href="{{ route('event-series.show', $subEventSeries->slug) }}">
                             <strong>{{ $subEventSeries->name }}</strong>
                             <x-slot:end>
@@ -58,7 +62,6 @@
                         </x-bs::list.item>
                     @endforeach
                 </x-bs::list>
-
                 @can('createChild', $eventSeries)
                     <div class="mt-3">
                         <x-button.create href="{{ route('event-series.create', ['parent_event_series_id' => $eventSeries->id]) }}">
@@ -68,8 +71,25 @@
                 @endcan
             </div>
         @endif
-
+        @canany(['viewAny', 'create'], [\App\Models\Document::class, $eventSeries])
+            <div id="documents" @class([
+                'col-12 col-xl-6 col-xxl-4',
+                'mt-4 mt-xxl-0' => $hasSubEventSeriesToShow,
+            ])>
+                <h2>{{ __('Documents') }}</h2>
+            @can('viewAny', [\App\Models\Document::class, $eventSeries])
+                @include('documents.shared.document_list', [
+                    'documents' => $eventSeries->documents,
+                ])
+            @endcan
+            @include('documents.shared.document_add_modal', [
+                'reference' => $eventSeries,
+                'routeForAddDocument' => route('event-series.documents.store', $eventSeries),
+            ])
+        @endcanany
     </div>
 
-    <x-text.updated-human-diff :model="$eventSeries"/>
+    @can('update', $eventSeries)
+        <x-text.updated-human-diff :model="$eventSeries"/>
+    @endcan
 @endsection

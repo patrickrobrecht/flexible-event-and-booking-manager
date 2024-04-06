@@ -25,11 +25,19 @@ enum Ability: string
     case EditPaymentStatus = 'events.edit_payment_status';
     case ManageGroupsOfEvent = 'events.manage_groups';
     case ExportGroupsOfEvent = 'events.export_groups';
+    case ViewDocumentsOfEvents = 'events.documents.view';
+    case AddDocumentsToEvents = 'events.documents.create';
+    case EditDocumentsOfEvents = 'events.documents.edit';
+    case DeleteDocumentsOfEvents = 'events.documents.delete';
 
     case ViewEventSeries = 'event_series.view';
     case ViewPrivateEventSeries = 'event_series.view_private';
     case CreateEventSeries = 'event_series.create';
     case EditEventSeries = 'event_series.edit';
+    case ViewDocumentsOfEventSeries = 'event_series.documents.view';
+    case AddDocumentsToEventSeries = 'event_series.documents.create';
+    case EditDocumentsOfEventSeries = 'event_series.documents.edit';
+    case DeleteDocumentsOfEventSeries = 'event_series.documents.delete';
 
     case ViewLocations = 'locations.view';
     case CreateLocations = 'locations.create';
@@ -38,6 +46,12 @@ enum Ability: string
     case ViewOrganizations = 'organizations.view';
     case CreateOrganizations = 'organizations.create';
     case EditOrganizations = 'organizations.edit';
+    case ViewDocumentsOfOrganizations = 'organizations.documents.view';
+    case AddDocumentsToOrganizations = 'organizations.documents.create';
+    case EditDocumentsOfOrganizations = 'organizations.documents.edit';
+    case DeleteDocumentsOfOrganizations = 'organizations.documents.delete';
+
+    case ViewDocuments = 'documents.view';
 
     case ViewUsers = 'users.view';
     case CreateUsers = 'users.create';
@@ -67,11 +81,19 @@ enum Ability: string
             self::EditPaymentStatus => __('Edit payment status'),
             self::ManageGroupsOfEvent => __('Manage groups of event'),
             self::ExportGroupsOfEvent => __('Export groups of event'),
+            self::ViewDocumentsOfEvents => __('View documents of events'),
+            self::AddDocumentsToEvents => __('Add documents to events'),
+            self::EditDocumentsOfEvents => __('Update documents of events'),
+            self::DeleteDocumentsOfEvents => __('Delete documents of events'),
 
             self::ViewEventSeries => __('View event series'),
             self::ViewPrivateEventSeries => __('View private event series'),
             self::CreateEventSeries => __('Create event series'),
             self::EditEventSeries => __('Edit event series'),
+            self::ViewDocumentsOfEventSeries => __('View documents of event series'),
+            self::AddDocumentsToEventSeries => __('Add documents to event series'),
+            self::EditDocumentsOfEventSeries => __('Update documents of event series'),
+            self::DeleteDocumentsOfEventSeries => __('Delete documents of event series'),
 
             self::ViewLocations => __('View locations'),
             self::CreateLocations => __('Create locations'),
@@ -80,6 +102,12 @@ enum Ability: string
             self::ViewOrganizations => __('View organizations'),
             self::CreateOrganizations => __('Create organizations'),
             self::EditOrganizations => __('Edit organizations'),
+            self::ViewDocumentsOfOrganizations => __('View documents of organizations'),
+            self::AddDocumentsToOrganizations => __('Add documents to organizations'),
+            self::EditDocumentsOfOrganizations => __('Update documents of organizations'),
+            self::DeleteDocumentsOfOrganizations => __('Delete documents of organizations'),
+
+            self::ViewDocuments => __('View documents'),
 
             self::ViewUsers => __('View users'),
             self::CreateUsers => __('Create users'),

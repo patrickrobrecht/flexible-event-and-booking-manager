@@ -24,7 +24,7 @@ class EventSeriesPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, EventSeries $eventSeries): Response
+    public function view(?User $user, EventSeries $eventSeries): Response
     {
         if ($eventSeries->visibility === Visibility::Public) {
             // Anyone can view public event series.
@@ -35,7 +35,7 @@ class EventSeriesPolicy
          * Private event series are only visible for logged-in users
          * with the ability to view private event series as well.
          */
-        return $this->requireAbility($user, Ability::ViewPrivateEvents);
+        return $this->requireAbility($user, Ability::ViewPrivateEventSeries);
     }
 
     /**

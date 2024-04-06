@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
+use App\Models\Traits\HasDocuments;
 use App\Models\Traits\HasLocation;
 use App\Models\Traits\HasWebsite;
 use App\Options\ActiveStatus;
@@ -27,6 +28,7 @@ use Spatie\QueryBuilder\AllowedFilter;
 class Organization extends Model
 {
     use BuildsQueryFromRequest;
+    use HasDocuments;
     use HasFactory;
     use HasLocation;
     use HasWebsite;
@@ -73,6 +75,16 @@ class Organization extends Model
         $this->location()->associate($validatedData['location_id']);
 
         return $this->save();
+    }
+
+    public function getRoute(): string
+    {
+        return route('organizations.show', $this);
+    }
+
+    public function getStoragePath(): string
+    {
+        return 'organizations/' . $this->id;
     }
 
     public static function allowedFilters(): array

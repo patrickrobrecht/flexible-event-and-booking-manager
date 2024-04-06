@@ -27,7 +27,7 @@ class OrganizationController extends Controller
                     'documents',
                     'events',
                 ])
-                ->paginate(),
+                ->paginate(10),
         ]));
     }
 

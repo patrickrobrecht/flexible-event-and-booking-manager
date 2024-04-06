@@ -19,6 +19,11 @@
     @can('viewBookings', $bookingOption)
         <x-bs::breadcrumb.item href="{{ route('bookings.index', [$event, $bookingOption]) }}">{{ __('Bookings') }}</x-bs::breadcrumb.item>
     @endcan
+    @isset($booking)
+        <x-bs::breadcrumb.item>{{ __('Booking no. :id', [
+            'id' => $booking->id,
+        ]) }}</x-bs::breadcrumb.item>
+    @endisset
 @endsection
 
 @section('headline')

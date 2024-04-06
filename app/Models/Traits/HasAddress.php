@@ -31,11 +31,11 @@ trait HasAddress
 
     public function addressBlock(): Attribute
     {
-        return new Attribute(fn () => [
+        return new Attribute(fn () => array_filter([
             $this->streetLine,
             $this->cityLine,
             $this->country,
-        ]);
+        ], fn (string $line) => trim($line) !== ''));
     }
 
     public function addressLine(): Attribute

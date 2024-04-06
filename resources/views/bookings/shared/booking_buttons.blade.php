@@ -7,11 +7,15 @@
     </x-bs::button.link>
 @endcan
 @can('delete', $booking)
-    <x-button.delete form="delete-{{ $booking->id }}"/>
+    <x-bs::button variant="danger" form="delete-{{ $booking->id }}">
+        <i class="fa fa-fw fa-trash"></i> {{ __('Delete') }}
+    </x-bs::button>
     <x-bs::form id="delete-{{ $booking->id }}" method="DELETE"
                 action="{{ route('bookings.delete', $booking) }}"/>
 @elsecan('restore', $booking)
-    <x-button.restore form="restore-{{ $booking->id }}"/>
+    <x-bs::button variant="success" form="restore-{{ $booking->id }}">
+        <i class="fa fa-fw fa-trash-can-arrow-up"></i> {{ __('Restore') }}
+    </x-bs::button>
     <x-bs::form id="restore-{{ $booking->id }}" method="PATCH"
                 action="{{ route('bookings.restore', $booking) }}"/>
 @endcan

@@ -38,15 +38,15 @@
                 <div class="row">
                     <div class="col-12 col-md-6">
                         <x-bs::form.field name="date_of_birth" type="date"
-                                          :value="($editedUser ?? null)?->date_of_birth?->format('Y-m-d') ?? null">{{ __('Date of birth') }}</x-bs::form.field>
+                                          :value="($editedUser ?? null)?->date_of_birth?->format('Y-m-d') ?? null"><i class="fa fa-fw fa-cake-candles"></i> {{ __('Date of birth') }}</x-bs::form.field>
                     </div>
                     <div class="col-12 col-md-6">
                         <x-bs::form.field name="phone" type="tel"
-                                          :value="$editedUser->phone ?? null">{{ __('Phone number') }}</x-bs::form.field>
+                                          :value="$editedUser->phone ?? null"><i class="fa fa-fw fa-phone"></i> {{ __('Phone number') }}</x-bs::form.field>
                     </div>
                 </div>
                 <x-bs::form.field name="email" type="email"
-                                  :value="$editedUser->email ?? null">{{ __('E-mail') }}</x-bs::form.field>
+                                  :value="$editedUser->email ?? null"><i class="fa fa-fw fa-at"></i> {{ __('E-mail') }}</x-bs::form.field>
                 @isset($editedUser->email_verified_at)
                     <x-bs::alert variant="primary">
                         {{ __('The e-mail address has been verified at :email_verified_at', [
@@ -57,7 +57,7 @@
                     <x-bs::alert variant="danger">{{ __('The e-mail address has not been verified yet.') }}</x-bs::alert>
                 @endisset
                 <x-bs::form.field name="password" type="password" autocomplete="new-password">
-                        {{ __('New password') }}
+                    <i class="fa fa-fw fa-key"></i> {{ __('New password') }}
                     <x-slot:hint>
                         @isset($editedUser->password)
                             {{ __('Leave empty to keep the current password.') }}
@@ -67,14 +67,14 @@
                     </x-slot:hint>
                 </x-bs::form.field>
                 <x-bs::form.field name="password_confirmation" type="password"
-                                  autocomplete="new-password">{{ __('Confirm password') }}</x-bs::form.field>
+                                  autocomplete="new-password"><i class="fa fa-fw fa-key"></i> {{ __('Confirm password') }}</x-bs::form.field>
                 <x-bs::form.field id="user_role_id" name="user_role_id[]" type="switch"
                                   :options="$userRoles->pluck('name', 'id')"
                                   :value="isset($editedUser) ? $editedUser->userRoles->pluck('id')->toArray() : []"
-                                  :valuesToInt="true">{{ __('User role') }}</x-bs::form.field>
+                                  :valuesToInt="true"><i class="fa fa-fw fa-user-group"></i> {{ __('User role') }}</x-bs::form.field>
                 <x-bs::form.field name="status" type="select"
                                   :options="\App\Options\ActiveStatus::toOptions()"
-                                  :value="$editedUser->status->value ?? null">{{ __('Status') }}</x-bs::form.field>
+                                  :value="$editedUser->status->value ?? null"><i class="fa fa-fw fa-circle-question"></i> {{ __('Status') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-lg-6">
                 @include('_shared.address_fields_form', [

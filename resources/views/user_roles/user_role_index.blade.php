@@ -30,7 +30,7 @@
             <div class="col-12 col-sm-6 col-lg-3">
                 <x-bs::form.field name="sort" type="select"
                                   :options="\App\Models\UserRole::sortOptions()->getNamesWithLabels()"
-                                  :from-query="true">{{ __('Sorting') }}</x-bs::form.field>
+                                  :from-query="true"><i class="fa fa-fw fa-sort"></i> {{ __('Sorting') }}</x-bs::form.field>
             </div>
         </div>
     </x-form.filter>
@@ -48,22 +48,20 @@
                         <x-bs::list.item>
                             <span>
                                 <i class="fa fa-fw fa-users"></i>
-                                <a href="{{ route('users.index', ['filter[user_role_id]' => $userRole->id]) }}" target="_blank">
-                                    {{ __('Users') }}
-                                </a>
+                                <a href="{{ route('users.index', ['filter[user_role_id]' => $userRole->id]) }}" target="_blank">{{ __('Users') }}</a>
                             </span>
                             <x-slot:end>
-                                <x-badge.counter>{{ formatInt($userRole->users_count) }}</x-badge.counter>
+                                <x-bs::badge>{{ formatInt($userRole->users_count) }}</x-bs::badge>
                             </x-slot:end>
                         </x-bs::list.item>
                     </x-bs::list>
-                    <div class="card-body">
-                        @can('update', $userRole)
+                    @can('update', $userRole)
+                        <div class="card-body">
                             <x-button.edit href="{{ route('user-roles.edit', $userRole) }}"/>
-                        @endcan
-                    </div>
+                        </div>
+                    @endcan
                     <div class="card-footer">
-                        <x-text.updated-human-diff :model="$userRole" />
+                        <x-text.updated-human-diff :model="$userRole"/>
                     </div>
                 </div>
             </div>

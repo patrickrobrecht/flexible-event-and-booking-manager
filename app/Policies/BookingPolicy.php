@@ -63,7 +63,8 @@ class BookingPolicy
      */
     public function create(User $user): Response
     {
-        return $this->allow();
+        /** @see BookingOptionPolicy::book() */
+        return $this->deny();
     }
 
     /**

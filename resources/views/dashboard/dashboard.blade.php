@@ -29,6 +29,9 @@
                         @endphp
                         <a href="{{ route('bookings.show', $booking) }}" class="list-group-item list-group-item-action">
                             <strong>{{ $event->name }}</strong>
+                            @isset($event->description)
+                                <div class="text-muted">{{ $event->description }}</div>
+                            @endisset
                             <div>
                                 <i class="fa fa-fw fa-clock"></i>
                                 @include('events.shared.event_dates')

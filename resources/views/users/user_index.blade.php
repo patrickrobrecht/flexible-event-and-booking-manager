@@ -32,22 +32,22 @@
             </div>
             <div class="col-12 col-sm-6 col-lg-3">
                 <x-bs::form.field id="email" name="filter[email]" type="text"
-                                  :from-query="true">{{ __('E-mail') }}</x-bs::form.field>
+                                  :from-query="true"><i class="fa fa-fw fa-at"></i> {{ __('E-mail') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-sm-6 col-lg-3">
                 <x-bs::form.field id="user_role_id" name="filter[user_role_id]" type="select"
                                   :options="Options::fromModels($userRoles, 'name')->prepend(__('all'), '')"
-                                  :from-query="true">{{ __('User role') }}</x-bs::form.field>
+                                  :from-query="true"><i class="fa fa-fw fa-user-group"></i> {{ __('User role') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-sm-6 col-lg-3">
                 <x-bs::form.field id="status" name="filter[status]" type="select"
                                   :options="\App\Options\ActiveStatus::toOptionsWithAll()"
-                                  :from-query="true">{{ __('Status') }}</x-bs::form.field>
+                                  :from-query="true"><i class="fa fa-fw fa-circle-question"></i> {{ __('Status') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-sm-6 col-lg-3">
                 <x-bs::form.field name="sort" type="select"
                                   :options="\App\Models\User::sortOptions()->getNamesWithLabels()"
-                                  :from-query="true">{{ __('Sorting') }}</x-bs::form.field>
+                                  :from-query="true"><i class="fa fa-fw fa-sort"></i> {{ __('Sorting') }}</x-bs::form.field>
             </div>
         </div>
     </x-form.filter>
@@ -62,11 +62,22 @@
                         <h2 class="card-title">{{ $user->name }}</h2>
                     </div>
                     <x-bs::list :flush="true">
+                        @isset($user->date_of_birth)
+                            <x-bs::list.item>
+                                <span class="text-nowrap"><i class="fa fa-fw fa-cake-candles"></i> {{ __('Date of birth') }}</span>
+                                <x-slot:end>{{ formatDate($user->date_of_birth) }}</x-slot:end>
+                            </x-bs::list.item>
+                        @endisset
+                        @isset($user->phone)
+                            <x-bs::list.item>
+                                <span class="text-nowrap"><i class="fa fa-fw fa-phone"></i> {{ __('Phone number') }}</span>
+                                <x-slot:end>
+                                    <span class="text-end">{{ $user->phone }}</span>
+                                </x-slot:end>
+                            </x-bs::list.item>
+                        @endisset
                         <x-bs::list.item>
-                            <span class="text-nowrap">
-                                <i class="fa fa-fw fa-at"></i>
-                                {{ __('E-mail') }}
-                            </span>
+                            <span class="text-nowrap"><i class="fa fa-fw fa-at"></i> {{ __('E-mail') }}</span>
                             <x-slot:end>
                                 <span class="text-end">
                                     {{ $user->email }}
@@ -78,33 +89,16 @@
                                 </span>
                             </x-slot:end>
                         </x-bs::list.item>
-                        @isset($user->phone)
-                            <x-bs::list.item>
-                                <span class="text-nowrap">
-                                    <i class="fa fa-fw fa-phone"></i>
-                                    {{ __('Phone number') }}
-                                </span>
-                                <x-slot:end>
-                                    <span class="text-end">{{ $user->phone }}</span>
-                                </x-slot:end>
-                            </x-bs::list.item>
-                        @endisset
                         <x-bs::list.item>
-                            <span class="text-nowrap">
-                                <i class="fa fa-fw fa-circle-question"></i>
-                                {{ __('Status') }}
-                            </span>
+                            <span class="text-nowrap"><i class="fa fa-fw fa-circle-question"></i> {{ __('Status') }}</span>
                             <x-slot:end>
                                 <span class="text-end">
-                                    <x-badge.active-status :active="$user->status" />
+                                    <x-badge.active-status :active="$user->status"/>
                                 </span>
                             </x-slot:end>
                         </x-bs::list.item>
                         <x-bs::list.item>
-                            <span class="text-nowrap">
-                                <i class="fa fa-fw fa-user-group"></i>
-                                {{ __('User roles') }}
-                            </span>
+                            <span class="text-nowrap"><i class="fa fa-fw fa-user-group"></i> {{ __('User roles') }}</span>
                             <x-slot:end>
                                 <span class="text-end">
                                     @if($user->userRoles->count() === 0)
@@ -118,10 +112,7 @@
                             </x-slot:end>
                         </x-bs::list.item>
                         <x-bs::list.item>
-                            <span class="text-nowrap">
-                                <i class="fa fa-fw fa-sign-in-alt"></i>
-                                {{ __('Last login') }}
-                            </span>
+                            <span class="text-nowrap"><i class="fa fa-fw fa-sign-in-alt"></i> {{ __('Last login') }}</span>
                             <x-slot:end>
                                 <span class="text-end">
                                     {{ $user->last_login_at ? formatDateTime($user->last_login_at) : __('never') }}
@@ -129,27 +120,23 @@
                             </x-slot:end>
                         </x-bs::list.item>
                         <x-bs::list.item>
-                            <span class="text-nowrap">
-                                <i class="fa fa-fw fa-file-contract"></i> {{ __('Bookings') }}
-                            </span>
+                            <span class="text-nowrap"><i class="fa fa-fw fa-file-contract"></i> {{ __('Bookings') }}</span>
                             <x-slot:end>
-                                <x-badge.counter>{{ formatInt($user->bookings_count) }}</x-badge.counter>
+                                <x-bs::badge>{{ formatInt($user->bookings_count) }}</x-bs::badge>
                             </x-slot:end>
                         </x-bs::list.item>
                         <x-bs::list.item>
-                            <span class="text-nowrap">
-                                <i class="fa fa-fw fa-file-contract"></i> {{ __('Documents') }}
-                            </span>
+                            <span class="text-nowrap"><i class="fa fa-fw fa-file"></i> {{ __('Documents') }}</span>
                             <x-slot:end>
-                                <x-badge.counter>{{ formatInt($user->documents_count) }}</x-badge.counter>
+                                <x-bs::badge>{{ formatInt($user->documents_count) }}</x-bs::badge>
                             </x-slot:end>
                         </x-bs::list.item>
                     </x-bs::list>
-                    <div class="card-body">
-                        @can('update', $user)
+                    @can('update', $user)
+                        <div class="card-body">
                             <x-button.edit href="{{ route('users.edit', $user) }}"/>
-                        @endcan
-                    </div>
+                        </div>
+                    @endcan
                     <div class="card-footer">
                         <x-text.updated-human-diff :model="$user" />
                     </div>

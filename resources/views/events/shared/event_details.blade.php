@@ -6,16 +6,6 @@
     @isset($event->description)
         <x-bs::list.item>{{ $event->description }}</x-bs::list.item>
     @endisset
-    @isset($event->website_url)
-        <x-bs::list.item class="d-flex">
-            <span class="me-3"><i class="fa fa-fw fa-display"></i></span>
-            <a href="{{ $event->website_url }}" target="_blank">{{ __('Website') }}</a>
-        </x-bs::list.item>
-    @endisset
-    <x-bs::list.item>
-        <span class="me-3"><i class="fa fa-fw fa-eye" title="{{ __('Visibility') }}"></i></span>
-        <x-badge.visibility :visibility="$event->visibility"/>
-    </x-bs::list.item>
     <x-bs::list.item>
         <span class="me-3"><i class="fa fa-fw fa-clock" title="{{ __('Date') }}"></i></span>
         @include('events.shared.event_dates')
@@ -32,6 +22,12 @@
             @endforeach
         </div>
     </x-bs::list.item>
+    @isset($event->website_url)
+        <x-bs::list.item class="d-flex">
+            <span class="me-3"><i class="fa fa-fw fa-display"></i></span>
+            <a href="{{ $event->website_url }}" target="_blank">{{ __('Website') }}</a>
+        </x-bs::list.item>
+    @endisset
     <x-bs::list.item class="d-flex">
         <span class="me-3"><i class="fa fa-fw fa-sitemap" title="{{ __('Organizations') }}"></i></span>
         <div>

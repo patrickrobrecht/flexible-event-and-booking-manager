@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasNameAndDescription;
 use App\Models\Traits\HasSlugForRouting;
 use App\Options\BookingRestriction;
 use Carbon\Carbon;
@@ -28,6 +29,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class BookingOption extends Model
 {
+    use HasNameAndDescription;
     use HasSlugForRouting;
 
     /**

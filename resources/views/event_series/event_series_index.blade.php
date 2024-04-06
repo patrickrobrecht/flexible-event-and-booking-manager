@@ -28,9 +28,14 @@
                                   :from-query="true">{{ __('Name') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6 col-xl-3">
+                <x-bs::form.field id="event_series_type" name="filter[event_series_type]" type="select"
+                                  :options="\App\Options\EventSeriesType::toOptionsWithAll()"
+                                  :from-query="true">{{ __('Event series type') }}</x-bs::form.field>
+            </div>
+            <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field name="sort" type="select"
                                   :options="\App\Models\EventSeries::sortOptions()->getNamesWithLabels()"
-                                  :from-query="true">{{ __('Sorting') }}</x-bs::form.field>
+                                  :from-query="true"><i class="fa fa-fw fa-sort"></i> {{ __('Sorting') }}</x-bs::form.field>
             </div>
         </div>
     </x-form.filter>
@@ -39,7 +44,7 @@
 
     <div class="row my-3">
         @foreach($eventSeries as $eventSeriesItem)
-            <div class="col-12 col-md-6 mb-3">
+            <div class="col-12 col-lg-6 col-xxl-4 mb-3">
                 <div class="card">
                     <div class="card-header">
                         <h2 class="card-title">
@@ -60,7 +65,7 @@
                             @else
                                 <span class="text-nowrap">
                                     <i class="fa fa-fw fa-calendar-week"></i>
-                                    @can('viewAny', [\App\Models\Document::class, $eventSeriesItem])
+                                    @can('view', $eventSeriesItem)
                                         <a href="{{ route('event-series.show', $eventSeriesItem->slug) }}#series">{{ __('Event series') }}</a>
                                     @else
                                         {{ __('Event series') }}
@@ -98,16 +103,18 @@
                             </x-slot:end>
                         </x-bs::list.item>
                     </x-bs::list>
-                    <div class="card-body">
-                        @can('update', $eventSeriesItem)
-                            <x-button.edit href="{{ route('event-series.edit', $eventSeriesItem) }}"/>
-                        @endcan
-                        @can('createChild', $eventSeriesItem)
-                            <x-button.create href="{{ route('event-series.create', ['parent_event_series_id' => $eventSeriesItem->id]) }}">
-                                {{ __('Create event series') }}
-                            </x-button.create>
-                        @endcan
-                    </div>
+                    @canany(['update', 'createChild'], $eventSeriesItem)
+                        <div class="card-body">
+                            @can('update', $eventSeriesItem)
+                                <x-button.edit href="{{ route('event-series.edit', $eventSeriesItem) }}"/>
+                            @endcan
+                            @can('createChild', $eventSeriesItem)
+                                <x-button.create href="{{ route('event-series.create', ['parent_event_series_id' => $eventSeriesItem->id]) }}">
+                                    {{ __('Create event series') }}
+                                </x-button.create>
+                            @endcan
+                        </div>
+                    @endcanany
                     <div class="card-footer">
                         <x-text.updated-human-diff :model="$eventSeriesItem"/>
                     </div>

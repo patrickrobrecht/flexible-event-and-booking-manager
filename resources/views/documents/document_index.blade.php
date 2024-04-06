@@ -16,23 +16,23 @@
     <x-form.filter>
         <div class="row">
             <div class="col-12 col-sm-6 col-lg-3">
-                <x-bs::form.field id="name" name="filter[title]" type="text"
-                                  :from-query="true">{{ __('Title') }}</x-bs::form.field>
+                <x-bs::form.field id="search" name="filter[search]" type="text"
+                                  :from-query="true">{{ __('Search term') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-sm-6 col-lg-3">
                 <x-bs::form.field id="file_type" name="filter[file_type]" type="select"
                                   :options="\App\Options\FileType::toOptionsWithAll()"
-                                  :from-query="true">{{ __('File type') }}</x-bs::form.field>
+                                  :from-query="true"><i class="fa fa-fw fa-file-circle-question"></i> {{ __('File type') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-sm-6 col-lg-3">
                 <x-bs::form.field id="approval_status" name="filter[approval_status]" type="select"
                                   :options="\App\Options\ApprovalStatus::toOptionsWithAll()"
-                                  :from-query="true">{{ __('Approval status') }}</x-bs::form.field>
+                                  :from-query="true"><i class="fa fa-fw fa-circle-question"></i> {{ __('Approval status') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-sm-6 col-lg-3">
                 <x-bs::form.field name="sort" type="select"
                                   :options="\App\Models\Document::sortOptions()->getNamesWithLabels()"
-                                  :from-query="true">{{ __('Sorting') }}</x-bs::form.field>
+                                  :from-query="true"><i class="fa fa-fw fa-sort"></i> {{ __('Sorting') }}</x-bs::form.field>
             </div>
         </div>
     </x-form.filter>
@@ -55,7 +55,7 @@
                     </div>
                     <x-bs::list :flush="true">
                         @isset($document->description)
-                            <x-bs::list.item>{{ $document->description }}</x-bs::list.item>
+                            <x-bs::list.item class="text-muted">{{ $document->description }}</x-bs::list.item>
                         @endisset
                         <x-bs::list.item>
                             @switch($document->reference::class)

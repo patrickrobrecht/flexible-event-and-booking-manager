@@ -55,7 +55,7 @@
         <x-bs::form.field name="description" type="textarea"
                           :value="$document->description ?? null">{{ __('Description') }}</x-bs::form.field>
         <x-bs::form.field name="approval_status" type="radio" :options="\App\Options\ApprovalStatus::toOptions()"
-                          :value="$document->approval_status->value ?? null">{{ __('Approval status') }}</x-bs::form.field>
+                          :value="$document->approval_status->value ?? null"><i class="fa fa-fw fa-circle-question"></i> {{ __('Approval status') }}</x-bs::form.field>
     </div>
 </div>
 

@@ -38,15 +38,27 @@ class EventSeriesController extends Controller
 
         return view('event_series.event_series_show', [
             'eventSeries' => $eventSeries->loadMissing([
-                'events' => fn (HasMany $events) => $events->withCount([
-                    'documents',
-                    'groups',
-                ]),
+                'documents.reference',
+                'documents.uploadedByUser',
+                'events' => fn (HasMany $events) => $events
+                    ->withCount([
+                        'documents',
+                        'groups',
+                    ]),
                 'events.location',
-                'subEventSeries' => fn (HasMany $subEventSeries) => $subEventSeries->withCount([
-                    'documents',
-                    'events',
-                ]),
+                'events.parentEvent',
+                'parentEventSeries',
+                'subEventSeries' => fn (HasMany $subEventSeries) => $subEventSeries
+                    ->withCount([
+                        'documents',
+                        'events',
+                    ])
+                    ->withMin('events', 'started_at')
+                    ->withMax('events', 'started_at')
+                    ->withCasts([
+                        'events_min_started_at' => 'datetime',
+                        'events_max_started_at' => 'datetime',
+                    ]),
             ]),
         ]);
     }

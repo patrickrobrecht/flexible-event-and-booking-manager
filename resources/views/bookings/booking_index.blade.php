@@ -45,25 +45,25 @@
                 <div class="col-12 col-lg-3">
                     <x-bs::form.field id="payment_status" name="filter[payment_status]" type="select"
                                       :options="\App\Options\PaymentStatus::toOptionsWithAll()"
-                                      :from-query="true">{{ __('Payment status') }}</x-bs::form.field>
+                                      :from-query="true"><i class="fa fa-fw fa-euro"></i> {{ __('Payment status') }}</x-bs::form.field>
                 </div>
             @endcan
             @if($hasGroups)
                 <div class="col-12 col-lg-3">
                     <x-bs::form.field id="group_id" name="filter[group_id]" type="select"
                                       :options="\Portavice\Bladestrap\Support\Options::fromModels($event->groups, 'name')->prepend(__('all'), '')"
-                                      :from-query="true">{{ __('Group') }}</x-bs::form.field>
+                                      :from-query="true"><i class="fa fa-fw fa-user-group"></i> {{ __('Group') }}</x-bs::form.field>
                 </div>
             @endif
             <div class="col-12 col-lg-3">
                 <x-bs::form.field id="trashed" name="filter[trashed]" type="select"
                                   :options="\App\Options\DeletedFilter::toOptions()"
-                                  :from-query="true">{{ __('Show trashed?') }}</x-bs::form.field>
+                                  :from-query="true"><i class="fa fa-fw fa-trash"></i> {{ __('Show trashed?') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-lg-3">
                 <x-bs::form.field name="sort" type="select"
                                   :options="\App\Models\Booking::sortOptions()->getNamesWithLabels()"
-                                  :from-query="true">{{ __('Sorting') }}</x-bs::form.field>
+                                  :from-query="true"><i class="fa fa-fw fa-sort"></i> {{ __('Sorting') }}</x-bs::form.field>
             </div>
         </div>
 
@@ -87,14 +87,27 @@
                         'card-header',
                         'text-bg-danger' => $booking->trashed(),
                     ])>
-                        <h2 class="card-title">{{ $booking->first_name }} {{ $booking->last_name }}</h2>
+                        <h2 class="card-title">
+                            @can('view', $booking)
+                                <a href="{{ route('bookings.show', $booking) }}">{{ $booking->first_name }} {{ $booking->last_name }}</a>
+                            @else
+                                {{ $booking->first_name }} {{ $booking->last_name }}
+                            @endcan
+                        </h2>
                         <div class="card-subtitle">{{ $bookingOption->name }}</div>
                     </div>
                     <x-bs::list :flush="true">
                         @if($hasGroups)
+                            @php
+                                $group = $booking->getGroup($event);
+                            @endphp
                             <x-bs::list.item>
                                 <i class="fa fa-fw fa-user-group" title="{{ __('Group') }}"></i>
-                                {{ $booking->getGroup($event)?->name ?? __('none') }}
+                                @isset($group)
+                                    <strong>{{ $group->name }}</strong>
+                                @else
+                                    <strong class="text-danger">{{ __('none') }}</strong>
+                                @endisset
                             </x-bs::list.item>
                         @endif
                         <x-bs::list.item>
@@ -124,6 +137,12 @@
                             <i class="fa fa-fw fa-euro" title="{{ __('Price') }}"></i>
                             @include('bookings.shared.payment-status')
                         </x-bs::list.item>
+                        @isset($booking->date_of_birth)
+                            <x-bs::list.item>
+                                <span class="text-nowrap"><i class="fa fa-fw fa-cake-candles" title="{{ __('Date of birth') }}"></i></span>
+                                <span>{{ formatDate($booking->date_of_birth) }}</span>
+                            </x-bs::list.item>
+                        @endisset
                         <x-bs::list.item>
                             <i class="fa fa-fw fa-at"></i>
                             {{ $booking->email }}
@@ -147,30 +166,36 @@
                             </span>
                         </x-bs::list.item>
                     </x-bs::list>
-                    <div class="card-body">
-                        @can('view', $booking)
-                            <x-bs::button.link variant="secondary" href="{{ route('bookings.show', $booking) }}">
-                                <i class="fa fa-eye"></i> {{ __('View') }}
-                            </x-bs::button.link>
-                        @endcan
-                        @can('viewPDF', $booking)
-                            <x-bs::button.link variant="secondary" href="{{ route('bookings.show-pdf', $booking) }}">
-                                <i class="fa fa-file-pdf"></i> {{ __('PDF') }}
-                            </x-bs::button.link>
-                        @endcan
-                        @can('update', $booking)
-                            <x-button.edit href="{{ route('bookings.edit', $booking) }}"/>
-                        @endcan
-                        @can('delete', $booking)
-                            <x-button.delete form="delete-{{ $booking->id }}"/>
-                            <x-bs::form id="delete-{{ $booking->id }}" method="DELETE"
-                                        action="{{ route('bookings.delete', $booking) }}"/>
-                        @elsecan('restore', $booking)
-                            <x-button.restore form="restore-{{ $booking->id }}"/>
-                            <x-bs::form id="restore-{{ $booking->id }}" method="PATCH"
-                                        action="{{ route('bookings.restore', $booking) }}"/>
-                        @endcan
-                    </div>
+                    @canany(['viewPDF', 'update', 'delete', 'restore'], $booking)
+                        <div class="card-body">
+                            <x-bs::button.group>
+                                @can('viewPDF', $booking)
+                                    <x-bs::button.link variant="secondary" href="{{ route('bookings.show-pdf', $booking) }}" class="text-nowrap">
+                                        <i class="fa fa-file-pdf"></i> {{ __('PDF') }}
+                                    </x-bs::button.link>
+                                @endcan
+                                @can('update', $booking)
+                                    <x-button.edit href="{{ route('bookings.edit', $booking) }}" class="text-nowrap"/>
+                                @endcan
+                                @can('delete', $booking)
+                                    <x-bs::button variant="danger" form="delete-{{ $booking->id }}">
+                                        <i class="fa fa-fw fa-trash"></i> {{ __('Delete') }}
+                                    </x-bs::button>
+                                @elsecan('restore', $booking)
+                                    <x-bs::button variant="success" form="restore-{{ $booking->id }}">
+                                        <i class="fa fa-fw fa-trash-can-arrow-up"></i> {{ __('Restore') }}
+                                    </x-bs::button>
+                                @endcan
+                            </x-bs::button.group>
+                            @can('delete', $booking)
+                                <x-bs::form id="delete-{{ $booking->id }}" method="DELETE"
+                                            action="{{ route('bookings.delete', $booking) }}"/>
+                            @elsecan('restore', $booking)
+                                <x-bs::form id="restore-{{ $booking->id }}" method="PATCH"
+                                            action="{{ route('bookings.restore', $booking) }}"/>
+                            @endcan
+                        </div>
+                    @endcan
                     <div class="card-footer">
                         <x-text.updated-human-diff :model="$booking"/>
                     </div>

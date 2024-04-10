@@ -26,17 +26,17 @@
                 <x-bs::form.field name="status" type="select"
                                   :options="\App\Options\ActiveStatus::toOptions()"
                                   :value="$organization->status->value ?? null">{{ __('Status') }}</x-bs::form.field>
-                <x-bs::form.field name="register_entry" type="text"
-                                  :value="$organization->register_entry ?? null">{{ __('Register entry') }}</x-bs::form.field>
                 <x-bs::form.field name="representatives" type="text"
-                                  :value="$organization->representatives ?? null">{{ __('Representatives') }}</x-bs::form.field>
+                                  :value="$organization->representatives ?? null"><i class="fa fa-fw fa-user-friends"></i> {{ __('Representatives') }}</x-bs::form.field>
+                <x-bs::form.field name="register_entry" type="text"
+                                  :value="$organization->register_entry ?? null"><i class="fa fa-fw fa-scale-balanced"></i> {{ __('Register entry') }}</x-bs::form.field>
                 <x-bs::form.field name="website_url" type="url"
-                                  :value="$organization->website_url ?? null">{{ __('Website') }}</x-bs::form.field>
+                                  :value="$organization->website_url ?? null"><i class="fa fa-fw fa-display"></i> {{ __('Website') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6">
                 <x-bs::form.field name="location_id" type="select"
                                   :options="$locations->pluck('nameOrAddress', 'id')"
-                                  :value="$organization->location->id ?? null">{{ __('Location') }}</x-bs::form.field>
+                                  :value="$organization->location->id ?? null"><i class="fa fa-fw fa-location-pin"></i> {{ __('Location') }}</x-bs::form.field>
             </div>
         </div>
 

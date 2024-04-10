@@ -35,6 +35,7 @@ class EventController extends Controller
                 ->withCount([
                     'documents',
                     'groups',
+                    'subEvents',
                 ])
                 ->paginate(),
         ]));
@@ -52,15 +53,20 @@ class EventController extends Controller
                     ]),
                     'documents.reference',
                     'documents.uploadedByUser',
+                    'eventSeries',
+                    'location',
+                    'organizations',
                     'parentEvent.subEvents' => static fn (HasMany $query) => $query->withCount([
                         'documents',
                         'groups',
                     ]),
+                    'parentEvent.subEvents.eventSeries',
                     'parentEvent.subEvents.location',
                     'subEvents' => static fn (HasMany $query) => $query->withCount([
                         'documents',
                         'groups',
                     ]),
+                    'subEvents.eventSeries',
                     'subEvents.location',
                 ])
                 ->loadCount([
@@ -116,6 +122,8 @@ class EventController extends Controller
         return array_replace([
             'events' => Event::query()
                 ->whereNull('parent_event_id')
+                ->orderBy('started_at')
+                ->orderBy('finished_at')
                 ->orderBy('name')
                 ->get(),
         ], $this->formValuesForFilter($values));

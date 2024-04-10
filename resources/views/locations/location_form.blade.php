@@ -27,7 +27,7 @@
                 <x-bs::form.field name="name" type="text"
                                   :value="$location->name ?? null">{{ __('Name') }}</x-bs::form.field>
                 <x-bs::form.field name="website_url" type="text"
-                                  :value="$location->website_url ?? null">{{ __('Website') }}</x-bs::form.field>
+                                  :value="$location->website_url ?? null"><i class="fa fa-fw fa-display"></i> {{ __('Website') }}</x-bs::form.field>
                 @include('_shared.address_fields_form')
             </div>
         </div>

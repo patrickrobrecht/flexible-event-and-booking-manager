@@ -171,6 +171,7 @@ return [
         'day' => 'Tag',
         'description' => 'Beschreibung',
         'email' => 'E-Mail-Adresse',
+        'event_series_type' => 'Art der Veranstaltungsreihe',
         'event_type' => 'Art der Veranstaltung',
         'expires_at' => 'Ablaufdatum',
         'file' => 'Datei',

@@ -26,7 +26,7 @@ class EventFilterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'filter.name' => $this->ruleForText(),
+            'filter.search' => $this->ruleForText(),
             'filter.visibility' => [
                 'nullable',
                 Visibility::rule(),

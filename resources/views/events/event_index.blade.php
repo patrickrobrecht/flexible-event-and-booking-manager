@@ -27,31 +27,31 @@
     <x-form.filter>
         <div class="row">
             <div class="col-12 col-md-6 col-xl-3">
-                <x-bs::form.field id="name" name="filter[name]" type="text"
-                                  :from-query="true">{{ __('Name') }}</x-bs::form.field>
+                <x-bs::form.field id="search" name="filter[search]" type="text"
+                                  :from-query="true">{{ __('Search term') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="visibility" name="filter[visibility]" type="select"
                                   :options="\App\Options\Visibility::toOptionsWithAll()"
-                                  :from-query="true">{{ __('Visibility') }}</x-bs::form.field>
+                                  :from-query="true"><i class="fa fa-fw fa-eye"></i> {{ __('Visibility') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="date_from" name="filter[date_from]" type="date"
-                                  :from-query="true">{{ __('Start of the period') }}</x-bs::form.field>
+                                  :from-query="true"><i class="fa fa-fw fa-clock"></i> {{ __('Start of the period') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="date_until" name="filter[date_until]" type="date"
-                                  :from-query="true">{{ __('End of the period') }}</x-bs::form.field>
+                                  :from-query="true"><i class="fa fa-fw fa-clock"></i> {{ __('End of the period') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="location_id" name="filter[location_id]" type="select"
                                   :options="Options::fromModels($locations, 'nameOrAddress')->prepend(__('all'), '')"
-                                  :from-query="true">{{ __('Location') }}</x-bs::form.field>
+                                  :from-query="true"><i class="fa fa-fw fa-location-pin"></i> {{ __('Location') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="organization_id" name="filter[organization_id]" type="select"
                                   :options="Options::fromModels($organizations, 'name')->prepend(__('all'), '')"
-                                  :from-query="true">{{ __('Organization') }}</x-bs::form.field>
+                                  :from-query="true"><i class="fa fa-fw fa-sitemap"></i> {{ __('Organization') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="event_type" name="filter[event_type]" type="select"
@@ -61,7 +61,7 @@
             <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field name="sort" type="select"
                                   :options="\App\Models\Event::sortOptions()->getNamesWithLabels()"
-                                  :from-query="true">{{ __('Sorting') }}</x-bs::form.field>
+                                  :from-query="true"><i class="fa fa-fw fa-sort"></i> {{ __('Sorting') }}</x-bs::form.field>
             </div>
         </div>
     </x-form.filter>
@@ -78,6 +78,9 @@
                         </h2>
                     </div>
                     <x-bs::list :flush="true">
+                        @isset($event->description)
+                            <x-bs::list.item class="text-muted">{{ $event->description }}</x-bs::list.item>
+                        @endisset
                         <x-bs::list.item>
                             <i class="fa fa-fw fa-eye" title="{{ __('Visibility') }}"></i>
                             <x-badge.visibility :visibility="$event->visibility"/>
@@ -96,6 +99,12 @@
                                 </div>
                             </span>
                         </x-bs::list.item>
+                        @isset($event->website_url)
+                            <x-bs::list.item>
+                                <i class="fa fa-fw fa-display"></i>
+                                <a href="{{ $event->website_url }}" target="_blank">{{ __('Website') }}</a>
+                            </x-bs::list.item>
+                        @endisset
                         <x-bs::list.item>
                             <span class="text-nowrap"><i class="fa fa-fw fa-sitemap"></i> {{ __('Organizations') }}</span>
                             <x-slot:end>
@@ -111,6 +120,26 @@
                                     </ul>
                                 </div>
                             </x-slot:end>
+                        </x-bs::list.item>
+                        <x-bs::list.item>
+                            @isset($event->parentEvent)
+                                <span class="text-nowrap"><i class="fa fa-fw fa-calendar-days"></i> {{ __('Part of the event') }}</span>
+                                <x-slot:end>
+                                    <a href="{{ route('events.show', $event->parentEvent->slug) }}">{{ $event->parentEvent->name }}</a>
+                                </x-slot:end>
+                            @else
+                                <span class="text-nowrap">
+                                    <i class="fa fa-fw fa-calendar-days"></i>
+                                    @can('view', $event)
+                                        <a href="{{ route('events.show', $event->slug) }}#events">{{ __('Events') }}</a>
+                                    @else
+                                        {{ __('Events') }}
+                                    @endcan
+                                </span>
+                                <x-slot:end>
+                                    <x-bs::badge>{{ formatInt($event->sub_events_count) }}</x-bs::badge>
+                                </x-slot:end>
+                            @endisset
                         </x-bs::list.item>
                         @isset($event->eventSeries)
                             <x-bs::list.item>

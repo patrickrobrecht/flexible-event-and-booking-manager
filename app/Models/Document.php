@@ -5,9 +5,11 @@ namespace App\Models;
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\HasDocuments;
+use App\Models\Traits\Searchable;
 use App\Options\ApprovalStatus;
 use App\Options\FileType;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -31,6 +33,7 @@ use Spatie\QueryBuilder\AllowedSort;
 class Document extends Model
 {
     use BuildsQueryFromRequest;
+    use Searchable;
 
     protected $casts = [
         'file_type' => FileType::class,
@@ -81,10 +84,16 @@ class Document extends Model
         return $this->save();
     }
 
+    public function scopeSearchTitleAndDescription(Builder $query, string ...$searchTerms): Builder
+    {
+        return $this->scopeIncludeColumns($query, ['title', 'description'], true, ...$searchTerms);
+    }
+
     public static function allowedFilters(): array
     {
         return [
-            AllowedFilter::partial('title'),
+            /** @see self::scopeSearchTitleAndDescription() */
+            AllowedFilter::scope('search', 'searchTitleAndDescription'),
             AllowedFilter::exact('file_type'),
             AllowedFilter::exact('approval_status'),
         ];

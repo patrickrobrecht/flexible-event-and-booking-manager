@@ -23,7 +23,7 @@ class DocumentFilterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'filter.title' => $this->ruleForText(),
+            'filter.search' => $this->ruleForText(),
             'filter.file_type' => [
                 'nullable',
                 FileType::rule(),

@@ -33,24 +33,7 @@
 @endsection
 
 @section('content')
-    @isset($event->eventSeries)
-        <x-bs::badge variant="primary">
-            <span>
-                <i class="fa fa-fw fa-calendar-week"></i>
-                {{ __('Part of the event series') }}
-            </span>
-            <a class="link-light" href="{{ route('event-series.show', $event->eventSeries->slug) }}">{{ $event->eventSeries->name }}</a>
-        </x-bs::badge>
-    @endisset
-    @isset($event->parentEvent)
-        <x-bs::badge variant="primary">
-            <span>
-                <i class="fa fa-fw fa-calendar-days"></i>
-                {{ __('Part of the event') }}
-            </span>
-            <a class="link-light" href="{{ route('events.show', $event->parentEvent) }}">{{ $event->parentEvent->name }}</a>
-        </x-bs::badge>
-    @endisset
+    @include('events.shared.event_badges')
 
     <div class="row my-3">
         <div class="col-12 col-lg-4">
@@ -105,7 +88,7 @@
                     $siblingEvents = $event->parentEvent->subEvents->keyBy('id')->except($event->id);
                 @endphp
                 @if($siblingEvents->isNotEmpty())
-                    <section @class([
+                    <section id="events" @class([
                         'mt-4' => $bookingOptionsToShow || !$documentSectionEmpty,
                     ])>
                         <h2>{{ __('Other sub events of :name', [
@@ -113,6 +96,7 @@
                         ]) }}</h2>
                         @include('events.shared.event_list', [
                             'events' => $siblingEvents,
+                            'showParentEvent' => false,
                         ])
                     </section>
                 @endif
@@ -122,13 +106,14 @@
                         ->filter(fn (\App\Models\Event $subEvent) => \Illuminate\Support\Facades\Gate::check('view', $subEvent));
                 @endphp
                 @if($subEvents->isNotEmpty() || Auth::user()?->can('createChild', $event))
-                    <section @class([
+                    <section id="events" @class([
                         'mt-4' => $bookingOptionsToShow || !$documentSectionEmpty,
                     ])>
                         <h2>{{ __('Sub events') }}</h2>
                         @if($subEvents->isNotEmpty())
                             @include('events.shared.event_list', [
                                 'events' => $event->subEvents,
+                                'showParentEvent' => false,
                             ])
                         @endif
                         @can('createChild', $event)

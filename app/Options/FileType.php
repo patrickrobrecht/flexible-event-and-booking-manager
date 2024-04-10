@@ -50,6 +50,7 @@ enum FileType: string
                 'wav',
             ],
             self::Image => [
+                'bmp',
                 'jpeg',
                 'jpg',
                 'png',

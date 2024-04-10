@@ -25,10 +25,10 @@
 @endsection
 
 @section('content')
-    <x-bs::form method="{{ isset($eventSeries) ? 'PUT' : 'POST' }}"
-                action="{{ isset($eventSeries) ? route('event-series.update', $eventSeries) : route('event-series.store') }}">
-        <div class="row">
-            <div class="col-12 col-md-6">
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <x-bs::form method="{{ isset($eventSeries) ? 'PUT' : 'POST' }}"
+                        action="{{ isset($eventSeries) ? route('event-series.update', $eventSeries) : route('event-series.store') }}">
                 <x-bs::form.field name="name" type="text"
                                   :value="$eventSeries->name ?? null">{{ __('Name') }}</x-bs::form.field>
                 <x-bs::form.field name="slug" type="text" aria-describedby="slugHint"
@@ -44,32 +44,31 @@
                 </x-bs::form.field>
                 <x-bs::form.field name="visibility" type="select"
                                   :options="\App\Options\Visibility::toOptions()"
-                                  :value="$eventSeries->visibility->value ?? null">{{ __('Visibility') }}</x-bs::form.field>
+                                  :value="$eventSeries->visibility->value ?? null"><i class="fa fa-fw fa-eye"></i> {{ __('Visibility') }}</x-bs::form.field>
                 <x-bs::form.field name="parent_event_series_id" type="select"
                                   :options="\Portavice\Bladestrap\Support\Options::fromModels($allEventSeries->except($eventSeries->id ?? null), 'name')->prepend(__('none'), '')"
                                   :value="$eventSeries->parent_event_series_id ?? null"
-                                  :from-query="\Illuminate\Support\Facades\Request::routeIs('event-series.create')">{{ __('Part of the event series') }}</x-bs::form.field>
-            </div>
-
-            @isset($eventSeries)
-                <div class="col-12 col-md-6">
-                    <h2>{{ __('Events') }}</h2>
-                    @include('event_series.shared.events_in_series')
-                </div>
-            @endisset
+                                  :from-query="\Illuminate\Support\Facades\Request::routeIs('event-series.create')"><i class="fa fa-fw fa-calendar-days"></i> {{ __('Part of the event series') }}</x-bs::form.field>
+                <x-bs::button.group>
+                    <x-button.save>
+                        @isset($eventSeries)
+                            {{ __( 'Save' ) }}
+                        @else
+                            {{ __('Create') }}
+                        @endisset
+                    </x-button.save>
+                    <x-button.cancel href="{{ route('event-series.index') }}"/>
+                </x-bs::button.group>
+            </x-bs::form>
         </div>
 
-        <x-bs::button.group>
-            <x-button.save>
-                @isset($eventSeries)
-                    {{ __( 'Save' ) }}
-                @else
-                    {{ __('Create') }}
-                @endisset
-            </x-button.save>
-            <x-button.cancel href="{{ route('event-series.index') }}"/>
-        </x-bs::button.group>
-    </x-bs::form>
+        @isset($eventSeries)
+            <div class="col-12 col-md-6">
+                <h2>{{ __('Events') }}</h2>
+                @include('event_series.shared.events_in_series')
+            </div>
+        @endisset
+    </div>
 
     <x-text.timestamp :model="$eventSeries ?? null"/>
 @endsection

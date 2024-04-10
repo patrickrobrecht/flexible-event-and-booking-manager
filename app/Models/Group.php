@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasNameAndDescription;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -21,6 +22,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Group extends Model
 {
     use HasFactory;
+    use HasNameAndDescription;
     use HasTimestamps;
 
     protected $casts = [

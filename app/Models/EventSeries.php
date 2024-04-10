@@ -6,7 +6,9 @@ use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\HasDocuments;
 use App\Models\Traits\HasSlugForRouting;
+use App\Options\EventSeriesType;
 use App\Options\Visibility;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -57,8 +59,9 @@ class EventSeries extends Model
     public function events(): HasMany
     {
         return $this->hasMany(Event::class, 'event_series_id')
-            ->orderBy('started_at')
-            ->orderBy('finished_at');
+            ->orderByDesc('started_at')
+            ->orderByDesc('finished_at')
+            ->orderBy('name');
     }
 
     public function parentEventSeries(): BelongsTo
@@ -70,6 +73,21 @@ class EventSeries extends Model
     {
         return $this->hasMany(__CLASS__, 'parent_event_series_id')
             ->orderBy('name');
+    }
+
+    public function scopeEventSeriesType(Builder $query, EventSeriesType|string $eventSeriesType): Builder
+    {
+        if (is_string($eventSeriesType)) {
+            $eventSeriesType = EventSeriesType::tryFrom($eventSeriesType);
+        }
+
+        return match ($eventSeriesType) {
+            EventSeriesType::MainEventSeries => $query->whereNull('parent_event_series_id'),
+            EventSeriesType::PartOfEventSeries => $query->whereNotNull('parent_event_series_id'),
+            EventSeriesType::EventSeriesWithParts => $query->whereHas('subEventSeries'),
+            EventSeriesType::EventSeriesWithoutParts => $query->whereDoesntHave('subEventSeries'),
+            default => $query,
+        };
     }
 
     public function fillAndSave(array $validatedData): bool
@@ -94,6 +112,9 @@ class EventSeries extends Model
     {
         return [
             AllowedFilter::partial('name'),
+            /** @see self::scopeEventSeriesType() */
+            AllowedFilter::scope('event_series_type')
+                ->default(EventSeriesType::MainEventSeries->value),
         ];
     }
 

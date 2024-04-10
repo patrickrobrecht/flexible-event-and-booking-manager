@@ -6,6 +6,7 @@ use App\Http\Controllers\EventSeriesController;
 use App\Http\Requests\Traits\AuthorizationViaController;
 use App\Http\Requests\Traits\FiltersList;
 use App\Models\EventSeries;
+use App\Options\EventSeriesType;
 use App\Policies\EventSeriesPolicy;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -25,6 +26,10 @@ class EventSeriesFilterRequest extends FormRequest
     {
         return [
             'filter.name' => $this->ruleForText(),
+            'filter.event_series_type' => [
+                'nullable',
+                EventSeriesType::rule(),
+            ],
             'sort' => [
                 'nullable',
                 EventSeries::sortOptions()->getRule(),

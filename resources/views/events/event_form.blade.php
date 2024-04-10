@@ -44,32 +44,33 @@
                         ]) !!}
                     </x-slot:hint>
                 </x-bs::form.field>
-                <x-bs::form.field name="description" type="text"
+                <x-bs::form.field name="description" type="textarea"
                                   :value="$event->description ?? null">{{ __('Description') }}</x-bs::form.field>
                 <x-bs::form.field name="website_url" type="text"
-                                  :value="$event->website_url ?? null">{{ __('Website') }}</x-bs::form.field>
+                                  :value="$event->website_url ?? null"><i class="fa fa-fw fa-display"></i> {{ __('Website') }}</x-bs::form.field>
                 <x-bs::form.field name="visibility" type="select"
                                   :options="\App\Options\Visibility::toOptions()"
-                                  :value="$event->visibility->value ?? null">{{ __('Visibility') }}</x-bs::form.field>
+                                  :value="$event->visibility->value ?? null"><i class="fa fa-fw fa-eye"></i> {{ __('Visibility') }}</x-bs::form.field>
                 <x-bs::form.field name="started_at" type="datetime-local"
-                                  :value="isset($event->started_at) ? $event->started_at->format('Y-m-d\TH:i') : null">{{ __('Start date') }}</x-bs::form.field>
+                                  :value="isset($event->started_at) ? $event->started_at->format('Y-m-d\TH:i') : null"><i class="fa fa-fw fa-clock"></i> {{ __('Start date') }}</x-bs::form.field>
                 <x-bs::form.field name="finished_at" type="datetime-local"
-                                  :value="isset($event->finished_at) ? $event->finished_at->format('Y-m-d\TH:i') : null">{{ __('End date') }}</x-bs::form.field>
+                                  :value="isset($event->finished_at) ? $event->finished_at->format('Y-m-d\TH:i') : null"><i class="fa fa-fw fa-clock"></i> {{ __('End date') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6">
                 <x-bs::form.field name="location_id" type="select"
                                   :options="$locations->pluck('nameOrAddress', 'id')"
-                                  :value="$event->location_id ?? null">{{ __('Location') }}</x-bs::form.field>
+                                  :value="$event->location_id ?? null"><i class="fa fa-fw fa-location-pin"></i> {{ __('Location') }}</x-bs::form.field>
                 <x-bs::form.field id="organization_id" name="organization_id[]" type="checkbox"
                                   :options="Options::fromModels($organizations, 'name')"
-                                  :value="isset($event) ? $event->organizations->pluck('id')->toArray() : []">{{ __('Organization') }}</x-bs::form.field>
+                                  :value="isset($event) ? $event->organizations->pluck('id')->toArray() : []"><i class="fa fa-fw fa-sitemap"></i> {{ __('Organization') }}</x-bs::form.field>
                 <x-bs::form.field name="parent_event_id" type="select"
                                   :options="Options::fromModels($events->except($event->id ?? null), 'name')->prepend(__('none'), '')"
                                   :value="$event->parent_event_id ?? null"
-                                  :from-query="\Illuminate\Support\Facades\Request::routeIs('events.create')">{{ __('Part of the event') }}</x-bs::form.field>
+                                  :from-query="\Illuminate\Support\Facades\Request::routeIs('events.create')"><i class="fa fa-fw fa-calendar-days"></i> {{ __('Part of the event') }}</x-bs::form.field>
                 <x-bs::form.field name="event_series_id" type="select"
                                   :options="Options::fromModels($eventSeries, 'name')->prepend(__('none'), '')"
-                                  :value="$event->event_series_id ?? null">{{ __('Part of the event series') }}</x-bs::form.field>
+                                  :value="$event->event_series_id ?? null"
+                                  :from-query="\Illuminate\Support\Facades\Request::routeIs('events.create')"><i class="fa fa-fw fa-calendar-week"></i> {{ __('Part of the event series') }}</x-bs::form.field>
             </div>
         </div>
 

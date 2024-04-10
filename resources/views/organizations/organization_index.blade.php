@@ -38,7 +38,7 @@
             <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field name="sort" type="select"
                                   :options="\App\Models\Organization::sortOptions()->getNamesWithLabels()"
-                                  :from-query="true">{{ __('Sorting') }}</x-bs::form.field>
+                                  :from-query="true"><i class="fa fa-fw fa-sort"></i> {{ __('Sorting') }}</x-bs::form.field>
             </div>
         </div>
     </x-form.filter>
@@ -56,21 +56,6 @@
                         <x-badge.active-status :active="$organization->status" />
                     </div>
                     <x-bs::list :flush="true">
-                        <x-bs::list.item>
-                            <span>
-                                <i class="fa fa-fw fa-calendar-days"></i>
-                                <a href="{{ route('events.index', ['filter[organization_id]' => $organization->id]) }}" target="_blank">{{ __('Events') }}</a>
-                            </span>
-                            <x-slot:end>
-                                <x-bs::badge>{{ formatInt($organization->events_count) }}</x-bs::badge>
-                            </x-slot:end>
-                        </x-bs::list.item>
-                        @isset($organization->website_url)
-                            <x-bs::list.item>
-                                <i class="fa fa-fw fa-display"></i>
-                                <a href="{{ $organization->website_url }}" target="_blank">{{ __('Website') }}</a>
-                            </x-bs::list.item>
-                        @endisset
                         <x-bs::list.item>
                             <i class="fa fa-fw fa-location-pin"></i>
                             <span class="d-inline-block">
@@ -97,6 +82,12 @@
                                 </x-slot:end>
                             </x-bs::list.item>
                         @endisset
+                        @isset($organization->website_url)
+                            <x-bs::list.item>
+                                <i class="fa fa-fw fa-display"></i>
+                                <a href="{{ $organization->website_url }}" target="_blank">{{ __('Website') }}</a>
+                            </x-bs::list.item>
+                        @endisset
                         <x-bs::list.item>
                             <span class="text-nowrap">
                                 <i class="fa fa-fw fa-file"></i>
@@ -110,12 +101,25 @@
                                 <x-bs::badge>{{ formatInt($organization->documents_count) }}</x-bs::badge>
                             </x-slot:end>
                         </x-bs::list.item>
+                        <x-bs::list.item>
+                            <span>
+                                <i class="fa fa-fw fa-calendar-days"></i>
+                                <a href="{{ route('events.index', [
+                                    'filter[organization_id]' => $organization->id,
+                                    'filter[date_from]' => '',
+                                    'filter[event_type]' => '',
+                                ]) }}" target="_blank">{{ __('Events') }}</a>
+                            </span>
+                            <x-slot:end>
+                                <x-bs::badge>{{ formatInt($organization->events_count) }}</x-bs::badge>
+                            </x-slot:end>
+                        </x-bs::list.item>
                     </x-bs::list>
-                    <div class="card-body">
-                        @can('update', $organization)
+                    @can('update', $organization)
+                        <div class="card-body">
                             <x-button.edit href="{{ route('organizations.edit', $organization) }}"/>
-                        @endcan
-                    </div>
+                        </div>
+                    @endcan
                     <div class="card-footer">
                         <x-text.updated-human-diff :model="$organization"/>
                     </div>

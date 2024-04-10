@@ -29,12 +29,12 @@
             </div>
             <div class="col-12 col-sm-6 col-lg">
                 <x-bs::form.field id="address" name="filter[address]" type="text"
-                                  :from-query="true">{{ __('Address') }}</x-bs::form.field>
+                                  :from-query="true"><i class="fa fa-fw fa-road"></i> {{ __('Address') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field name="sort" type="select"
                                   :options="\App\Models\Location::sortOptions()->getNamesWithLabels()"
-                                  :from-query="true">{{ __('Sorting') }}</x-bs::form.field>
+                                  :from-query="true"><i class="fa fa-fw fa-sort"></i> {{ __('Sorting') }}</x-bs::form.field>
             </div>
         </div>
     </x-form.filter>
@@ -59,6 +59,12 @@
                                 </div>
                             </span>
                         </x-bs::list.item>
+                        @isset($location->website_url)
+                            <x-bs::list.item>
+                                <i class="fa fa-fw fa-display"></i>
+                                <a href="{{ $location->website_url }}" target="_blank">{{ __('Website') }}</a>
+                            </x-bs::list.item>
+                        @endisset
                         <x-bs::list.item>
                             <span>
                                 <i class="fa fa-fw fa-calendar-days"></i>
@@ -67,7 +73,7 @@
                                 </a>
                             </span>
                             <x-slot:end>
-                                <x-badge.counter>{{ formatInt($location->events_count) }}</x-badge.counter>
+                                <x-bs::badge>{{ formatInt($location->events_count) }}</x-bs::badge>
                             </x-slot:end>
                         </x-bs::list.item>
                         <x-bs::list.item>
@@ -78,15 +84,15 @@
                                 </a>
                             </span>
                             <x-slot:end>
-                                <x-badge.counter>{{ formatInt($location->organizations_count) }}</x-badge.counter>
+                                <x-bs::badge>{{ formatInt($location->organizations_count) }}</x-bs::badge>
                             </x-slot:end>
                         </x-bs::list.item>
                     </x-bs::list>
-                    <div class="card-body">
-                        @can('update', $location)
+                    @can('update', $location)
+                        <div class="card-body">
                             <x-button.edit href="{{ route('locations.edit', $location) }}"/>
-                        @endcan
-                    </div>
+                        </div>
+                    @endcan
                     <div class="card-footer">
                         <x-text.updated-human-diff :model="$location" />
                     </div>

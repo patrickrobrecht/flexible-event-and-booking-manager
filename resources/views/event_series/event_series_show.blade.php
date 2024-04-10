@@ -43,6 +43,13 @@
         <div id="events" class="col-12 col-xl-6 col-xxl-4">
             <h2>{{ __('Events') }}</h2>
             @include('event_series.shared.events_in_series')
+            @can('create', \App\Models\Event::class)
+                <div class="my-3">
+                    <x-button.create href="{{ route('events.create', ['event_series_id' => $eventSeries->id]) }}">
+                        {{ __('Create event') }}
+                    </x-button.create>
+                </div>
+            @endcan
         </div>
         @php
             $subEventSeriesList = $eventSeries->subEventSeries
@@ -55,7 +62,19 @@
                 <x-bs::list container="div">
                     @foreach($subEventSeriesList as $subEventSeries)
                         <x-bs::list.item container="a" variant="action" href="{{ route('event-series.show', $subEventSeries->slug) }}">
-                            <strong>{{ $subEventSeries->name }}</strong>
+                            <div>
+                                <strong>{{ $subEventSeries->name }}</strong>
+                                @isset($subEventSeries->events_min_started_at, $subEventSeries->events_max_started_at)
+                                    <div>
+                                        <i class="fa fa-fw fa-clock"></i>
+                                        @if($subEventSeries->events_min_started_at->isSameDay($subEventSeries->events_max_started_at))
+                                            {{ formatDate($subEventSeries->events_min_started_at) }}
+                                        @else
+                                            {{ formatDate($subEventSeries->events_min_started_at) }} / {{ formatDate($subEventSeries->events_max_started_at) }}
+                                        @endif
+                                    </div>
+                                @endisset
+                            </div>
                             <x-slot:end>
                                 <x-bs::badge>{{ formatTransChoice(':count events', $subEventSeries->events_count) }}</x-bs::badge>
                             </x-slot:end>

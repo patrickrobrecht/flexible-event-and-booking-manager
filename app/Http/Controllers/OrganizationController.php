@@ -27,7 +27,7 @@ class OrganizationController extends Controller
                     'documents',
                     'events',
                 ])
-                ->paginate(),
+                ->paginate(10),
         ]));
     }
 
@@ -56,7 +56,10 @@ class OrganizationController extends Controller
         $this->authorize('view', $organization);
 
         return view('organizations.organization_show', [
-            'organization' => $organization,
+            'organization' => $organization->loadMissing([
+                'documents.reference',
+                'documents.uploadedByUser',
+            ]),
         ]);
     }
 

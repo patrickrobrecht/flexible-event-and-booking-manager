@@ -6,6 +6,7 @@ use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\HasDocuments;
 use App\Models\Traits\HasLocation;
+use App\Models\Traits\HasNameAndDescription;
 use App\Models\Traits\HasSlugForRouting;
 use App\Models\Traits\HasWebsite;
 use App\Options\EventType;
@@ -46,6 +47,7 @@ class Event extends Model
     use HasDocuments;
     use HasFactory;
     use HasLocation;
+    use HasNameAndDescription;
     use HasSlugForRouting;
     use HasWebsite;
 
@@ -208,11 +210,11 @@ class Event extends Model
     public static function allowedFilters(): array
     {
         return [
-            AllowedFilter::partial('name'),
+            /** @see self::scopeSearchNameAndDescription() */
+            AllowedFilter::scope('search', 'searchNameAndDescription'),
             AllowedFilter::exact('visibility'),
             /** @see self::scopeDateFrom() */
-            AllowedFilter::scope('date_from')
-                ->default(Carbon::today()->format('Y-m-d')),
+            AllowedFilter::scope('date_from'),
             /** @see self::scopeDateUntil() */
             AllowedFilter::scope('date_until'),
             AllowedFilter::exact('location_id'),

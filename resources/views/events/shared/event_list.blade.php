@@ -13,7 +13,11 @@
         @foreach($events as $event)
             @can('view', $event)
                 <x-bs::list.item>
-                    <a href="{{ route('events.show', $event->slug) }}" class="fw-bold">{{ $event->name }}</a>
+                    <div><a href="{{ route('events.show', $event->slug) }}" class="fw-bold">{{ $event->name }}</a></div>
+                    @isset($event->description)
+                        <div class="text-muted">{{ $event->description }}</div>
+                    @endisset
+                    @include('events.shared.event_badges')
                     <div>
                         <i class="fa fa-fw fa-clock"></i>
                         @include('events.shared.event_dates')
@@ -22,14 +26,11 @@
                         <i class="fa fa-fw fa-location-pin"></i>
                         {{ $event->location->nameOrAddress }}
                     </div>
-                    @if($showVisibility)
+                    @isset($event->website_url)
                         <div>
-                            <i class="fa fa-fw fa-eye" title="{{ __('Visibility') }}"></i>
-                            <x-badge.visibility :visibility="$event->visibility"/>
+                            <i class="fa fa-fw fa-display"></i>
+                            <a href="{{ $event->website_url }}" target="_blank">{{ __('Website') }}</a>
                         </div>
-                    @endif
-                    @isset($event->description)
-                        <div class="text-muted">{{ $event->description }}</div>
                     @endisset
                     @canany(['update', 'viewGroups'], $event)
                         <x-bs::button.group class="mt-3">

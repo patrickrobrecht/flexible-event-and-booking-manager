@@ -37,6 +37,10 @@ class EventPolicy
 
     public function viewGroups(User $user, Event $event): Response
     {
+        if ($event->getBookingOptions()->isEmpty()) {
+            return $this->deny();
+        }
+
         return $this->requireAbility($user, Ability::ViewBookingsOfEvent);
     }
 

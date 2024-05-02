@@ -23,7 +23,7 @@ class LocationRequest extends FormRequest
      */
     public function rules(): array
     {
-        $rules = [
+        return [
             'name' => [
                 'nullable',
                 'string',
@@ -31,11 +31,10 @@ class LocationRequest extends FormRequest
             ],
             'website_url' => [
                 'nullable',
-                'string',
+                'url:http,https',
                 'max:255',
             ],
+            ...$this->rulesForAddressFields('nullable'),
         ];
-
-        return array_replace($rules, $this->rulesForAddressFields('nullable'));
     }
 }

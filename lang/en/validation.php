@@ -163,9 +163,23 @@ return [
          * As the database scheme is in English, translations work out of the box for the most attributes.
          * The other attributes have to be added here.
          */
+        'available_from' => 'Start of the booking period',
+        'available_until' => 'End of the booking period',
+        'booking_option_id' => 'Booking option',
+        'date_from' => 'start of the period',
+        'date_until' => 'end of the period',
+        'event_series_id' => 'Part of the event series',
+        'expires_at' => 'expiration date',
+        'finished_at' => 'End date',
         'location_id' => 'Location',
+        'organization_id' => 'Organization',
+        'parent_event_id' => 'Part of the event',
+        'parent_event_series_id' => 'Part of the event series',
         'parent_organization_id' => 'Parent organization',
+        'search' => 'search term',
+        'started_at' => 'Start date',
         'user_role_id' => 'User role',
+        'website_url' => 'website',
     ],
 
 ];

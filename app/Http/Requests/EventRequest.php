@@ -58,6 +58,7 @@ class EventRequest extends FormRequest
             'started_at' => [
                 'nullable',
                 'date_format:Y-m-d\TH:i',
+                'required_with:finished_at',
             ],
             'finished_at' => [
                 'nullable',
@@ -65,7 +66,7 @@ class EventRequest extends FormRequest
             ],
             'website_url' => [
                 'nullable',
-                'string',
+                'url:http,https',
                 'max:255',
             ],
             'location_id' => [

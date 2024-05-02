@@ -51,9 +51,9 @@
                     @endisset
                 </x-bs::form.field>
                 <x-bs::form.field name="available_from" type="datetime-local"
-                                  :value="isset($bookingOption->available_from) ? $bookingOption->available_from->format('Y-m-d\TH:i') : null">{{ __('Start date') }}</x-bs::form.field>
+                                  :value="isset($bookingOption->available_from) ? $bookingOption->available_from->format('Y-m-d\TH:i') : null">{{ __('Start of the booking period') }}</x-bs::form.field>
                 <x-bs::form.field name="available_until" type="datetime-local"
-                                  :value="isset($bookingOption->available_until) ? $bookingOption->available_until->format('Y-m-d\TH:i') : null">{{ __('End date') }}</x-bs::form.field>
+                                  :value="isset($bookingOption->available_until) ? $bookingOption->available_until->format('Y-m-d\TH:i') : null">{{ __('End of the booking period') }}</x-bs::form.field>
                 <x-bs::form.field name="price" type="number" min="0.01" step="0.01"
                                   :value="$bookingOption->price ?? null">
                     {{ __('Price') }}

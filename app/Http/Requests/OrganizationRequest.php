@@ -47,7 +47,7 @@ class OrganizationRequest extends FormRequest
             ],
             'website_url' => [
                 'nullable',
-                'string',
+                'url:http,https',
                 'max:255',
             ],
             'location_id' => [

@@ -91,7 +91,13 @@ class BookingOptionPolicy
      */
     public function create(User $user, Event $event): Response
     {
-        if (isset($event->parentEvent)) {
+        if (
+            // Don't create booking options for child events.
+            isset($event->parentEvent)
+            // Don't create booking options for past events.
+            || (isset($event->finished_at) && $event->finished_at->isPast())
+            || (isset($event->started_at) && !isset($event->finished_at) && $event->started_at->isPast())
+        ) {
             return $this->deny();
         }
 

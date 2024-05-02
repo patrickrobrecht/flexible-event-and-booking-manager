@@ -63,6 +63,7 @@ class BookingOptionRequest extends FormRequest
             'available_from' => [
                 'nullable',
                 'date_format:Y-m-d\TH:i',
+                'required_with:available_until',
             ],
             'available_until' => [
                 'nullable',

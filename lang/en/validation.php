@@ -163,6 +163,8 @@ return [
          * As the database scheme is in English, translations work out of the box for the most attributes.
          * The other attributes have to be added here.
          */
+        'available_from' => 'Start of the booking period',
+        'available_until' => 'End of the booking period',
         'booking_option_id' => 'Booking option',
         'date_from' => 'start of the period',
         'date_until' => 'end of the period',

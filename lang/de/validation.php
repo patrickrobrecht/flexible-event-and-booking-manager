@@ -162,6 +162,8 @@ return [
         'abilities' => 'Berechtigungen',
         'address' => 'Adresse',
         'approval_status' => 'Freigabestatus',
+        'available_from' => 'Beginn des Anmeldezeitraums',
+        'available_until' => 'Ende des Anmeldezeitraums',
         'booking_option_id' => 'Anmeldeoption',
         'city' => 'Stadt',
         'comment' => 'Kommentar',

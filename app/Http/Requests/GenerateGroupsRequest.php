@@ -93,8 +93,15 @@ class GenerateGroupsRequest extends FormRequest
 
     public function attributes(): array
     {
-        return [
+        $attributes = [
             'booking_option_id' => __('Booking options'),
+            'exclude_parent_group_id' => __('Exclude members of groups'),
         ];
+
+        foreach (range(0, count($this->input('exclude_parent_group_id')) - 1) as $id) {
+            $attributes['exclude_parent_group_id.' . $id] = __('Exclude members of groups');
+        }
+
+        return $attributes;
     }
 }

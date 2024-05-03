@@ -29,18 +29,26 @@
             @include('organizations.shared.organization_details')
         </div>
         <div class="col-12 col-md-8">
-            @canany(['viewAny', 'create'], [\App\Models\Document::class, $organization])
-                <section id="documents">
-                    <h2>{{ __('Documents') }}</h2>
-                @can('viewAny', [\App\Models\Document::class, $organization])
-                    @include('documents.shared.document_list', [
-                        'documents' => $organization->documents,
-                    ])
-                @endcan
-                @include('documents.shared.document_add_modal', [
-                    'reference' => $organization,
-                    'routeForAddDocument' => route('organizations.documents.store', $organization),
+            <section id="responsibilities">
+                <h2>{{ __('Responsibilities') }}</h2>
+                @include('users.shared.responsible_user_list', [
+                    'users' => $organization->responsibleUsers,
                 ])
+            </section>
+
+            @canany(['viewAny', 'create'], [\App\Models\Document::class, $organization])
+                <section id="documents" class="mt-4">
+                    <h2>{{ __('Documents') }}</h2>
+                    @can('viewAny', [\App\Models\Document::class, $organization])
+                        @include('documents.shared.document_list', [
+                            'documents' => $organization->documents,
+                        ])
+                    @endcan
+                    @include('documents.shared.document_add_modal', [
+                        'reference' => $organization,
+                        'routeForAddDocument' => route('organizations.documents.store', $organization),
+                    ])
+                </section>
             @endcanany
         </div>
     </div>

@@ -89,6 +89,15 @@
                             </x-bs::list.item>
                         @endisset
                         <x-bs::list.item>
+                            <span class="text-nowrap"><i class="fa fa-fw fa-list-check"></i> {{ __('Responsibilities') }}</span>
+                            <x-slot:end>
+                                @include('users.shared.responsible_user_span', [
+                                    'class' => 'text-end me-2',
+                                    'users' => $organization->responsibleUsers,
+                                ])
+                            </x-slot:end>
+                        </x-bs::list.item>
+                        <x-bs::list.item>
                             <span class="text-nowrap">
                                 <i class="fa fa-fw fa-file"></i>
                                 @can('viewAny', [\App\Models\Document::class, $organization])

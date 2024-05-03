@@ -22,6 +22,7 @@ class EventSeriesController extends Controller
             'eventSeries' => EventSeries::buildQueryFromRequest()
                 ->with([
                     'parentEventSeries',
+                    'responsibleUsers',
                 ])
                 ->withCount([
                     'documents',
@@ -51,7 +52,9 @@ class EventSeriesController extends Controller
                     ]),
                 'events.location',
                 'events.parentEvent',
+                'events.responsibleUsers',
                 'parentEventSeries',
+                'responsibleUsers',
                 'subEventSeries' => fn (HasMany $subEventSeries) => $subEventSeries
                     ->withCount([
                         'documents',
@@ -63,6 +66,7 @@ class EventSeriesController extends Controller
                         'events_min_started_at' => 'datetime',
                         'events_max_started_at' => 'datetime',
                     ]),
+                'subEventSeries.responsibleUsers',
             ]),
         ]);
     }

@@ -72,22 +72,31 @@
                 @endcan
             </div>
         @endif
-        @canany(['viewAny', 'create'], [\App\Models\Document::class, $eventSeries])
-            <div id="documents" @class([
-                'col-12 col-xl-6 col-xxl-4',
-                'mt-4 mt-xxl-0' => $hasSubEventSeriesToShow,
-            ])>
-                <h2>{{ __('Documents') }}</h2>
-            @can('viewAny', [\App\Models\Document::class, $eventSeries])
-                @include('documents.shared.document_list', [
-                    'documents' => $eventSeries->documents,
+        <div @class([
+            'col-12 col-xl-6 col-xxl-4',
+            'mt-4 mt-xxl-0' => $hasSubEventSeriesToShow,
+        ])>
+            <section id="responsibilities">
+                <h2>{{ __('Responsibilities') }}</h2>
+                @include('users.shared.responsible_user_list', [
+                    'users' => $eventSeries->responsibleUsers,
                 ])
-            @endcan
-            @include('documents.shared.document_add_modal', [
-                'reference' => $eventSeries,
-                'routeForAddDocument' => route('event-series.documents.store', $eventSeries),
-            ])
-        @endcanany
+            </section>
+            @canany(['viewAny', 'create'], [\App\Models\Document::class, $eventSeries])
+                <section id="documents" class="mt-4">
+                    <h2>{{ __('Documents') }}</h2>
+                    @can('viewAny', [\App\Models\Document::class, $eventSeries])
+                        @include('documents.shared.document_list', [
+                            'documents' => $eventSeries->documents,
+                        ])
+                    @endcan
+                    @include('documents.shared.document_add_modal', [
+                        'reference' => $eventSeries,
+                        'routeForAddDocument' => route('event-series.documents.store', $eventSeries),
+                    ])
+                </section>
+            @endcanany
+       </div>
     </div>
 
     @can('update', $eventSeries)

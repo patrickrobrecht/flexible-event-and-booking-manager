@@ -107,7 +107,7 @@ Route::middleware('auth')->group(static function () {
 
     Route::model('user', User::class);
     Route::resource('users', UserController::class)
-        ->only(['index', 'create', 'store', 'edit', 'update']);
+        ->only(['index', 'create', 'store', 'show', 'edit', 'update']);
 
     Route::model('user_role', UserRole::class);
     Route::resource('user-roles', UserRoleController::class)

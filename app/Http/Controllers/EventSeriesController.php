@@ -45,6 +45,10 @@ class EventSeriesController extends Controller
                         'documents',
                         'groups',
                     ]),
+                'events.bookingOptions' => fn (HasMany $bookingOptions) => $bookingOptions
+                    ->withCount([
+                        'bookings',
+                    ]),
                 'events.location',
                 'events.parentEvent',
                 'parentEventSeries',

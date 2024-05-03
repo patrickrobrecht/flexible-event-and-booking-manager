@@ -45,7 +45,7 @@ use Spatie\QueryBuilder\Enums\SortDirection;
  *
  * @property-read Collection|Booking[] $bookings {@see self::bookings()}
  * @property-read Collection|Event[] $responsibleForEvents {@see self::responsibleForEvents()}
- * @property-read Collection|Event[] $responsibleForEventSeries {@see self::responsibleForEventSeries()}
+ * @property-read Collection|EventSeries[] $responsibleForEventSeries {@see self::responsibleForEventSeries()}
  * @property-read Collection|Organization[] $responsibleForOrganizations {@see self::responsibleForOrganizations()}
  * @property-read Collection|PersonalAccessToken[] $tokens {@see HasApiTokens::tokens()}
  * @property-read Collection|UserRole[] $userRoles {@see User::userRoles()}
@@ -120,6 +120,26 @@ class User extends Authenticatable implements MustVerifyEmail
     public function documents(): HasMany
     {
         return $this->hasMany(Document::class, 'uploaded_by_user_id');
+    }
+
+    public function responsibleForEvents(): MorphToMany
+    {
+        return $this->morphedByMany(Event::class, 'responsible_for', 'user_responsibilities')
+            ->orderByDesc('started_at')
+            ->orderByDesc('finished_at')
+            ->orderBy('name');
+    }
+
+    public function responsibleForEventSeries(): MorphToMany
+    {
+        return $this->morphedByMany(EventSeries::class, 'responsible_for', 'user_responsibilities')
+            ->orderBy('name');
+    }
+
+    public function responsibleForOrganizations(): MorphToMany
+    {
+        return $this->morphedByMany(Organization::class, 'responsible_for', 'user_responsibilities')
+            ->orderBy('name');
     }
 
     public function userRoles(): BelongsToMany

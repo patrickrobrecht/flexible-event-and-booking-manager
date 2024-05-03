@@ -2,10 +2,10 @@
     @foreach($selectedUsers as $id => $selectedUser)
         <input type="hidden" name="{{ $fieldName }}[]" value="{{ $id }}">
     @endforeach
-    <div>
+    <div class="mb-3">
         @foreach($selectedUsers as $id => $selectedUser)
             <div class="btn btn-primary">
-                {{ $selectedUser->name }}
+                <a class="text-white" href="{{ route('users.show', $selectedUser) }}">{{ $selectedUser->name }}</a>
                 <small class="text-danger" wire:click="removeUser({{ $id }})"><i class="fa fa-fw fa-remove" title="{{ __('Remove') }}"></i></small>
             </div>
         @endforeach

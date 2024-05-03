@@ -59,28 +59,10 @@
         @if($hasSubEventSeriesToShow)
             <div id="series" class="col-12 col-xl-6 col-xxl-4 mt-4 mt-xl-0">
                 <h2>{{ __('Event series') }}</h2>
-                <x-bs::list container="div">
-                    @foreach($subEventSeriesList as $subEventSeries)
-                        <x-bs::list.item container="a" variant="action" href="{{ route('event-series.show', $subEventSeries->slug) }}">
-                            <div>
-                                <strong>{{ $subEventSeries->name }}</strong>
-                                @isset($subEventSeries->events_min_started_at, $subEventSeries->events_max_started_at)
-                                    <div>
-                                        <i class="fa fa-fw fa-clock"></i>
-                                        @if($subEventSeries->events_min_started_at->isSameDay($subEventSeries->events_max_started_at))
-                                            {{ formatDate($subEventSeries->events_min_started_at) }}
-                                        @else
-                                            {{ formatDate($subEventSeries->events_min_started_at) }} / {{ formatDate($subEventSeries->events_max_started_at) }}
-                                        @endif
-                                    </div>
-                                @endisset
-                            </div>
-                            <x-slot:end>
-                                <x-bs::badge>{{ formatTransChoice(':count events', $subEventSeries->events_count) }}</x-bs::badge>
-                            </x-slot:end>
-                        </x-bs::list.item>
-                    @endforeach
-                </x-bs::list>
+                @include('event_series.shared.event_series_list', [
+                    'eventSeries' => $subEventSeriesList,
+                    'showParentEventSeries' => false,
+                ])
                 @can('createChild', $eventSeries)
                     <div class="mt-3">
                         <x-button.create href="{{ route('event-series.create', ['parent_event_series_id' => $eventSeries->id]) }}">

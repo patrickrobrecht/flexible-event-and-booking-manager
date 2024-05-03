@@ -24,6 +24,10 @@ class UserPolicy
      */
     public function view(User $user, User $model): Response
     {
+        if ($user->is($model)) {
+            return $this->allow();
+        }
+
         return $this->viewAny($user);
     }
 

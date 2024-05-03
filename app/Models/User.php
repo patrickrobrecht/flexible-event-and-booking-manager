@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
@@ -43,6 +44,9 @@ use Spatie\QueryBuilder\Enums\SortDirection;
  * @property-read string $name {@see User::name()}
  *
  * @property-read Collection|Booking[] $bookings {@see self::bookings()}
+ * @property-read Collection|Event[] $responsibleForEvents {@see self::responsibleForEvents()}
+ * @property-read Collection|Event[] $responsibleForEventSeries {@see self::responsibleForEventSeries()}
+ * @property-read Collection|Organization[] $responsibleForOrganizations {@see self::responsibleForOrganizations()}
  * @property-read Collection|PersonalAccessToken[] $tokens {@see HasApiTokens::tokens()}
  * @property-read Collection|UserRole[] $userRoles {@see User::userRoles()}
  */

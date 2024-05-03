@@ -6,6 +6,7 @@ use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\HasDocuments;
 use App\Models\Traits\HasLocation;
+use App\Models\Traits\HasResponsibleUsers;
 use App\Models\Traits\HasWebsite;
 use App\Options\ActiveStatus;
 use Illuminate\Database\Eloquent\Collection;
@@ -31,6 +32,7 @@ class Organization extends Model
     use HasDocuments;
     use HasFactory;
     use HasLocation;
+    use HasResponsibleUsers;
     use HasWebsite;
 
     /**
@@ -74,7 +76,8 @@ class Organization extends Model
 
         $this->location()->associate($validatedData['location_id']);
 
-        return $this->save();
+        return $this->save()
+            && $this->saveResponsibleUsers($validatedData['responsible_user_id'] ?? []);
     }
 
     public function getRoute(): string

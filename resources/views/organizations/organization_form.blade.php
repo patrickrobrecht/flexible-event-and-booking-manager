@@ -32,11 +32,18 @@
                                   :value="$organization->register_entry ?? null"><i class="fa fa-fw fa-scale-balanced"></i> {{ __('Register entry') }}</x-bs::form.field>
                 <x-bs::form.field name="website_url" type="url"
                                   :value="$organization->website_url ?? null"><i class="fa fa-fw fa-display"></i> {{ __('Website') }}</x-bs::form.field>
-            </div>
-            <div class="col-12 col-md-6">
                 <x-bs::form.field name="location_id" type="select"
                                   :options="$locations->pluck('nameOrAddress', 'id')"
                                   :value="$organization->location->id ?? null"><i class="fa fa-fw fa-location-pin"></i> {{ __('Location') }}</x-bs::form.field>
+            </div>
+            <div class="col-12 col-md-6">
+                <section class="my-3">
+                    <h2>{{ __('Organization team') }}</h2>
+                    @livewire('users.search-users', [
+                        'fieldName' => 'responsible_user_id',
+                        'selectedUsers' => $organization->responsibleUsers ?? \Illuminate\Database\Eloquent\Collection::empty(),
+                    ])
+                </section>
             </div>
         </div>
 

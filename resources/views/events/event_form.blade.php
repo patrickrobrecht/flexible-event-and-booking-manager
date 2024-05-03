@@ -71,6 +71,12 @@
                                   :options="Options::fromModels($eventSeries, 'name')->prepend(__('none'), '')"
                                   :value="$event->event_series_id ?? null"
                                   :from-query="\Illuminate\Support\Facades\Request::routeIs('events.create')"><i class="fa fa-fw fa-calendar-week"></i> {{ __('Part of the event series') }}</x-bs::form.field>
+
+                <h2>{{ __('Organization team') }}</h2>
+                @livewire('users.search-users', [
+                    'fieldName' => 'responsible_user_id',
+                    'selectedUsers' => $event->responsibleUsers ?? \Illuminate\Database\Eloquent\Collection::empty(),
+                ])
             </div>
         </div>
 

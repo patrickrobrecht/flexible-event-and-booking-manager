@@ -49,6 +49,15 @@
                                   :options="\Portavice\Bladestrap\Support\Options::fromModels($allEventSeries->except($eventSeries->id ?? null), 'name')->prepend(__('none'), '')"
                                   :value="$eventSeries->parent_event_series_id ?? null"
                                   :from-query="\Illuminate\Support\Facades\Request::routeIs('event-series.create')"><i class="fa fa-fw fa-calendar-days"></i> {{ __('Part of the event series') }}</x-bs::form.field>
+
+                <section class="my-3">
+                    <h2>{{ __('Organization team') }}</h2>
+                    @livewire('users.search-users', [
+                        'fieldName' => 'responsible_user_id',
+                        'selectedUsers' => $eventSeries->responsibleUsers ?? \Illuminate\Database\Eloquent\Collection::empty(),
+                    ])
+                </section>
+
                 <x-bs::button.group>
                     <x-button.save>
                         @isset($eventSeries)

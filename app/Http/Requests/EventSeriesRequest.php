@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Controllers\EventSeriesController;
 use App\Http\Requests\Traits\AuthorizationViaController;
+use App\Http\Requests\Traits\ValidatesResponsibleUsers;
 use App\Models\EventSeries;
 use App\Options\Visibility;
 use App\Policies\EventSeriesPolicy;
@@ -17,6 +18,7 @@ class EventSeriesRequest extends FormRequest
 {
     /** {@see EventSeriesPolicy} in {@see EventSeriesController} */
     use AuthorizationViaController;
+    use ValidatesResponsibleUsers;
 
     /**
      * Get the validation rules that apply to the request.
@@ -50,6 +52,7 @@ class EventSeriesRequest extends FormRequest
                     ->whereNull('parent_event_series_id')
                     ->whereNot('id', $this->event_series->id ?? null),
             ],
+            ...$this->rulesForResponsibleUsers(),
         ];
     }
 }

@@ -16,13 +16,26 @@ trait HasResponsibleUsers
     public function responsibleUsers(): MorphToMany
     {
         return $this->morphToMany(User::class, 'responsible_for', 'user_responsibilities')
+            ->withPivot([
+                'position',
+                'sort',
+            ])
             ->withTimestamps()
+            ->orderBy('sort')
             ->orderBy('last_name')
             ->orderBy('first_name');
     }
 
-    public function saveResponsibleUsers(array $userIds): array
+    public function saveResponsibleUsers(array $validatedData): bool
     {
-        return $this->responsibleUsers()->sync($userIds);
+        $this->responsibleUsers()->sync($validatedData['responsible_user_id'] ?? []);
+
+        foreach ($validatedData['responsible_user_data'] ?? [] as $userId => $pivotData) {
+            if ($this->responsibleUsers()->updateExistingPivot($userId, $pivotData) !== 1) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

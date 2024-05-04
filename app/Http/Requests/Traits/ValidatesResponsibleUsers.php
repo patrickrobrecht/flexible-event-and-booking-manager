@@ -6,7 +6,7 @@ use Illuminate\Validation\Rule;
 
 trait ValidatesResponsibleUsers
 {
-    protected function rulesForResponsibleUsers()
+    protected function rulesForResponsibleUsers(): array
     {
         return [
             'responsible_user_id' => [
@@ -17,6 +17,25 @@ trait ValidatesResponsibleUsers
             'responsible_user_id.*' => [
                 Rule::exists('users', 'id'),
             ],
+            'responsible_user_data.*.position' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
+            'responsible_user_data.*.sort' => [
+                'nullable',
+                'integer',
+                'min:1',
+                'max:999999',
+            ],
+        ];
+    }
+
+    protected function attributesForResponsibleUsers(): array
+    {
+        return [
+            'responsible_user_data.*.position' => __('Position'),
+            'responsible_user_data.*.sort' => __('Sort'),
         ];
     }
 }

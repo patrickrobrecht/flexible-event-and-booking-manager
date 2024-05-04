@@ -55,4 +55,9 @@ class EventSeriesRequest extends FormRequest
             ...$this->rulesForResponsibleUsers(),
         ];
     }
+
+    public function attributes(): array
+    {
+        return $this->attributesForResponsibleUsers();
+    }
 }

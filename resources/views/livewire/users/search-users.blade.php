@@ -1,15 +1,26 @@
 <div>
     @foreach($selectedUsers as $id => $selectedUser)
-        <input type="hidden" name="{{ $fieldName }}[]" value="{{ $id }}">
-    @endforeach
-    <div class="mb-3">
-        @foreach($selectedUsers as $id => $selectedUser)
-            <div class="btn btn-primary">
-                <a class="text-white" href="{{ route('users.show', $selectedUser) }}">{{ $selectedUser->name }}</a>
-                <small class="text-danger" wire:click="removeUser({{ $id }})"><i class="fa fa-fw fa-remove" title="{{ __('Remove') }}"></i></small>
+        <div class="row mb-3">
+            <div class="col-12 col-xxl-4">
+                <a href="{{ route('users.show', $selectedUser) }}">{{ $selectedUser->name }}</a>
+                <x-bs::button variant="danger" class="btn-sm"
+                              wire:click="removeUser({{ $id }})">
+                    <i class="fa fa-fw fa-remove"></i> {{ __('Remove') }}
+                </x-bs::button>
+                <input type="hidden" name="responsible_user_id[]" value="{{ $id }}">
             </div>
-        @endforeach
-    </div>
+            <div class="col-12 col-lg-6 col-xxl-4">
+                <x-bs::form.field name="responsible_user_data[{{ $id }}][position]"
+                                  type="text" maxlength="255"
+                                  :value="$selectedUser->pivot->position ?? null">{{ __('Position') }}</x-bs:x-bs::form.field>
+            </div>
+            <div class="col-12 col-lg-6 col-xxl-4">
+                <x-bs::form.field name="responsible_user_data[{{ $id }}][sort]"
+                                  type="number" min="1" step="1" max="999999"
+                                  :value="$selectedUser->pivot->sort ?? null">{{ __('Sort') }}</x-bs:x-bs::form.field>
+            </div>
+        </div>
+    @endforeach
 
     <x-bs::form.field type="text" name="searchTerm"
                       placeholder="{{ __('Search users') }}"

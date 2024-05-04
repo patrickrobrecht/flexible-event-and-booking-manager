@@ -8,10 +8,14 @@
         $class,
     ])>
         @foreach($users as $user)
+            @php
+                $positionAndComma = (isset($user->pivot->position) ? sprintf(' (%s)', $user->pivot->position) : '')
+                    . ($loop->last ? '' : ', ');
+            @endphp
             @can('view', $user)
-                <a href="{{ route('users.show', $user) }}">{{ $user->name }}</a>@if(!$loop->last), @endif
+                <a href="{{ route('users.show', $user) }}">{{ $user->name }}</a>{{ $positionAndComma }}
             @else
-                {{ $user->name }}@if(!$loop->last), @endif
+                {{ $user->name }}{{ $positionAndComma }}
             @endcan
         @endforeach
     </span>

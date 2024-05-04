@@ -77,7 +77,7 @@ class Organization extends Model
         $this->location()->associate($validatedData['location_id']);
 
         return $this->save()
-            && $this->saveResponsibleUsers($validatedData['responsible_user_id'] ?? []);
+            && $this->saveResponsibleUsers($validatedData);
     }
 
     public function getRoute(): string

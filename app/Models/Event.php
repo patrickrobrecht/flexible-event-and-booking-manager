@@ -168,7 +168,7 @@ class Event extends Model
 
         return $this->save()
             && $this->organizations()->sync($validatedData['organization_id'] ?? [])
-            && $this->saveResponsibleUsers($validatedData['responsible_user_id'] ?? []);
+            && $this->saveResponsibleUsers($validatedData);
     }
 
     public function getBookingOptions(): Collection

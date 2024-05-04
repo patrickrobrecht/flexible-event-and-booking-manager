@@ -93,7 +93,7 @@
                             <span class="text-nowrap"><i class="fa fa-fw fa-list-check"></i> {{ __('Responsibilities') }}</span>
                             <x-slot:end>
                                 @include('users.shared.responsible_user_span', [
-                                    'class' => 'text-end me-2',
+                                    'class' => 'text-end ms-2',
                                     'users' => $eventSeriesItem->responsibleUsers,
                                 ])
                             </x-slot:end>

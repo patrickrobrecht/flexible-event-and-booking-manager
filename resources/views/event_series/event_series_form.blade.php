@@ -51,9 +51,8 @@
                                   :from-query="\Illuminate\Support\Facades\Request::routeIs('event-series.create')"><i class="fa fa-fw fa-calendar-days"></i> {{ __('Part of the event series') }}</x-bs::form.field>
 
                 <section class="my-3">
-                    <h2>{{ __('Organization team') }}</h2>
+                    <h2>{{ __('Responsibilities') }}</h2>
                     @livewire('users.search-users', [
-                        'fieldName' => 'responsible_user_id',
                         'selectedUsers' => $eventSeries->responsibleUsers ?? \Illuminate\Database\Eloquent\Collection::empty(),
                     ])
                 </section>

@@ -22,6 +22,7 @@ This application allows to manage events, their booking forms and bookings via a
   - If a date of birth is submitted, the age of each participant and average age of each group is shown.
   - Sub events have the bookings from parent event.
   - Generate groups (randomized or age-based)
+- Manage responsibilities (responsible users with their position) for events, event series and organizations
 - Add, update, delete documents for events, event series, and organizations
 - Login and logout, reset password, verify e-mail address, edit own account
 - Manage users and flexible roles

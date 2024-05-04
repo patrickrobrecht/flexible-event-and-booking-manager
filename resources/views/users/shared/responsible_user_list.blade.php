@@ -9,6 +9,9 @@
                 @else
                     {{ $user->name }}
                 @endcan
+                @isset($user->pivot->position)
+                    ({{ $user->pivot->position }})
+                @endisset
             </x-bs::list.item>
         @endforeach
     </x-bs::list>

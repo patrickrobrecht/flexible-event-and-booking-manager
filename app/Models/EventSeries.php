@@ -98,7 +98,7 @@ class EventSeries extends Model
         $this->parentEventSeries()->associate($validatedData['parent_event_series_id'] ?? null);
 
         return $this->save()
-            && $this->saveResponsibleUsers($validatedData['responsible_user_id'] ?? []);
+            && $this->saveResponsibleUsers($validatedData);
     }
 
     public function getRoute(): string

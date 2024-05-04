@@ -38,9 +38,8 @@
             </div>
             <div class="col-12 col-md-6">
                 <section class="my-3">
-                    <h2>{{ __('Organization team') }}</h2>
+                    <h2>{{ __('Responsibilities') }}</h2>
                     @livewire('users.search-users', [
-                        'fieldName' => 'responsible_user_id',
                         'selectedUsers' => $organization->responsibleUsers ?? \Illuminate\Database\Eloquent\Collection::empty(),
                     ])
                 </section>

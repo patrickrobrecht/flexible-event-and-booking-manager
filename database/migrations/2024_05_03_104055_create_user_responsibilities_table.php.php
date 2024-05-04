@@ -16,6 +16,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users');
             $table->numericMorphs('responsible_for', 'user_responsibilities_responsible_for_index');
+            $table->string('position')->nullable();
+            $table->unsignedInteger('sort')->nullable();
             $table->timestamps();
         });
     }

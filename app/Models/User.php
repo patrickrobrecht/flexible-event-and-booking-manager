@@ -122,9 +122,21 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Document::class, 'uploaded_by_user_id');
     }
 
+    /**
+     * @param class-string $class
+     */
+    private function responsibleFor(string $class): MorphToMany
+    {
+        return $this->morphedByMany($class, 'responsible_for', 'user_responsibilities')
+            ->withPivot([
+                'position',
+                'sort',
+            ]);
+    }
+
     public function responsibleForEvents(): MorphToMany
     {
-        return $this->morphedByMany(Event::class, 'responsible_for', 'user_responsibilities')
+        return $this->responsibleFor(Event::class)
             ->orderByDesc('started_at')
             ->orderByDesc('finished_at')
             ->orderBy('name');
@@ -132,13 +144,13 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function responsibleForEventSeries(): MorphToMany
     {
-        return $this->morphedByMany(EventSeries::class, 'responsible_for', 'user_responsibilities')
+        return $this->responsibleFor(EventSeries::class)
             ->orderBy('name');
     }
 
     public function responsibleForOrganizations(): MorphToMany
     {
-        return $this->morphedByMany(Organization::class, 'responsible_for', 'user_responsibilities')
+        return $this->responsibleFor(Organization::class)
             ->orderBy('name');
     }
 

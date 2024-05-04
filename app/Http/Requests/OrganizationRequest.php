@@ -59,4 +59,9 @@ class OrganizationRequest extends FormRequest
             ...$this->rulesForResponsibleUsers(),
         ];
     }
+
+    public function attributes(): array
+    {
+        return $this->attributesForResponsibleUsers();
+    }
 }

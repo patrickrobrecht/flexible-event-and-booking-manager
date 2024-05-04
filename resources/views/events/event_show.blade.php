@@ -61,14 +61,22 @@
                 @endcan
             @endif
 
-            <section id="responsibilities" @class([
-                'mt-4' => $bookingOptionsToShow,
-            ])>
-                <h2>{{ __('Responsibilities') }}</h2>
-                @include('users.shared.responsible_user_list', [
-                    'users' => $event->responsibleUsers,
-                ])
-            </section>
+            @php
+                $responsibilitySectionEmpty = true;
+            @endphp
+            @can('viewResponsibilities', $event)
+                <section id="responsibilities" @class([
+                    'mt-4' => $bookingOptionsToShow,
+                ])>
+                    @php
+                        $responsibilitySectionEmpty = false;
+                    @endphp
+                    <h2>{{ __('Responsibilities') }}</h2>
+                    @include('users.shared.responsible_user_list', [
+                        'users' => $event->getResponsibleUsersVisibleForCurrentUser(),
+                    ])
+                </section>
+            @endcan
 
             @php
                 $documentSectionEmpty = true;
@@ -77,7 +85,9 @@
                 @php
                     $documentSectionEmpty = false;
                 @endphp
-                <section id="documents" class="mt-4">
+                <section id="documents" @class([
+                    'mt-4' => $bookingOptionsToShow || !$responsibilitySectionEmpty,
+                ])>
                     <h2>{{ __('Documents') }}</h2>
                     @can('viewAny', [\App\Models\Document::class, $event])
                         @include('documents.shared.document_list', [
@@ -99,7 +109,7 @@
                 @endphp
                 @if($siblingEvents->isNotEmpty())
                     <section id="events" @class([
-                        'mt-4' => $bookingOptionsToShow || !$documentSectionEmpty,
+                        'mt-4' => $bookingOptionsToShow || !$responsibilitySectionEmpty || !$documentSectionEmpty,
                     ])>
                         <h2>{{ __('Other sub events of :name', [
                             'name' => $event->parentEvent->name,

@@ -27,13 +27,15 @@
                         @endif
                         <x-bs::badge>{{ formatTransChoice(':count events', $eventSeriesItem->events_count) }}</x-bs::badge>
                     </div>
-                    <div>
-                        <i class="fa fa-fw fa-list-check" title="{{ __('Responsibilities') }}"></i>
-                        @include('users.shared.responsible_user_span', [
-                            'class' => null,
-                            'users' => $eventSeriesItem->responsibleUsers,
-                        ])
-                    </div>
+                    @can('viewResponsibilities', $eventSeriesItem)
+                        <div>
+                            <i class="fa fa-fw fa-list-check" title="{{ __('Responsibilities') }}"></i>
+                            @include('users.shared.responsible_user_span', [
+                                'class' => null,
+                                'users' => $eventSeriesItem->getResponsibleUsersVisibleForCurrentUser(),
+                            ])
+                        </div>
+                    @endcan
                     @isset($eventSeriesItem->website_url)
                         <div>
                             <i class="fa fa-fw fa-display"></i>

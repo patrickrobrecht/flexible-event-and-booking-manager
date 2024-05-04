@@ -17,6 +17,10 @@ trait ValidatesResponsibleUsers
             'responsible_user_id.*' => [
                 Rule::exists('users', 'id'),
             ],
+            'responsible_user_data.*.publicly_visible' => [
+                'nullable',
+                'boolean',
+            ],
             'responsible_user_data.*.position' => [
                 'nullable',
                 'string',
@@ -34,6 +38,7 @@ trait ValidatesResponsibleUsers
     protected function attributesForResponsibleUsers(): array
     {
         return [
+            'responsible_user_data.*.publicly_visible' => __('publicly visible'),
             'responsible_user_data.*.position' => __('Position'),
             'responsible_user_data.*.sort' => __('Sort'),
         ];

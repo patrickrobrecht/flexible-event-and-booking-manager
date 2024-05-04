@@ -3,8 +3,11 @@
 namespace App\Models\Traits;
 
 use App\Models\User;
+use App\Options\Ability;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * @property-read $responsibleUsers {@see self::responsibleUsers()}
@@ -17,6 +20,7 @@ trait HasResponsibleUsers
     {
         return $this->morphToMany(User::class, 'responsible_for', 'user_responsibilities')
             ->withPivot([
+                'publicly_visible',
                 'position',
                 'sort',
             ])
@@ -26,16 +30,47 @@ trait HasResponsibleUsers
             ->orderBy('first_name');
     }
 
-    public function saveResponsibleUsers(array $validatedData): bool
-    {
-        $this->responsibleUsers()->sync($validatedData['responsible_user_id'] ?? []);
+    abstract public function getAbilityToViewResponsibilities(): Ability;
 
-        foreach ($validatedData['responsible_user_data'] ?? [] as $userId => $pivotData) {
-            if ($this->responsibleUsers()->updateExistingPivot($userId, $pivotData) !== 1) {
-                return false;
-            }
+    public function getResponsibleUsersVisibleForCurrentUser(): Collection
+    {
+        $currentUser = Auth::user();
+
+        if (isset($currentUser) && $currentUser->hasAbility($this->getAbilityToViewResponsibilities())) {
+            return $this->responsibleUsers;
         }
 
-        return true;
+        return $this->getPubliclyVisibleResponsibleUsers();
+    }
+
+    /**
+     * @return Collection<User>
+     */
+    public function getPubliclyVisibleResponsibleUsers(): Collection
+    {
+        return $this->responsibleUsers->filter(fn (User $responsibleUser) => self::isPubliclyVisible($responsibleUser));
+    }
+
+    public function hasPubliclyVisibleResponsibleUsers(): bool
+    {
+        return $this->responsibleUsers->first(fn (User $responsibleUser) => self::isPubliclyVisible($responsibleUser)) !== null;
+    }
+
+    public function saveResponsibleUsers(array $validatedData): array
+    {
+        $responsibleUsers = [];
+        foreach ($validatedData['responsible_user_id'] ?? [] as $responsibleUserId) {
+            $pivotData = $validatedData['responsible_user_data'][$responsibleUserId] ?? [];
+            $pivotData['publicly_visible'] ??= false;
+            $responsibleUsers[$responsibleUserId] = $pivotData;
+        }
+
+        return $this->responsibleUsers()->sync($responsibleUsers);
+    }
+
+    private static function isPubliclyVisible(User $responsibleUser): bool
+    {
+        return isset($responsibleUser->pivot->publicly_visible)
+            && $responsibleUser->pivot->publicly_visible;
     }
 }

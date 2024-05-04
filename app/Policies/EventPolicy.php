@@ -44,6 +44,20 @@ class EventPolicy
         return $this->requireAbility($user, Ability::ViewBookingsOfEvent);
     }
 
+    public function viewResponsibilities(?User $user, Event $event): Response
+    {
+        $viewResponse = $this->view($user, $event);
+        if ($viewResponse->denied()) {
+            return $viewResponse;
+        }
+
+        return $this->requireAbilityOrCheck(
+            $user,
+            Ability::ViewResponsibilitiesOfEvents,
+            fn () => $this->response($event->hasPubliclyVisibleResponsibleUsers())
+        );
+    }
+
     /**
      * Determine whether the user can create models.
      */

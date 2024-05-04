@@ -38,6 +38,20 @@ class EventSeriesPolicy
         return $this->requireAbility($user, Ability::ViewPrivateEventSeries);
     }
 
+    public function viewResponsibilities(?User $user, EventSeries $eventSeries): Response
+    {
+        $viewResponse = $this->view($user, $eventSeries);
+        if ($viewResponse->denied()) {
+            return $viewResponse;
+        }
+
+        return $this->requireAbilityOrCheck(
+            $user,
+            Ability::ViewResponsibilitiesOfEventSeries,
+            fn () => $this->response($eventSeries->hasPubliclyVisibleResponsibleUsers())
+        );
+    }
+
     /**
      * Determine whether the user can create models.
      */

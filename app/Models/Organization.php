@@ -8,6 +8,7 @@ use App\Models\Traits\HasDocuments;
 use App\Models\Traits\HasLocation;
 use App\Models\Traits\HasResponsibleUsers;
 use App\Models\Traits\HasWebsite;
+use App\Options\Ability;
 use App\Options\ActiveStatus;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -78,6 +79,11 @@ class Organization extends Model
 
         return $this->save()
             && $this->saveResponsibleUsers($validatedData);
+    }
+
+    public function getAbilityToViewResponsibilities(): Ability
+    {
+        return Ability::ViewResponsibilitiesOfOrganizations;
     }
 
     public function getRoute(): string

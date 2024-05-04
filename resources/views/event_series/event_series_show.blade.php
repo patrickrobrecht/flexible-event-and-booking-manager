@@ -76,14 +76,24 @@
             'col-12 col-xl-6 col-xxl-4',
             'mt-4 mt-xxl-0' => $hasSubEventSeriesToShow,
         ])>
-            <section id="responsibilities">
-                <h2>{{ __('Responsibilities') }}</h2>
-                @include('users.shared.responsible_user_list', [
-                    'users' => $eventSeries->responsibleUsers,
-                ])
-            </section>
+            @php
+                $responsibilitySectionEmpty = true;
+            @endphp
+            @can('viewResponsibilities', $eventSeries)
+                @php
+                    $responsibilitySectionEmpty = false;
+                @endphp
+                <section id="responsibilities">
+                    <h2>{{ __('Responsibilities') }}</h2>
+                    @include('users.shared.responsible_user_list', [
+                        'users' => $eventSeries->getResponsibleUsersVisibleForCurrentUser(),
+                    ])
+                </section>
+            @endcan
             @canany(['viewAny', 'create'], [\App\Models\Document::class, $eventSeries])
-                <section id="documents" class="mt-4">
+                <section id="documents" @class([
+                    'mt-4' => !$responsibilitySectionEmpty,
+                ])>
                     <h2>{{ __('Documents') }}</h2>
                     @can('viewAny', [\App\Models\Document::class, $eventSeries])
                         @include('documents.shared.document_list', [

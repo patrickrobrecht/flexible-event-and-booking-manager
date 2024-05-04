@@ -8,6 +8,9 @@
                     <i class="fa fa-fw fa-remove"></i> {{ __('Remove') }}
                 </x-bs::button>
                 <input type="hidden" name="responsible_user_id[]" value="{{ $id }}">
+                <x-bs::form.field name="responsible_user_data[{{ $id }}][publicly_visible]"
+                                  type="checkbox" :options="\Portavice\Bladestrap\Support\Options::one(__('publicly visible'))"
+                                  :value="$selectedUser->pivot->publicly_visible ?? null"/>
             </div>
             <div class="col-12 col-lg-6 col-xxl-4">
                 <x-bs::form.field name="responsible_user_data[{{ $id }}][position]"

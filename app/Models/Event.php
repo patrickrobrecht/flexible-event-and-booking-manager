@@ -10,6 +10,7 @@ use App\Models\Traits\HasNameAndDescription;
 use App\Models\Traits\HasResponsibleUsers;
 use App\Models\Traits\HasSlugForRouting;
 use App\Models\Traits\HasWebsite;
+use App\Options\Ability;
 use App\Options\EventType;
 use App\Options\Visibility;
 use Carbon\Carbon;
@@ -169,6 +170,11 @@ class Event extends Model
         return $this->save()
             && $this->organizations()->sync($validatedData['organization_id'] ?? [])
             && $this->saveResponsibleUsers($validatedData);
+    }
+
+    public function getAbilityToViewResponsibilities(): Ability
+    {
+        return Ability::ViewResponsibilitiesOfEvents;
     }
 
     public function getBookingOptions(): Collection

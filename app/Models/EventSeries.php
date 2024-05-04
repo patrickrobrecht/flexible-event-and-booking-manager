@@ -7,6 +7,7 @@ use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\HasDocuments;
 use App\Models\Traits\HasResponsibleUsers;
 use App\Models\Traits\HasSlugForRouting;
+use App\Options\Ability;
 use App\Options\EventSeriesType;
 use App\Options\Visibility;
 use Illuminate\Database\Eloquent\Builder;
@@ -99,6 +100,11 @@ class EventSeries extends Model
 
         return $this->save()
             && $this->saveResponsibleUsers($validatedData);
+    }
+
+    public function getAbilityToViewResponsibilities(): Ability
+    {
+        return Ability::ViewResponsibilitiesOfEventSeries;
     }
 
     public function getRoute(): string

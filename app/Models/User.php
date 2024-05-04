@@ -132,6 +132,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->morphedByMany($class, 'responsible_for', 'user_responsibilities')
             ->withPivot([
+                'publicly_visible',
                 'position',
                 'sort',
             ]);

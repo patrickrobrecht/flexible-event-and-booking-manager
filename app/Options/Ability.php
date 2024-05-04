@@ -30,6 +30,7 @@ enum Ability: string
     case AddDocumentsToEvents = 'events.documents.create';
     case EditDocumentsOfEvents = 'events.documents.edit';
     case DeleteDocumentsOfEvents = 'events.documents.delete';
+    case ViewResponsibilitiesOfEvents = 'events.responsibilities.view';
 
     case ViewEventSeries = 'event_series.view';
     case ViewPrivateEventSeries = 'event_series.view_private';
@@ -39,6 +40,7 @@ enum Ability: string
     case AddDocumentsToEventSeries = 'event_series.documents.create';
     case EditDocumentsOfEventSeries = 'event_series.documents.edit';
     case DeleteDocumentsOfEventSeries = 'event_series.documents.delete';
+    case ViewResponsibilitiesOfEventSeries = 'event_series.responsibilities.view';
 
     case ViewLocations = 'locations.view';
     case CreateLocations = 'locations.create';
@@ -51,6 +53,7 @@ enum Ability: string
     case AddDocumentsToOrganizations = 'organizations.documents.create';
     case EditDocumentsOfOrganizations = 'organizations.documents.edit';
     case DeleteDocumentsOfOrganizations = 'organizations.documents.delete';
+    case ViewResponsibilitiesOfOrganizations = 'organizations.responsibilities.view';
 
     case ViewDocuments = 'documents.view';
 
@@ -87,6 +90,7 @@ enum Ability: string
             self::AddDocumentsToEvents => __('Add documents to events'),
             self::EditDocumentsOfEvents => __('Update documents of events'),
             self::DeleteDocumentsOfEvents => __('Delete documents of events'),
+            self::ViewResponsibilitiesOfEvents => __('View responsibilities of events'),
 
             self::ViewEventSeries => __('View event series'),
             self::ViewPrivateEventSeries => __('View private event series'),
@@ -96,6 +100,7 @@ enum Ability: string
             self::AddDocumentsToEventSeries => __('Add documents to event series'),
             self::EditDocumentsOfEventSeries => __('Update documents of event series'),
             self::DeleteDocumentsOfEventSeries => __('Delete documents of event series'),
+            self::ViewResponsibilitiesOfEventSeries => __('View responsibilities of event series'),
 
             self::ViewLocations => __('View locations'),
             self::CreateLocations => __('Create locations'),
@@ -108,6 +113,7 @@ enum Ability: string
             self::AddDocumentsToOrganizations => __('Add documents to organizations'),
             self::EditDocumentsOfOrganizations => __('Update documents of organizations'),
             self::DeleteDocumentsOfOrganizations => __('Delete documents of organizations'),
+            self::ViewResponsibilitiesOfOrganizations => __('View responsibilities of organizations'),
 
             self::ViewDocuments => __('View documents'),
 

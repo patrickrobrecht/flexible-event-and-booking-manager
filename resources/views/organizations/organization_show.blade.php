@@ -29,12 +29,14 @@
             @include('organizations.shared.organization_details')
         </div>
         <div class="col-12 col-md-8">
-            <section id="responsibilities">
-                <h2>{{ __('Responsibilities') }}</h2>
-                @include('users.shared.responsible_user_list', [
-                    'users' => $organization->responsibleUsers,
-                ])
-            </section>
+            @can('viewResponsibilities', $organization)
+                <section id="responsibilities">
+                    <h2>{{ __('Responsibilities') }}</h2>
+                    @include('users.shared.responsible_user_list', [
+                        'users' => $organization->getResponsibleUsersVisibleForCurrentUser(),
+                    ])
+                </section>
+            @endcan
 
             @canany(['viewAny', 'create'], [\App\Models\Document::class, $organization])
                 <section id="documents" class="mt-4">

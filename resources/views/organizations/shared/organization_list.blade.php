@@ -13,13 +13,15 @@
             @can('view', $organization)
                 <x-bs::list.item>
                     <div><a href="{{ route('organizations.show', $organization) }}" class="fw-bold">{{ $organization->name }}</a></div>
-                    <div>
-                        <i class="fa fa-fw fa-list-check" title="{{ __('Responsibilities') }}"></i>
-                        @include('users.shared.responsible_user_span', [
-                            'class' => null,
-                            'users' => $organization->responsibleUsers,
-                        ])
-                    </div>
+                    @can('viewResponsibilities', $organization)
+                        <div>
+                            <i class="fa fa-fw fa-list-check" title="{'{ __('Responsibilities') }}"></i>
+                            @include('users.shared.responsible_user_span', [
+                                'class' => null,
+                                'users' => $organization->getResponsibleUsersVisibleForCurrentUser(),
+                            ])
+                        </div>
+                    @endcan
                     <div>
                         <i class="fa fa-fw fa-location-pin" title="{{ __('Location') }}"></i>
                         {{ $organization->location->nameOrAddress }}

@@ -6,8 +6,6 @@ use App\Http\Requests\Filters\UserFilterRequest;
 use App\Http\Requests\UserRequest;
 use App\Models\User;
 use App\Models\UserRole;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
@@ -61,33 +59,7 @@ class UserController extends Controller
         $this->authorize('view', $user);
 
         return view('users.user_show', [
-            'user' => $user->load([
-                'bookings.bookingOption.event.location',
-                'documents',
-                'responsibleForEvents' => fn (MorphToMany $events) => $events
-                    ->with([
-                        'bookingOptions' => fn (HasMany $bookingOptions) => $bookingOptions
-                            ->withCount([
-                                'bookings',
-                            ]),
-                    ])
-                    ->withCount([
-                        'documents',
-                        'groups',
-                    ]),
-                'responsibleForEventSeries' => fn (MorphToMany $eventSeries) => $eventSeries
-                    ->withCount([
-                        'documents',
-                        'events',
-                    ])
-                    ->withMin('events', 'started_at')
-                    ->withMax('events', 'started_at')
-                    ->withCasts([
-                        'events_min_started_at' => 'datetime',
-                        'events_max_started_at' => 'datetime',
-                    ]),
-                'responsibleForOrganizations',
-            ]),
+            'user' => $user->loadProfileData(),
         ]);
     }
 

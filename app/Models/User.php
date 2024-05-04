@@ -114,12 +114,15 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function bookings(): HasMany
     {
-        return $this->hasMany(Booking::class, 'booked_by_user_id');
+        return $this->hasMany(Booking::class, 'booked_by_user_id')
+            ->orderByDesc('booked_at')
+            ->orderByDesc('created_at');
     }
 
     public function documents(): HasMany
     {
-        return $this->hasMany(Document::class, 'uploaded_by_user_id');
+        return $this->hasMany(Document::class, 'uploaded_by_user_id')
+            ->orderBy('title');
     }
 
     /**
@@ -220,6 +223,42 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         return false;
+    }
+
+    public function loadProfileData(): self
+    {
+        $this->load([
+            'bookings.bookingOption.event.location',
+            'documents.reference',
+            'responsibleForEvents' => fn (MorphToMany $events) => $events
+                ->with([
+                    'bookingOptions' => fn (HasMany $bookingOptions) => $bookingOptions
+                        ->withCount([
+                            'bookings',
+                        ]),
+                ])
+                ->withCount([
+                    'documents',
+                    'groups',
+                ]),
+            'responsibleForEventSeries' => fn (MorphToMany $eventSeries) => $eventSeries
+                ->withCount([
+                    'documents',
+                    'events',
+                ])
+                ->withMin('events', 'started_at')
+                ->withMax('events', 'started_at')
+                ->withCasts([
+                    'events_min_started_at' => 'datetime',
+                    'events_max_started_at' => 'datetime',
+                ]),
+            'responsibleForOrganizations',
+        ]);
+
+        // Set backwards relation for documents.
+        $this->documents->each(fn (Document $document) => $document->setRelation('uploadedByUser', $this));
+
+        return $this;
     }
 
     public function sendEmailVerificationNotification(): void

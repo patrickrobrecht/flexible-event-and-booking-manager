@@ -8,6 +8,7 @@ enum Ability: string
 {
     use NamedOption;
 
+    case ViewAccount = 'users.view_account';
     case EditAccount = 'users.edit_account';
     case ManagePersonalAccessTokens = 'personal_access_tokens.manage_own';
 
@@ -64,6 +65,7 @@ enum Ability: string
     public function getTranslatedName(): string
     {
         return match ($this) {
+            self::ViewAccount => __('View own account'),
             self::EditAccount => __('Edit own account'),
             self::ManagePersonalAccessTokens => __('Manage personal access tokens'),
 

@@ -98,12 +98,15 @@
                             <i class="fa fa-user-circle"></i>
                             {{ $loggedInUser->name }}
                             <x-slot:dropdown class="dropdown-menu-end">
-                                @if($loggedInUser->can('editAccount', \App\Models\User::class))
-                                    <x-bs::dropdown.item href="{{ route('account.edit') }}">
-                                        <i class="fa fa-fw fa-user-cog"></i>
-                                        {{ __('My account') }}
+                                @can('viewAccount', \App\Models\User::class)
+                                    <x-bs::dropdown.item href="{{ route('account.show') }}">
+                                        <i class="fa fa-fw fa-user-cog"></i> {{ __('My account') }}
                                     </x-bs::dropdown.item>
-                                @endif
+                                @elsecan('editAccount', \App\Models\User::class)
+                                    <x-bs::dropdown.item href="{{ route('account.edit') }}">
+                                        <i class="fa fa-fw fa-user-cog"></i> {{ __('My account') }}
+                                    </x-bs::dropdown.item>
+                                @endcan
                                 @if($loggedInUser->can('viewOwn', \App\Models\PersonalAccessToken::class))
                                     <x-bs::dropdown.item href="{{ route('personal-access-tokens.index') }}">
                                         <i class="fa fa-fw fa-id-card-clip"></i>

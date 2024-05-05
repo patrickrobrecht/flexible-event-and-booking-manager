@@ -22,6 +22,7 @@ class OrganizationController extends Controller
             'organizations' => Organization::buildQueryFromRequest()
                 ->with([
                     'location',
+                    'responsibleUsers',
                 ])
                 ->withCount([
                     'documents',

@@ -11,6 +11,13 @@ use Illuminate\View\View;
 
 class AccountController extends Controller
 {
+    public function show(): View
+    {
+        $this->authorize('viewAccount', User::class);
+
+        return view('account.account_show');
+    }
+
     public function edit(): View
     {
         $this->authorize('editAccount', User::class);

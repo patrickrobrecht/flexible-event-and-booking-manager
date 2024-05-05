@@ -26,6 +26,9 @@ class UserController extends Controller
                 ->withCount([
                     'bookings',
                     'documents',
+                    'responsibleForEvents',
+                    'responsibleForEventSeries',
+                    'responsibleForOrganizations',
                 ])
                 ->paginate(),
         ]));
@@ -49,6 +52,15 @@ class UserController extends Controller
         }
 
         return back();
+    }
+
+    public function show(User $user): View
+    {
+        $this->authorize('view', $user);
+
+        return view('users.user_show', [
+            'user' => $user->loadProfileData(),
+        ]);
     }
 
     public function edit(User $user): View

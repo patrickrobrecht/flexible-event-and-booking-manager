@@ -28,6 +28,23 @@ class OrganizationPolicy
         return $this->viewAny($user);
     }
 
+    public function viewResponsibilities(?User $user, Organization $organization): Response
+    {
+        $viewResponse = $this->view($user, $organization);
+        if ($viewResponse->denied()) {
+            return $viewResponse;
+        }
+
+        return $this->requireAbilityOrCheck(
+            $user,
+            Ability::ViewResponsibilitiesOfOrganizations,
+            fn () => $this->response(
+                $organization->hasPubliclyVisibleResponsibleUsers()
+                || (isset($user) && $user->isResponsibleFor($organization))
+            )
+        );
+    }
+
     /**
      * Determine whether the user can create models.
      */

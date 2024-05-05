@@ -153,6 +153,17 @@
                                 </x-slot:end>
                             </x-bs::list.item>
                         @endisset
+                        @can('viewResponsibilities', $event)
+                            <x-bs::list.item>
+                                <span class="text-nowrap"><i class="fa fa-fw fa-list-check"></i> {{ __('Responsibilities') }}</span>
+                                <x-slot:end>
+                                    @include('users.shared.responsible_user_span', [
+                                        'class' => 'text-end ms-2',
+                                        'users' => $event->getResponsibleUsersVisibleForCurrentUser(),
+                                    ])
+                                </x-slot:end>
+                            </x-bs::list.item>
+                        @endcan
                         <x-bs::list.item>
                             <span class="text-nowrap">
                                 <i class="fa fa-fw fa-file"></i>
@@ -174,7 +185,8 @@
                         @endcan
                         @can('viewGroups', $event)
                             <x-bs::button.link href="{{ route('groups.index', $event) }}" variant="secondary">
-                                <i class="fa fa-fw fa-user-group"></i> {{ __('Groups') }} <x-bs::badge variant="danger">{{ formatInt($event->groups_count) }}</x-bs::badge>
+                                <i class="fa fa-fw fa-user-group"></i> {{ __('Groups') }}
+                                <x-bs::badge variant="danger">{{ formatInt($event->groups_count) }}</x-bs::badge>
                             </x-bs::button.link>
                         @endcan
                         @can('create', [\App\Models\BookingOption::class, $event])

@@ -18,6 +18,15 @@
                         <div class="text-muted">{{ $event->description }}</div>
                     @endisset
                     @include('events.shared.event_badges')
+                    @can('viewResponsibilities', $event)
+                        <div>
+                            <i class="fa fa-fw fa-list-check" title="{{ __('Responsibilities') }}"></i>
+                            @include('users.shared.responsible_user_span', [
+                                'class' => null,
+                                'users' => $event->getResponsibleUsersVisibleForCurrentUser(),
+                            ])
+                        </div>
+                    @endcan
                     <div>
                         <i class="fa fa-fw fa-clock"></i>
                         @include('events.shared.event_dates')

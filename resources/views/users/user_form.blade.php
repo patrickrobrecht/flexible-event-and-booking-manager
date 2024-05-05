@@ -16,7 +16,7 @@
 @section('breadcrumbs')
     <x-bs::breadcrumb.item href="{{ route('users.index') }}">{{ __('Users') }}</x-bs::breadcrumb.item>
     @isset($editedUser)
-        <x-bs::breadcrumb.item>{{ $editedUser->name }}</x-bs::breadcrumb.item>
+        <x-bs::breadcrumb.item href="{{ route('users.show', $editedUser) }}">{{ $editedUser->name }}</x-bs::breadcrumb.item>
     @endisset
 @endsection
 

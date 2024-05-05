@@ -55,6 +55,16 @@
                                   :value="isset($event->started_at) ? $event->started_at->format('Y-m-d\TH:i') : null"><i class="fa fa-fw fa-clock"></i> {{ __('Start date') }}</x-bs::form.field>
                 <x-bs::form.field name="finished_at" type="datetime-local"
                                   :value="isset($event->finished_at) ? $event->finished_at->format('Y-m-d\TH:i') : null"><i class="fa fa-fw fa-clock"></i> {{ __('End date') }}</x-bs::form.field>
+                <x-bs::button.group>
+                    <x-button.save>
+                        @isset($event)
+                            {{ __( 'Save' ) }}
+                        @else
+                            {{ __('Create') }}
+                        @endisset
+                    </x-button.save>
+                    <x-button.cancel href="{{ route('events.index') }}"/>
+                </x-bs::button.group>
             </div>
             <div class="col-12 col-md-6">
                 <x-bs::form.field name="location_id" type="select"
@@ -71,19 +81,13 @@
                                   :options="Options::fromModels($eventSeries, 'name')->prepend(__('none'), '')"
                                   :value="$event->event_series_id ?? null"
                                   :from-query="\Illuminate\Support\Facades\Request::routeIs('events.create')"><i class="fa fa-fw fa-calendar-week"></i> {{ __('Part of the event series') }}</x-bs::form.field>
+
+                <h2>{{ __('Responsibilities') }}</h2>
+                @livewire('users.search-users', [
+                    'selectedUsers' => $event->responsibleUsers ?? \Illuminate\Database\Eloquent\Collection::empty(),
+                ])
             </div>
         </div>
-
-        <x-bs::button.group>
-            <x-button.save>
-                @isset($event)
-                    {{ __( 'Save' ) }}
-                @else
-                    {{ __('Create') }}
-                @endisset
-            </x-button.save>
-            <x-button.cancel href="{{ route('events.index') }}"/>
-        </x-bs::button.group>
     </x-bs::form>
 
     <x-text.timestamp :model="$event ?? null"/>

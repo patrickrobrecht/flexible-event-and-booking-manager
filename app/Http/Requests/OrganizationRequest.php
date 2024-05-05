@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Controllers\OrganizationController;
 use App\Http\Requests\Traits\AuthorizationViaController;
+use App\Http\Requests\Traits\ValidatesResponsibleUsers;
 use App\Models\Organization;
 use App\Options\ActiveStatus;
 use App\Policies\OrganizationPolicy;
@@ -17,6 +18,7 @@ class OrganizationRequest extends FormRequest
 {
     /** {@see OrganizationPolicy} in {@see OrganizationController} */
     use AuthorizationViaController;
+    use ValidatesResponsibleUsers;
 
     /**
      * Get the validation rules that apply to the request.
@@ -54,6 +56,12 @@ class OrganizationRequest extends FormRequest
                 'required',
                 Rule::exists('locations', 'id'),
             ],
+            ...$this->rulesForResponsibleUsers(),
         ];
+    }
+
+    public function attributes(): array
+    {
+        return $this->attributesForResponsibleUsers();
     }
 }

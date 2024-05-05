@@ -31,6 +31,7 @@ class EventController extends Controller
                     'location',
                     'organizations',
                     'parentEvent',
+                    'responsibleUsers',
                 ])
                 ->withCount([
                     'documents',
@@ -62,12 +63,15 @@ class EventController extends Controller
                     ]),
                     'parentEvent.subEvents.eventSeries',
                     'parentEvent.subEvents.location',
+                    'parentEvent.subEvents.responsibleUsers',
+                    'responsibleUsers',
                     'subEvents' => static fn (HasMany $query) => $query->withCount([
                         'documents',
                         'groups',
                     ]),
                     'subEvents.eventSeries',
                     'subEvents.location',
+                    'subEvents.responsibleUsers',
                 ])
                 ->loadCount([
                     'groups',

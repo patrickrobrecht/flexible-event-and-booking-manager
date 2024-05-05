@@ -16,8 +16,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
@@ -43,6 +45,9 @@ use Spatie\QueryBuilder\Enums\SortDirection;
  * @property-read string $name {@see User::name()}
  *
  * @property-read Collection|Booking[] $bookings {@see self::bookings()}
+ * @property-read Collection|Event[] $responsibleForEvents {@see self::responsibleForEvents()}
+ * @property-read Collection|EventSeries[] $responsibleForEventSeries {@see self::responsibleForEventSeries()}
+ * @property-read Collection|Organization[] $responsibleForOrganizations {@see self::responsibleForOrganizations()}
  * @property-read Collection|PersonalAccessToken[] $tokens {@see HasApiTokens::tokens()}
  * @property-read Collection|UserRole[] $userRoles {@see User::userRoles()}
  */
@@ -110,12 +115,48 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function bookings(): HasMany
     {
-        return $this->hasMany(Booking::class, 'booked_by_user_id');
+        return $this->hasMany(Booking::class, 'booked_by_user_id')
+            ->orderByDesc('booked_at')
+            ->orderByDesc('created_at');
     }
 
     public function documents(): HasMany
     {
-        return $this->hasMany(Document::class, 'uploaded_by_user_id');
+        return $this->hasMany(Document::class, 'uploaded_by_user_id')
+            ->orderBy('title');
+    }
+
+    /**
+     * @param class-string $class
+     */
+    private function responsibleFor(string $class): MorphToMany
+    {
+        return $this->morphedByMany($class, 'responsible_for', 'user_responsibilities')
+            ->withPivot([
+                'publicly_visible',
+                'position',
+                'sort',
+            ]);
+    }
+
+    public function responsibleForEvents(): MorphToMany
+    {
+        return $this->responsibleFor(Event::class)
+            ->orderByDesc('started_at')
+            ->orderByDesc('finished_at')
+            ->orderBy('name');
+    }
+
+    public function responsibleForEventSeries(): MorphToMany
+    {
+        return $this->responsibleFor(EventSeries::class)
+            ->orderBy('name');
+    }
+
+    public function responsibleForOrganizations(): MorphToMany
+    {
+        return $this->responsibleFor(Organization::class)
+            ->orderBy('name');
     }
 
     public function userRoles(): BelongsToMany
@@ -184,6 +225,49 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         return false;
+    }
+
+    public function isResponsibleFor(Model $model): bool
+    {
+        return ($model->responsibleUsers ?? Collection::empty())
+            ->pluck('id')
+            ->contains($this->id);
+    }
+
+    public function loadProfileData(): self
+    {
+        $this->load([
+            'bookings.bookingOption.event.location',
+            'documents.reference',
+            'responsibleForEvents' => fn (MorphToMany $events) => $events
+                ->with([
+                    'bookingOptions' => fn (HasMany $bookingOptions) => $bookingOptions
+                        ->withCount([
+                            'bookings',
+                        ]),
+                ])
+                ->withCount([
+                    'documents',
+                    'groups',
+                ]),
+            'responsibleForEventSeries' => fn (MorphToMany $eventSeries) => $eventSeries
+                ->withCount([
+                    'documents',
+                    'events',
+                ])
+                ->withMin('events', 'started_at')
+                ->withMax('events', 'started_at')
+                ->withCasts([
+                    'events_min_started_at' => 'datetime',
+                    'events_max_started_at' => 'datetime',
+                ]),
+            'responsibleForOrganizations',
+        ]);
+
+        // Set backwards relation for documents.
+        $this->documents->each(fn (Document $document) => $document->setRelation('uploadedByUser', $this));
+
+        return $this;
     }
 
     public function sendEmailVerificationNotification(): void

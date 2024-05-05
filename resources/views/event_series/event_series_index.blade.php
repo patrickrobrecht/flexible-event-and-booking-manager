@@ -89,6 +89,17 @@
                                 <x-bs::badge>{{ formatInt($eventSeriesItem->events_count) }}</x-bs::badge>
                             </x-slot:end>
                         </x-bs::list.item>
+                        @can('viewResponsibilities', $eventSeriesItem)
+                            <x-bs::list.item>
+                                <span class="text-nowrap"><i class="fa fa-fw fa-list-check"></i> {{ __('Responsibilities') }}</span>
+                                <x-slot:end>
+                                    @include('users.shared.responsible_user_span', [
+                                        'class' => 'text-end ms-2',
+                                        'users' => $eventSeriesItem->getResponsibleUsersVisibleForCurrentUser(),
+                                    ])
+                                </x-slot:end>
+                            </x-bs::list.item>
+                        @endcan
                         <x-bs::list.item>
                             <span class="text-nowrap">
                                 <i class="fa fa-fw fa-file"></i>

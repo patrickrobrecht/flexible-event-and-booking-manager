@@ -56,10 +56,19 @@
 
     <div class="row my-3">
         @foreach($users as $user)
+            @php
+                $showRouteUrl = route('users.show', $user);
+            @endphp
             <div class="col-12 col-lg-6 col-xxl-4 mb-3">
                 <div class="card">
                     <div class="card-header">
-                        <h2 class="card-title">{{ $user->name }}</h2>
+                        <h2 class="card-title">
+                            @can('view', $user)
+                                <a href="{{ $showRouteUrl }}">{{ $user->name }}</a>
+                            @else
+                                {{ $user->name }}
+                            @endcan
+                        </h2>
                     </div>
                     <x-bs::list :flush="true">
                         @isset($user->date_of_birth)
@@ -120,15 +129,25 @@
                             </x-slot:end>
                         </x-bs::list.item>
                         <x-bs::list.item>
-                            <span class="text-nowrap"><i class="fa fa-fw fa-file-contract"></i> {{ __('Bookings') }}</span>
+                            <span class="text-nowrap"><i class="fa fa-fw fa-file-contract"></i> <a href="{{ $showRouteUrl }}#bookings">{{ __('Bookings') }}</a></span>
                             <x-slot:end>
                                 <x-bs::badge>{{ formatInt($user->bookings_count) }}</x-bs::badge>
                             </x-slot:end>
                         </x-bs::list.item>
                         <x-bs::list.item>
-                            <span class="text-nowrap"><i class="fa fa-fw fa-file"></i> {{ __('Documents') }}</span>
+                            <span class="text-nowrap"><i class="fa fa-fw fa-file"></i> <a href="{{ $showRouteUrl }}#documents">{{ __('Documents') }}</a></span>
                             <x-slot:end>
                                 <x-bs::badge>{{ formatInt($user->documents_count) }}</x-bs::badge>
+                            </x-slot:end>
+                        </x-bs::list.item>
+                        <x-bs::list.item>
+                            <span class="text-nowrap"><i class="fa fa-fw fa-list-check"></i> <a href="{{ $showRouteUrl }}#responsibilities">{{ __('Responsibilities') }}</a></span>
+                            <x-slot:end>
+                                <span class="text-end ms-2">
+                                    <x-bs::badge>{{ formatTransChoice(':count organizations', $user->responsible_for_organizations_count) }}</x-bs::badge>
+                                    <x-bs::badge>{{ formatTransChoice(':count event series', $user->responsible_for_event_series_count) }}</x-bs::badge>
+                                    <x-bs::badge>{{ formatTransChoice(':count events', $user->responsible_for_events_count) }}</x-bs::badge>
+                                </span>
                             </x-slot:end>
                         </x-bs::list.item>
                     </x-bs::list>

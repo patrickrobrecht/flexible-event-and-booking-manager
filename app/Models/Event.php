@@ -7,8 +7,10 @@ use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\HasDocuments;
 use App\Models\Traits\HasLocation;
 use App\Models\Traits\HasNameAndDescription;
+use App\Models\Traits\HasResponsibleUsers;
 use App\Models\Traits\HasSlugForRouting;
 use App\Models\Traits\HasWebsite;
+use App\Options\Ability;
 use App\Options\EventType;
 use App\Options\Visibility;
 use Carbon\Carbon;
@@ -48,6 +50,7 @@ class Event extends Model
     use HasFactory;
     use HasLocation;
     use HasNameAndDescription;
+    use HasResponsibleUsers;
     use HasSlugForRouting;
     use HasWebsite;
 
@@ -165,7 +168,13 @@ class Event extends Model
         $this->parentEvent()->associate($validatedData['parent_event_id'] ?? null);
 
         return $this->save()
-            && $this->organizations()->sync($validatedData['organization_id'] ?? []);
+            && $this->organizations()->sync($validatedData['organization_id'] ?? [])
+            && $this->saveResponsibleUsers($validatedData);
+    }
+
+    public function getAbilityToViewResponsibilities(): Ability
+    {
+        return Ability::ViewResponsibilitiesOfEvents;
     }
 
     public function getBookingOptions(): Collection

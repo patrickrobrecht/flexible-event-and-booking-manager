@@ -31,8 +31,16 @@ class EventPolicy
             return $this->allow();
         }
 
-        // Private events are only visible for logged-in users with the ability to view private events as well.
-        return $this->requireAbility($user, Ability::ViewPrivateEvents);
+        /**
+         * Private events are only visible for
+         * - logged-in users with the ability to view private events as well
+         * - and the responsible users.
+         */
+        return $this->requireAbilityOrCheck(
+            $user,
+            Ability::ViewPrivateEvents,
+            fn () => $this->response(isset($user) && $user->isResponsibleFor($event))
+        );
     }
 
     public function viewGroups(User $user, Event $event): Response
@@ -42,6 +50,23 @@ class EventPolicy
         }
 
         return $this->requireAbility($user, Ability::ViewBookingsOfEvent);
+    }
+
+    public function viewResponsibilities(?User $user, Event $event): Response
+    {
+        $viewResponse = $this->view($user, $event);
+        if ($viewResponse->denied()) {
+            return $viewResponse;
+        }
+
+        return $this->requireAbilityOrCheck(
+            $user,
+            Ability::ViewResponsibilitiesOfEvents,
+            fn () => $this->response(
+                $event->hasPubliclyVisibleResponsibleUsers()
+                || (isset($user) && $user->isResponsibleFor($event))
+            )
+        );
     }
 
     /**

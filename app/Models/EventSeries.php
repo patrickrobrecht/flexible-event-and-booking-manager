@@ -5,7 +5,9 @@ namespace App\Models;
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\HasDocuments;
+use App\Models\Traits\HasResponsibleUsers;
 use App\Models\Traits\HasSlugForRouting;
+use App\Options\Ability;
 use App\Options\EventSeriesType;
 use App\Options\Visibility;
 use Illuminate\Database\Eloquent\Builder;
@@ -31,6 +33,7 @@ class EventSeries extends Model
     use BuildsQueryFromRequest;
     use HasDocuments;
     use HasFactory;
+    use HasResponsibleUsers;
     use HasSlugForRouting;
 
     /**
@@ -95,7 +98,13 @@ class EventSeries extends Model
         $this->fill($validatedData);
         $this->parentEventSeries()->associate($validatedData['parent_event_series_id'] ?? null);
 
-        return $this->save();
+        return $this->save()
+            && $this->saveResponsibleUsers($validatedData);
+    }
+
+    public function getAbilityToViewResponsibilities(): Ability
+    {
+        return Ability::ViewResponsibilitiesOfEventSeries;
     }
 
     public function getRoute(): string

@@ -62,6 +62,23 @@
             @endif
 
             @php
+                $responsibilitySectionEmpty = true;
+            @endphp
+            @can('viewResponsibilities', $event)
+                <section id="responsibilities" @class([
+                    'mt-4' => $bookingOptionsToShow,
+                ])>
+                    @php
+                        $responsibilitySectionEmpty = false;
+                    @endphp
+                    <h2>{{ __('Responsibilities') }}</h2>
+                    @include('users.shared.responsible_user_list', [
+                        'users' => $event->getResponsibleUsersVisibleForCurrentUser(),
+                    ])
+                </section>
+            @endcan
+
+            @php
                 $documentSectionEmpty = true;
             @endphp
             @canany(['viewAny', 'create'], [\App\Models\Document::class, $event])
@@ -69,7 +86,7 @@
                     $documentSectionEmpty = false;
                 @endphp
                 <section id="documents" @class([
-                    'mt-4' => $bookingOptionsToShow,
+                    'mt-4' => $bookingOptionsToShow || !$responsibilitySectionEmpty,
                 ])>
                     <h2>{{ __('Documents') }}</h2>
                     @can('viewAny', [\App\Models\Document::class, $event])
@@ -85,11 +102,14 @@
 
             @isset($event->parentEvent)
                 @php
-                    $siblingEvents = $event->parentEvent->subEvents->keyBy('id')->except($event->id);
+                    $siblingEvents = $event->parentEvent->subEvents
+                        ->each(fn (\App\Models\Event $e) => $e->setRelation('parentEvent', $event->parentEvent))
+                        ->keyBy('id')
+                        ->except($event->id);
                 @endphp
                 @if($siblingEvents->isNotEmpty())
                     <section id="events" @class([
-                        'mt-4' => $bookingOptionsToShow || !$documentSectionEmpty,
+                        'mt-4' => $bookingOptionsToShow || !$responsibilitySectionEmpty || !$documentSectionEmpty,
                     ])>
                         <h2>{{ __('Other sub events of :name', [
                             'name' => $event->parentEvent->name,
@@ -103,6 +123,7 @@
             @else
                 @php
                     $subEvents = $event->subEvents
+                        ->each(fn (\App\Models\Event $e) => $e->setRelation('parentEvent', $event))
                         ->filter(fn (\App\Models\Event $subEvent) => \Illuminate\Support\Facades\Gate::check('view', $subEvent));
                 @endphp
                 @if($subEvents->isNotEmpty() || Auth::user()?->can('createChild', $event))

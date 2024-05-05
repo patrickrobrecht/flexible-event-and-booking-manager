@@ -20,10 +20,14 @@ class UserPolicy
     }
 
     /**
-     * Determine whether the user can view the model.
+     * Determine whether the user can view the user's profile.
      */
     public function view(User $user, User $model): Response
     {
+        /**
+         * {@see self::viewAccount()} for own profile.
+         */
+
         return $this->viewAny($user);
     }
 
@@ -65,6 +69,14 @@ class UserPolicy
     public function forceDelete(User $user, User $model): Response
     {
         return $this->deny();
+    }
+
+    /**
+     * Determine whether a user can view his/her profile.
+     */
+    public function viewAccount(User $user): Response
+    {
+        return $this->requireAbility($user, Ability::ViewAccount);
     }
 
     /**

@@ -32,10 +32,15 @@ class EventSeriesPolicy
         }
 
         /**
-         * Private event series are only visible for logged-in users
-         * with the ability to view private event series as well.
+         * Private event series are only visible for
+         * - logged-in users with the ability to view private event series as well
+         * - and the responsible users.
          */
-        return $this->requireAbility($user, Ability::ViewPrivateEventSeries);
+        return $this->requireAbilityOrCheck(
+            $user,
+            Ability::ViewPrivateEventSeries,
+            fn () => $this->response(isset($user) && $user->isResponsibleFor($eventSeries))
+        );
     }
 
     public function viewResponsibilities(?User $user, EventSeries $eventSeries): Response
@@ -48,7 +53,10 @@ class EventSeriesPolicy
         return $this->requireAbilityOrCheck(
             $user,
             Ability::ViewResponsibilitiesOfEventSeries,
-            fn () => $this->response($eventSeries->hasPubliclyVisibleResponsibleUsers())
+            fn () => $this->response(
+                $eventSeries->hasPubliclyVisibleResponsibleUsers()
+                || (isset($user) && $user->isResponsibleFor($eventSeries))
+            )
         );
     }
 

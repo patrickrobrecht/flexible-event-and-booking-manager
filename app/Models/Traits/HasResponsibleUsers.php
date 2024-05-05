@@ -35,8 +35,12 @@ trait HasResponsibleUsers
     public function getResponsibleUsersVisibleForCurrentUser(): Collection
     {
         $currentUser = Auth::user();
-
-        if (isset($currentUser) && $currentUser->hasAbility($this->getAbilityToViewResponsibilities())) {
+        if (
+            isset($currentUser) && (
+                $currentUser->hasAbility($this->getAbilityToViewResponsibilities())
+                || $currentUser->isResponsibleFor($this)
+            )
+        ) {
             return $this->responsibleUsers;
         }
 

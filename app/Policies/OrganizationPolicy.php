@@ -38,7 +38,10 @@ class OrganizationPolicy
         return $this->requireAbilityOrCheck(
             $user,
             Ability::ViewResponsibilitiesOfOrganizations,
-            fn () => $this->response($organization->hasPubliclyVisibleResponsibleUsers())
+            fn () => $this->response(
+                $organization->hasPubliclyVisibleResponsibleUsers()
+                || (isset($user) && $user->isResponsibleFor($organization))
+            )
         );
     }
 

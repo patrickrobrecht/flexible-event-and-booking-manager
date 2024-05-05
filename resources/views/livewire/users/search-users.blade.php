@@ -3,7 +3,7 @@
         <div class="row mb-3">
             <div class="col-12 col-xxl-4">
                 <a href="{{ route('users.show', $selectedUser) }}">{{ $selectedUser->name }}</a>
-                <x-bs::button variant="danger" class="btn-sm"
+                <x-bs::button type="button" variant="danger" class="btn-sm"
                               wire:click="removeUser({{ $id }})">
                     <i class="fa fa-fw fa-remove"></i> {{ __('Remove') }}
                 </x-bs::button>

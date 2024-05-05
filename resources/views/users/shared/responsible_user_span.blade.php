@@ -12,11 +12,13 @@
                 $positionAndComma = (isset($user->pivot->position) ? sprintf(' (%s)', $user->pivot->position) : '')
                     . ($loop->last ? '' : ', ');
             @endphp
-            @can('view', $user)
-                <a href="{{ route('users.show', $user) }}">{{ $user->name }}</a>{{ $positionAndComma }}
-            @else
-                {{ $user->name }}{{ $positionAndComma }}
-            @endcan
+            <span class="text-nowrap">
+                @can('view', $user)
+                    <a href="{{ route('users.show', $user) }}">{{ $user->name }}</a>{{ $positionAndComma }}
+                @else
+                    {{ $user->name }}{{ $positionAndComma }}
+                @endcan
+            </span>
         @endforeach
     </span>
 @endif

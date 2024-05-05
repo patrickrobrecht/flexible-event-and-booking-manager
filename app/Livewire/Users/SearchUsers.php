@@ -16,8 +16,11 @@ class SearchUsers extends Component
     #[Locked]
     public $fieldName = 'user_id';
 
+    /**
+     * @var Collection<User>
+     */
     #[Locked]
-    public $selectedUsers = [];
+    public $selectedUsers;
 
     public function mount($selectedUsers): void
     {
@@ -49,6 +52,7 @@ class SearchUsers extends Component
                     /** @see User::scopeEmail() */
                     ->orWhere(fn (Builder $query2) => $query2->email(...$searchTerms))
             )
+            ->whereNotIn('id', $this->selectedUsers->keys())
             ->orderBy('last_name')
             ->orderBy('first_name');
     }

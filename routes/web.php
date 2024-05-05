@@ -116,6 +116,8 @@ Route::middleware('auth')->group(static function () {
     // My Account
     Route::get('account', [AccountController::class, 'show'])
         ->name('account.show');
+    Route::get('account/abilities', [AccountController::class, 'showAbilities'])
+        ->name('account.show.abilities');
     Route::get('account/edit', [AccountController::class, 'edit'])
         ->name('account.edit');
     Route::put('account', [AccountController::class, 'update'])

@@ -18,7 +18,9 @@
 @endsection
 
 @section('content')
-    @include('users.shared.user_profile')
+    @include('users.shared.user_profile_data')
 
-    <x-text.timestamp :model="$user ?? null" />
+    @include('users.shared.user_profile_responsibilities')
+
+    <x-text.timestamp :model="$user ?? null"/>
 @endsection

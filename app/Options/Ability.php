@@ -71,6 +71,7 @@ enum Ability: string
     case EditUserRoles = 'user_roles.edit';
 
     case ViewAccount = 'users.view_account';
+    case ViewAbilities = 'users.view_account.abilities';
     case EditAccount = 'users.edit_account';
     case ManagePersonalAccessTokens = 'personal_access_tokens.manage_own';
 
@@ -140,6 +141,7 @@ enum Ability: string
             self::EditUserRoles => __('Edit user roles'),
 
             self::ViewAccount => __('View own account'),
+            self::ViewAbilities => __('View abilities'),
             self::EditAccount => __('Edit own account'),
             self::ManagePersonalAccessTokens => __('Manage personal access tokens'),
         };
@@ -202,6 +204,7 @@ enum Ability: string
             self::CreateUserRoles,
             self::EditUserRoles => AbilityGroup::UserRoles,
             self::ViewAccount,
+            self::ViewAbilities,
             self::EditAccount,
             self::ManagePersonalAccessTokens => AbilityGroup::OwnAccount,
         };

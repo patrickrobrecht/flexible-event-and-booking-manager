@@ -9,6 +9,18 @@
     {{ __('Edit my account') }}
 @endsection
 
+@section('breadcrumbs')
+    @can('viewAccount', \App\Models\User::class)
+        <x-bs::breadcrumb.item href="{{ route('account.show') }}">{{ __('My account') }}</x-bs::breadcrumb.item>
+    @endcan
+@endsection
+
+@section('headline-buttons')
+    @can('viewAbilities', \App\Models\User::class)
+        <x-bs::button.link variant="secondary" href="{{ route('account.show.abilities') }}">{{ __('View abilities') }}</x-bs::button.link>
+    @endif
+@endsection
+
 @section('content')
     <x-bs::form method="PUT" action="{{ route('account.update') }}">
         <div class="row">
@@ -65,20 +77,4 @@
             @isset($user){{ __( 'Save' ) }} @else{{ __('Create') }}@endisset
         </x-button.save>
     </x-bs::form>
-
-    <section class="mt-3">
-        <h2>{{ __('Abilities') }}</h2>
-        <div class="mb-3">
-            @foreach($user->userRoles as $userRole)
-                <x-bs::badge variant="primary">{{ $userRole->name }}</x-bs::badge>
-            @endforeach
-        </div>
-
-        {{ __('In :app you have the following abilities:', ['app' => config('app.name')]) }}
-        <ul>
-            @foreach($user->getAbilities() as $ability)
-                <li>{{ $ability->getTranslatedName() }}</li>
-            @endforeach
-        </ul>
-    </section>
 @endsection

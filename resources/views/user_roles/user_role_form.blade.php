@@ -13,17 +13,23 @@
 @endsection
 
 @section('breadcrumbs')
-    <x-bs::breadcrumb.item href="{{ route('user-roles.index') }}">{{ __('User roles') }}</x-bs::breadcrumb.item>
+    @can('viewAny', \App\Models\UserRole::class)
+        <x-bs::breadcrumb.item href="{{ route('user-roles.index') }}">{{ __('User roles') }}</x-bs::breadcrumb.item>
+    @else
+        <x-bs::breadcrumb.item>{{ __('User roles') }}</x-bs::breadcrumb.item>
+    @endcan
     @isset($userRole)
-        <x-bs::breadcrumb.item>{{ $userRole->name }}</x-bs::breadcrumb.item>
+        @can('view', $userRole)
+            <x-bs::breadcrumb.item href="{{ route('user-roles.show', $userRole) }}">{{ $userRole->name }}</x-bs::breadcrumb.item>
+        @else
+            <x-bs::breadcrumb.item>{{ $userRole->name }}</x-bs::breadcrumb.item>
+        @endcan
     @endisset
 @endsection
 
 @section('content')
     @isset($userRole)
-        <div class="mb-3">
-            <x-bs::badge variant="primary">{{ formatTransChoice(':count users', $userRole->users()->count()) }}</x-bs::badge>
-        </div>
+        @include('user_roles.shared.user_role_badge')
     @endisset
 
     <x-bs::form method="{{ isset($userRole) ? 'PUT' : 'POST' }}"

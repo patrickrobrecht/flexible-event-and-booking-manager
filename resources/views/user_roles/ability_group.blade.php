@@ -13,17 +13,17 @@
                               :options="\Portavice\Bladestrap\Support\Options::fromEnum($abilityGroup->getAbilities(), 'getTranslatedName')"
                               :value="$userRole->abilities ?? []"/>
         @else
-            <ul>
+            <ul class="list-unstyled">
                 @foreach($abilityGroup->getAbilities() as $ability)
                     @php
                         $hasAbility = in_array($ability->value, $userRole->abilities, true);
                     @endphp
                     <li @class([
-                            'fw-bold' => $hasAbility,
-                        ])><i @class([
-                            'fa fa-fw',
-                            $hasAbility ? 'fa-check text-success' : 'fa-xmark text-danger',
-                        ])></i> {{ $ability->getTranslatedName() }}</li>
+                        'fw-bold' => $hasAbility,
+                    ])><i @class([
+                        'fa fa-fw',
+                        $hasAbility ? 'fa-check text-success' : 'fa-xmark text-danger',
+                    ])></i> {{ $ability->getTranslatedName() }}</li>
                 @endforeach
             </ul>
         @endif

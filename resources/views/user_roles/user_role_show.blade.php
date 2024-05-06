@@ -22,7 +22,7 @@
 @endsection
 
 @section('content')
-    @include('user_roles.shared.user_role_badge')
+    @include('user_roles.shared.user_role_badge_count')
 
     <h2>{{ __('Abilities') }}</h2>
     <div class="cols-lg-2 cols-xxl-3 mb-3">

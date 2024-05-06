@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @php
-    /** @var ?\Laravel\Sanctum\PersonalAccessToken $token */
+    /** @var ?\App\Models\PersonalAccessToken $token */
 @endphp
 
 @section('title')
@@ -13,8 +13,14 @@
 @endsection
 
 @section('breadcrumbs')
-    <x-bs::breadcrumb.item href="{{ route('personal-access-tokens.index') }}">{{ __('Personal access tokens') }}</x-bs::breadcrumb.item>
-    <x-bs::breadcrumb.item>@yield('title')</x-bs::breadcrumb.item>
+    @can('viewOwn', \App\Models\PersonalAccessToken::class)
+        <x-bs::breadcrumb.item href="{{ route('personal-access-tokens.index') }}">{{ __('Personal access tokens') }}</x-bs::breadcrumb.item>
+    @else
+        <x-bs::breadcrumb.item>{{ __('Personal access tokens') }}</x-bs::breadcrumb.item>
+    @endcan
+    @isset($token)
+        <x-bs::breadcrumb.item>{{ $token->name }}</x-bs::breadcrumb.item>
+    @endisset
 @endsection
 
 @section('content')
@@ -26,21 +32,18 @@
                                   :value="$token->name ?? null">{{ __('Name') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6">
-                <x-bs::form.field name="expires_at" aria-describedby="expireHelpBlock"
-                                  type="datetime-local"
+                <x-bs::form.field name="expires_at" type="datetime-local"
                                   :value="isset($token->expires_at) ? $token->expires_at->format('Y-m-d\TH:i') : null">
                     {{ __('Expires at') }}
                     @if(isset($token->expires_at) && $token->expires_at->isPast())
                         <x-bs::badge variant="danger">{{ __('expired') }}</x-bs::badge>
                     @endif
-                    <x-slot:hint>
-                        {{ __('Last used') }}: {{ isset($token->last_used_at) ? formatDateTime($token->last_used_at) : __('never') }}
-                    </x-slot:hint>
+                    <x-slot:hint>{{ __('Last used') }}: {{ isset($token->last_used_at) ? formatDateTime($token->last_used_at) : __('never') }}</x-slot:hint>
                 </x-bs::form.field>
             </div>
         </div>
         <x-bs::form.field id="abilities" name="abilities[]" type="switch"
-                          :options="\App\Options\Ability::toOptions()"
+                          :options="\Portavice\Bladestrap\Support\Options::fromEnum(\App\Options\Ability::apiCases(), 'getTranslatedName')"
                           :value="$token->abilities ?? []"
                           check-container-class="cols-lg-2 cols-xl-3 cols-xxl-4">{{ __('Abilities') }}</x-bs::form.field>
 

@@ -9,13 +9,7 @@
         <span class="me-3">
             <i class="fa fa-fw fa-user-group" title="{{ __('User roles') }}"></i>
             @foreach($user->userRoles->sortBy('name') as $userRole)
-                <x-bs::badge variant="primary">
-                    @can('view', $userRole)
-                        <a href="{{ route('user-roles.show', $userRole) }}" class="text-white">{{ $userRole->name }}</a>
-                    @else
-                        {{ $userRole->name }}
-                    @endcan
-                </x-bs::badge>
+                @include('user_roles.shared.user_role_badge_link')
             @endforeach
         </span>
     @endif

@@ -75,6 +75,69 @@ enum Ability: string
     case EditAccount = 'users.edit_account';
     case ManagePersonalAccessTokens = 'personal_access_tokens.manage_own';
 
+    public function getAbilityGroup(): AbilityGroup
+    {
+        return match ($this) {
+            // Events
+            self::ViewEvents,
+            self::ViewPrivateEvents,
+            self::CreateEvents,
+            self::EditEvents,
+            self::ViewResponsibilitiesOfEvents => AbilityGroup::Events,
+            self::ManageBookingOptionsOfEvent,
+            self::ViewBookingsOfEvent,
+            self::ExportBookingsOfEvent,
+            self::EditBookingsOfEvent,
+            self::DeleteAndRestoreBookingsOfEvent,
+            self::EditBookingComment,
+            self::ViewPaymentStatus,
+            self::EditPaymentStatus => AbilityGroup::Bookings,
+            self::ManageGroupsOfEvent,
+            self::ExportGroupsOfEvent => AbilityGroup::Groups,
+            self::ViewEventSeries,
+            self::ViewPrivateEventSeries,
+            self::CreateEventSeries,
+            self::EditEventSeries,
+            self::ViewResponsibilitiesOfEventSeries => AbilityGroup::EventSeries,
+
+            // Basic data
+            self::ViewOrganizations,
+            self::CreateOrganizations,
+            self::EditOrganizations,
+            self::ViewResponsibilitiesOfOrganizations => AbilityGroup::Organizations,
+            self::ViewLocations,
+            self::CreateLocations,
+            self::EditLocations => AbilityGroup::Locations,
+
+            // Documents
+            self::ViewDocuments => AbilityGroup::Documents,
+            self::ViewDocumentsOfEvents,
+            self::AddDocumentsToEvents,
+            self::EditDocumentsOfEvents,
+            self::DeleteDocumentsOfEvents => AbilityGroup::DocumentsOfEvents,
+            self::ViewDocumentsOfEventSeries,
+            self::AddDocumentsToEventSeries,
+            self::EditDocumentsOfEventSeries,
+            self::DeleteDocumentsOfEventSeries => AbilityGroup::DocumentsOfEventSeries,
+            self::ViewDocumentsOfOrganizations,
+            self::AddDocumentsToOrganizations,
+            self::EditDocumentsOfOrganizations,
+            self::DeleteDocumentsOfOrganizations => AbilityGroup::DocumentsOfOrganizations,
+
+            // Users and abilities
+            self::ViewUsers,
+            self::CreateUsers,
+            self::EditUsers => AbilityGroup::Users,
+            self::ViewUserRoles,
+            self::CreateUserRoles,
+            self::EditUserRoles => AbilityGroup::UserRoles,
+            self::ViewAccount,
+            self::ViewAbilities,
+            self::EditAccount,
+            self::ManagePersonalAccessTokens => AbilityGroup::OwnAccount,
+        };
+    }
+
     public function getTranslatedName(): string
     {
         return match ($this) {
@@ -147,66 +210,13 @@ enum Ability: string
         };
     }
 
-    public function getAbilityGroup(): AbilityGroup
+    /**
+     * @return self[]
+     */
+    public static function apiCases(): array
     {
-        return match ($this) {
-            // Events
-            self::ViewEvents,
-            self::ViewPrivateEvents,
-            self::CreateEvents,
-            self::EditEvents,
-            self::ViewResponsibilitiesOfEvents => AbilityGroup::Events,
-            self::ManageBookingOptionsOfEvent,
-            self::ViewBookingsOfEvent,
-            self::ExportBookingsOfEvent,
-            self::EditBookingsOfEvent,
-            self::DeleteAndRestoreBookingsOfEvent,
-            self::EditBookingComment,
-            self::ViewPaymentStatus,
-            self::EditPaymentStatus => AbilityGroup::Bookings,
-            self::ManageGroupsOfEvent,
-            self::ExportGroupsOfEvent => AbilityGroup::Groups,
-            self::ViewEventSeries,
-            self::ViewPrivateEventSeries,
-            self::CreateEventSeries,
-            self::EditEventSeries,
-            self::ViewResponsibilitiesOfEventSeries => AbilityGroup::EventSeries,
-
-            // Basic data
-            self::ViewOrganizations,
-            self::CreateOrganizations,
-            self::EditOrganizations,
-            self::ViewResponsibilitiesOfOrganizations => AbilityGroup::Organizations,
-            self::ViewLocations,
-            self::CreateLocations,
-            self::EditLocations => AbilityGroup::Locations,
-
-            // Documents
-            self::ViewDocuments => AbilityGroup::Documents,
-            self::ViewDocumentsOfEvents,
-            self::AddDocumentsToEvents,
-            self::EditDocumentsOfEvents,
-            self::DeleteDocumentsOfEvents => AbilityGroup::DocumentsOfEvents,
-            self::ViewDocumentsOfEventSeries,
-            self::AddDocumentsToEventSeries,
-            self::EditDocumentsOfEventSeries,
-            self::DeleteDocumentsOfEventSeries => AbilityGroup::DocumentsOfEventSeries,
-            self::ViewDocumentsOfOrganizations,
-            self::AddDocumentsToOrganizations,
-            self::EditDocumentsOfOrganizations,
-            self::DeleteDocumentsOfOrganizations => AbilityGroup::DocumentsOfOrganizations,
-
-            // Users and abilities
-            self::ViewUsers,
-            self::CreateUsers,
-            self::EditUsers => AbilityGroup::Users,
-            self::ViewUserRoles,
-            self::CreateUserRoles,
-            self::EditUserRoles => AbilityGroup::UserRoles,
-            self::ViewAccount,
-            self::ViewAbilities,
+        return [
             self::EditAccount,
-            self::ManagePersonalAccessTokens => AbilityGroup::OwnAccount,
-        };
+        ];
     }
 }

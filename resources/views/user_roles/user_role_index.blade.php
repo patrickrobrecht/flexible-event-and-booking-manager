@@ -35,7 +35,7 @@
         </div>
     </x-form.filter>
 
-    <x-alert.count class="mt-3" :count="$userRoles->total()" />
+    <x-alert.count class="mt-3" :count="$userRoles->total()"/>
 
     <div class="row my-3">
         @foreach($userRoles as $userRole)

@@ -29,7 +29,7 @@
 
 @section('content')
     @isset($userRole)
-        @include('user_roles.shared.user_role_badge')
+        @include('user_roles.shared.user_role_badge_count')
     @endisset
 
     <x-bs::form method="{{ isset($userRole) ? 'PUT' : 'POST' }}"

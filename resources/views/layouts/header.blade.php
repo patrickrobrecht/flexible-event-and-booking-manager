@@ -107,20 +107,16 @@
                                         <i class="fa fa-fw fa-user-cog"></i> {{ __('My account') }}
                                     </x-bs::dropdown.item>
                                 @endcan
-                                @if($loggedInUser->can('viewOwn', \App\Models\PersonalAccessToken::class))
+                                @can('viewOwn', \App\Models\PersonalAccessToken::class)
                                     <x-bs::dropdown.item href="{{ route('personal-access-tokens.index') }}">
-                                        <i class="fa fa-fw fa-id-card-clip"></i>
-                                        {{ __('Personal access tokens') }}
+                                        <i class="fa fa-fw fa-id-card-clip"></i> {{ __('Personal access tokens') }}
                                     </x-bs::dropdown.item>
-                                @endif
-                                <x-bs::dropdown.item href="{{ route('logout') }}"
-                                                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                    <i class="fa fa-fw fa-sign-out-alt"></i>
-                                    {{ __('Logout') }}
-                                </x-bs::dropdown.item>
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST">
-                                    @csrf
-                                </form>
+                                @endcan
+                                <li>
+                                    <x-bs::form id="logout-form" action="{{ route('logout') }}" method="POST">
+                                        <button type="submit" class="dropdown-item"><i class="fa fa-fw fa-sign-out-alt"></i> {{ __('Logout') }}</button>
+                                    </x-bs::form>
+                                </li>
                             </x-slot:dropdown>
                         </x-bs::nav.item>
                     @endauth

@@ -114,7 +114,7 @@
                                         {{ __('none') }}
                                     @else
                                         @foreach($user->userRoles->sortBy('name') as $userRole)
-                                            <x-bs::badge variant="primary">{{ $userRole->name }}</x-bs::badge>
+                                            @include('user_roles.shared.user_role_badge_link')
                                         @endforeach
                                     @endif
                                 </span>

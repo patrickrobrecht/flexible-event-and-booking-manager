@@ -18,7 +18,7 @@
 @section('headline-buttons')
     @can('viewAbilities', \App\Models\User::class)
         <x-bs::button.link variant="secondary" href="{{ route('account.show.abilities') }}">{{ __('View abilities') }}</x-bs::button.link>
-    @endif
+    @endcan
 @endsection
 
 @section('content')

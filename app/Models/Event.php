@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
+use App\Models\Traits\FiltersByRelationExistence;
 use App\Models\Traits\HasDocuments;
 use App\Models\Traits\HasLocation;
 use App\Models\Traits\HasNameAndDescription;
@@ -46,6 +47,7 @@ use Spatie\QueryBuilder\Enums\SortDirection;
 class Event extends Model
 {
     use BuildsQueryFromRequest;
+    use FiltersByRelationExistence;
     use HasDocuments;
     use HasFactory;
     use HasLocation;
@@ -145,6 +147,11 @@ class Event extends Model
             );
     }
 
+    public function scopeEventSeries(Builder $query, int|string $eventSeriesId): Builder
+    {
+        return $this->scopeRelation($query, $eventSeriesId, 'eventSeries', fn (Builder $q) => $q->where('id', '=', $eventSeriesId));
+    }
+
     public function scopeEventType(Builder $query, EventType|string $eventType): Builder
     {
         if (is_string($eventType)) {
@@ -158,6 +165,11 @@ class Event extends Model
             EventType::EventWithoutParts => $query->whereDoesntHave('subEvents'),
             default => $query,
         };
+    }
+
+    public function scopeOrganization(Builder $query, int|string $organizationId): Builder
+    {
+        return $this->scopeRelation($query, $organizationId, 'organizations', fn (Builder $q) => $q->where('organization_id', '=', $organizationId));
     }
 
     public function fillAndSave(array $validatedData): bool
@@ -226,8 +238,13 @@ class Event extends Model
             AllowedFilter::scope('date_from'),
             /** @see self::scopeDateUntil() */
             AllowedFilter::scope('date_until'),
+            /** @see self::scopeEventSeries() */
+            AllowedFilter::scope('event_series_id', 'eventSeries'),
+            /** @see self::scopeOrganization() */
+            AllowedFilter::scope('organization_id', 'organization'),
             AllowedFilter::exact('location_id'),
-            AllowedFilter::exact('organization_id', 'organizations.id'),
+            /** @see self::scopeDocument() */
+            AllowedFilter::scope('document_id', 'document'),
             /** @see self::scopeEventType() */
             AllowedFilter::scope('event_type')
                 ->default(EventType::MainEvent->value),

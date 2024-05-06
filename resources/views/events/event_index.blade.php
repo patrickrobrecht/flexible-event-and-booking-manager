@@ -44,14 +44,32 @@
                                   :from-query="true"><i class="fa fa-fw fa-clock"></i> {{ __('End of the period') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6 col-xl-3">
+                <x-bs::form.field id="event_series_id" name="filter[event_series_id]" type="select"
+                                  :options="Options::fromModels($eventSeries, 'name')
+                                        ->prepend(__('with any event series'), '+')
+                                        ->prepend(__('without event series'), '-')
+                                        ->prepend(__('all'), '')"
+                                  :cast="fn ($v) => in_array($v, ['+', '-'], true) ? $v : (int) $v"
+                                  :from-query="true"><i class="fa fa-fw fa-calendar-week"></i> {{ __('Event series') }}</x-bs::form.field>
+            </div>
+            <div class="col-12 col-md-6 col-xl-3">
+                <x-bs::form.field id="organization_id" name="filter[organization_id]" type="select"
+                                  :options="Options::fromModels($organizations, 'name')
+                                        ->prepend(__('with any organization'), '+')
+                                        ->prepend(__('without organization'), '-')
+                                        ->prepend(__('all'), '')"
+                                  :cast="fn ($v) => in_array($v, ['+', '-'], true) ? $v : (int) $v"
+                                  :from-query="true"><i class="fa fa-fw fa-sitemap"></i> {{ __('Organization') }}</x-bs::form.field>
+            </div>
+            <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="location_id" name="filter[location_id]" type="select"
                                   :options="Options::fromModels($locations, 'nameOrAddress')->prepend(__('all'), '')"
                                   :from-query="true"><i class="fa fa-fw fa-location-pin"></i> {{ __('Location') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6 col-xl-3">
-                <x-bs::form.field id="organization_id" name="filter[organization_id]" type="select"
-                                  :options="Options::fromModels($organizations, 'name')->prepend(__('all'), '')"
-                                  :from-query="true"><i class="fa fa-fw fa-sitemap"></i> {{ __('Organization') }}</x-bs::form.field>
+                <x-bs::form.field id="document_id" name="filter[document_id]" type="select"
+                                  :options="Options::fromArray(['' => __('all'), '+' => __('with at least one document'), '-' => __('without documents')])"
+                                  :from-query="true"><i class="fa fa-fw fa-file"></i> {{ __('Documents') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="event_type" name="filter[event_type]" type="select"

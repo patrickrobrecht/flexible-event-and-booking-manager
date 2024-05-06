@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
+use App\Models\Traits\FiltersByRelationExistence;
 use App\Options\Ability;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -23,6 +24,7 @@ use Spatie\QueryBuilder\Enums\SortDirection;
 class UserRole extends Model
 {
     use BuildsQueryFromRequest;
+    use FiltersByRelationExistence;
 
     protected $casts = [
         'abilities' => 'json',
@@ -41,6 +43,11 @@ class UserRole extends Model
             ->withTimestamps();
     }
 
+    public function scopeUser(Builder $query, int|string $userId): Builder
+    {
+        return $this->scopeRelation($query, $userId, 'users', fn (Builder $q) => $q->where('user_id', '=', $userId));
+    }
+
     public function fillAndSave(array $validatedData): bool
     {
         return $this->fill($validatedData)->save();
@@ -55,6 +62,8 @@ class UserRole extends Model
     {
         return [
             AllowedFilter::partial('name'),
+            /** @see self::scopeUser() */
+            AllowedFilter::scope('user_id', 'user'),
         ];
     }
 

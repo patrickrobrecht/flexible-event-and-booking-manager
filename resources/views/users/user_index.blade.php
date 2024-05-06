@@ -36,7 +36,11 @@
             </div>
             <div class="col-12 col-sm-6 col-lg-3">
                 <x-bs::form.field id="user_role_id" name="filter[user_role_id]" type="select"
-                                  :options="Options::fromModels($userRoles, 'name')->prepend(__('all'), '')"
+                                  :options="Options::fromModels($userRoles, 'name')
+                                        ->prepend(__('with at least one user role'), '+')
+                                        ->prepend(__('without user role'), '-')
+                                        ->prepend(__('all'), '')"
+                                  :cast="fn ($v) => in_array($v, ['+', '-'], true) ? $v : (int) $v"
                                   :from-query="true"><i class="fa fa-fw fa-user-group"></i> {{ __('User role') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-sm-6 col-lg-3">

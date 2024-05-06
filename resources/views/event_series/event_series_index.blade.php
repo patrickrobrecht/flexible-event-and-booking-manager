@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @php
+    use Portavice\Bladestrap\Support\Options;
+
     /** @var \Illuminate\Pagination\LengthAwarePaginator|\App\Models\EventSeries[] $eventSeries */
 @endphp
 
@@ -23,9 +25,24 @@
 
     <x-form.filter>
         <div class="row">
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="name" name="filter[name]" type="text"
                                   :from-query="true">{{ __('Name') }}</x-bs::form.field>
+            </div>
+            <div class="col-12 col-md-6 col-xl-3">
+                <x-bs::form.field id="visibility" name="filter[visibility]" type="select"
+                                  :options="\App\Options\Visibility::toOptionsWithAll()"
+                                  :from-query="true"><i class="fa fa-fw fa-eye"></i> {{ __('Visibility') }}</x-bs::form.field>
+            </div>
+            <div class="col-12 col-md-6 col-xl-3">
+                <x-bs::form.field id="event_id" name="filter[event_id]" type="select"
+                                  :options="Options::fromArray(['' => __('all'), '+' => __('with at least one event'), '-' => __('without events')])"
+                                  :from-query="true"><i class="fa fa-fw fa-calendar-days"></i> {{ __('Events') }}</x-bs::form.field>
+            </div>
+            <div class="col-12 col-md-6 col-xl-3">
+                <x-bs::form.field id="document_id" name="filter[document_id]" type="select"
+                                  :options="Options::fromArray(['' => __('all'), '+' => __('with at least one document'), '-' => __('without documents')])"
+                                  :from-query="true"><i class="fa fa-fw fa-file"></i> {{ __('Documents') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="event_series_type" name="filter[event_series_type]" type="select"

@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @php
+    use Portavice\Bladestrap\Support\Options;
+
     /** @var \Illuminate\Pagination\LengthAwarePaginator|\App\Models\UserRole[] $userRoles */
 @endphp
 
@@ -23,11 +25,16 @@
 
     <x-form.filter>
         <div class="row">
-            <div class="col-12 col-sm-6 col-lg-9">
+            <div class="col-12 col-sm-6">
                 <x-bs::form.field id="name" name="filter[name]" type="text"
                                   :from-query="true">{{ __('Name') }}</x-bs::form.field>
             </div>
-            <div class="col-12 col-sm-6 col-lg-3">
+            <div class="col-12 col-md-6 col-xl-3">
+                <x-bs::form.field id="user_id" name="filter[user_id]" type="select"
+                                  :options="Options::fromArray(['' => __('all'), '+' => __('with at least one user'), '-' => __('without users')])"
+                                  :from-query="true"><i class="fa fa-fw fa-users"></i> {{ __('Users') }}</x-bs::form.field>
+            </div>
+            <div class="col-12 col-sm-6 col-xl-3">
                 <x-bs::form.field name="sort" type="select"
                                   :options="\App\Models\UserRole::sortOptions()->getNamesWithLabels()"
                                   :from-query="true"><i class="fa fa-fw fa-sort"></i> {{ __('Sorting') }}</x-bs::form.field>

@@ -5,7 +5,10 @@ namespace App\Http\Requests\Filters;
 use App\Http\Controllers\EventController;
 use App\Http\Requests\Traits\AuthorizationViaController;
 use App\Http\Requests\Traits\FiltersList;
+use App\Models\Document;
 use App\Models\Event;
+use App\Models\EventSeries;
+use App\Models\Organization;
 use App\Options\EventType;
 use App\Options\Visibility;
 use App\Policies\EventPolicy;
@@ -33,8 +36,10 @@ class EventFilterRequest extends FormRequest
             ],
             'filter.date_from' => $this->ruleForDate(),
             'filter.date_until' => $this->ruleForDate('filter.date_from'),
+            'filter.event_series_id' => $this->ruleForAllowedOrExists(EventSeries::query(), ['+', '-']),
+            'filter.organization_id' => $this->ruleForAllowedOrExists(Organization::query(), ['+', '-']),
             'filter.location_id' => $this->ruleForForeignId('locations'),
-            'filter.organization_id' => $this->ruleForForeignId('organizations'),
+            'filter.document_id' => $this->ruleForAllowedOrExists(Document::query(), ['+', '-']),
             'filter.event_type' => [
                 'nullable',
                 EventType::rule(),

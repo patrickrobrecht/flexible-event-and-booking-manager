@@ -78,6 +78,11 @@ class EventSeries extends Model
             ->orderBy('name');
     }
 
+    public function scopeEvent(Builder $query, int|string $eventId): Builder
+    {
+        return $this->scopeRelation($query, $eventId, 'events', fn (Builder $q) => $q->where('id', '=', $documentId));
+    }
+
     public function scopeEventSeriesType(Builder $query, EventSeriesType|string $eventSeriesType): Builder
     {
         if (is_string($eventSeriesType)) {
@@ -121,6 +126,11 @@ class EventSeries extends Model
     {
         return [
             AllowedFilter::partial('name'),
+            AllowedFilter::exact('visibility'),
+            /** @see self::scopeEvent() */
+            AllowedFilter::scope('event_id', 'event'),
+            /** @see self::scopeDocument() */
+            AllowedFilter::scope('document_id', 'document'),
             /** @see self::scopeEventSeriesType() */
             AllowedFilter::scope('event_series_type')
                 ->default(EventSeriesType::MainEventSeries->value),

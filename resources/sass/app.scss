@@ -20,9 +20,14 @@ $fa-font-path: '/lib';
 
             .cols#{$infix}-#{$columnCount} {
                 column-count: #{$columnCount};
+                column-gap: 10px;
             }
         }
     }
+}
+
+.avoid-break {
+    break-inside: avoid;
 }
 
 /*

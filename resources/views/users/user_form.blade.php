@@ -14,9 +14,17 @@
 @endsection
 
 @section('breadcrumbs')
-    <x-bs::breadcrumb.item href="{{ route('users.index') }}">{{ __('Users') }}</x-bs::breadcrumb.item>
+    @can('viewAny', \App\Models\User::class)
+        <x-bs::breadcrumb.item href="{{ route('users.index') }}">{{ __('Users') }}</x-bs::breadcrumb.item>
+    @else
+        <x-bs::breadcrumb.item>{{ __('Users') }}</x-bs::breadcrumb.item>
+    @endcan
     @isset($editedUser)
-        <x-bs::breadcrumb.item href="{{ route('users.show', $editedUser) }}">{{ $editedUser->name }}</x-bs::breadcrumb.item>
+        @can('view', $editedUser)
+            <x-bs::breadcrumb.item href="{{ route('users.show', $editedUser) }}">{{ $editedUser->name }}</x-bs::breadcrumb.item>
+        @else
+            <x-bs::breadcrumb.item>{{ $editedUser->name }}</x-bs::breadcrumb.item>
+        @endcan
     @endisset
 @endsection
 

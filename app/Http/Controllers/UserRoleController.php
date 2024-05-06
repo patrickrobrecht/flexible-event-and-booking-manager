@@ -47,6 +47,15 @@ class UserRoleController extends Controller
         return back();
     }
 
+    public function show(UserRole $userRole): View
+    {
+        $this->authorize('view', $userRole);
+
+        return view('user_roles.user_role_show', [
+            'userRole' => $userRole,
+        ]);
+    }
+
     public function edit(UserRole $userRole): View
     {
         $this->authorize('update', $userRole);

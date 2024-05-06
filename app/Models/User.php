@@ -198,9 +198,9 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * @return \Illuminate\Support\Collection<Ability>
+     * @return Collection<string>
      */
-    public function getAbilities(): \Illuminate\Support\Collection
+    public function getAbilitiesAsStrings(): \Illuminate\Support\Collection
     {
         $abilities = \Illuminate\Support\Collection::empty();
         foreach ($this->userRoles as $userRole) {
@@ -208,7 +208,15 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         return $abilities->flatten()
-            ->unique()
+            ->unique();
+    }
+
+    /**
+     * @return \Illuminate\Support\Collection<Ability>
+     */
+    public function getAbilities(): \Illuminate\Support\Collection
+    {
+        return $this->getAbilitiesAsStrings()
             ->map(static fn (string $ability) => Ability::tryFrom($ability))
             ->filter()
             ->values();
@@ -250,6 +258,9 @@ class User extends Authenticatable implements MustVerifyEmail
                     'documents',
                     'groups',
                 ]),
+            'responsibleForEvents.eventSeries',
+            'responsibleForEvents.location',
+            'responsibleForEvents.parentEvent',
             'responsibleForEventSeries' => fn (MorphToMany $eventSeries) => $eventSeries
                 ->withCount([
                     'documents',
@@ -261,7 +272,7 @@ class User extends Authenticatable implements MustVerifyEmail
                     'events_min_started_at' => 'datetime',
                     'events_max_started_at' => 'datetime',
                 ]),
-            'responsibleForOrganizations',
+            'responsibleForOrganizations.location',
         ]);
 
         // Set backwards relation for documents.

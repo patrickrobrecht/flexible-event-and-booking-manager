@@ -79,6 +79,11 @@ class UserPolicy
         return $this->requireAbility($user, Ability::ViewAccount);
     }
 
+    public function viewAbilities(User $user): Response
+    {
+        return $this->requireAbility($user, Ability::ViewAbilities);
+    }
+
     /**
      * Determine whether a user can edit his/her profile.
      */

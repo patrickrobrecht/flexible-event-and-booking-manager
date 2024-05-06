@@ -9,14 +9,25 @@
     {{ __('My account') }}: {{ $user->name }}
 @endsection
 
+@section('breadcrumbs')
+    <x-bs::breadcrumb.item>{{ __('My account') }}</x-bs::breadcrumb.item>
+@endsection
+
 @section('headline-buttons')
+    @can('viewAbilities', \App\Models\User::class)
+        <x-bs::button.link variant="secondary" href="{{ route('account.show.abilities') }}">{{ __('View abilities') }}</x-bs::button.link>
+    @endif
     @can('editAccount', \App\Models\User::class)
         <x-bs::button.link href="{{ route('account.edit') }}">{{ __('Edit my account') }}</x-bs::button.link>
     @endif
 @endsection
 
 @section('content')
-    @include('users.shared.user_profile', [
+    @include('users.shared.user_profile_data', [
+        'user' => $user,
+    ])
+
+    @include('users.shared.user_profile_responsibilities', [
         'user' => $user,
     ])
 @endsection

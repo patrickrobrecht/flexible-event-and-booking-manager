@@ -35,14 +35,20 @@
         </div>
     </x-form.filter>
 
-    <x-alert.count class="mt-3" :count="$userRoles->total()" />
+    <x-alert.count class="mt-3" :count="$userRoles->total()"/>
 
     <div class="row my-3">
         @foreach($userRoles as $userRole)
             <div class="col-12 col-sm-6 col-md-4 mb-3">
                 <div class="card">
                     <div class="card-header">
-                        <h2 class="card-title">{{ $userRole->name }}</h2>
+                        <h2 class="card-title">
+                            @can('view', $userRole)
+                                <a href="{{ route('user-roles.show', $userRole) }}">{{ $userRole->name }}</a>
+                            @else
+                                {{ $userRole->name }}
+                            @endcan
+                        </h2>
                     </div>
                     <x-bs::list :flush="true">
                         <x-bs::list.item>
@@ -52,6 +58,12 @@
                             </span>
                             <x-slot:end>
                                 <x-bs::badge>{{ formatInt($userRole->users_count) }}</x-bs::badge>
+                            </x-slot:end>
+                        </x-bs::list.item>
+                        <x-bs::list.item>
+                            <span>{{ __('Abilities') }}</span>
+                            <x-slot:end>
+                                <x-bs::badge>{{ formatInt(count($userRole->abilities)) }}</x-bs::badge>
                             </x-slot:end>
                         </x-bs::list.item>
                     </x-bs::list>

@@ -13,17 +13,23 @@
 @endsection
 
 @section('breadcrumbs')
-    <x-bs::breadcrumb.item href="{{ route('user-roles.index') }}">{{ __('User roles') }}</x-bs::breadcrumb.item>
+    @can('viewAny', \App\Models\UserRole::class)
+        <x-bs::breadcrumb.item href="{{ route('user-roles.index') }}">{{ __('User roles') }}</x-bs::breadcrumb.item>
+    @else
+        <x-bs::breadcrumb.item>{{ __('User roles') }}</x-bs::breadcrumb.item>
+    @endcan
     @isset($userRole)
-        <x-bs::breadcrumb.item>{{ $userRole->name }}</x-bs::breadcrumb.item>
+        @can('view', $userRole)
+            <x-bs::breadcrumb.item href="{{ route('user-roles.show', $userRole) }}">{{ $userRole->name }}</x-bs::breadcrumb.item>
+        @else
+            <x-bs::breadcrumb.item>{{ $userRole->name }}</x-bs::breadcrumb.item>
+        @endcan
     @endisset
 @endsection
 
 @section('content')
     @isset($userRole)
-        <div class="mb-3">
-            <x-bs::badge variant="primary">{{ formatTransChoice(':count users', $userRole->users()->count()) }}</x-bs::badge>
-        </div>
+        @include('user_roles.shared.user_role_badge_count')
     @endisset
 
     <x-bs::form method="{{ isset($userRole) ? 'PUT' : 'POST' }}"
@@ -34,18 +40,28 @@
                                   :value="$userRole->name ?? null">{{ __('Name') }}</x-bs::form.field>
             </div>
         </div>
-        <x-bs::form.field id="abilities" name="abilities[]" type="switch"
-                          :options="\App\Options\Ability::toOptions()"
-                          :value="$userRole->abilities ?? []"
-                          check-container-class="cols-lg-2 cols-xl-3 cols-xxl-4">{{ __('Abilities') }}</x-bs::form.field>
+
+        <h2>{{ __('Abilities') }}</h2>
+        <div class="cols-lg-2 cols-xxl-3 mb-3">
+            @include('user_roles.ability_group', [
+                'selectedAbilities' => $userRole->abilities,
+                'abilityGroups' => \App\Options\AbilityGroup::casesAtRootLevel(),
+                'editable' => true,
+                'headlineLevel' => 3,
+            ])
+        </div>
 
         <x-bs::button.group>
             <x-button.save>
-                @isset($userRole){{ __( 'Save' ) }} @else{{ __('Create') }}@endisset
+                @isset($userRole)
+                    {{ __( 'Save' ) }}
+                @else
+                    {{ __('Create') }}
+                @endisset
             </x-button.save>
             <x-button.cancel href="{{ route('user-roles.index') }}"/>
         </x-bs::button.group>
     </x-bs::form>
 
-    <x-text.timestamp :model="$userRole ?? null" />
+    <x-text.timestamp :model="$userRole ?? null"/>
 @endsection

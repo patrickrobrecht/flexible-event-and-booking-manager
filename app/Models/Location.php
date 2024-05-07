@@ -4,8 +4,10 @@ namespace App\Models;
 
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
+use App\Models\Traits\FiltersByRelationExistence;
 use App\Models\Traits\HasAddress;
 use App\Models\Traits\HasWebsite;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -26,6 +28,7 @@ use Spatie\QueryBuilder\AllowedFilter;
 class Location extends Model
 {
     use BuildsQueryFromRequest;
+    use FiltersByRelationExistence;
     use HasAddress;
     use HasFactory;
     use HasWebsite;
@@ -44,8 +47,6 @@ class Location extends Model
         'country',
         'website_url',
     ];
-
-    protected $perPage = 12;
 
     public function fullAddressBlock(): Attribute
     {
@@ -71,6 +72,16 @@ class Location extends Model
         return $this->hasMany(Organization::class);
     }
 
+    public function scopeEvent(Builder $query, int|string $eventId): Builder
+    {
+        return $this->scopeRelation($query, $eventId, 'events', fn (Builder $q) => $q->where('id', '=', $eventId));
+    }
+
+    public function scopeOrganization(Builder $query, int|string $eventId): Builder
+    {
+        return $this->scopeRelation($query, $eventId, 'organizations', fn (Builder $q) => $q->where('organization_id', '=', $eventId));
+    }
+
     public function fillAndSave(array $validatedData): bool
     {
         return $this->fill($validatedData)->save();
@@ -82,6 +93,10 @@ class Location extends Model
             AllowedFilter::partial('name'),
             /** @see HasAddress::scopeAddressFields() */
             AllowedFilter::scope('address', 'addressFields'),
+            /** @see self::scopeEvent() */
+            AllowedFilter::scope('event_id', 'event'),
+            /** @see self::scopeOrganization() */
+            AllowedFilter::scope('organization_id', 'organization'),
         ];
     }
 

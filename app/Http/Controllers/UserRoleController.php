@@ -23,7 +23,7 @@ class UserRoleController extends Controller
                 ->withCount([
                     'users',
                 ])
-                ->paginate(),
+                ->paginate(18),
         ]);
     }
 

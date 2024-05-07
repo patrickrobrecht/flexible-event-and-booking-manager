@@ -31,7 +31,7 @@
             </div>
             <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="user_id" name="filter[user_id]" type="select"
-                                  :options="Options::fromArray(['' => __('all'), '+' => __('with at least one user'), '-' => __('without users')])"
+                                  :options="Options::fromArray([\App\Options\FilterValue::All->value => __('all'), \App\Options\FilterValue::With->value => __('with at least one user'), \App\Options\FilterValue::Without->value => __('without users')])"
                                   :from-query="true"><i class="fa fa-fw fa-users"></i> {{ __('Users') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-sm-6 col-xl-3">

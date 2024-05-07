@@ -52,12 +52,29 @@ trait FiltersList
         return $rules;
     }
 
-    public function ruleForAllowedOrExists(Builder $query, array $allowedValues): array
+    public function ruleForAllowedOrExistsInDatabase(Builder $query, array $allowedValues): array
     {
         return [
             'nullable',
             function ($attribute, $value, $fail) use ($allowedValues, $query) {
-                if (!in_array($value, $allowedValues) && !$query->where('id', (int) $value)->exists()) {
+                if (!in_array($value, $allowedValues, true) && !$query->where('id', (int) $value)->exists()) {
+                    $fail(trans('validation.exists', [
+                        'attribute' => $this->getTranslatedAttribute($attribute),
+                    ]));
+                }
+            },
+        ];
+    }
+
+    /**
+     * @param class-string $enumClass
+     */
+    public function ruleForAllowedOrExistsInEnum(string $enumClass, array $allowedValues): array
+    {
+        return [
+            'nullable',
+            function ($attribute, $value, $fail) use ($allowedValues, $enumClass) {
+                if (!in_array($value, $allowedValues, true) && !$enumClass::exists($value)) {
                     $fail(trans('validation.exists', [
                         'attribute' => $this->getTranslatedAttribute($attribute),
                     ]));

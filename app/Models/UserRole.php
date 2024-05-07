@@ -6,6 +6,7 @@ use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\FiltersByRelationExistence;
 use App\Options\Ability;
+use App\Options\FilterValue;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -35,8 +36,6 @@ class UserRole extends Model
         'abilities',
     ];
 
-    protected $perPage = 12;
-
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class)
@@ -63,7 +62,8 @@ class UserRole extends Model
         return [
             AllowedFilter::partial('name'),
             /** @see self::scopeUser() */
-            AllowedFilter::scope('user_id', 'user'),
+            AllowedFilter::scope('user_id', 'user')
+                ->default(FilterValue::All->value),
         ];
     }
 

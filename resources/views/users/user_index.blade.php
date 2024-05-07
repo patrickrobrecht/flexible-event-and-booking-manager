@@ -37,15 +37,16 @@
             <div class="col-12 col-sm-6 col-lg-3">
                 <x-bs::form.field id="user_role_id" name="filter[user_role_id]" type="select"
                                   :options="Options::fromModels($userRoles, 'name')
-                                        ->prepend(__('with at least one user role'), '+')
-                                        ->prepend(__('without user role'), '-')
-                                        ->prepend(__('all'), '')"
-                                  :cast="fn ($v) => in_array($v, ['+', '-'], true) ? $v : (int) $v"
+                                        ->prepend(__('with at least one user role'), \App\Options\FilterValue::With->value)
+                                        ->prepend(__('without user role'), \App\Options\FilterValue::Without->value)
+                                        ->prepend(__('all'), \App\Options\FilterValue::All->value)"
+                                  :cast="\App\Options\FilterValue::castToIntIfNoValue()"
                                   :from-query="true"><i class="fa fa-fw fa-user-group"></i> {{ __('User role') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-sm-6 col-lg-3">
                 <x-bs::form.field id="status" name="filter[status]" type="select"
                                   :options="\App\Options\ActiveStatus::toOptionsWithAll()"
+                                  :cast="\App\Options\FilterValue::castToIntIfNoValue()"
                                   :from-query="true"><i class="fa fa-fw fa-circle-question"></i> {{ __('Status') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-sm-6 col-lg-3">

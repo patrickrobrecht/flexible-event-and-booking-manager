@@ -9,6 +9,7 @@ use App\Models\Traits\HasResponsibleUsers;
 use App\Models\Traits\HasSlugForRouting;
 use App\Options\Ability;
 use App\Options\EventSeriesType;
+use App\Options\FilterValue;
 use App\Options\Visibility;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -56,8 +57,6 @@ class EventSeries extends Model
         'slug',
         'visibility',
     ];
-
-    protected $perPage = 12;
 
     public function events(): HasMany
     {
@@ -126,13 +125,15 @@ class EventSeries extends Model
     {
         return [
             AllowedFilter::partial('name'),
-            AllowedFilter::exact('visibility'),
+            AllowedFilter::exact('visibility')
+                ->ignore(FilterValue::All->value),
             /** @see self::scopeEvent() */
             AllowedFilter::scope('event_id', 'event'),
             /** @see self::scopeDocument() */
             AllowedFilter::scope('document_id', 'document'),
             /** @see self::scopeEventSeriesType() */
             AllowedFilter::scope('event_series_type')
+                ->ignore(FilterValue::All->value)
                 ->default(EventSeriesType::MainEventSeries->value),
         ];
     }

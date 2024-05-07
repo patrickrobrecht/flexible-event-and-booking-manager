@@ -46,29 +46,30 @@
             <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="event_series_id" name="filter[event_series_id]" type="select"
                                   :options="Options::fromModels($eventSeries, 'name')
-                                        ->prepend(__('with any event series'), '+')
-                                        ->prepend(__('without event series'), '-')
-                                        ->prepend(__('all'), '')"
-                                  :cast="fn ($v) => in_array($v, ['+', '-'], true) ? $v : (int) $v"
+                                        ->prepend(__('with any event series'), \App\Options\FilterValue::With->value)
+                                        ->prepend(__('without event series'), \App\Options\FilterValue::Without->value)
+                                        ->prepend(__('all'), \App\Options\FilterValue::All->value)"
+                                  :cast="\App\Options\FilterValue::castToIntIfNoValue()"
                                   :from-query="true"><i class="fa fa-fw fa-calendar-week"></i> {{ __('Event series') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="organization_id" name="filter[organization_id]" type="select"
                                   :options="Options::fromModels($organizations, 'name')
-                                        ->prepend(__('with any organization'), '+')
-                                        ->prepend(__('without organization'), '-')
-                                        ->prepend(__('all'), '')"
-                                  :cast="fn ($v) => in_array($v, ['+', '-'], true) ? $v : (int) $v"
+                                        ->prepend(__('with any organization'), \App\Options\FilterValue::With->value)
+                                        ->prepend(__('without organization'), \App\Options\FilterValue::Without->value)
+                                        ->prepend(__('all'), \App\Options\FilterValue::All->value)"
+                                  :cast="\App\Options\FilterValue::castToIntIfNoValue()"
                                   :from-query="true"><i class="fa fa-fw fa-sitemap"></i> {{ __('Organization') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="location_id" name="filter[location_id]" type="select"
-                                  :options="Options::fromModels($locations, 'nameOrAddress')->prepend(__('all'), '')"
+                                  :options="Options::fromModels($locations, 'nameOrAddress')->prepend(__('all'), \App\Options\FilterValue::All->value)"
+                                  :cast="\App\Options\FilterValue::castToIntIfNoValue()"
                                   :from-query="true"><i class="fa fa-fw fa-location-pin"></i> {{ __('Location') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="document_id" name="filter[document_id]" type="select"
-                                  :options="Options::fromArray(['' => __('all'), '+' => __('with at least one document'), '-' => __('without documents')])"
+                                  :options="Options::fromArray([\App\Options\FilterValue::All->value => __('all'), \App\Options\FilterValue::With->value => __('with at least one document'), \App\Options\FilterValue::Without->value => __('without documents')])"
                                   :from-query="true"><i class="fa fa-fw fa-file"></i> {{ __('Documents') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6 col-xl-3">

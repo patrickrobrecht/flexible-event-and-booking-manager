@@ -61,7 +61,7 @@ class BookingController extends Controller
                 'groups',
             ]),
             'bookingOption' => $bookingOption,
-            'bookings' => $bookingsQuery->paginate(),
+            'bookings' => $bookingsQuery->paginate(24),
         ]);
     }
 

@@ -11,6 +11,7 @@ use App\Notifications\ResetPasswordNotification;
 use App\Notifications\VerifyEmailNotification;
 use App\Options\Ability;
 use App\Options\ActiveStatus;
+use App\Options\FilterValue;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
@@ -102,8 +103,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'status' => ActiveStatus::class,
         'last_login_at' => 'datetime',
     ];
-
-    protected $perPage = 12;
 
     public function greeting(): Attribute
     {
@@ -306,9 +305,11 @@ class User extends Authenticatable implements MustVerifyEmail
             /** @see User::scopeEmail() */
             AllowedFilter::scope('email'),
             /** @see User::scopeUserRole() */
-            AllowedFilter::scope('user_role_id', 'userRole'),
+            AllowedFilter::scope('user_role_id', 'userRole')
+                ->default(FilterValue::All->value),
             AllowedFilter::exact('status')
-                ->default(ActiveStatus::Active->value),
+                ->default(ActiveStatus::Active->value)
+                ->ignore(FilterValue::All->value),
         ];
     }
 

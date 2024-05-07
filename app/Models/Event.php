@@ -13,6 +13,7 @@ use App\Models\Traits\HasSlugForRouting;
 use App\Models\Traits\HasWebsite;
 use App\Options\Ability;
 use App\Options\EventType;
+use App\Options\FilterValue;
 use App\Options\Visibility;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -82,8 +83,6 @@ class Event extends Model
         'started_at' => 'datetime',
         'finished_at' => 'datetime',
     ];
-
-    protected $perPage = 12;
 
     public function bookingOptions(): HasMany
     {
@@ -233,7 +232,8 @@ class Event extends Model
         return [
             /** @see self::scopeSearchNameAndDescription() */
             AllowedFilter::scope('search', 'searchNameAndDescription'),
-            AllowedFilter::exact('visibility'),
+            AllowedFilter::exact('visibility')
+                ->ignore(FilterValue::All->value),
             /** @see self::scopeDateFrom() */
             AllowedFilter::scope('date_from'),
             /** @see self::scopeDateUntil() */
@@ -242,12 +242,14 @@ class Event extends Model
             AllowedFilter::scope('event_series_id', 'eventSeries'),
             /** @see self::scopeOrganization() */
             AllowedFilter::scope('organization_id', 'organization'),
-            AllowedFilter::exact('location_id'),
+            AllowedFilter::exact('location_id')
+                ->ignore(FilterValue::All->value),
             /** @see self::scopeDocument() */
             AllowedFilter::scope('document_id', 'document'),
             /** @see self::scopeEventType() */
             AllowedFilter::scope('event_type')
-                ->default(EventType::MainEvent->value),
+                ->default(EventType::MainEvent->value)
+                ->ignore(FilterValue::All->value),
         ];
     }
 

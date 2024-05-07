@@ -30,7 +30,7 @@ class UserController extends Controller
                     'responsibleForEventSeries',
                     'responsibleForOrganizations',
                 ])
-                ->paginate(),
+                ->paginate(12),
         ]));
     }
 

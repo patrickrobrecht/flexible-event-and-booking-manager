@@ -86,8 +86,6 @@ class Booking extends Model
         'deleted_at' => 'datetime',
     ];
 
-    protected $perPage = 12;
-
     public function age(): Attribute
     {
         return Attribute::get(fn () => Carbon::now()->floatDiffInYears($this->date_of_birth));

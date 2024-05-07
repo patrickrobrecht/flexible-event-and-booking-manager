@@ -2,6 +2,7 @@
 
 namespace App\Models\Traits;
 
+use App\Options\FilterValue;
 use Illuminate\Database\Eloquent\Builder;
 
 trait FiltersByRelationExistence
@@ -9,9 +10,9 @@ trait FiltersByRelationExistence
     public function scopeRelation(Builder $query, int|string $value, string $relation, \Closure $callback): Builder
     {
         return match ($value) {
-            '', '*' => $query,
-            '-' => $query->whereDoesntHave($relation),
-            '+' => $query->whereHas($relation),
+            FilterValue::All->value => $query,
+            FilterValue::With->value => $query->whereHas($relation),
+            FilterValue::Without->value => $query->whereDoesntHave($relation),
             default => $query->whereHas($relation, $callback),
         };
     }

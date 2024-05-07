@@ -29,7 +29,7 @@ class EventSeriesController extends Controller
                     'events',
                     'subEventSeries',
                 ])
-                ->paginate(),
+                ->paginate(18),
         ]);
     }
 

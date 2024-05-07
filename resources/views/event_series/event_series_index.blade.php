@@ -36,12 +36,12 @@
             </div>
             <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="event_id" name="filter[event_id]" type="select"
-                                  :options="Options::fromArray(['' => __('all'), '+' => __('with at least one event'), '-' => __('without events')])"
+                                  :options="Options::fromArray([\App\Options\FilterValue::All->value => __('all'), \App\Options\FilterValue::With->value => __('with at least one event'), \App\Options\FilterValue::Without->value => __('without events')])"
                                   :from-query="true"><i class="fa fa-fw fa-calendar-days"></i> {{ __('Events') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="document_id" name="filter[document_id]" type="select"
-                                  :options="Options::fromArray(['' => __('all'), '+' => __('with at least one document'), '-' => __('without documents')])"
+                                  :options="Options::fromArray([\App\Options\FilterValue::All->value => __('all'), \App\Options\FilterValue::With->value => __('with at least one document'), \App\Options\FilterValue::Without->value => __('without documents')])"
                                   :from-query="true"><i class="fa fa-fw fa-file"></i> {{ __('Documents') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6 col-xl-3">

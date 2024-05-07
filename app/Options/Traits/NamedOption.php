@@ -2,6 +2,7 @@
 
 namespace App\Options\Traits;
 
+use App\Options\FilterValue;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\In;
 use Portavice\Bladestrap\Support\Options;
@@ -10,22 +11,22 @@ trait NamedOption
 {
     abstract public function getTranslatedName(): string;
 
-    public static function exists(int|string $key): bool
+    public static function exists(int|string $value): bool
     {
-        return in_array($key, self::keys(), true);
+        return self::tryFrom($value) !== null;
     }
 
-    public static function keys(): array
+    public static function values(?array $array = null): array
     {
         return array_map(
             static fn ($enumCase) => $enumCase->value ?? $enumCase->name,
-            self::cases()
+            $array ?? self::cases()
         );
     }
 
-    public static function rule(): In
+    public static function rule(?array $array = null): In
     {
-        return Rule::in(self::keys());
+        return Rule::in(self::values($array));
     }
 
     public static function toOptions(): Options
@@ -35,6 +36,6 @@ trait NamedOption
 
     public static function toOptionsWithAll(): Options
     {
-        return self::toOptions()->prepend(__('all'), '');
+        return self::toOptions()->prepend(__('all'), FilterValue::All->value);
     }
 }

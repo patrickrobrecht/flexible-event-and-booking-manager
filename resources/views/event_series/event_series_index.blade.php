@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @php
+    use App\Options\FilterValue;
     use Portavice\Bladestrap\Support\Options;
 
     /** @var \Illuminate\Pagination\LengthAwarePaginator|\App\Models\EventSeries[] $eventSeries */
@@ -36,12 +37,12 @@
             </div>
             <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="event_id" name="filter[event_id]" type="select"
-                                  :options="Options::fromArray([\App\Options\FilterValue::All->value => __('all'), \App\Options\FilterValue::With->value => __('with at least one event'), \App\Options\FilterValue::Without->value => __('without events')])"
+                                  :options="Options::fromArray(\App\Models\Event::filterOptions())"
                                   :from-query="true"><i class="fa fa-fw fa-calendar-days"></i> {{ __('Events') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="document_id" name="filter[document_id]" type="select"
-                                  :options="Options::fromArray([\App\Options\FilterValue::All->value => __('all'), \App\Options\FilterValue::With->value => __('with at least one document'), \App\Options\FilterValue::Without->value => __('without documents')])"
+                                  :options="Options::fromArray(\App\Models\Document::filterOptions())"
                                   :from-query="true"><i class="fa fa-fw fa-file"></i> {{ __('Documents') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6 col-xl-3">
@@ -49,7 +50,7 @@
                                   :options="\App\Options\EventSeriesType::toOptionsWithAll()"
                                   :from-query="true">{{ __('Event series type') }}</x-bs::form.field>
             </div>
-            <div class="col-12 col-md-6 col-xl-3">
+            <div class="col-12 col-lg-6 col-xl-3">
                 <x-bs::form.field name="sort" type="select"
                                   :options="\App\Models\EventSeries::sortOptions()->getNamesWithLabels()"
                                   :from-query="true"><i class="fa fa-fw fa-sort"></i> {{ __('Sorting') }}</x-bs::form.field>

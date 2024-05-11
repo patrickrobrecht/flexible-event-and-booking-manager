@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @php
+    use App\Options\FilterValue;
     use Portavice\Bladestrap\Support\Options;
 
     /** @var \Illuminate\Pagination\LengthAwarePaginator|\App\Models\Event[] $events */
@@ -35,41 +36,35 @@
                                   :options="\App\Options\Visibility::toOptionsWithAll()"
                                   :from-query="true"><i class="fa fa-fw fa-eye"></i> {{ __('Visibility') }}</x-bs::form.field>
             </div>
-            <div class="col-12 col-md-6 col-xl-3">
+            <div class="col-12 col-sm-6 col-xl-3">
                 <x-bs::form.field id="date_from" name="filter[date_from]" type="date"
                                   :from-query="true"><i class="fa fa-fw fa-clock"></i> {{ __('Start of the period') }}</x-bs::form.field>
             </div>
-            <div class="col-12 col-md-6 col-xl-3">
+            <div class="col-12 col-sm-6 col-xl-3">
                 <x-bs::form.field id="date_until" name="filter[date_until]" type="date"
                                   :from-query="true"><i class="fa fa-fw fa-clock"></i> {{ __('End of the period') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="event_series_id" name="filter[event_series_id]" type="select"
-                                  :options="Options::fromModels($eventSeries, 'name')
-                                        ->prepend(__('with any event series'), \App\Options\FilterValue::With->value)
-                                        ->prepend(__('without event series'), \App\Options\FilterValue::Without->value)
-                                        ->prepend(__('all'), \App\Options\FilterValue::All->value)"
-                                  :cast="\App\Options\FilterValue::castToIntIfNoValue()"
+                                  :options="Options::fromModels($eventSeries, 'name')->prependMany(\App\Models\EventSeries::filterOptions())"
+                                  :cast="FilterValue::castToIntIfNoValue()"
                                   :from-query="true"><i class="fa fa-fw fa-calendar-week"></i> {{ __('Event series') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="organization_id" name="filter[organization_id]" type="select"
-                                  :options="Options::fromModels($organizations, 'name')
-                                        ->prepend(__('with any organization'), \App\Options\FilterValue::With->value)
-                                        ->prepend(__('without organization'), \App\Options\FilterValue::Without->value)
-                                        ->prepend(__('all'), \App\Options\FilterValue::All->value)"
-                                  :cast="\App\Options\FilterValue::castToIntIfNoValue()"
+                                  :options="Options::fromModels($organizations, 'name')->prependMany(\App\Models\Organization::filterOptions())"
+                                  :cast="FilterValue::castToIntIfNoValue()"
                                   :from-query="true"><i class="fa fa-fw fa-sitemap"></i> {{ __('Organization') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="location_id" name="filter[location_id]" type="select"
-                                  :options="Options::fromModels($locations, 'nameOrAddress')->prepend(__('all'), \App\Options\FilterValue::All->value)"
-                                  :cast="\App\Options\FilterValue::castToIntIfNoValue()"
+                                  :options="Options::fromModels($locations, 'nameOrAddress')->prepend(__('all'), FilterValue::All->value)"
+                                  :cast="FilterValue::castToIntIfNoValue()"
                                   :from-query="true"><i class="fa fa-fw fa-location-pin"></i> {{ __('Location') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="document_id" name="filter[document_id]" type="select"
-                                  :options="Options::fromArray([\App\Options\FilterValue::All->value => __('all'), \App\Options\FilterValue::With->value => __('with at least one document'), \App\Options\FilterValue::Without->value => __('without documents')])"
+                                  :options="Options::fromArray(\App\Models\Document::filterOptions())"
                                   :from-query="true"><i class="fa fa-fw fa-file"></i> {{ __('Documents') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6 col-xl-3">
@@ -77,7 +72,7 @@
                                   :options="\App\Options\EventType::toOptionsWithAll()"
                                   :from-query="true">{{ __('Event type') }}</x-bs::form.field>
             </div>
-            <div class="col-12 col-md-6 col-xl-3">
+            <div class="col-12 col-lg-6 col-xl-3">
                 <x-bs::form.field name="sort" type="select"
                                   :options="\App\Models\Event::sortOptions()->getNamesWithLabels()"
                                   :from-query="true"><i class="fa fa-fw fa-sort"></i> {{ __('Sorting') }}</x-bs::form.field>

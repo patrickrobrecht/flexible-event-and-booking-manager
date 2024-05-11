@@ -17,7 +17,11 @@
         <div>
             <i class="fa fa-fw fa-user" title="{{ __('Booked by') }}"></i>
             @isset($booking->bookedByUser)
-                {{ $booking->bookedByUser->first_name }} {{ $booking->bookedByUser->last_name }}
+                @can('view', $booking->bookedByUser)
+                    <a href="{{ route('users.show', $booking->bookedByUser) }}">{{ $booking->bookedByUser->name }}</a>
+                @else
+                    {{ $booking->bookedByUser->name }}
+                @endcan
             @else
                 {{ __('Guest') }}
             @endisset

@@ -253,6 +253,15 @@ class Event extends Model
         ];
     }
 
+    public static function filterOptions(): array
+    {
+        return [
+            FilterValue::All->value => __('all'),
+            FilterValue::With->value => __('with at least one event'),
+            FilterValue::Without->value => __('without events'),
+        ];
+    }
+
     public static function sortOptions(): SortOptions
     {
         return (new SortOptions())

@@ -4,7 +4,10 @@ namespace App\Http\Requests\Filters;
 
 use App\Http\Requests\Traits\AuthorizationViaController;
 use App\Http\Requests\Traits\FiltersList;
+use App\Models\Event;
 use App\Models\Location;
+use App\Models\Organization;
+use App\Options\FilterValue;
 use App\Policies\LocationPolicy;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -25,6 +28,12 @@ class LocationFilterRequest extends FormRequest
         return [
             'filter.name' => $this->ruleForText(),
             'filter.address' => $this->ruleForText(),
+            'filter.event_id' => $this->ruleForAllowedOrExistsInDatabase(Event::query(), FilterValue::values()),
+            'filter.organization_id' => $this->ruleForAllowedOrExistsInDatabase(Organization::query(), FilterValue::values()),
+            'sort' => [
+                'nullable',
+                Location::sortOptions()->getRule(),
+            ],
         ];
     }
 }

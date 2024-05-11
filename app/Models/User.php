@@ -313,6 +313,15 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
+    public static function filterOptions(): array
+    {
+        return [
+            FilterValue::All->value => __('all'),
+            FilterValue::With->value => __('with at least one user'),
+            FilterValue::Without->value => __('without users'),
+        ];
+    }
+
     public static function sortOptions(): SortOptions
     {
         return (new SortOptions())

@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @php
+    use App\Options\FilterValue;
     use Portavice\Bladestrap\Support\Options;
 
     /** @var \Illuminate\Pagination\LengthAwarePaginator|\App\Models\User[] $users */
@@ -26,30 +27,27 @@
 
     <x-form.filter>
         <div class="row">
-            <div class="col-12 col-sm-6 col-lg-3">
+            <div class="col-12 col-sm-6 col-xl-3">
                 <x-bs::form.field id="name" name="filter[name]" type="text"
                                   :from-query="true">{{ __('Name') }}</x-bs::form.field>
             </div>
-            <div class="col-12 col-sm-6 col-lg-3">
+            <div class="col-12 col-sm-6 col-xl-3">
                 <x-bs::form.field id="email" name="filter[email]" type="text"
                                   :from-query="true"><i class="fa fa-fw fa-at"></i> {{ __('E-mail') }}</x-bs::form.field>
             </div>
-            <div class="col-12 col-sm-6 col-lg-3">
+            <div class="col-12 col-sm-6 col-xl-3">
                 <x-bs::form.field id="user_role_id" name="filter[user_role_id]" type="select"
-                                  :options="Options::fromModels($userRoles, 'name')
-                                        ->prepend(__('with at least one user role'), \App\Options\FilterValue::With->value)
-                                        ->prepend(__('without user role'), \App\Options\FilterValue::Without->value)
-                                        ->prepend(__('all'), \App\Options\FilterValue::All->value)"
-                                  :cast="\App\Options\FilterValue::castToIntIfNoValue()"
+                                  :options="Options::fromModels($userRoles, 'name')->prependMany(\App\Models\UserRole::filterOptions())"
+                                  :cast="FilterValue::castToIntIfNoValue()"
                                   :from-query="true"><i class="fa fa-fw fa-user-group"></i> {{ __('User role') }}</x-bs::form.field>
             </div>
-            <div class="col-12 col-sm-6 col-lg-3">
+            <div class="col-12 col-sm-6 col-xl-3">
                 <x-bs::form.field id="status" name="filter[status]" type="select"
                                   :options="\App\Options\ActiveStatus::toOptionsWithAll()"
-                                  :cast="\App\Options\FilterValue::castToIntIfNoValue()"
+                                  :cast="FilterValue::castToIntIfNoValue()"
                                   :from-query="true"><i class="fa fa-fw fa-circle-question"></i> {{ __('Status') }}</x-bs::form.field>
             </div>
-            <div class="col-12 col-sm-6 col-lg-3">
+            <div class="col-12 col-lg-6 col-xl-3">
                 <x-bs::form.field name="sort" type="select"
                                   :options="\App\Models\User::sortOptions()->getNamesWithLabels()"
                                   :from-query="true"><i class="fa fa-fw fa-sort"></i> {{ __('Sorting') }}</x-bs::form.field>

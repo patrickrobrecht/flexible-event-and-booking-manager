@@ -32,6 +32,10 @@ class OrganizationFilterRequest extends FormRequest
             'filter.event_id' => $this->ruleForAllowedOrExistsInDatabase(Event::query(), FilterValue::values()),
             'filter.location_id' => $this->ruleForAllowedOrExistsInDatabase(Location::query(), [FilterValue::All->value]),
             'filter.document_id' => $this->ruleForAllowedOrExistsInDatabase(Document::query(), FilterValue::values()),
+            'sort' => [
+                'nullable',
+                Organization::sortOptions()->getRule(),
+            ],
         ];
     }
 }

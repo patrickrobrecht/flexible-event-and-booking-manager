@@ -138,6 +138,15 @@ class EventSeries extends Model
         ];
     }
 
+    public static function filterOptions(): array
+    {
+        return [
+            FilterValue::All->value => __('all'),
+            FilterValue::With->value => __('with any event series'),
+            FilterValue::Without->value => __('without event series'),
+        ];
+    }
+
     public static function sortOptions(): SortOptions
     {
         return self::sortOptionsForNameAndTimeStamps();

@@ -9,7 +9,7 @@
 @endsection
 
 @section('breadcrumbs')
-    @can('viewAny', \App\Models\UserRole::class)
+    @can('viewAny', \App\Models\Organization::class)
         <x-bs::breadcrumb.item href="{{ route('user-roles.index') }}">{{ __('User roles') }}</x-bs::breadcrumb.item>
     @else
         <x-bs::breadcrumb.item>{{ __('User roles') }}</x-bs::breadcrumb.item>
@@ -18,7 +18,9 @@
 @endsection
 
 @section('headline-buttons')
-    <x-button.edit href="{{ route('user-roles.edit', $userRole) }}"/>
+    @can('update', $userRole)
+        <x-button.edit href="{{ route('user-roles.edit', $userRole) }}"/>
+    @endcan
 @endsection
 
 @section('content')

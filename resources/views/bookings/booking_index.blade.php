@@ -121,16 +121,20 @@
                         <x-bs::list.item>
                             <i class="fa fa-fw fa-user" title="{{ __('Booked by') }}"></i>
                             @isset($booking->bookedByUser)
-                                <span title="{{ $booking->bookedByUser->email }}">{{ $booking->bookedByUser->first_name }} {{ $booking->bookedByUser->last_name }}</span>
-                            @else
-                                {{ __('Guest') }}
-                            @endisset
-                            @isset($booking->bookedByUser)
+                                <span title="{{ $booking->bookedByUser->email }}">
+                                    @can('view', $booking->bookedByUser)
+                                        <a href="{{ route('users.show', $booking->bookedByUser) }}">{{ $booking->bookedByUser->name }}</a>
+                                    @else
+                                        {{ $booking->bookedByUser->name }}
+                                    @endcan
+                                </span>
                                 @isset($booking->bookedByUser->email_verified_at)
                                     <x-bs::badge variant="success">{{ __('verified') }}</x-bs::badge>
                                 @else
                                     <x-bs::badge variant="danger">{{ __('not verified') }}</x-bs::badge>
                                 @endisset
+                            @else
+                                {{ __('Guest') }}
                             @endisset
                         </x-bs::list.item>
                         <x-bs::list.item>

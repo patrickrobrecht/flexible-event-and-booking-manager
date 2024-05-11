@@ -8,6 +8,7 @@ use App\Models\Traits\HasDocuments;
 use App\Models\Traits\Searchable;
 use App\Options\ApprovalStatus;
 use App\Options\FileType;
+use App\Options\FilterValue;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -94,8 +95,19 @@ class Document extends Model
         return [
             /** @see self::scopeSearchTitleAndDescription() */
             AllowedFilter::scope('search', 'searchTitleAndDescription'),
-            AllowedFilter::exact('file_type'),
-            AllowedFilter::exact('approval_status'),
+            AllowedFilter::exact('file_type')
+                ->ignore(FilterValue::All->value),
+            AllowedFilter::exact('approval_status')
+                ->ignore(FilterValue::All->value),
+        ];
+    }
+
+    public static function filterOptions(): array
+    {
+        return [
+            FilterValue::All->value => __('all'),
+            FilterValue::With->value => __('with at least one document'),
+            FilterValue::Without->value => __('without documents'),
         ];
     }
 

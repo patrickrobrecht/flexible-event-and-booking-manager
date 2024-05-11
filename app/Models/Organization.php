@@ -114,6 +114,15 @@ class Organization extends Model
         ];
     }
 
+    public static function filterOptions(): array
+    {
+        return [
+            FilterValue::All->value => __('all'),
+            FilterValue::With->value => __('with any organization'),
+            FilterValue::Without->value => __('without organizations'),
+        ];
+    }
+
     public static function sortOptions(): SortOptions
     {
         return self::sortOptionsForNameAndTimeStamps();

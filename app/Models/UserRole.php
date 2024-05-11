@@ -67,6 +67,15 @@ class UserRole extends Model
         ];
     }
 
+    public static function filterOptions(): array
+    {
+        return [
+            FilterValue::All->value => __('all'),
+            FilterValue::With->value => __('with at least one user role'),
+            FilterValue::Without->value => __('without user role'),
+        ];
+    }
+
     public static function sortOptions(): SortOptions
     {
         return self::sortOptionsForNameAndTimeStamps()

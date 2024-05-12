@@ -29,7 +29,7 @@
     @endcan
     @can('viewGroups', $event)
         <x-bs::button.link href="{{ route('groups.index', $event) }}" variant="secondary">
-            <i class="fa fa-fw fa-user-group"></i> {{ __('Groups') }} <x-bs::badge variant="danger">{{ formatInt($event->groups->count()) }}</x-bs::badge>
+            <i class="fa fa-fw fa-people-group"></i> {{ __('Groups') }} <x-bs::badge variant="danger">{{ formatInt($event->groups->count()) }}</x-bs::badge>
         </x-bs::button.link>
     @endcan
 @endsection
@@ -53,7 +53,7 @@
                 <div class="col-12 col-lg-3">
                     <x-bs::form.field id="group_id" name="filter[group_id]" type="select"
                                       :options="\Portavice\Bladestrap\Support\Options::fromModels($event->groups, 'name')->prepend(__('all'), \App\Options\FilterValue::All->value)"
-                                      :from-query="true"><i class="fa fa-fw fa-user-group"></i> {{ __('Group') }}</x-bs::form.field>
+                                      :from-query="true"><i class="fa fa-fw fa-people-group"></i> {{ __('Group') }}</x-bs::form.field>
                 </div>
             @endif
             <div class="col-12 col-lg-3">
@@ -103,7 +103,7 @@
                                 $group = $booking->getGroup($event);
                             @endphp
                             <x-bs::list.item>
-                                <i class="fa fa-fw fa-user-group" title="{{ __('Group') }}"></i>
+                                <i class="fa fa-fw fa-people-group" title="{{ __('Group') }}"></i>
                                 @isset($group)
                                     <strong>{{ $group->name }}</strong>
                                 @else

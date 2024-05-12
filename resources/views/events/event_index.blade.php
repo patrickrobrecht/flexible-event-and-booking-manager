@@ -199,7 +199,7 @@
                         @endcan
                         @can('viewGroups', $event)
                             <x-bs::button.link href="{{ route('groups.index', $event) }}" variant="secondary">
-                                <i class="fa fa-fw fa-user-group"></i> {{ __('Groups') }}
+                                <i class="fa fa-fw fa-people-group"></i> {{ __('Groups') }}
                                 <x-bs::badge variant="danger">{{ formatInt($event->groups_count) }}</x-bs::badge>
                             </x-bs::button.link>
                         @endcan

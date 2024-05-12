@@ -38,7 +38,7 @@ class EventController extends Controller
                     'groups',
                     'subEvents',
                 ])
-                ->paginate(),
+                ->paginate(12),
         ]));
     }
 

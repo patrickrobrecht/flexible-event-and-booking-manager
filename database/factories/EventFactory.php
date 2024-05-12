@@ -28,7 +28,7 @@ class EventFactory extends Factory
             'name' => $name,
             'slug' => Str::slug($name),
             'description' => fake()->text(),
-            'visibility' => fake()->randomElement(Visibility::keys()),
+            'visibility' => fake()->randomElement(Visibility::values()),
             'started_at' => $startedAt,
             'finished_at' => $startedAt->clone()->addHours(fake()->numberBetween(3, 168)),
             'website_url' => fake()->optional()->url(),

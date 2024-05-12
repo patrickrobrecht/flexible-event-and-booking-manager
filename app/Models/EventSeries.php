@@ -9,6 +9,7 @@ use App\Models\Traits\HasResponsibleUsers;
 use App\Models\Traits\HasSlugForRouting;
 use App\Options\Ability;
 use App\Options\EventSeriesType;
+use App\Options\FilterValue;
 use App\Options\Visibility;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -57,8 +58,6 @@ class EventSeries extends Model
         'visibility',
     ];
 
-    protected $perPage = 12;
-
     public function events(): HasMany
     {
         return $this->hasMany(Event::class, 'event_series_id')
@@ -76,6 +75,11 @@ class EventSeries extends Model
     {
         return $this->hasMany(__CLASS__, 'parent_event_series_id')
             ->orderBy('name');
+    }
+
+    public function scopeEvent(Builder $query, int|string $eventId): Builder
+    {
+        return $this->scopeRelation($query, $eventId, 'events', fn (Builder $q) => $q->where('id', '=', $documentId));
     }
 
     public function scopeEventSeriesType(Builder $query, EventSeriesType|string $eventSeriesType): Builder
@@ -121,9 +125,25 @@ class EventSeries extends Model
     {
         return [
             AllowedFilter::partial('name'),
+            AllowedFilter::exact('visibility')
+                ->ignore(FilterValue::All->value),
+            /** @see self::scopeEvent() */
+            AllowedFilter::scope('event_id', 'event'),
+            /** @see self::scopeDocument() */
+            AllowedFilter::scope('document_id', 'document'),
             /** @see self::scopeEventSeriesType() */
             AllowedFilter::scope('event_series_type')
+                ->ignore(FilterValue::All->value)
                 ->default(EventSeriesType::MainEventSeries->value),
+        ];
+    }
+
+    public static function filterOptions(): array
+    {
+        return [
+            FilterValue::All->value => __('all'),
+            FilterValue::With->value => __('with any event series'),
+            FilterValue::Without->value => __('without event series'),
         ];
     }
 

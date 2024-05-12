@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
+use App\Models\Traits\FiltersByRelationExistence;
 use App\Models\Traits\HasDocuments;
 use App\Models\Traits\HasLocation;
 use App\Models\Traits\HasNameAndDescription;
@@ -12,6 +13,7 @@ use App\Models\Traits\HasSlugForRouting;
 use App\Models\Traits\HasWebsite;
 use App\Options\Ability;
 use App\Options\EventType;
+use App\Options\FilterValue;
 use App\Options\Visibility;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -46,6 +48,7 @@ use Spatie\QueryBuilder\Enums\SortDirection;
 class Event extends Model
 {
     use BuildsQueryFromRequest;
+    use FiltersByRelationExistence;
     use HasDocuments;
     use HasFactory;
     use HasLocation;
@@ -80,8 +83,6 @@ class Event extends Model
         'started_at' => 'datetime',
         'finished_at' => 'datetime',
     ];
-
-    protected $perPage = 12;
 
     public function bookingOptions(): HasMany
     {
@@ -145,6 +146,11 @@ class Event extends Model
             );
     }
 
+    public function scopeEventSeries(Builder $query, int|string $eventSeriesId): Builder
+    {
+        return $this->scopeRelation($query, $eventSeriesId, 'eventSeries', fn (Builder $q) => $q->where('id', '=', $eventSeriesId));
+    }
+
     public function scopeEventType(Builder $query, EventType|string $eventType): Builder
     {
         if (is_string($eventType)) {
@@ -158,6 +164,11 @@ class Event extends Model
             EventType::EventWithoutParts => $query->whereDoesntHave('subEvents'),
             default => $query,
         };
+    }
+
+    public function scopeOrganization(Builder $query, int|string $organizationId): Builder
+    {
+        return $this->scopeRelation($query, $organizationId, 'organizations', fn (Builder $q) => $q->where('organization_id', '=', $organizationId));
     }
 
     public function fillAndSave(array $validatedData): bool
@@ -221,16 +232,33 @@ class Event extends Model
         return [
             /** @see self::scopeSearchNameAndDescription() */
             AllowedFilter::scope('search', 'searchNameAndDescription'),
-            AllowedFilter::exact('visibility'),
+            AllowedFilter::exact('visibility')
+                ->ignore(FilterValue::All->value),
             /** @see self::scopeDateFrom() */
             AllowedFilter::scope('date_from'),
             /** @see self::scopeDateUntil() */
             AllowedFilter::scope('date_until'),
-            AllowedFilter::exact('location_id'),
-            AllowedFilter::exact('organization_id', 'organizations.id'),
+            /** @see self::scopeEventSeries() */
+            AllowedFilter::scope('event_series_id', 'eventSeries'),
+            /** @see self::scopeOrganization() */
+            AllowedFilter::scope('organization_id', 'organization'),
+            AllowedFilter::exact('location_id')
+                ->ignore(FilterValue::All->value),
+            /** @see self::scopeDocument() */
+            AllowedFilter::scope('document_id', 'document'),
             /** @see self::scopeEventType() */
             AllowedFilter::scope('event_type')
-                ->default(EventType::MainEvent->value),
+                ->default(EventType::MainEvent->value)
+                ->ignore(FilterValue::All->value),
+        ];
+    }
+
+    public static function filterOptions(): array
+    {
+        return [
+            FilterValue::All->value => __('all'),
+            FilterValue::With->value => __('with at least one event'),
+            FilterValue::Without->value => __('without events'),
         ];
     }
 

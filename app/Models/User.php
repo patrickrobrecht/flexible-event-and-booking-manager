@@ -4,12 +4,14 @@ namespace App\Models;
 
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
+use App\Models\Traits\FiltersByRelationExistence;
 use App\Models\Traits\HasAddress;
 use App\Models\Traits\Searchable;
 use App\Notifications\ResetPasswordNotification;
 use App\Notifications\VerifyEmailNotification;
 use App\Options\Ability;
 use App\Options\ActiveStatus;
+use App\Options\FilterValue;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
@@ -54,6 +56,7 @@ use Spatie\QueryBuilder\Enums\SortDirection;
 class User extends Authenticatable implements MustVerifyEmail
 {
     use BuildsQueryFromRequest;
+    use FiltersByRelationExistence;
     use HasAddress;
     use HasApiTokens;
     use HasFactory;
@@ -100,8 +103,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'status' => ActiveStatus::class,
         'last_login_at' => 'datetime',
     ];
-
-    protected $perPage = 12;
 
     public function greeting(): Attribute
     {
@@ -173,6 +174,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function scopeName(Builder $query, ...$searchTerms): Builder
     {
         return $this->scopeIncludeColumns($query, ['first_name', 'last_name'], true, ...$searchTerms);
+    }
+
+    public function scopeUserRole(Builder $query, $userRoleId): Builder
+    {
+        return $this->scopeRelation($query, $userRoleId, 'userRoles', fn (Builder $q) => $q->where('user_role_id', '=', $userRoleId));
     }
 
     public function fillAndSave(array $validatedData): bool
@@ -298,9 +304,21 @@ class User extends Authenticatable implements MustVerifyEmail
             AllowedFilter::scope('name'),
             /** @see User::scopeEmail() */
             AllowedFilter::scope('email'),
-            AllowedFilter::exact('user_role_id', 'userRoles.id'),
+            /** @see User::scopeUserRole() */
+            AllowedFilter::scope('user_role_id', 'userRole')
+                ->default(FilterValue::All->value),
             AllowedFilter::exact('status')
-                ->default(ActiveStatus::Active->value),
+                ->default(ActiveStatus::Active->value)
+                ->ignore(FilterValue::All->value),
+        ];
+    }
+
+    public static function filterOptions(): array
+    {
+        return [
+            FilterValue::All->value => __('all'),
+            FilterValue::With->value => __('with at least one user'),
+            FilterValue::Without->value => __('without users'),
         ];
     }
 

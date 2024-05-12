@@ -35,7 +35,7 @@ trait HasAddress
             $this->streetLine,
             $this->cityLine,
             $this->country,
-        ], fn (string $line) => trim($line) !== ''));
+        ], fn (?string $line) => $line !== null && trim($line) !== ''));
     }
 
     public function addressLine(): Attribute

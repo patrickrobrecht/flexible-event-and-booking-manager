@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Filters\LocationFilterRequest;
 use App\Http\Requests\LocationRequest;
 use App\Models\Location;
+use App\Models\Organization;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
@@ -24,7 +25,10 @@ class LocationController extends Controller
                     'events',
                     'organizations',
                 ])
-                ->paginate(),
+                ->paginate(18),
+            'organizations' => Organization::query()
+                ->orderBy('name')
+                ->get(),
         ]);
     }
 

@@ -24,7 +24,7 @@ class EventSeriesFactory extends Factory
         return [
             'name' => $name,
             'slug' => Str::slug($name),
-            'visibility' => fake()->randomElement(Visibility::keys()),
+            'visibility' => fake()->randomElement(Visibility::values()),
         ];
     }
 }

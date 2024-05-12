@@ -12,7 +12,7 @@
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.4",
         "phpoffice/phpspreadsheet": "^2.0",
-        "portavice/bladestrap": "^1.2",
+        "portavice/bladestrap": "^1.3",
         "spatie/laravel-query-builder": "^5.8",
         "spatie/laravel-sluggable": "^3.6"
     },

@@ -4,7 +4,9 @@ namespace App\Models;
 
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
+use App\Models\Traits\FiltersByRelationExistence;
 use App\Options\Ability;
+use App\Options\FilterValue;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -23,6 +25,7 @@ use Spatie\QueryBuilder\Enums\SortDirection;
 class UserRole extends Model
 {
     use BuildsQueryFromRequest;
+    use FiltersByRelationExistence;
 
     protected $casts = [
         'abilities' => 'json',
@@ -33,12 +36,15 @@ class UserRole extends Model
         'abilities',
     ];
 
-    protected $perPage = 12;
-
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class)
             ->withTimestamps();
+    }
+
+    public function scopeUser(Builder $query, int|string $userId): Builder
+    {
+        return $this->scopeRelation($query, $userId, 'users', fn (Builder $q) => $q->where('user_id', '=', $userId));
     }
 
     public function fillAndSave(array $validatedData): bool
@@ -55,6 +61,18 @@ class UserRole extends Model
     {
         return [
             AllowedFilter::partial('name'),
+            /** @see self::scopeUser() */
+            AllowedFilter::scope('user_id', 'user')
+                ->default(FilterValue::All->value),
+        ];
+    }
+
+    public static function filterOptions(): array
+    {
+        return [
+            FilterValue::All->value => __('all'),
+            FilterValue::With->value => __('with at least one user role'),
+            FilterValue::Without->value => __('without user role'),
         ];
     }
 

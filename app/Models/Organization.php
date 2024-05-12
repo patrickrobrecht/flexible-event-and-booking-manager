@@ -10,6 +10,8 @@ use App\Models\Traits\HasResponsibleUsers;
 use App\Models\Traits\HasWebsite;
 use App\Options\Ability;
 use App\Options\ActiveStatus;
+use App\Options\FilterValue;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -58,8 +60,6 @@ class Organization extends Model
         'status' => ActiveStatus::class,
     ];
 
-    protected $perPage = 12;
-
     public function events(): BelongsToMany
     {
         return $this->belongsToMany(Event::class)
@@ -69,6 +69,11 @@ class Organization extends Model
     public function parentOrganization(): BelongsTo
     {
         return $this->belongsTo(__CLASS__, 'parent_organization_id');
+    }
+
+    public function scopeEvent(Builder $query, int|string $eventId): Builder
+    {
+        return $this->scopeRelation($query, $eventId, 'events', fn (Builder $q) => $q->where('event_id', '=', $eventId));
     }
 
     public function fillAndSave(array $validatedData): bool
@@ -100,7 +105,21 @@ class Organization extends Model
     {
         return [
             AllowedFilter::partial('name'),
-            AllowedFilter::exact('location_id'),
+            /** @see self::scopeEvent() */
+            AllowedFilter::scope('event_id', 'event'),
+            AllowedFilter::exact('location_id')
+                ->ignore(FilterValue::All->value),
+            /** @see self::scopeDocument() */
+            AllowedFilter::scope('document_id', 'document'),
+        ];
+    }
+
+    public static function filterOptions(): array
+    {
+        return [
+            FilterValue::All->value => __('all'),
+            FilterValue::With->value => __('with any organization'),
+            FilterValue::Without->value => __('without organizations'),
         ];
     }
 

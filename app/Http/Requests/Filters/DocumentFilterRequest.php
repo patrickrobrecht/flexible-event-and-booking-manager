@@ -8,6 +8,7 @@ use App\Http\Requests\Traits\FiltersList;
 use App\Models\Document;
 use App\Options\ApprovalStatus;
 use App\Options\FileType;
+use App\Options\FilterValue;
 use App\Policies\DocumentPolicy;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -24,14 +25,8 @@ class DocumentFilterRequest extends FormRequest
     {
         return [
             'filter.search' => $this->ruleForText(),
-            'filter.file_type' => [
-                'nullable',
-                FileType::rule(),
-            ],
-            'filter.approval_status' => [
-                'nullable',
-                ApprovalStatus::rule(),
-            ],
+            'filter.file_type' => $this->ruleForAllowedOrExistsInEnum(FileType::class, [FilterValue::All->value]),
+            'filter.approval_status' => $this->ruleForAllowedOrExistsInEnum(ApprovalStatus::class, [FilterValue::All->value]),
             'sort' => [
                 'nullable',
                 Document::sortOptions()->getRule(),

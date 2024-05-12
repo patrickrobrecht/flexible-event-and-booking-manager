@@ -6,10 +6,11 @@ use App\Http\Controllers\UserController;
 use App\Http\Requests\Traits\AuthorizationViaController;
 use App\Http\Requests\Traits\FiltersList;
 use App\Models\User;
+use App\Models\UserRole;
 use App\Options\ActiveStatus;
+use App\Options\FilterValue;
 use App\Policies\UserPolicy;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 /**
  * Filter for {@see User}s
@@ -28,14 +29,8 @@ class UserFilterRequest extends FormRequest
         return [
             'filter.name' => $this->ruleForText(),
             'filter.email' => $this->ruleForText(),
-            'filter.user_role_id' => [
-                'nullable',
-                Rule::exists('user_roles', 'id'),
-            ],
-            'filter.status' => [
-                'nullable',
-                ActiveStatus::rule(),
-            ],
+            'filter.user_role_id' => $this->ruleForAllowedOrExistsInDatabase(UserRole::query(), FilterValue::values()),
+            'filter.status' => $this->ruleForAllowedOrExistsInEnum(ActiveStatus::class, [FilterValue::All->value]),
             'sort' => [
                 'nullable',
                 User::sortOptions()->getRule(),

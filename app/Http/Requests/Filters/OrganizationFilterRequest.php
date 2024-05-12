@@ -5,7 +5,11 @@ namespace App\Http\Requests\Filters;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Requests\Traits\AuthorizationViaController;
 use App\Http\Requests\Traits\FiltersList;
+use App\Models\Document;
+use App\Models\Event;
+use App\Models\Location;
 use App\Models\Organization;
+use App\Options\FilterValue;
 use App\Policies\OrganizationPolicy;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -25,7 +29,13 @@ class OrganizationFilterRequest extends FormRequest
     {
         return [
             'filter.name' => $this->ruleForText(),
-            'filter.location_id' => $this->ruleForForeignId('locations'),
+            'filter.event_id' => $this->ruleForAllowedOrExistsInDatabase(Event::query(), FilterValue::values()),
+            'filter.location_id' => $this->ruleForAllowedOrExistsInDatabase(Location::query(), [FilterValue::All->value]),
+            'filter.document_id' => $this->ruleForAllowedOrExistsInDatabase(Document::query(), FilterValue::values()),
+            'sort' => [
+                'nullable',
+                Organization::sortOptions()->getRule(),
+            ],
         ];
     }
 }

@@ -45,13 +45,14 @@
                 <div class="col-12 col-lg-3">
                     <x-bs::form.field id="payment_status" name="filter[payment_status]" type="select"
                                       :options="\App\Options\PaymentStatus::toOptionsWithAll()"
+                                      :cast="\App\Options\FilterValue::castToIntIfNoValue()"
                                       :from-query="true"><i class="fa fa-fw fa-euro"></i> {{ __('Payment status') }}</x-bs::form.field>
                 </div>
             @endcan
             @if($hasGroups)
                 <div class="col-12 col-lg-3">
                     <x-bs::form.field id="group_id" name="filter[group_id]" type="select"
-                                      :options="\Portavice\Bladestrap\Support\Options::fromModels($event->groups, 'name')->prepend(__('all'), '')"
+                                      :options="\Portavice\Bladestrap\Support\Options::fromModels($event->groups, 'name')->prepend(__('all'), \App\Options\FilterValue::All->value)"
                                       :from-query="true"><i class="fa fa-fw fa-user-group"></i> {{ __('Group') }}</x-bs::form.field>
                 </div>
             @endif

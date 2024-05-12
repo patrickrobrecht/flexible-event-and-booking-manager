@@ -6,6 +6,7 @@ use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\HasAddress;
 use App\Options\DeletedFilter;
+use App\Options\FilterValue;
 use App\Options\FormElementType;
 use App\Options\PaymentStatus;
 use Carbon\Carbon;
@@ -253,9 +254,11 @@ class Booking extends Model
             /** @see self::scopeSearchAll() */
             AllowedFilter::scope('search', 'searchAll'),
             /** @see self::scopeGroup() */
-            AllowedFilter::scope('group_id', 'group'),
+            AllowedFilter::scope('group_id', 'group')
+                ->ignore(FilterValue::All->value),
             /** @see self::scopePaymentStatus() */
-            AllowedFilter::scope('payment_status', 'paymentStatus'),
+            AllowedFilter::scope('payment_status', 'paymentStatus')
+                ->ignore(FilterValue::All->value),
             AllowedFilter::trashed()
                 ->default(DeletedFilter::HideDeleted->value),
         ];

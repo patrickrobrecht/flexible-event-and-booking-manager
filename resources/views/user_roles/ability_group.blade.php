@@ -7,7 +7,7 @@
 @endphp
 @foreach($abilityGroups as $abilityGroup)
     <div class="avoid-break">
-        <{{$headlineTag}}>{{ $abilityGroup->getTranslatedName() }}</{{$headlineTag}}>
+        <{{$headlineTag}}><i class="fa fa-fw {{ $abilityGroup->getIcon() }}"></i> {{ $abilityGroup->getTranslatedName() }}</{{$headlineTag}}>
         @if($editable)
             <x-bs::form.field name="abilities[]" type="switch"
                               :options="\Portavice\Bladestrap\Support\Options::fromEnum($abilityGroup->getAbilities(), 'getTranslatedName')"

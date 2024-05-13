@@ -51,7 +51,7 @@
                                   :from-query="\Illuminate\Support\Facades\Request::routeIs('event-series.create')"><i class="fa fa-fw fa-calendar-days"></i> {{ __('Part of the event series') }}</x-bs::form.field>
 
                 <section class="my-3">
-                    <h2>{{ __('Responsibilities') }}</h2>
+                    <h2><i class="fa fa-fw fa-list-check"></i> {{ __('Responsibilities') }}</h2>
                     @livewire('users.search-users', [
                         'selectedUsers' => $eventSeries->responsibleUsers ?? \Illuminate\Database\Eloquent\Collection::empty(),
                     ])
@@ -72,7 +72,7 @@
 
         @isset($eventSeries)
             <div class="col-12 col-md-6">
-                <h2>{{ __('Events') }}</h2>
+                <h2><i class="fa fa-fw fa-calendar-days"></i> {{ __('Events') }}</h2>
                 @include('event_series.shared.events_in_series')
             </div>
         @endisset

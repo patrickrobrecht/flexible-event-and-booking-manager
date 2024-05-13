@@ -42,7 +42,7 @@
                     ]);
             @endphp
             <div class="col-12 col-md-6">
-                <h2>{{ __('Groups') }}</h2>
+                <h2><i class="fa fa-fw fa-people-group"></i> {{ __('Groups') }}</h2>
                 <x-bs::list class="mb-3">
                     @foreach($groups as $group)
                         <x-bs::list.item>

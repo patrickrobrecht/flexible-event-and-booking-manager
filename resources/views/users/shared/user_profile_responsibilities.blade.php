@@ -3,7 +3,7 @@
 @endphp
 <div class="row">
     <div id="responsibilities" class="col-12 col-xl-6 col-xxl-4">
-        <h2>{{ __('Responsibilities') }}</h2>
+        <h2><i class="fa fa-fw fa-list-check"></i> {{ __('Responsibilities') }}</h2>
         @if(
             $user->responsibleForEvents->isEmpty()
             && $user->responsibleForEventSeries->isEmpty()
@@ -15,7 +15,7 @@
         @endif
         @if($user->responsibleForOrganizations->isNotEmpty())
             <div class="mb-3">
-                <h3>{{ __('Organizations') }}</h3>
+                <h3><i class="fa fa-fw fa-sitemap"></i> {{ __('Organizations') }}</h3>
                 @include('organizations.shared.organization_list', [
                     'organizations' => $user->responsibleForOrganizations,
                 ])
@@ -23,7 +23,7 @@
         @endif
         @if($user->responsibleForEventSeries->isNotEmpty())
             <div class="mb-3">
-                <h3>{{ __('Event series') }}</h3>
+                <h3><i class="fa fa-fw fa-calendar-week"></i> {{ __('Event series') }}</h3>
                 @include('event_series.shared.event_series_list', [
                     'eventSeries' => $user->responsibleForEventSeries,
                 ])
@@ -31,7 +31,7 @@
         @endif
         @if($user->responsibleForEvents->isNotEmpty())
             <div class="mb-3">
-                <h3>{{ __('Events') }}</h3>
+                <h3><i class="fa fa-fw fa-calendar-days"></i> {{ __('Events') }}</h3>
                 @include('events.shared.event_list', [
                     'events' => $user->responsibleForEvents,
                 ])
@@ -39,7 +39,7 @@
         @endif
     </div>
     <div id="bookings" class="col-12 col-xl-6 col-xxl-4">
-        <h2>{{ __('Bookings') }}</h2>
+        <h2><i class="fa fa-fw fa-file-contract"></i> {{ __('Bookings') }}</h2>
         @if($user->bookings->count() === 0)
             <x-bs::alert class="danger">{{ __(':name does not have any bookings yet.', [
                 'name' => $user->first_name,
@@ -50,7 +50,7 @@
         ])
     </div>
     <div id="documents" class="col-12 col-xl-6 col-xxl-4">
-        <h2>{{ __('Documents') }}</h2>
+        <h2><i class="fa fa-fw fa-file"></i> {{ __('Documents') }}</h2>
         @if($user->documents->count() === 0)
             <x-bs::alert class="danger">{{ __(':name has not uploaded any documents yet.', [
                 'name' => $user->first_name,

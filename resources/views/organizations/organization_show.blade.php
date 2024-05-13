@@ -31,7 +31,7 @@
         <div class="col-12 col-md-8">
             @can('viewResponsibilities', $organization)
                 <section id="responsibilities">
-                    <h2>{{ __('Responsibilities') }}</h2>
+                    <h2><i class="fa fa-fw fa-list-check"></i> {{ __('Responsibilities') }}</h2>
                     @include('users.shared.responsible_user_list', [
                         'users' => $organization->getResponsibleUsersVisibleForCurrentUser(),
                     ])
@@ -40,7 +40,7 @@
 
             @canany(['viewAny', 'create'], [\App\Models\Document::class, $organization])
                 <section id="documents" class="mt-4">
-                    <h2>{{ __('Documents') }}</h2>
+                    <h2><i class="fa fa-fw fa-file"></i> {{ __('Documents') }}</h2>
                     @can('viewAny', [\App\Models\Document::class, $organization])
                         @include('documents.shared.document_list', [
                             'documents' => $organization->documents,

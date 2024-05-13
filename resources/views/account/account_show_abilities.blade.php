@@ -17,7 +17,7 @@
 
 @section('headline-buttons')
     @can('editAccount', \App\Models\User::class)
-        <x-bs::button.link href="{{ route('account.edit') }}">{{ __('Edit my account') }}</x-bs::button.link>
+        <x-bs::button.link href="{{ route('account.edit') }}"><i class="fa fa-fw fa-user-pen"></i> {{ __('Edit my account') }}</x-bs::button.link>
     @endif
 @endsection
 
@@ -27,7 +27,7 @@
     ])
 
     <section>
-        <h2 class="mt-3">{{ __('Abilities') }}</h2>
+        <h2 class="mt-3"><i class="fa fa-fw fa-user-shield"></i> {{ __('Abilities') }}</h2>
         <div class="cols-lg-2 cols-xxl-3 mb-3">
             @include('user_roles.ability_group', [
                 'selectedAbilities' => $user->getAbilitiesAsStrings()->toArray(),

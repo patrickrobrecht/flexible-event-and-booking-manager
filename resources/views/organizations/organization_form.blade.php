@@ -25,7 +25,7 @@
                                   :value="$organization->name ?? null">{{ __('Name') }}</x-bs::form.field>
                 <x-bs::form.field name="status" type="select"
                                   :options="\App\Options\ActiveStatus::toOptions()"
-                                  :value="$organization->status->value ?? null">{{ __('Status') }}</x-bs::form.field>
+                                  :value="$organization->status->value ?? null"><i class="fa fa-fw fa-circle-question"></i> {{ __('Status') }}</x-bs::form.field>
                 <x-bs::form.field name="representatives" type="text"
                                   :value="$organization->representatives ?? null"><i class="fa fa-fw fa-user-friends"></i> {{ __('Representatives') }}</x-bs::form.field>
                 <x-bs::form.field name="register_entry" type="text"
@@ -38,7 +38,7 @@
             </div>
             <div class="col-12 col-md-6">
                 <section class="my-3">
-                    <h2>{{ __('Responsibilities') }}</h2>
+                    <h2><i class="fa fa-fw fa-list-check"></i> {{ __('Responsibilities') }}</h2>
                     @livewire('users.search-users', [
                         'selectedUsers' => $organization->responsibleUsers ?? \Illuminate\Database\Eloquent\Collection::empty(),
                     ])

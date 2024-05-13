@@ -34,7 +34,7 @@
             <div class="col-12 col-md-6">
                 <x-bs::form.field name="expires_at" type="datetime-local"
                                   :value="isset($token->expires_at) ? $token->expires_at->format('Y-m-d\TH:i') : null">
-                    {{ __('Expires at') }}
+                    <i class="fa fa-fw fa-calendar-times"></i> {{ __('Expires at') }}
                     @if(isset($token->expires_at) && $token->expires_at->isPast())
                         <x-bs::badge variant="danger">{{ __('expired') }}</x-bs::badge>
                     @endif
@@ -45,7 +45,7 @@
         <x-bs::form.field id="abilities" name="abilities[]" type="switch"
                           :options="\Portavice\Bladestrap\Support\Options::fromEnum(\App\Options\Ability::apiCases(), 'getTranslatedName')"
                           :value="$token->abilities ?? []"
-                          check-container-class="cols-lg-2 cols-xl-3 cols-xxl-4">{{ __('Abilities') }}</x-bs::form.field>
+                          check-container-class="cols-lg-2 cols-xl-3 cols-xxl-4"><i class="fa fa-fw fa-user-shield"></i> {{ __('Abilities') }}</x-bs::form.field>
 
         <x-bs::button.group>
             <x-button.save>

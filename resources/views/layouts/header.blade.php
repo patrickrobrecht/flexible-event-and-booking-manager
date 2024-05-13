@@ -48,32 +48,27 @@
                                 <x-slot:dropdown>
                                     @if($canViewEvents)
                                         <x-bs::dropdown.item href="{{ route('events.index') }}">
-                                            <i class="fa fa-fw fa-calendar-days"></i>
-                                            {{ __('Events') }}
+                                            <i class="fa fa-fw fa-calendar-days"></i> {{ __('Events') }}
                                         </x-bs::dropdown.item>
                                     @endif
                                     @if($canViewEventSeries)
                                         <x-bs::dropdown.item href="{{ route('event-series.index') }}">
-                                            <i class="fa fa-fw fa-calendar-week"></i>
-                                            {{ __('Event series') }}
+                                            <i class="fa fa-fw fa-calendar-week"></i> {{ __('Event series') }}
                                         </x-bs::dropdown.item>
                                     @endif
                                     @if($canViewOrganizations)
                                         <x-bs::dropdown.item href="{{ route('organizations.index') }}">
-                                            <i class="fa fa-fw fa-sitemap"></i>
-                                            {{ __('Organizations') }}
+                                            <i class="fa fa-fw fa-sitemap"></i> {{ __('Organizations') }}
                                         </x-bs::dropdown.item>
                                     @endif
                                     @if($canViewLocations)
                                         <x-bs::dropdown.item href="{{ route('locations.index') }}">
-                                            <i class="fa fa-fw fa-location-pin"></i>
-                                            {{ __('Locations') }}
+                                            <i class="fa fa-fw fa-location-pin"></i> {{ __('Locations') }}
                                         </x-bs::dropdown.item>
                                     @endif
                                     @if($canViewDocuments)
                                         <x-bs::dropdown.item href="{{ route('documents.index') }}">
-                                            <i class="fa fa-fw fa-file"></i>
-                                            {{ __('Documents') }}
+                                            <i class="fa fa-fw fa-file"></i> {{ __('Documents') }}
                                         </x-bs::dropdown.item>
                                     @endif
                                     @if($canViewUsers || $canViewUserRoles)
@@ -81,22 +76,19 @@
                                     @endif
                                     @if($canViewUsers)
                                         <x-bs::dropdown.item href="{{ route('users.index') }}">
-                                            <i class="fa fa-fw fa-users"></i>
-                                            {{ __('Users') }}
+                                            <i class="fa fa-fw fa-users"></i> {{ __('Users') }}
                                         </x-bs::dropdown.item>
                                     @endif
                                     @if($canViewUserRoles)
                                         <x-bs::dropdown.item href="{{ route('user-roles.index') }}">
-                                            <i class="fa fa-fw fa-user-group"></i>
-                                            {{ __('User roles') }}
+                                            <i class="fa fa-fw fa-user-group"></i> {{ __('User roles') }}
                                         </x-bs::dropdown.item>
                                     @endif
                                 </x-slot:dropdown>
                             </x-bs::nav.item>
                         @endif
                         <x-bs::nav.item id="navbarUserDropdown">
-                            <i class="fa fa-user-circle"></i>
-                            {{ $loggedInUser->name }}
+                            <i class="fa fa-fw fa-user-circle"></i> {{ $loggedInUser->name }}
                             <x-slot:dropdown class="dropdown-menu-end">
                                 @can('viewAccount', \App\Models\User::class)
                                     <x-bs::dropdown.item href="{{ route('account.show') }}">
@@ -104,7 +96,7 @@
                                     </x-bs::dropdown.item>
                                 @elsecan('editAccount', \App\Models\User::class)
                                     <x-bs::dropdown.item href="{{ route('account.edit') }}">
-                                        <i class="fa fa-fw fa-user-cog"></i> {{ __('My account') }}
+                                        <i class="fa fa-fw fa-user-pen"></i> {{ __('Edit my account') }}
                                     </x-bs::dropdown.item>
                                 @endcan
                                 @can('viewOwn', \App\Models\PersonalAccessToken::class)

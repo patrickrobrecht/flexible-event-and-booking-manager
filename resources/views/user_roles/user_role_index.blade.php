@@ -69,7 +69,7 @@
                             </x-slot:end>
                         </x-bs::list.item>
                         <x-bs::list.item>
-                            <span>{{ __('Abilities') }}</span>
+                            <span><i class="fa fa-fw fa-user-shield"></i> {{ __('Abilities') }}</span>
                             <x-slot:end>
                                 <x-bs::badge>{{ formatInt(count($userRole->abilities)) }}</x-bs::badge>
                             </x-slot:end>

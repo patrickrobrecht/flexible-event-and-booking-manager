@@ -9,8 +9,8 @@ enum AbilityGroup
     case Groups;
     case EventSeries;
 
-    case BasicData;
     case Organizations;
+
     case Locations;
 
     case Documents;
@@ -46,9 +46,6 @@ enum AbilityGroup
             self::Groups,
             self::EventSeries => self::Events,
 
-            self::Organizations,
-            self::Locations => self::BasicData,
-
             self::DocumentsOfEvents,
             self::DocumentsOfEventSeries,
             self::DocumentsOfOrganizations => self::Documents,
@@ -61,6 +58,31 @@ enum AbilityGroup
         };
     }
 
+    public function getIcon(): array|string
+    {
+        return match ($this) {
+            self::Events => 'fa-calendar-days',
+            self::Bookings => 'fa-file-contract',
+            self::Groups => 'fa-people-group',
+
+            self::EventSeries => 'fa-calendar-week',
+
+            self::Organizations => 'fa-sitemap',
+
+            self::Locations => 'fa-location-pin',
+
+            self::Documents,
+            self::DocumentsOfEvents,
+            self::DocumentsOfEventSeries,
+            self::DocumentsOfOrganizations => 'fa-file',
+
+            self::UsersAndAbilities,
+            self::Users => 'fa-users',
+            self::UserRoles => 'fa-user-group',
+            self::OwnAccount => 'fa-user-circle',
+        };
+    }
+
     public function getTranslatedName(): string
     {
         return match ($this) {
@@ -70,8 +92,8 @@ enum AbilityGroup
 
             self::EventSeries => __('Event series'),
 
-            self::BasicData => __('Basic data'),
             self::Organizations => __('Organizations'),
+
             self::Locations => __('Locations'),
 
             self::Documents => __('Documents'),

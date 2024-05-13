@@ -48,7 +48,7 @@
             <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="event_series_type" name="filter[event_series_type]" type="select"
                                   :options="\App\Options\EventSeriesType::toOptionsWithAll()"
-                                  :from-query="true">{{ __('Event series type') }}</x-bs::form.field>
+                                  :from-query="true"><i class="fa fa-fw fa-calendar-check"></i> {{ __('Event series type') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-lg-6 col-xl-3">
                 <x-bs::form.field name="sort" type="select"

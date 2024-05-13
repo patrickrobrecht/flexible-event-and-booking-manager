@@ -19,7 +19,7 @@
         <div class="row">
             <div class="col-12 col-xl-3">
                 <x-bs::form.field id="search" name="filter[search]" type="text"
-                                  :from-query="true">{{ __('Search term') }}</x-bs::form.field>
+                                  :from-query="true"><i class="fa fa-fw fa-search"></i> {{ __('Search term') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-sm-6 col-xl-3">
                 <x-bs::form.field id="file_type" name="filter[file_type]" type="select"
@@ -93,6 +93,7 @@
                             @include('documents.shared.document_uploaded_by')
                         </x-bs::list.item>
                         <x-bs::list.item>
+                            <i class="fa fa-fw fa-circle-question"></i>
                             <x-badge.approval-status :approval-status="$document->approval_status"/>
                         </x-bs::list.item>
                     </x-bs::list>

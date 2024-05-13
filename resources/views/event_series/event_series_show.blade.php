@@ -41,7 +41,7 @@
 
     <div class="row my-3">
         <div id="events" class="col-12 col-xl-6 col-xxl-4">
-            <h2>{{ __('Events') }}</h2>
+            <h2><i class="fa fa-fw fa-calendar-days"></i> {{ __('Events') }}</h2>
             @include('event_series.shared.events_in_series')
             @can('create', \App\Models\Event::class)
                 <div class="my-3">
@@ -58,7 +58,7 @@
         @endphp
         @if($hasSubEventSeriesToShow)
             <div id="series" class="col-12 col-xl-6 col-xxl-4 mt-4 mt-xl-0">
-                <h2>{{ __('Event series') }}</h2>
+                <h2><i class="fa fa-fw fa-calendar-week"></i> {{ __('Event series') }}</h2>
                 @include('event_series.shared.event_series_list', [
                     'eventSeries' => $subEventSeriesList,
                     'showParentEventSeries' => false,
@@ -84,7 +84,7 @@
                     $responsibilitySectionEmpty = false;
                 @endphp
                 <section id="responsibilities">
-                    <h2>{{ __('Responsibilities') }}</h2>
+                    <h2><i class="fa fa-fw fa-list-check"></i> {{ __('Responsibilities') }}</h2>
                     @include('users.shared.responsible_user_list', [
                         'users' => $eventSeries->getResponsibleUsersVisibleForCurrentUser(),
                     ])
@@ -94,7 +94,7 @@
                 <section id="documents" @class([
                     'mt-4' => !$responsibilitySectionEmpty,
                 ])>
-                    <h2>{{ __('Documents') }}</h2>
+                    <h2><i class="fa fa-fw fa-file"></i> {{ __('Documents') }}</h2>
                     @can('viewAny', [\App\Models\Document::class, $eventSeries])
                         @include('documents.shared.document_list', [
                             'documents' => $eventSeries->documents,

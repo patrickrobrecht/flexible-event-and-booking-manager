@@ -26,7 +26,7 @@
 @section('content')
     @include('user_roles.shared.user_role_badge_count')
 
-    <h2>{{ __('Abilities') }}</h2>
+    <h2><i class="fa fa-fw fa-user-shield"></i> {{ __('Abilities') }}</h2>
     <div class="cols-lg-2 cols-xxl-3 mb-3">
         @include('user_roles.ability_group', [
             'selectedAbilities' => $userRole->abilities,

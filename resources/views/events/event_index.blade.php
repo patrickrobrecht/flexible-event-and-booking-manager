@@ -29,7 +29,7 @@
         <div class="row">
             <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="search" name="filter[search]" type="text"
-                                  :from-query="true">{{ __('Search term') }}</x-bs::form.field>
+                                  :from-query="true"><i class="fa fa-fw fa-search"></i> {{ __('Search term') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="visibility" name="filter[visibility]" type="select"
@@ -70,7 +70,7 @@
             <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="event_type" name="filter[event_type]" type="select"
                                   :options="\App\Options\EventType::toOptionsWithAll()"
-                                  :from-query="true">{{ __('Event type') }}</x-bs::form.field>
+                                  :from-query="true"><i class="fa fa-fw fa-calendar-check"></i> {{ __('Event type') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-lg-6 col-xl-3">
                 <x-bs::form.field name="sort" type="select"

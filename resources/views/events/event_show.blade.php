@@ -71,7 +71,7 @@
                     @php
                         $responsibilitySectionEmpty = false;
                     @endphp
-                    <h2>{{ __('Responsibilities') }}</h2>
+                    <h2><i class="fa fa-fw fa-list-check"></i> {{ __('Responsibilities') }}</h2>
                     @include('users.shared.responsible_user_list', [
                         'users' => $event->getResponsibleUsersVisibleForCurrentUser(),
                     ])
@@ -88,7 +88,7 @@
                 <section id="documents" @class([
                     'mt-4' => $bookingOptionsToShow || !$responsibilitySectionEmpty,
                 ])>
-                    <h2>{{ __('Documents') }}</h2>
+                    <h2><i class="fa fa-fw fa-file"></i> {{ __('Documents') }}</h2>
                     @can('viewAny', [\App\Models\Document::class, $event])
                         @include('documents.shared.document_list', [
                             'documents' => $event->documents,
@@ -111,7 +111,7 @@
                     <section id="events" @class([
                         'mt-4' => $bookingOptionsToShow || !$responsibilitySectionEmpty || !$documentSectionEmpty,
                     ])>
-                        <h2>{{ __('Other sub events of :name', [
+                        <h2><i class="fa fa-fw fa-calendar-days"></i> {{ __('Other sub events of :name', [
                             'name' => $event->parentEvent->name,
                         ]) }}</h2>
                         @include('events.shared.event_list', [
@@ -130,7 +130,7 @@
                     <section id="events" @class([
                         'mt-4' => $bookingOptionsToShow || !$documentSectionEmpty,
                     ])>
-                        <h2>{{ __('Sub events') }}</h2>
+                        <h2><i class="fa fa-fw fa-calendar-days"></i> {{ __('Sub events') }}</h2>
                         @if($subEvents->isNotEmpty())
                             @include('events.shared.event_list', [
                                 'events' => $event->subEvents,

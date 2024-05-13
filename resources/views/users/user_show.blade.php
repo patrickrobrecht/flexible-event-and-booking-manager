@@ -30,7 +30,7 @@
 
     @can('viewAny', \App\Models\UserRole::class)
         <section id="abilities" class="mt-3">
-            <h2>{{ __('Abilities') }}</h2>
+            <h2><i class="fa fa-fw fa-user-shield"></i> {{ __('Abilities') }}</h2>
             <div class="cols-lg-2 cols-xxl-3 mb-3">
                 @include('user_roles.ability_group', [
                     'selectedAbilities' => $user->getAbilitiesAsStrings()->toArray(),

@@ -26,7 +26,7 @@
                 if ($refs.title.value === '') {
                     let fileName = $refs.file.files[0].name;
                     fileName = fileName.substring(0, fileName.lastIndexOf('.'));
-                    $refs.title.value = fileName.replace(/_/g, ' ');
+                    $refs.title.value = fileName.replace(/_/g, ' ').replace(/-/g, ' ');
                 }
             }">
             {{ __('File') }}

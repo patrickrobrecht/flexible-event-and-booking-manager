@@ -11,6 +11,7 @@ use App\Options\FileType;
 use App\Options\FilterValue;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -27,6 +28,8 @@ use Spatie\QueryBuilder\AllowedSort;
  * @property string $path
  * @property FileType $file_type
  * @property ApprovalStatus $approval_status
+ *
+ * @property-read string $file_name_from_title {@see self::fileNameFromTitle()}
  *
  * @property-read HasDocuments|Event $reference {@see self::reference()}
  * @property-read User $uploadedByUser {@see self::uploadedByUser()}
@@ -47,6 +50,14 @@ class Document extends Model
         'description',
         'approval_status',
     ];
+
+    public function fileNameFromTitle(): Attribute
+    {
+        return Attribute::get(
+            fn () => preg_replace('/[^A-Za-z0-9äöüÄÖÜß_\-]/u', '', str_replace(' ', '-', $this->title))
+                     . '.' . pathinfo($this->path, PATHINFO_EXTENSION)
+        );
+    }
 
     public function reference(): MorphTo
     {

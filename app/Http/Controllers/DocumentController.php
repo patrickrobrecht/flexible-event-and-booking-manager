@@ -76,7 +76,7 @@ class DocumentController extends Controller
     {
         $this->authorize('view', $document);
 
-        return Storage::download($document->path);
+        return Storage::download($document->path, $document->file_name_from_title);
     }
 
     public function stream(Document $document)

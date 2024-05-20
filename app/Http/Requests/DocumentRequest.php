@@ -59,7 +59,15 @@ class DocumentRequest extends FormRequest
                 self::getMaxFileSizeRule(),
             ],
             'approval_status' => [
-                'required',
+                (
+                    $this->routeIs('*.documents.store')
+                    && $this->user()->can('approve', Document::class)
+                ) || (
+                    $this->routeIs('documents.update')
+                    && $this->user()->can('approve', $this->document)
+                )
+                    ? 'required'
+                    : 'prohibited',
                 ApprovalStatus::rule(),
             ],
         ];

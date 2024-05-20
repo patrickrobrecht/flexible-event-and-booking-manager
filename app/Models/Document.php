@@ -81,6 +81,10 @@ class Document extends Model
     public function fillAndSave(array $validatedData): bool
     {
         $this->fill($validatedData);
+        if ($this->approval_status === null) {
+            // Set the approval status to the default value if not contained in the request.
+            $this->approval_status = ApprovalStatus::WaitingForApproval;
+        }
 
         /** @var UploadedFile $file */
         $file = $validatedData['file'] ?? null;

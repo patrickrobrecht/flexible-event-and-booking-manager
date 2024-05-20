@@ -25,6 +25,7 @@ class DocumentReviewController extends Controller
                 // Don't save approval status in review.
                 $validated['approval_status'] = null;
             } else {
+                // Change the approval status of the document.
                 $document->approval_status = $approvalStatus;
             }
         }

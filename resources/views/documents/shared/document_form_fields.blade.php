@@ -54,8 +54,12 @@
                           x-ref="title">{{ __('Title') }}</x-bs::form.field>
         <x-bs::form.field name="description" type="textarea"
                           :value="$document->description ?? null">{{ __('Description') }}</x-bs::form.field>
-        <x-bs::form.field name="approval_status" type="radio" :options="\App\Options\ApprovalStatus::toOptions()"
-                          :value="$document->approval_status->value ?? null"><i class="fa fa-fw fa-circle-question"></i> {{ __('Approval status') }}</x-bs::form.field>
+        @can('approve', $document ?? \App\Models\Document::class)
+            <x-bs::form.field name="approval_status" type="radio" :options="\App\Options\ApprovalStatus::toOptions()"
+                              :value="$document->approval_status->value ?? \App\Options\ApprovalStatus::WaitingForApproval->value">
+                <i class="fa fa-fw fa-circle-question"></i> {{ __('Approval status') }}
+            </x-bs::form.field>
+        @endcan
     </div>
 </div>
 

@@ -27,6 +27,24 @@ trait ChecksAbilities
     }
 
     /**
+     * @param Ability[] $abilities
+     */
+    public function requireOneAbilityOf(?User $user, array $abilities): Response
+    {
+        if (!isset($user)) {
+            return $this->deny();
+        }
+
+        foreach ($abilities as $ability) {
+            if ($user->hasAbility($ability)) {
+                return $this->allow();
+            }
+        }
+
+        return $this->deny();
+    }
+
+    /**
      * @param Closure(): Response $closure
      */
     public function requireAbilityOrCheck(?User $user, Ability $ability, Closure $closure): Response

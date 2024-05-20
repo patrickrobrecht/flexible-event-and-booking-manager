@@ -145,4 +145,12 @@ class DocumentPolicy
             default => $this->deny(),
         };
     }
+
+    /**
+     * Determine whether the user can change the approval status of the document.
+     */
+    public function approve(User $user, ?Document $document = null): Response
+    {
+        return $this->requireAbility($user, Ability::ChangeApprovalStatusOfDocuments);
+    }
 }

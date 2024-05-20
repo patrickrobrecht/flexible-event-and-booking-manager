@@ -8,7 +8,7 @@
         </audio>
         @break
     @case(\App\Options\FileType::Image)
-        <img src="{{ route('documents.stream', $document) }}" alt="{{ $document->title }}"/>
+        <img src="{{ route('documents.stream', $document) }}" alt="{{ $document->title }}" class="img-fluid"/>
         @break
     @case(\App\Options\FileType::PDF)
         <object data="{{ route('documents.stream', $document) }}" type="application/pdf" class="w-100 vh-100"></object>

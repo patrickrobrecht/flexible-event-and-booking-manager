@@ -45,6 +45,9 @@ enum Ability: string
 
     // Documents
     case ViewDocuments = 'documents.view';
+    case ViewCommentsOnDocuments = 'documents.comments.view';
+    case CommentOnDocuments = 'documents.comments.create';
+    case ChangeApprovalStatusOfDocuments = 'documents.approve';
 
     case ViewDocumentsOfEvents = 'events.documents.view';
     case AddDocumentsToEvents = 'events.documents.create';
@@ -110,7 +113,10 @@ enum Ability: string
             self::EditLocations => AbilityGroup::Locations,
 
             // Documents
-            self::ViewDocuments => AbilityGroup::Documents,
+            self::ViewDocuments,
+            self::ViewCommentsOnDocuments,
+            self::CommentOnDocuments,
+            self::ChangeApprovalStatusOfDocuments => AbilityGroup::Documents,
             self::ViewDocumentsOfEvents,
             self::AddDocumentsToEvents,
             self::EditDocumentsOfEvents,
@@ -178,6 +184,9 @@ enum Ability: string
 
             // Documents
             self::ViewDocuments => __('View documents'),
+            self::ViewCommentsOnDocuments => __('View comments on documents'),
+            self::CommentOnDocuments => __('Comment on documents'),
+            self::ChangeApprovalStatusOfDocuments => __('Change approval status of documents'),
 
             self::ViewDocumentsOfEvents => __('View documents of events'),
             self::AddDocumentsToEvents => __('Add documents to events'),

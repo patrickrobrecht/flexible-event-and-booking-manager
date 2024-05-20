@@ -9,13 +9,15 @@ enum ApprovalStatus: int
     use NamedOption;
 
     case WaitingForApproval = 0;
+    case UnderReview = 3;
     case Approved = 1;
     case ChangesRequested = 2;
 
     public function getBadgeVariant(): string
     {
         return match ($this) {
-            self::WaitingForApproval => 'warning',
+            self::WaitingForApproval, => 'dark',
+            self::UnderReview => 'warning',
             self::Approved => 'success',
             self::ChangesRequested => 'danger',
         };
@@ -24,7 +26,7 @@ enum ApprovalStatus: int
     public function getIcon(): string
     {
         return match ($this) {
-            self::WaitingForApproval => 'fa fa-fw fa-question',
+            self::WaitingForApproval, self::UnderReview => 'fa fa-fw fa-question',
             self::Approved => 'fa fa-fw fa-thumbs-up',
             self::ChangesRequested => 'fa fa-fw fa-thumbs-down',
         };
@@ -34,6 +36,7 @@ enum ApprovalStatus: int
     {
         return match ($this) {
             self::WaitingForApproval => __('waiting for approval'),
+            self::UnderReview => __('under review'),
             self::Approved => __('approved'),
             self::ChangesRequested => __('changes requested'),
         };

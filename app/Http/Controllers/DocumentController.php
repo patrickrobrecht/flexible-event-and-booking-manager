@@ -68,7 +68,9 @@ class DocumentController extends Controller
         $this->authorize('view', $document);
 
         return view('documents.document_show', [
-            'document' => $document,
+            'document' => $document->load([
+                'documentReviews.user',
+            ]),
         ]);
     }
 

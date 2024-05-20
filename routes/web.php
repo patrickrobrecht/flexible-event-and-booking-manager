@@ -5,6 +5,7 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\BookingOptionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\DocumentReviewController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\EventSeriesController;
 use App\Http\Controllers\GroupController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\UserRoleController;
 use App\Models\Booking;
 use App\Models\BookingOption;
 use App\Models\Document;
+use App\Models\DocumentReview;
 use App\Models\Event;
 use App\Models\EventSeries;
 use App\Models\FormFieldValue;
@@ -61,6 +63,10 @@ Route::middleware('auth')->group(static function () {
             ->name('documents.download');
         Route::get('stream', [DocumentController::class, 'stream'])
             ->name('documents.stream');
+
+        Route::model('review', DocumentReview::class);
+        Route::resource('reviews', DocumentReviewController::class)
+            ->only(['store', 'update']);
     });
 
     Route::model('event', Event::class);

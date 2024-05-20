@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\Booking;
 use App\Models\BookingOption;
 use App\Models\Document;
+use App\Models\DocumentReview;
 use App\Models\Event;
 use App\Models\EventSeries;
 use App\Models\Group;
@@ -16,6 +17,7 @@ use App\Models\UserRole;
 use App\Policies\BookingOptionPolicy;
 use App\Policies\BookingPolicy;
 use App\Policies\DocumentPolicy;
+use App\Policies\DocumentReviewPolicy;
 use App\Policies\EventPolicy;
 use App\Policies\EventSeriesPolicy;
 use App\Policies\GroupPolicy;
@@ -37,6 +39,7 @@ class AuthServiceProvider extends ServiceProvider
         Booking::class => BookingPolicy::class,
         BookingOption::class => BookingOptionPolicy::class,
         Document::class => DocumentPolicy::class,
+        DocumentReview::class => DocumentReviewPolicy::class,
         Event::class => EventPolicy::class,
         EventSeries::class => EventSeriesPolicy::class,
         Group::class => GroupPolicy::class,

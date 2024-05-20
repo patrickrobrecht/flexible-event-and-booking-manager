@@ -21,9 +21,9 @@ class DocumentReviewPolicy
         if (isset($document)) {
             if (
                 /**
-                 * Every user can view the reviews of document
+                 * Every user can view the comments of document if
                  * - they are responsible for the event, event series or organization the document was uploaded to.
-                 * - they uploaded.
+                 * - they uploaded the document.
                  */
                 $user->is($document->uploadedByUser)
                 || $user->isResponsibleFor($document->reference)
@@ -56,6 +56,18 @@ class DocumentReviewPolicy
      */
     public function create(User $user, ?Document $document = null): Response
     {
+        if (
+            /**
+             * Every user can add comments to document if
+             * - they are responsible for the event, event series or organization the document was uploaded to.
+             * - they uploaded the document.
+             */
+            $user->is($document->uploadedByUser)
+            || $user->isResponsibleFor($document->reference)
+        ) {
+            return $this->allow();
+        }
+
         return $this->requireAbility($user, Ability::CommentOnDocuments);
     }
 

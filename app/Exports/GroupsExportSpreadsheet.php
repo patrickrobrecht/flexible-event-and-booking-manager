@@ -27,10 +27,25 @@ class GroupsExportSpreadsheet extends Spreadsheet
         $rowCount = $this->event->groups
             ->max(fn (Group $group) => $group->bookings->count());
 
+        $parentEvent = $this->event->parentEvent;
+
         $bookings = [];
         foreach ($this->event->groups as $group) {
             $bookings[$group->id] = Booking::sort($group->bookings, $this->sort)
-                ->map(fn (Booking $booking) => $booking->first_name . ' ' . $booking->last_name)
+                ->map(
+                    function (Booking $booking) use ($group, $parentEvent) {
+                        $name = $booking->first_name . ' ' . $booking->last_name;
+
+                        if (isset($parentEvent)) {
+                            $group = $booking->getGroup($parentEvent);
+                            if (isset($group)) {
+                                $name .= ' (' . $group->name . ')';
+                            }
+                        }
+
+                        return $name;
+                    }
+                )
                 ->values()
                 ->toArray();
         }

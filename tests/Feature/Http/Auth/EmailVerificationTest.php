@@ -1,20 +1,22 @@
 <?php
 
-namespace Tests\Feature\Auth;
+namespace Tests\Feature\Http\Auth;
 
+use App\Http\Controllers\Auth\EmailVerificationNotificationController;
+use App\Http\Controllers\Auth\EmailVerificationPromptController;
+use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\URL;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 
-/**
- * @covers \App\Http\Controllers\Auth\EmailVerificationNotificationController
- * @covers \App\Http\Controllers\Auth\EmailVerificationPromptController
- * @covers \App\Http\Controllers\Auth\VerifyEmailController
- */
+#[CoversClass(EmailVerificationNotificationController::class)]
+#[CoversClass(EmailVerificationPromptController::class)]
+#[CoversClass(VerifyEmailController::class)]
 class EmailVerificationTest extends TestCase
 {
     use RefreshDatabase;
@@ -25,9 +27,7 @@ class EmailVerificationTest extends TestCase
             'email_verified_at' => null,
         ]);
 
-        $response = $this->actingAs($user)->get('/verify-email');
-
-        $response->assertStatus(200);
+        $this->actingAs($user)->get('/verify-email')->assertOk();
     }
 
     public function testEmailCanBeVerified(): void

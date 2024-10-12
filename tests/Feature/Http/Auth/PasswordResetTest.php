@@ -1,26 +1,25 @@
 <?php
 
-namespace Tests\Feature\Auth;
+namespace Tests\Feature\Http\Auth;
 
+use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Models\User;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 
-/**
- * @covers \App\Http\Controllers\Auth\NewPasswordController
- * @covers \App\Http\Controllers\Auth\PasswordResetLinkController
- */
+#[CoversClass(NewPasswordController::class)]
+#[CoversClass(PasswordResetLinkController::class)]
 class PasswordResetTest extends TestCase
 {
     use RefreshDatabase;
 
     public function testResetPasswordLinkScreenCanBeRendered(): void
     {
-        $response = $this->get('/forgot-password');
-
-        $response->assertStatus(200);
+        $this->assertRouteAccessibleAsGuest('/forgot-password');
     }
 
     public function testResetPasswordLinkCanBeRequested(): void

@@ -65,6 +65,12 @@ trait ActsAsUser
         return $this->actingAsUserWithRole($adminRole);
     }
 
+    protected function assertRouteAccessibleAsGuest(string $route): void
+    {
+        Auth::logout(); // to make sure we act as a guest
+        $this->get($route)->assertOk();
+    }
+
     protected function assertRouteAccessibleWithAbility(string $route, Ability $ability): void
     {
         $this->actingAsUserWithAbility($ability);

@@ -8,9 +8,11 @@ use App\Models\Group;
 use App\Models\Location;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 use Tests\Traits\ActsAsUser;
 
+#[CoversClass(EditGroup::class)]
 class EditGroupTest extends TestCase
 {
     use ActsAsUser;

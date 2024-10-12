@@ -1,25 +1,23 @@
 <?php
 
-namespace Tests\Feature\Auth;
+namespace Tests\Feature\Http\Auth;
 
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Models\User;
 use App\Options\ActiveStatus;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 
-/**
- * @covers \App\Http\Controllers\Auth\AuthenticatedSessionController
- */
+#[CoversClass(AuthenticatedSessionController::class)]
 class AuthenticationTest extends TestCase
 {
     use RefreshDatabase;
 
     public function testLoginScreenCanBeRendered(): void
     {
-        $response = $this->get('/login');
-
-        $response->assertStatus(200);
+        $this->assertRouteAccessibleAsGuest('/login');
     }
 
     public function testUsersCanAuthenticateUsingTheLoginScreen(): void

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\UI;
+namespace Tests\Feature\Http;
 
 use App\Http\Controllers\UserController;
 use App\Models\User;
@@ -17,14 +17,24 @@ class UserControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testCanViewUsers(): void
+    public function testUsersCanBeListedWithCorrectAbility(): void
     {
         $this->assertRouteOnlyAccessibleOnlyWithAbility('/users', Ability::ViewUsers);
     }
 
-    public function testUserCanBeCreated(): void
+    public function testUserIsOnlyAccessibleWithCorrectAbility(): void
+    {
+        $this->assertRouteOnlyAccessibleOnlyWithAbility("/users/{$this->createRandomUser()->id}", Ability::ViewUsers);
+    }
+
+    public function testCreateUserFormIsOnlyAccessibleWithCorrectAbility(): void
     {
         $this->assertRouteOnlyAccessibleOnlyWithAbility('/users/create', Ability::CreateUsers);
+    }
+
+    public function testUserIsStored(): void
+    {
+        $this->actingAsUserWithAbility(Ability::CreateUsers);
 
         Notification::fake();
 
@@ -46,9 +56,9 @@ class UserControllerTest extends TestCase
         Notification::assertNothingSent();
     }
 
-    public function testUserIsNotifiedIfEnabled(): void
+    public function testUserIsStoredAndNotifiedIfEnabled(): void
     {
-        $this->assertRouteOnlyAccessibleOnlyWithAbility('/users/create', Ability::CreateUsers);
+        $this->actingAsUserWithAbility(Ability::CreateUsers);
 
         Notification::fake();
 
@@ -67,5 +77,15 @@ class UserControllerTest extends TestCase
         $this->assertNotNull($user);
 
         Notification::assertSentTo($user, AccountCreatedNotification::class);
+    }
+
+    public function testEditUserFormIsAccessibleOnlyWithCorrectAbility(): void
+    {
+        $this->assertRouteOnlyAccessibleOnlyWithAbility("/users/{$this->createRandomUser()->id}/edit", Ability::EditUsers);
+    }
+
+    private function createRandomUser(): User
+    {
+        return User::factory()->create();
     }
 }

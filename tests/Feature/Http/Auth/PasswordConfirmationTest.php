@@ -1,14 +1,14 @@
 <?php
 
-namespace Tests\Feature\Auth;
+namespace Tests\Feature\Http\Auth;
 
+use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 
-/**
- * @covers \App\Http\Controllers\Auth\ConfirmablePasswordController
- */
+#[CoversClass(ConfirmablePasswordController::class)]
 class PasswordConfirmationTest extends TestCase
 {
     use RefreshDatabase;

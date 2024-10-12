@@ -1,21 +1,19 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Http;
 
+use App\Http\Controllers\DashboardController;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 
-/**
- * @covers \App\Http\Controllers\DashboardController
- */
+#[CoversClass(DashboardController::class)]
 class DashboardTest extends TestCase
 {
     use RefreshDatabase;
 
     public function testTheApplicationReturnsSuccessfulResponse(): void
     {
-        $response = $this->get('/');
-
-        $response->assertStatus(200);
+        $this->assertRouteAccessibleAsGuest('/');
     }
 }

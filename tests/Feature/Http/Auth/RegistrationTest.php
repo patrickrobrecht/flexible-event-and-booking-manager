@@ -1,33 +1,31 @@
 <?php
 
-namespace Tests\Feature\Auth;
+namespace Tests\Feature\Http\Auth;
 
+use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 
-/**
- * @covers \App\Http\Controllers\Auth\RegisteredUserController
- */
+#[CoversClass(RegisteredUserController::class)]
 class RegistrationTest extends TestCase
 {
     use RefreshDatabase;
 
     public function testRegistrationScreenCannotBeRenderedIfNotEnabled(): void
     {
-        $response = $this->get('/register');
+        Config::set('app.features.registration', false);
 
-        $response->assertStatus(403);
+        $this->get('/register')->assertForbidden();
     }
 
     public function testRegistrationScreenCanBeRenderedIfEnabled(): void
     {
         Config::set('app.features.registration', true);
 
-        $response = $this->get('/register');
-
-        $response->assertStatus(200);
+        $this->assertRouteAccessibleAsGuest('/register');
     }
 
     public function testNewUsersCanRegister(): void

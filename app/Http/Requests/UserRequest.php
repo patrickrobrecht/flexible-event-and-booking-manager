@@ -74,6 +74,10 @@ class UserRequest extends FormRequest
                 'confirmed',
                 Password::defaults(),
             ],
+            'send_notification' => [
+                $this->routeIs('users.store') ? 'nullable' : 'prohibited',
+                'boolean',
+            ],
         ];
 
         $rules = array_replace($rules, $this->rulesForAddressFields('nullable'));

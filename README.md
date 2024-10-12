@@ -26,8 +26,9 @@ This application allows to manage events, their booking forms and bookings via a
 - Add, update, delete documents for events, event series, and organizations
 - Login and logout, reset password, verify e-mail address, edit own account
 - Manage users and flexible roles
+  - Notify users if an account was created for them (optional)
+  - Registration (if enabled via `.env`) 
 - Manage personal access tokens (for [Laravel Sanctum](https://laravel.com/docs/10.x/sanctum))
-- Registration (if enabled via `.env`)
 - Footer links for legal notice, privacy, terms and conditions configurable via `.env`
 
 

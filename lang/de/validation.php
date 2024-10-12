@@ -214,6 +214,7 @@ return [
         'restrictions' => 'Einschränkungen',
         'search' => 'Suchbegriff',
         'second' => 'Sekunde',
+        'send_notification' => 'Benutzer per Mail benachrichtigen',
         'size' => 'Größe',
         'slug' => 'Slug',
         'sort' => 'Sortierung',

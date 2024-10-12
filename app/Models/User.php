@@ -7,6 +7,7 @@ use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\FiltersByRelationExistence;
 use App\Models\Traits\HasAddress;
 use App\Models\Traits\Searchable;
+use App\Notifications\AccountCreatedNotification;
 use App\Notifications\ResetPasswordNotification;
 use App\Notifications\VerifyEmailNotification;
 use App\Options\Ability;
@@ -285,6 +286,11 @@ class User extends Authenticatable implements MustVerifyEmail
         $this->documents->each(fn (Document $document) => $document->setRelation('uploadedByUser', $this));
 
         return $this;
+    }
+
+    public function sendAccountCreatedNotification(): void
+    {
+        $this->notify(new AccountCreatedNotification($this));
     }
 
     public function sendEmailVerificationNotification(): void

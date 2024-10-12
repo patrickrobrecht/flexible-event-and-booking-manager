@@ -3,6 +3,8 @@
 @php
     /** @var ?\App\Models\User $editedUser */
     /** @var \Illuminate\Database\Eloquent\Collection|\App\Models\UserRole[] $userRoles */
+
+    use Portavice\Bladestrap\Support\Options;
 @endphp
 
 @section('title')
@@ -83,6 +85,10 @@
                 <x-bs::form.field name="status" type="select"
                                   :options="\App\Options\ActiveStatus::toOptions()"
                                   :value="$editedUser->status->value ?? null"><i class="fa fa-fw fa-circle-question"></i> {{ __('Status') }}</x-bs::form.field>
+                @if(!isset($editedUser))
+                    <x-bs::form.field name="send_notification" type="checkbox"
+                                      :options="Options::one(__('Send notification mail to user'))"></x-bs::form.field>
+                @endif
             </div>
             <div class="col-12 col-lg-6">
                 @include('_shared.address_fields_form', [

@@ -35,7 +35,7 @@ class AuthenticationTest extends TestCase
         $response->assertRedirect(RouteServiceProvider::HOME);
     }
 
-    public function testUsersCanAuthenticateIfInactive(): void
+    public function testUsersCannotAuthenticateIfInactive(): void
     {
         $user = User::factory()->status(ActiveStatus::Inactive)->create();
 

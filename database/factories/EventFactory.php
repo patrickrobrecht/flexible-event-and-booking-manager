@@ -34,4 +34,11 @@ class EventFactory extends Factory
             'website_url' => fake()->optional()->url(),
         ];
     }
+
+    public function visibility(Visibility $visibility): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'visibility' => $visibility,
+        ]);
+    }
 }

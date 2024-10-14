@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Filters\UserRoleFilterRequest;
 use App\Http\Requests\UserRoleRequest;
-use App\Models\User;
 use App\Models\UserRole;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
@@ -29,7 +28,7 @@ class UserRoleController extends Controller
 
     public function create(): View
     {
-        $this->authorize('create', User::class);
+        $this->authorize('create', UserRole::class);
 
         return view('user_roles.user_role_form');
     }

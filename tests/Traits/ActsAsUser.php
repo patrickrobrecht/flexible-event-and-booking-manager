@@ -24,11 +24,7 @@ trait ActsAsUser
 
     protected function actingAsUserWithAbility(Ability $ability): User
     {
-        $userRole = new UserRole([
-            'name' => 'User ' . $ability->value,
-            'abilities' => [$ability],
-        ]);
-        $userRole->save();
+        $userRole = $this->createUserRoleWithAbility($ability);
 
         return $this->actingAsUserWithRole($userRole);
     }
@@ -77,7 +73,13 @@ trait ActsAsUser
         $this->get($route)->assertOk();
     }
 
-    protected function assertRouteNotAccessibleAsGuest(string $route): void
+    protected function assertRouteForbiddenAsGuest(string $route): void
+    {
+        Auth::logout(); // to make sure we act as a guest
+        $this->get($route)->assertForbidden();
+    }
+
+    protected function assertRouteNotAccessibleAsGuestAndRedirectsToLogin(string $route): void
     {
         Auth::logout(); // to make sure we act as a guest
         $this->get($route)->assertFound()->assertRedirect('/login');
@@ -91,8 +93,19 @@ trait ActsAsUser
 
     protected function assertRouteOnlyAccessibleOnlyWithAbility(string $route, Ability $ability): void
     {
-        $this->assertRouteNotAccessibleAsGuest($route);
+        $this->assertRouteNotAccessibleAsGuestAndRedirectsToLogin($route);
         $this->assertRouteNotAccessibleWithoutAbility($route, $ability);
         $this->assertRouteAccessibleWithAbility($route, $ability);
+    }
+
+    protected function createUserRoleWithAbility(Ability $ability): UserRole
+    {
+        $userRole = new UserRole([
+            'name' => 'User ' . $ability->value,
+            'abilities' => [$ability],
+        ]);
+        $userRole->save();
+
+        return $userRole;
     }
 }

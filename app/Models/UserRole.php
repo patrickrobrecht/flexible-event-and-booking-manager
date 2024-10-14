@@ -9,6 +9,7 @@ use App\Options\Ability;
 use App\Options\FilterValue;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -26,6 +27,7 @@ class UserRole extends Model
 {
     use BuildsQueryFromRequest;
     use FiltersByRelationExistence;
+    use HasFactory;
 
     protected $casts = [
         'abilities' => 'json',

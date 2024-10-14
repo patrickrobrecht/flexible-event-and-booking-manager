@@ -34,10 +34,7 @@ class PersonalAccessTokenPolicy
      */
     public function view(User $user, PersonalAccessToken $personalAccessToken): Response
     {
-        return $this->response(
-            $user->is($personalAccessToken->tokenable)
-            && $user->hasAbility(Ability::ManagePersonalAccessTokens)
-        );
+        return $this->update($user, $personalAccessToken);
     }
 
     /**
@@ -53,7 +50,10 @@ class PersonalAccessTokenPolicy
      */
     public function update(User $user, PersonalAccessToken $personalAccessToken): Response
     {
-        return $this->requireAbility($user, Ability::ManagePersonalAccessTokens);
+        return $this->response(
+            $user->is($personalAccessToken->tokenable)
+            && $user->hasAbility(Ability::ManagePersonalAccessTokens)
+        );
     }
 
     /**
@@ -61,7 +61,7 @@ class PersonalAccessTokenPolicy
      */
     public function delete(User $user, PersonalAccessToken $personalAccessToken): Response
     {
-        return $this->requireAbility($user, Ability::ManagePersonalAccessTokens);
+        return $this->update($user, $personalAccessToken);
     }
 
     /**
@@ -77,6 +77,6 @@ class PersonalAccessTokenPolicy
      */
     public function forceDelete(User $user, PersonalAccessToken $personalAccessToken): Response
     {
-        return $this->requireAbility($user, Ability::ManagePersonalAccessTokens);
+        return $this->update($user, $personalAccessToken);
     }
 }

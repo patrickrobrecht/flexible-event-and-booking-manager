@@ -21,7 +21,6 @@ class EmailVerificationNotificationController extends Controller
         $request->user()->sendEmailVerificationNotification();
 
         return back()
-            // phpcs:ignore Generic.Files.LineLength.TooLong
             ->with('success', __('A new verification link has been sent to the e-mail address you provided during registration.'));
     }
 }

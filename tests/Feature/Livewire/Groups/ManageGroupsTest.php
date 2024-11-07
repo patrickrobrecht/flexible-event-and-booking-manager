@@ -2,16 +2,21 @@
 
 namespace Tests\Feature\Livewire\Groups;
 
+use App\Livewire\Forms\GroupForm;
 use App\Livewire\Groups\ManageGroups;
 use App\Models\Event;
 use App\Models\Group;
 use App\Models\Location;
+use Database\Factories\GroupFactory;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 use Tests\Traits\ActsAsUser;
 
+#[CoversClass(Group::class)]
+#[CoversClass(GroupFactory::class)]
+#[CoversClass(GroupForm::class)]
 #[CoversClass(ManageGroups::class)]
 class ManageGroupsTest extends TestCase
 {

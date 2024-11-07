@@ -3,26 +3,34 @@
 namespace Tests\Feature\Http;
 
 use App\Http\Controllers\PersonalAccessTokenController;
+use App\Http\Requests\PersonalAccessTokenRequest;
 use App\Models\PersonalAccessToken;
 use App\Models\User;
 use App\Options\Ability;
+use App\Policies\PersonalAccessTokenPolicy;
+use Database\Factories\PersonalAccessTokenFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 
+#[CoversClass(Ability::class)]
+#[CoversClass(PersonalAccessToken::class)]
 #[CoversClass(PersonalAccessTokenController::class)]
+#[CoversClass(PersonalAccessTokenFactory::class)]
+#[CoversClass(PersonalAccessTokenPolicy::class)]
+#[CoversClass(PersonalAccessTokenRequest::class)]
 class PersonalAccessTokenControllerTest extends TestCase
 {
     use RefreshDatabase;
 
     public function testOwnPersonalAccessTokensCanBeListedWithCorrectAbility(): void
     {
-        $this->assertRouteOnlyAccessibleOnlyWithAbility('/personal-access-tokens', Ability::ManagePersonalAccessTokens);
+        $this->assertRouteOnlyAccessibleWithAbility('/personal-access-tokens', Ability::ManagePersonalAccessTokens);
     }
 
     public function testCreatePersonalAccessTokenFormIsOnlyAccessibleWithCorrectAbility(): void
     {
-        $this->assertRouteOnlyAccessibleOnlyWithAbility('/personal-access-tokens/create', Ability::ManagePersonalAccessTokens);
+        $this->assertRouteOnlyAccessibleWithAbility('/personal-access-tokens/create', Ability::ManagePersonalAccessTokens);
     }
 
     public function testEditPersonalAccessTokenFormIsAccessibleOnlyForOwnTokensWithCorrectAbility(): void

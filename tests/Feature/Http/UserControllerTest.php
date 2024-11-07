@@ -3,33 +3,46 @@
 namespace Tests\Feature\Http;
 
 use App\Http\Controllers\UserController;
+use App\Http\Requests\Filters\UserFilterRequest;
+use App\Http\Requests\UserRequest;
 use App\Models\User;
 use App\Notifications\AccountCreatedNotification;
 use App\Options\Ability;
 use App\Options\ActiveStatus;
+use App\Options\FilterValue;
+use App\Policies\UserPolicy;
+use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 
+#[CoversClass(FilterValue::class)]
+#[CoversClass(AccountCreatedNotification::class)]
+#[CoversClass(ActiveStatus::class)]
+#[CoversClass(User::class)]
 #[CoversClass(UserController::class)]
+#[CoversClass(UserFactory::class)]
+#[CoversClass(UserFilterRequest::class)]
+#[CoversClass(UserPolicy::class)]
+#[CoversClass(UserRequest::class)]
 class UserControllerTest extends TestCase
 {
     use RefreshDatabase;
 
     public function testUsersCanBeListedWithCorrectAbility(): void
     {
-        $this->assertRouteOnlyAccessibleOnlyWithAbility('/users', Ability::ViewUsers);
+        $this->assertRouteOnlyAccessibleWithAbility('/users', Ability::ViewUsers);
     }
 
     public function testUserIsOnlyAccessibleWithCorrectAbility(): void
     {
-        $this->assertRouteOnlyAccessibleOnlyWithAbility("/users/{$this->createRandomUser()->id}", Ability::ViewUsers);
+        $this->assertRouteOnlyAccessibleWithAbility("/users/{$this->createRandomUser()->id}", Ability::ViewUsers);
     }
 
     public function testCreateUserFormIsOnlyAccessibleWithCorrectAbility(): void
     {
-        $this->assertRouteOnlyAccessibleOnlyWithAbility('/users/create', Ability::CreateUsers);
+        $this->assertRouteOnlyAccessibleWithAbility('/users/create', Ability::CreateUsers);
     }
 
     public function testUserIsStored(): void
@@ -58,7 +71,7 @@ class UserControllerTest extends TestCase
 
     public function testUserIsStoredAndNotifiedIfEnabled(): void
     {
-        $this->actingAsUserWithAbility(Ability::CreateUsers);
+        $adminUser = $this->actingAsUserWithAbility(Ability::CreateUsers);
 
         Notification::fake();
 
@@ -71,17 +84,20 @@ class UserControllerTest extends TestCase
         ]);
         $response->assertFound();
 
-        $user = User::query()
+        $createdUser = User::query()
             ->where('email', '=', 'test@example.com')
             ->first();
-        $this->assertNotNull($user);
+        $this->assertNotNull($createdUser);
 
-        Notification::assertSentTo($user, AccountCreatedNotification::class);
+        Notification::assertSentTo($createdUser, AccountCreatedNotification::class, static function ($notification) use ($adminUser, $createdUser) {
+            $emailContent = $notification->toMail($createdUser)->render();
+            return str_contains($emailContent, $createdUser->greeting) && str_contains($emailContent, $adminUser->name);
+        });
     }
 
     public function testEditUserFormIsAccessibleOnlyWithCorrectAbility(): void
     {
-        $this->assertRouteOnlyAccessibleOnlyWithAbility("/users/{$this->createRandomUser()->id}/edit", Ability::EditUsers);
+        $this->assertRouteOnlyAccessibleWithAbility("/users/{$this->createRandomUser()->id}/edit", Ability::EditUsers);
     }
 
     private function createRandomUser(): User

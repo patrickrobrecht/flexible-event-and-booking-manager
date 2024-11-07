@@ -21,12 +21,8 @@ class GroupController extends Controller
 {
     use StreamsExport;
 
-    public function index(
-        Event $event,
-        GroupFilterRequest $request
-    ): StreamedResponse|View {
-        $this->authorize('viewGroups', $event);
-
+    public function index(Event $event, GroupFilterRequest $request): StreamedResponse|View
+    {
         if ($request->query('output') === 'export') {
             $this->authorize('exportGroups', $event);
 
@@ -40,6 +36,8 @@ class GroupController extends Controller
                 str_replace(' ', '-', $fileName) . '.xlsx',
             );
         }
+
+        $this->authorize('viewGroups', $event);
 
         return view('groups.group_index', [
             'event' => $event
@@ -74,10 +72,7 @@ class GroupController extends Controller
 
         $generatedGroups = $method->generateGroups($groupsCount, $bookings);
         foreach ($generatedGroups as $groupIndex => $groupMembers) {
-            $group = $event->groups()
-                ->firstOrCreate([
-                    'name' => __('Group') . ' ' . $groupIndex,
-                ]);
+            $group = $event->findOrCreateGroup($groupIndex);
 
             /** @var Booking $groupMember */
             foreach ($groupMembers as $groupMember) {

@@ -3,30 +3,43 @@
 namespace Tests\Feature\Http;
 
 use App\Http\Controllers\EventController;
+use App\Http\Requests\EventRequest;
+use App\Http\Requests\Filters\EventFilterRequest;
 use App\Models\Event;
-use App\Models\Location;
 use App\Options\Ability;
+use App\Options\EventType;
+use App\Options\FilterValue;
 use App\Options\Visibility;
+use App\Policies\EventPolicy;
+use Database\Factories\EventFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
-use Tests\Traits\ChecksVisibility;
+use Tests\Traits\GeneratesTestData;
 
+#[CoversClass(Event::class)]
 #[CoversClass(EventController::class)]
+#[CoversClass(EventFactory::class)]
+#[CoversClass(EventFilterRequest::class)]
+#[CoversClass(EventPolicy::class)]
+#[CoversClass(EventRequest::class)]
+#[CoversClass(EventType::class)]
+#[CoversClass(FilterValue::class)]
+#[CoversClass(Visibility::class)]
 class EventControllerTest extends TestCase
 {
-    use ChecksVisibility;
+    use GeneratesTestData;
     use RefreshDatabase;
 
     public function testEventsCanBeListedWithCorrectAbility(): void
     {
-        $this->assertRouteOnlyAccessibleOnlyWithAbility('/events', Ability::ViewEvents);
+        $this->assertRouteOnlyAccessibleWithAbility('/events', Ability::ViewEvents);
     }
 
     public function testPublicEventIsAccessibleByEveryone(): void
     {
-        $publicEvent = $this->createRandomEvent(Visibility::Public);
+        $publicEvent = self::createEvent(Visibility::Public);
         $route = "/events/{$publicEvent->slug}";
 
         $this->assertRouteAccessibleAsGuest($route);
@@ -36,7 +49,7 @@ class EventControllerTest extends TestCase
 
     public function testPrivateEventIsOnlyAccessibleWithCorrectAbility(): void
     {
-        $privateEvent = $this->createRandomEvent(Visibility::Private);
+        $privateEvent = self::createEvent(Visibility::Private);
         $route = "/events/{$privateEvent->slug}";
 
         $this->assertRouteForbiddenAsGuest($route);
@@ -46,20 +59,13 @@ class EventControllerTest extends TestCase
 
     public function testCreateEventFormIsOnlyAccessibleWithCorrectAbility(): void
     {
-        $this->assertRouteOnlyAccessibleOnlyWithAbility('/events/create', Ability::CreateEvents);
+        $this->assertRouteOnlyAccessibleWithAbility('/events/create', Ability::CreateEvents);
     }
 
     #[DataProvider('visibilityProvider')]
     public function testEditEventFormIsAccessibleOnlyWithCorrectAbility(Visibility $visibility): void
     {
-        $this->assertRouteOnlyAccessibleOnlyWithAbility("/events/{$this->createRandomEvent($visibility)->slug}/edit", Ability::EditEvents);
-    }
-
-    private function createRandomEvent(Visibility $visibility): Event
-    {
-        return Event::factory()
-            ->for(Location::factory()->create())
-            ->visibility($visibility)
-            ->create();
+        $event = self::createEvent($visibility);
+        $this->assertRouteOnlyAccessibleWithAbility("/events/{$event->slug}/edit", Ability::EditEvents);
     }
 }

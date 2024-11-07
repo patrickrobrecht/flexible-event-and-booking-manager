@@ -13,6 +13,7 @@ use Tests\TestCase;
 
 #[CoversClass(NewPasswordController::class)]
 #[CoversClass(PasswordResetLinkController::class)]
+#[CoversClass(ResetPasswordNotification::class)]
 class PasswordResetTest extends TestCase
 {
     use RefreshDatabase;
@@ -41,12 +42,10 @@ class PasswordResetTest extends TestCase
 
         $this->post('/forgot-password', ['email' => $user->email]);
 
-        Notification::assertSentTo($user, ResetPasswordNotification::class, function ($notification) {
-            $response = $this->get('/reset-password/' . $notification->token);
+        Notification::assertSentTo($user, ResetPasswordNotification::class, function ($notification) use ($user) {
+            $this->get('/reset-password/' . $notification->token)->assertOk();
 
-            $response->assertStatus(200);
-
-            return true;
+            return str_contains($notification->toMail($user)->render(), $user->greeting);
         });
     }
 

@@ -3,14 +3,21 @@
 namespace Tests\Feature\Http\Auth;
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
 use App\Options\ActiveStatus;
 use App\Providers\RouteServiceProvider;
+use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
+#[CoversClass(ActiveStatus::class)]
 #[CoversClass(AuthenticatedSessionController::class)]
+#[CoversClass(LoginRequest::class)]
+#[CoversClass(User::class)]
+#[CoversClass(UserFactory::class)]
 class AuthenticationTest extends TestCase
 {
     use RefreshDatabase;
@@ -33,9 +40,12 @@ class AuthenticationTest extends TestCase
         $response->assertRedirect(RouteServiceProvider::HOME);
     }
 
-    public function testUsersCannotAuthenticateIfInactive(): void
+    #[DataProvider('notActiveStatuses')]
+    public function testUsersCannotAuthenticateIfNotActive(ActiveStatus $activeStatus): void
     {
-        $user = User::factory()->status(ActiveStatus::Inactive)->create();
+        $user = User::factory()
+            ->status($activeStatus)
+            ->create();
 
         $this->post('/login', [
             'email' => $user->email,
@@ -43,6 +53,14 @@ class AuthenticationTest extends TestCase
         ]);
 
         $this->assertGuest();
+    }
+
+    public static function notActiveStatuses(): array
+    {
+        return [
+            [ActiveStatus::Inactive],
+            [ActiveStatus::Archived],
+        ];
     }
 
     public function testUsersCannotAuthenticateWithInvalidPassword(): void

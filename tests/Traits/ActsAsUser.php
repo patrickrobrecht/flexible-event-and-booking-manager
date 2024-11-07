@@ -5,39 +5,52 @@ namespace Tests\Traits;
 use App\Models\User;
 use App\Models\UserRole;
 use App\Options\Ability;
+use App\Options\ActiveStatus;
+use Database\Factories\UserFactory;
 use Database\Seeders\UserRoleSeeder;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithDatabase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Auth;
+use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\Attributes\CoversClass;
 
+/**
+ * @mixin Assert
+ */
+#[CoversClass(Ability::class)]
+#[CoversClass(User::class)]
+#[CoversClass(UserFactory::class)]
+#[CoversClass(UserRole::class)]
 trait ActsAsUser
 {
     use InteractsWithDatabase;
     use RefreshDatabase;
     use WithFaker;
 
+    protected $userRoles = [];
+
     protected function actingAsAdmin(): User
     {
         return $this->actingAsUserWithRoleName('Administrator');
     }
 
-    protected function actingAsUserWithAbility(Ability $ability): User
+    protected function actingAsAnyUser(): User
     {
-        $userRole = $this->createUserRoleWithAbility($ability);
+        $user = User::factory()->status(ActiveStatus::Active)->create();
+        $this->actingAs($user);
 
-        return $this->actingAsUserWithRole($userRole);
+        return $user;
     }
 
-    protected function actingAsUserWithFullAbilitiesExcept(Ability $ability): User
+    protected function actingAsUserWithAbility(Ability|array $ability): User
     {
-        $userRole = new UserRole([
-            'name' => 'User without ' . $ability->value,
-            'abilities' => Ability::casesExcept($ability),
-        ]);
-        $userRole->save();
+        return $this->actingAsUserWithRole($this->createUserRoleWithAbility($ability));
+    }
 
-        return $this->actingAsUserWithRole($userRole);
+    protected function actingAsUserWithFullAbilitiesExcept(Ability|array $ability): User
+    {
+        return $this->actingAsUserWithRole($this->createUserRoleWithoutAbility($ability));
     }
 
     protected function actingAsUserWithRole(UserRole $userRole): User
@@ -67,10 +80,16 @@ trait ActsAsUser
         $this->get($route)->assertOk();
     }
 
-    protected function assertRouteAccessibleWithAbility(string $route, Ability $ability): void
+    protected function assertRouteAccessibleWithAbility(string $route, Ability|array $ability): void
     {
         $this->actingAsUserWithAbility($ability);
         $this->get($route)->assertOk();
+    }
+
+    protected function assertRouteForbiddenWithAbility(string $route, Ability $ability): void
+    {
+        $this->actingAsUserWithAbility($ability);
+        $this->get($route)->assertForbidden();
     }
 
     protected function assertRouteForbiddenAsGuest(string $route): void
@@ -85,27 +104,65 @@ trait ActsAsUser
         $this->get($route)->assertFound()->assertRedirect('/login');
     }
 
-    protected function assertRouteNotAccessibleWithoutAbility(string $route, Ability $ability): void
+    protected function assertRouteNotAccessibleWithoutAbility(string $route, Ability|array $ability): void
     {
         $this->actingAsUserWithFullAbilitiesExcept($ability);
         $this->get($route)->assertForbidden();
     }
 
-    protected function assertRouteOnlyAccessibleOnlyWithAbility(string $route, Ability $ability): void
+    protected function assertRouteOnlyAccessibleWithAbility(string $route, Ability|array $ability): void
     {
         $this->assertRouteNotAccessibleAsGuestAndRedirectsToLogin($route);
         $this->assertRouteNotAccessibleWithoutAbility($route, $ability);
         $this->assertRouteAccessibleWithAbility($route, $ability);
     }
 
-    protected function createUserRoleWithAbility(Ability $ability): UserRole
+    protected function assertUserCan(User $user, string $ability, mixed $arguments): void
     {
-        $userRole = new UserRole([
-            'name' => 'User ' . $ability->value,
-            'abilities' => [$ability],
-        ]);
-        $userRole->save();
+        self::assertTrue($user->can($ability, $arguments), "Failed to assert user can {$ability}");
+    }
 
-        return $userRole;
+    protected function assertUserCannot(User $user, string $ability, mixed $arguments): void
+    {
+        self::assertTrue($user->cannot($ability, $arguments), "Failed to assert user cannot {$ability}");
+    }
+
+    protected function createUserRoleWithAbility(Ability|array $ability): UserRole
+    {
+        if (is_array($ability)) {
+            $abilities = $ability; #
+            $userRoleName = 'With ' . implode(', ', Ability::values($ability));
+        } else {
+            $abilities = [$ability];
+            $userRoleName = 'With ' . $ability->value;
+        }
+
+        if (!isset($this->userRoles[$userRoleName])) {
+            $this->userRoles[$userRoleName] = new UserRole([
+                'name' => $userRoleName,
+                'abilities' => $abilities,
+            ]);
+            $this->userRoles[$userRoleName]->save();
+        }
+
+        return $this->userRoles[$userRoleName];
+    }
+
+    protected function createUserRoleWithoutAbility(Ability|array $ability): UserRole
+    {
+        $userRoleName = 'Without ' . (
+            is_array($ability)
+                ? implode(', ', Ability::values($ability))
+                : $ability->value
+        );
+        if (!isset($this->userRoles[$userRoleName])) {
+            $this->userRoles[$userRoleName] = new UserRole([
+                'name' => $userRoleName,
+                'abilities' => Ability::casesExcept($ability),
+            ]);
+            $this->userRoles[$userRoleName]->save();
+        }
+
+        return $this->userRoles[$userRoleName];
     }
 }

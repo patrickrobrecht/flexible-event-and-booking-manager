@@ -15,7 +15,7 @@ trait ValidatesAddressFields
             'house_number' => [
                 $default,
                 'string',
-                'alpha_num',
+                'regex:/^\d+[a-zA-Z]?\/?\d*$/',
                 'max:255',
             ],
             'postal_code' => [

@@ -1,0 +1,122 @@
+<?php
+
+namespace Http;
+
+use App\Exports\GroupsExportSpreadsheet;
+use App\GroupGenerationMethods\AgeBasedGroupGenerationMethod;
+use App\GroupGenerationMethods\GeneralGroupGenerationMethod;
+use App\GroupGenerationMethods\RandomizedAgeBasedGroupGenerationMethod;
+use App\GroupGenerationMethods\RandomizedGroupGenerationMethod;
+use App\Http\Controllers\GroupController;
+use App\Http\Requests\Filters\GroupFilterRequest;
+use App\Http\Requests\GenerateGroupsRequest;
+use App\Models\Booking;
+use App\Models\Event;
+use App\Models\Group;
+use App\Options\Ability;
+use App\Options\GroupGenerationMethod;
+use App\Options\Visibility;
+use App\Policies\GroupPolicy;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Tests\TestCase;
+use Tests\Traits\GeneratesTestData;
+
+#[CoversClass(AgeBasedGroupGenerationMethod::class)]
+#[CoversClass(GeneralGroupGenerationMethod::class)]
+#[CoversClass(GenerateGroupsRequest::class)]
+#[CoversClass(Group::class)]
+#[CoversClass(GroupController::class)]
+#[CoversClass(GroupFilterRequest::class)]
+#[CoversClass(GroupPolicy::class)]
+#[CoversClass(GroupGenerationMethod::class)]
+#[CoversClass(GroupsExportSpreadsheet::class)]
+#[CoversClass(RandomizedAgeBasedGroupGenerationMethod::class)]
+#[CoversClass(RandomizedGroupGenerationMethod::class)]
+class GroupControllerTest extends TestCase
+{
+    use GeneratesTestData;
+    use RefreshDatabase;
+
+    public function testListOfGroupsIsAccessibleOnlyWithCorrectAbility(): void
+    {
+        $event = self::createEventWithBookingOptions(Visibility::Private);
+
+        $route = "/events/{$event->slug}/groups";
+        $this->assertRouteOnlyAccessibleWithAbility($route, Ability::ViewBookingsOfEvent);
+
+        // Verify content of the page.
+        $response = $this->get($route)->assertOk();
+        $event->bookings->each(fn (Booking $booking) => $response->assertSeeText($booking->bookedByUser?->name));
+    }
+
+    public function testListOfGroupsCanBeExportedOnlyWithCorrectAbility(): void
+    {
+        $event = self::createEventWithBookingOptions(Visibility::Private);
+        self::createGroups($event, 3);
+
+        $route = "/events/{$event->slug}/groups?output=export";
+        $this->assertRouteOnlyAccessibleWithAbility($route, Ability::ExportGroupsOfEvent);
+    }
+
+    public function testListOfGroupsIsNotAccessibleForEventWithoutBookingOptions(): void
+    {
+        $event = self::createEvent(Visibility::Private);
+        $this->assertRouteForbiddenWithAbility("/events/{$event->slug}/groups", Ability::ViewBookingsOfEvent);
+    }
+
+    #[DataProvider('groupGenerationMethods')]
+    public function testGroupGenerationWorksWithCorrectAbility(GroupGenerationMethod $method): void
+    {
+        $event = self::createEventWithBookingOptions(Visibility::Private);
+
+        $event->bookings->each(fn (Booking $booking) => $this->assertNull($booking->getGroup($event)));
+        $this->assertCount(0, $event->groups);
+
+        $this->actingAsUserWithAbility(Ability::ManageGroupsOfEvent);
+        $formData = [
+            'method' => $method->value,
+            'groups_count' => 4,
+            'booking_option_id' => $event->bookingOptions->pluck('id')->toArray(),
+        ];
+        $this->post("/events/{$event->slug}/groups/generate", $formData)
+            ->assertSessionDoesntHaveErrors()
+            ->assertRedirect();
+
+        $event->refresh()
+            ->load('bookings.groups');
+        $this->assertCount(4, $event->groups);
+        $event->bookings->each(fn (Booking $booking) => $this->assertNotNull($booking->getGroup($event)));
+    }
+
+    public static function groupGenerationMethods(): array
+    {
+        return array_map(static fn (GroupGenerationMethod $method) => [$method], GroupGenerationMethod::cases());
+    }
+
+    #[DataProvider('deleteGroupTestCases')]
+    public function testGroupTotalDeletionWorksWithCorrectAbility(\Closure $dataProvider, int $countAfterRequest): void
+    {
+        $event = self::createEventWithBookingOptions(Visibility::Private);
+        self::createGroups($event, 3);
+        $this->assertCount(3, $event->groups);
+
+        $this->actingAsUserWithAbility(Ability::ManageGroupsOfEvent);
+        $this->delete("/events/{$event->slug}/groups", $dataProvider($event))->assertRedirect();
+
+        $event->refresh();
+        $this->assertCount($countAfterRequest, $event->groups);
+    }
+
+    public static function deleteGroupTestCases(): array
+    {
+        return [
+            [fn (Event $event) => ['name' => $event->name], 0],
+            [fn (Event $event) => ['name' => $event->name . ' '], 0],
+            [fn (Event $event) => ['name' => \Str::random(42)], 3],
+            [fn (Event $event) => ['name' => ''], 3],
+            [fn (Event $event) => [], 3],
+        ];
+    }
+}

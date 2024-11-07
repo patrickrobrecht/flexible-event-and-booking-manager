@@ -6,35 +6,54 @@ use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Models\User;
+use App\Notifications\VerifyEmailNotification;
 use App\Providers\RouteServiceProvider;
+use Database\Factories\UserFactory;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\URL;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 
 #[CoversClass(EmailVerificationNotificationController::class)]
 #[CoversClass(EmailVerificationPromptController::class)]
+#[CoversClass(RouteServiceProvider::class)]
+#[CoversClass(UserFactory::class)]
 #[CoversClass(VerifyEmailController::class)]
+#[CoversClass(VerifyEmailNotification::class)]
 class EmailVerificationTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testEmailVerificationScreenCanBeRendered(): void
+    public function testEmailVerificationPromptCanBeRendered(): void
     {
-        $user = User::factory()->create([
-            'email_verified_at' => null,
-        ]);
+        $this->actingAs($this->createUnverifiedUser())
+            ->get('/')
+            ->assertOk();
+    }
 
-        $this->actingAs($user)->get('/verify-email')->assertOk();
+    public function testEmailVerificationLinkCanBeRequested(): void
+    {
+        Notification::fake();
+
+        $user = $this->createUnverifiedUser();
+        $this->actingAs($user)
+            ->post('email/verification-notification', [
+                'email' => $user->email,
+            ])
+            ->assertRedirect()
+            ->assertSessionHas('success');
+
+        Notification::assertSentTo($user, VerifyEmailNotification::class, static function ($notification) use ($user) {
+            return str_contains($notification->toMail($user)->render(), $user->greeting);
+        });
     }
 
     public function testEmailCanBeVerified(): void
     {
-        $user = User::factory()->create([
-            'email_verified_at' => null,
-        ]);
+        $user = $this->createUnverifiedUser();
 
         Event::fake();
 
@@ -43,19 +62,17 @@ class EmailVerificationTest extends TestCase
             now()->addMinutes(60),
             ['id' => $user->id, 'hash' => sha1($user->email)]
         );
-
-        $response = $this->actingAs($user)->get($verificationUrl);
+        $this->actingAs($user)
+            ->get($verificationUrl)
+            ->assertRedirect(RouteServiceProvider::HOME);
 
         Event::assertDispatched(Verified::class);
         $this->assertTrue($user->fresh()->hasVerifiedEmail());
-        $response->assertRedirect(RouteServiceProvider::HOME);
     }
 
     public function testEmailIsNotVerifiedWithInvalidHash(): void
     {
-        $user = User::factory()->create([
-            'email_verified_at' => null,
-        ]);
+        $user = $this->createUnverifiedUser();
 
         $verificationUrl = URL::temporarySignedRoute(
             'verification.verify',
@@ -66,5 +83,12 @@ class EmailVerificationTest extends TestCase
         $this->actingAs($user)->get($verificationUrl);
 
         $this->assertFalse($user->fresh()->hasVerifiedEmail());
+    }
+
+    private function createUnverifiedUser(): User
+    {
+        return User::factory()
+            ->unverified()
+            ->create();
     }
 }

@@ -3,31 +3,43 @@
 namespace Tests\Feature\Http;
 
 use App\Http\Controllers\EventSeriesController;
-use App\Models\Event;
+use App\Http\Requests\EventSeriesRequest;
+use App\Http\Requests\Filters\EventSeriesFilterRequest;
 use App\Models\EventSeries;
-use App\Models\Location;
 use App\Options\Ability;
+use App\Options\EventSeriesType;
+use App\Options\FilterValue;
 use App\Options\Visibility;
+use App\Policies\EventSeriesPolicy;
+use Database\Factories\EventSeriesFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
-use Tests\Traits\ChecksVisibility;
+use Tests\Traits\GeneratesTestData;
 
+#[CoversClass(EventSeries::class)]
 #[CoversClass(EventSeriesController::class)]
+#[CoversClass(EventSeriesFactory::class)]
+#[CoversClass(EventSeriesFilterRequest::class)]
+#[CoversClass(EventSeriesPolicy::class)]
+#[CoversClass(EventSeriesRequest::class)]
+#[CoversClass(EventSeriesType::class)]
+#[CoversClass(FilterValue::class)]
+#[CoversClass(Visibility::class)]
 class EventSeriesControllerTest extends TestCase
 {
-    use ChecksVisibility;
+    use GeneratesTestData;
     use RefreshDatabase;
 
     public function testEventSeriesCanBeListedWithCorrectAbility(): void
     {
-        $this->assertRouteOnlyAccessibleOnlyWithAbility('/event-series', Ability::ViewEventSeries);
+        $this->assertRouteOnlyAccessibleWithAbility('/event-series', Ability::ViewEventSeries);
     }
 
     public function testPublicEventSeriesIsAccessibleByEveryone(): void
     {
-        $publicEventSeries = $this->createRandomEventSeries(Visibility::Public);
+        $publicEventSeries = self::createEventSeries(Visibility::Public);
         $route = "/event-series/{$publicEventSeries->slug}";
 
         $this->assertRouteAccessibleAsGuest($route);
@@ -37,7 +49,7 @@ class EventSeriesControllerTest extends TestCase
 
     public function testPrivateEventSeriesIsOnlyAccessibleWithCorrectAbility(): void
     {
-        $privateEvent = $this->createRandomEventSeries(Visibility::Private);
+        $privateEvent = self::createEventSeries(Visibility::Private);
         $route = "/event-series/{$privateEvent->slug}";
 
         $this->assertRouteForbiddenAsGuest($route);
@@ -47,24 +59,13 @@ class EventSeriesControllerTest extends TestCase
 
     public function testCreateEventSeriesFormIsOnlyAccessibleWithCorrectAbility(): void
     {
-        $this->assertRouteOnlyAccessibleOnlyWithAbility('/event-series/create', Ability::CreateEventSeries);
+        $this->assertRouteOnlyAccessibleWithAbility('/event-series/create', Ability::CreateEventSeries);
     }
 
     #[DataProvider('visibilityProvider')]
     public function testEditEventSeriesFormIsAccessibleOnlyWithCorrectAbility(Visibility $visibility): void
     {
-        $this->assertRouteOnlyAccessibleOnlyWithAbility("/event-series/{$this->createRandomEventSeries($visibility)->slug}/edit", Ability::EditEventSeries);
-    }
-
-    private function createRandomEventSeries(Visibility $visibility): EventSeries
-    {
-        return EventSeries::factory()
-            ->has(
-                Event::factory()
-                    ->for(Location::factory()->create())
-                    ->count(fake()->numberBetween(1, 5))
-            )
-            ->visibility($visibility)
-            ->create();
+        $eventSeries = self::createEventSeries($visibility);
+        $this->assertRouteOnlyAccessibleWithAbility("/event-series/{$eventSeries->slug}/edit", Ability::EditEventSeries);
     }
 }

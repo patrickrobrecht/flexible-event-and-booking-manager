@@ -74,47 +74,21 @@ trait ActsAsUser
         return $this->actingAsUserWithRole($adminRole);
     }
 
-    protected function assertRouteAccessibleAsGuest(string $route): void
+    protected function assertGuestCanGet(string $route): void
     {
         Auth::logout(); // to make sure we act as a guest
         $this->get($route)->assertOk();
     }
 
-    protected function assertRouteAccessibleWithAbility(string $route, Ability|array $ability): void
-    {
-        $this->actingAsUserWithAbility($ability);
-        $this->get($route)->assertOk();
-    }
-
-    protected function assertRouteForbiddenWithAbility(string $route, Ability $ability): void
-    {
-        $this->actingAsUserWithAbility($ability);
-        $this->get($route)->assertForbidden();
-    }
-
-    protected function assertRouteForbiddenAsGuest(string $route): void
+    protected function assertGuestCannotGet(string $route, bool $redirectedToLogin = true): void
     {
         Auth::logout(); // to make sure we act as a guest
-        $this->get($route)->assertForbidden();
-    }
-
-    protected function assertRouteNotAccessibleAsGuestAndRedirectsToLogin(string $route): void
-    {
-        Auth::logout(); // to make sure we act as a guest
-        $this->get($route)->assertFound()->assertRedirect('/login');
-    }
-
-    protected function assertRouteNotAccessibleWithoutAbility(string $route, Ability|array $ability): void
-    {
-        $this->actingAsUserWithFullAbilitiesExcept($ability);
-        $this->get($route)->assertForbidden();
-    }
-
-    protected function assertRouteOnlyAccessibleWithAbility(string $route, Ability|array $ability): void
-    {
-        $this->assertRouteNotAccessibleAsGuestAndRedirectsToLogin($route);
-        $this->assertRouteNotAccessibleWithoutAbility($route, $ability);
-        $this->assertRouteAccessibleWithAbility($route, $ability);
+        $response = $this->get($route);
+        if ($redirectedToLogin) {
+            $response->assertFound()->assertRedirect('/login');
+        } else {
+            $response->assertForbidden();
+        }
     }
 
     protected function assertUserCan(User $user, string $ability, mixed $arguments): void
@@ -125,6 +99,79 @@ trait ActsAsUser
     protected function assertUserCannot(User $user, string $ability, mixed $arguments): void
     {
         self::assertTrue($user->cannot($ability, $arguments), "Failed to assert user cannot {$ability}");
+    }
+
+    protected function assertUserCanDeleteOnlyWithAbility(string $route, Ability|array $ability, ?string $redirectRoute): void
+    {
+        // Cannot delete with all abilities except the required ones.
+        $this->actingAsUserWithFullAbilitiesExcept($ability);
+        $this->delete($route)
+            ->assertForbidden();
+
+        // Can delete with correct ability.
+        $this->actingAsUserWithAbility($ability);
+        $this->delete($route)
+            ->assertRedirect($redirectRoute);
+    }
+
+    protected function assertUserCanGetOnlyWithAbility(string $route, Ability|array $ability, bool $guestRedirectedToLogin = true): void
+    {
+        $this->assertGuestCannotGet($route, $guestRedirectedToLogin);
+        $this->assertUserCannotGetWithoutAbility($route, $ability);
+
+        $this->assertUserCanGetWithAbility($route, $ability);
+    }
+
+    protected function assertUserCanGetWithAbility(string $route, Ability|array $ability): void
+    {
+        $this->actingAsUserWithAbility($ability);
+        $this->get($route)->assertOk();
+    }
+
+    protected function assertUserCannotGetDespiteAbility(string $route, Ability $ability): void
+    {
+        $this->actingAsUserWithAbility($ability);
+        $this->get($route)->assertForbidden();
+    }
+
+    protected function assertUserCannotGetWithoutAbility(string $route, Ability|array $ability): void
+    {
+        $this->actingAsUserWithFullAbilitiesExcept($ability);
+        $this->get($route)->assertForbidden();
+    }
+
+    protected function assertUserCanPostOnlyWithAbility(string $route, array $data, Ability|array $ability, ?string $redirectRoute): void
+    {
+        // Cannot submit POST request with all abilities except the required ones.
+        $this->actingAsUserWithFullAbilitiesExcept($ability);
+        $this->post($route, $data)
+            ->assertForbidden();
+
+        $this->assertUserCanPostWithAbility($route, $data, $ability, $redirectRoute);
+    }
+
+    protected function assertUserCanPostWithAbility(string $route, array $data, Ability|array $ability, ?string $redirectRoute): void
+    {
+        $this->actingAsUserWithAbility($ability);
+        $this->post($route, $data)
+            ->assertRedirect($redirectRoute);
+    }
+
+    protected function assertUserCanPutOnlyWithAbility(string $route, array $data, Ability|array $ability, ?string $redirectRoute): void
+    {
+        // Cannot submit PUT request with all abilities except the required ones.
+        $this->actingAsUserWithFullAbilitiesExcept($ability);
+        $this->put($route, $data)
+            ->assertForbidden();
+
+        $this->assertUserCanPutWithAbility($route, $data, $ability, $redirectRoute);
+    }
+
+    protected function assertUserCanPutWithAbility(string $route, array $data, Ability|array $ability, ?string $redirectRoute): void
+    {
+        $this->actingAsUserWithAbility($ability);
+        $this->put($route, $data)
+            ->assertRedirect($redirectRoute);
     }
 
     protected function createUserRoleWithAbility(Ability|array $ability): UserRole

@@ -34,7 +34,7 @@ class EventControllerTest extends TestCase
 
     public function testEventsCanBeListedWithCorrectAbility(): void
     {
-        $this->assertRouteOnlyAccessibleWithAbility('/events', Ability::ViewEvents);
+        $this->assertUserCanGetOnlyWithAbility('/events', Ability::ViewEvents);
     }
 
     public function testPublicEventIsAccessibleByEveryone(): void
@@ -42,9 +42,9 @@ class EventControllerTest extends TestCase
         $publicEvent = self::createEvent(Visibility::Public);
         $route = "/events/{$publicEvent->slug}";
 
-        $this->assertRouteAccessibleAsGuest($route);
-        $this->assertRouteAccessibleWithAbility($route, Ability::ViewEvents);
-        $this->assertRouteAccessibleWithAbility($route, Ability::ViewPrivateEvents);
+        $this->assertGuestCanGet($route);
+        $this->assertUserCanGetWithAbility($route, Ability::ViewEvents);
+        $this->assertUserCanGetWithAbility($route, Ability::ViewPrivateEvents);
     }
 
     public function testPrivateEventIsOnlyAccessibleWithCorrectAbility(): void
@@ -52,20 +52,18 @@ class EventControllerTest extends TestCase
         $privateEvent = self::createEvent(Visibility::Private);
         $route = "/events/{$privateEvent->slug}";
 
-        $this->assertRouteForbiddenAsGuest($route);
-        $this->assertRouteNotAccessibleWithoutAbility($route, Ability::ViewPrivateEvents);
-        $this->assertRouteAccessibleWithAbility($route, Ability::ViewPrivateEvents);
+        $this->assertUserCanGetOnlyWithAbility($route, Ability::ViewPrivateEvents, false);
     }
 
     public function testCreateEventFormIsOnlyAccessibleWithCorrectAbility(): void
     {
-        $this->assertRouteOnlyAccessibleWithAbility('/events/create', Ability::CreateEvents);
+        $this->assertUserCanGetOnlyWithAbility('/events/create', Ability::CreateEvents);
     }
 
     #[DataProvider('visibilityProvider')]
     public function testEditEventFormIsAccessibleOnlyWithCorrectAbility(Visibility $visibility): void
     {
         $event = self::createEvent($visibility);
-        $this->assertRouteOnlyAccessibleWithAbility("/events/{$event->slug}/edit", Ability::EditEvents);
+        $this->assertUserCanGetOnlyWithAbility("/events/{$event->slug}/edit", Ability::EditEvents);
     }
 }

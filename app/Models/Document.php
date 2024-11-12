@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
-use App\Models\Traits\HasDocuments;
 use App\Models\Traits\Searchable;
 use App\Options\ApprovalStatus;
 use App\Options\FileType;
@@ -13,6 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -34,12 +34,13 @@ use Spatie\QueryBuilder\AllowedSort;
  * @property-read string $file_name_from_title {@see self::fileNameFromTitle()}
  *
  * @property-read Collection|DocumentReview[] $documentReviews {@see self::documentReviews()}
- * @property-read HasDocuments|Event $reference {@see self::reference()}
+ * @property-read Event|EventSeries|Organization $reference {@see self::reference()}
  * @property-read User $uploadedByUser {@see self::uploadedByUser()}
  */
 class Document extends Model
 {
     use BuildsQueryFromRequest;
+    use HasFactory;
     use Searchable;
 
     protected $casts = [
@@ -107,6 +108,16 @@ class Document extends Model
         }
 
         return $this->save();
+    }
+
+    public function getRoute(): string
+    {
+        return route('documents.show', $this);
+    }
+
+    public function getRouteForComments(): string
+    {
+        return $this->getRoute().'#comments';
     }
 
     public function scopeSearchTitleAndDescription(Builder $query, string ...$searchTerms): Builder

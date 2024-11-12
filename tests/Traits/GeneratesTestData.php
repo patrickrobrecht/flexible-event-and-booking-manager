@@ -4,6 +4,8 @@ namespace Tests\Traits;
 
 use App\Models\Booking;
 use App\Models\BookingOption;
+use App\Models\Document;
+use App\Models\DocumentReview;
 use App\Models\Event;
 use App\Models\EventSeries;
 use App\Models\Group;
@@ -11,6 +13,7 @@ use App\Models\Location;
 use App\Models\Organization;
 use App\Models\User;
 use App\Options\Visibility;
+use Closure;
 use Database\Factories\BookingFactory;
 use Database\Factories\BookingOptionFactory;
 use Database\Factories\EventFactory;
@@ -68,6 +71,22 @@ trait GeneratesTestData
     {
         return BookingOption::factory()
             ->for(self::createEvent($visibility))
+            ->create();
+    }
+
+    protected static function createDocument(Closure $referenceProvider): Document
+    {
+        return Document::factory()
+            ->for($referenceProvider(), 'reference')
+            ->for(User::factory()->create(), 'uploadedByUser')
+            ->create();
+    }
+
+    protected static function createDocumentWithReview(Closure $referenceProvider, User $user): DocumentReview
+    {
+        return DocumentReview::factory()
+            ->for(self::createDocument($referenceProvider))
+            ->for($user)
             ->create();
     }
 

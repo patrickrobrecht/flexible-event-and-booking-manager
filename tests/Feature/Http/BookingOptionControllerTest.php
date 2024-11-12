@@ -34,7 +34,7 @@ class BookingOptionControllerTest extends TestCase
     public function testBookingOptionOfPublicEventIsAccessibleByEveryone(): void
     {
         $bookingOption = self::createBookingOptionForEvent(Visibility::Public);
-        $this->assertRouteAccessibleAsGuest("/events/{$bookingOption->event->slug}/booking-options/{$bookingOption->slug}");
+        $this->assertGuestCanGet("/events/{$bookingOption->event->slug}/booking-options/{$bookingOption->slug}");
     }
 
     public function testBookingOptionOfPrivateEventIsNotAccessibleAsGuest(): void
@@ -119,13 +119,13 @@ class BookingOptionControllerTest extends TestCase
     public function testCreateEventFormIsOnlyAccessibleWithCorrectAbility(Visibility $visibility): void
     {
         $event = self::createEvent($visibility);
-        $this->assertRouteOnlyAccessibleWithAbility("/events/{$event->slug}/booking-options/create", Ability::ManageBookingOptionsOfEvent);
+        $this->assertUserCanGetOnlyWithAbility("/events/{$event->slug}/booking-options/create", Ability::ManageBookingOptionsOfEvent);
     }
 
     #[DataProvider('visibilityProvider')]
     public function testEditEventFormIsAccessibleOnlyWithCorrectAbility(Visibility $visibility): void
     {
         $bookingOption = self::createBookingOptionForEvent($visibility);
-        $this->assertRouteOnlyAccessibleWithAbility("/events/{$bookingOption->event->slug}/booking-options/{$bookingOption->slug}/edit", Ability::ManageBookingOptionsOfEvent);
+        $this->assertUserCanGetOnlyWithAbility("/events/{$bookingOption->event->slug}/booking-options/{$bookingOption->slug}/edit", Ability::ManageBookingOptionsOfEvent);
     }
 }

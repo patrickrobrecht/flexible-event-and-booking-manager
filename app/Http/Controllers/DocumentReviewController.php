@@ -35,7 +35,7 @@ class DocumentReviewController extends Controller
         $review->user()->associate(Auth::user());
         if ($review->fillAndSave($validated) && $document->save()) {
             Session::flash('success', __('Saved comment successfully.'));
-            return redirect(route('documents.show', $document) . '#comments');
+            return redirect($document->getRouteForComments());
         }
 
         return back();
@@ -47,7 +47,7 @@ class DocumentReviewController extends Controller
 
         if ($review->fillAndSave($request->validated())) {
             Session::flash('success', __('Saved comment successfully.'));
-            return redirect(route('documents.show', $review->document).'#comments');
+            return redirect($document->getRouteForComments());
         }
 
         return back();

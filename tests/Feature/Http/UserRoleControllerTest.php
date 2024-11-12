@@ -30,22 +30,22 @@ class UserRoleControllerTest extends TestCase
 
     public function testUserRolesCanBeListedWithCorrectAbility(): void
     {
-        $this->assertRouteOnlyAccessibleWithAbility('/user-roles', Ability::ViewUserRoles);
+        $this->assertUserCanGetOnlyWithAbility('/user-roles', Ability::ViewUserRoles);
     }
 
     public function testUserRoleIsOnlyAccessibleWithCorrectAbility(): void
     {
-        $this->assertRouteOnlyAccessibleWithAbility("/user-roles/{$this->createRandomUserRole()->id}", Ability::ViewUserRoles);
+        $this->assertUserCanGetOnlyWithAbility("/user-roles/{$this->createRandomUserRole()->id}", Ability::ViewUserRoles);
     }
 
     public function testCreateUserRoleFormIsOnlyAccessibleWithCorrectAbility(): void
     {
-        $this->assertRouteOnlyAccessibleWithAbility('/user-roles/create', Ability::CreateUserRoles);
+        $this->assertUserCanGetOnlyWithAbility('/user-roles/create', Ability::CreateUserRoles);
     }
 
     public function testEditUserRoleFormIsAccessibleOnlyWithCorrectAbility(): void
     {
-        $this->assertRouteOnlyAccessibleWithAbility("/user-roles/{$this->createRandomUserRole()->id}/edit", Ability::EditUserRoles);
+        $this->assertUserCanGetOnlyWithAbility("/user-roles/{$this->createRandomUserRole()->id}/edit", Ability::EditUserRoles);
     }
 
     private function createRandomUserRole(): UserRole

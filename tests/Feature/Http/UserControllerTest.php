@@ -32,17 +32,17 @@ class UserControllerTest extends TestCase
 
     public function testUsersCanBeListedWithCorrectAbility(): void
     {
-        $this->assertRouteOnlyAccessibleWithAbility('/users', Ability::ViewUsers);
+        $this->assertUserCanGetOnlyWithAbility('/users', Ability::ViewUsers);
     }
 
     public function testUserIsOnlyAccessibleWithCorrectAbility(): void
     {
-        $this->assertRouteOnlyAccessibleWithAbility("/users/{$this->createRandomUser()->id}", Ability::ViewUsers);
+        $this->assertUserCanGetOnlyWithAbility("/users/{$this->createRandomUser()->id}", Ability::ViewUsers);
     }
 
     public function testCreateUserFormIsOnlyAccessibleWithCorrectAbility(): void
     {
-        $this->assertRouteOnlyAccessibleWithAbility('/users/create', Ability::CreateUsers);
+        $this->assertUserCanGetOnlyWithAbility('/users/create', Ability::CreateUsers);
     }
 
     public function testUserIsStored(): void
@@ -97,7 +97,7 @@ class UserControllerTest extends TestCase
 
     public function testEditUserFormIsAccessibleOnlyWithCorrectAbility(): void
     {
-        $this->assertRouteOnlyAccessibleWithAbility("/users/{$this->createRandomUser()->id}/edit", Ability::EditUsers);
+        $this->assertUserCanGetOnlyWithAbility("/users/{$this->createRandomUser()->id}/edit", Ability::EditUsers);
     }
 
     private function createRandomUser(): User

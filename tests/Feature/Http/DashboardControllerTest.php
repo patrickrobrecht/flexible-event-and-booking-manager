@@ -32,7 +32,7 @@ class DashboardControllerTest extends TestCase
 
     public function testTheDashboardIsAccessibleByEveryone(): void
     {
-        $this->assertRouteAccessibleAsGuest('/');
+        $this->assertGuestCanGet('/');
     }
 
     public function testTheDashboardShowsOwnBookingsIfLoggedIn(): void

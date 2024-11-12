@@ -44,7 +44,7 @@ class GroupControllerTest extends TestCase
         $event = self::createEventWithBookingOptions(Visibility::Private);
 
         $route = "/events/{$event->slug}/groups";
-        $this->assertRouteOnlyAccessibleWithAbility($route, Ability::ViewBookingsOfEvent);
+        $this->assertUserCanGetOnlyWithAbility($route, Ability::ViewBookingsOfEvent);
 
         // Verify content of the page.
         $response = $this->get($route)->assertOk();
@@ -57,13 +57,13 @@ class GroupControllerTest extends TestCase
         self::createGroups($event, 3);
 
         $route = "/events/{$event->slug}/groups?output=export";
-        $this->assertRouteOnlyAccessibleWithAbility($route, Ability::ExportGroupsOfEvent);
+        $this->assertUserCanGetOnlyWithAbility($route, Ability::ExportGroupsOfEvent);
     }
 
     public function testListOfGroupsIsNotAccessibleForEventWithoutBookingOptions(): void
     {
         $event = self::createEvent(Visibility::Private);
-        $this->assertRouteForbiddenWithAbility("/events/{$event->slug}/groups", Ability::ViewBookingsOfEvent);
+        $this->assertUserCannotGetDespiteAbility("/events/{$event->slug}/groups", Ability::ViewBookingsOfEvent);
     }
 
     #[DataProvider('groupGenerationMethods')]

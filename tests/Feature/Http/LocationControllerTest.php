@@ -27,17 +27,17 @@ class LocationControllerTest extends TestCase
 
     public function testLocationsCanBeListedWithCorrectAbility(): void
     {
-        $this->assertRouteOnlyAccessibleWithAbility('/locations', Ability::ViewLocations);
+        $this->assertUserCanGetOnlyWithAbility('/locations', Ability::ViewLocations);
     }
 
     public function testCreateLocationFormIsOnlyAccessibleWithCorrectAbility(): void
     {
-        $this->assertRouteOnlyAccessibleWithAbility('/locations/create', Ability::CreateLocations);
+        $this->assertUserCanGetOnlyWithAbility('/locations/create', Ability::CreateLocations);
     }
 
     public function testEditLocationFormIsAccessibleOnlyWithCorrectAbility(): void
     {
-        $this->assertRouteOnlyAccessibleWithAbility("/locations/{$this->createRandomLocation()->id}/edit", Ability::EditLocations);
+        $this->assertUserCanGetOnlyWithAbility("/locations/{$this->createRandomLocation()->id}/edit", Ability::EditLocations);
     }
 
     private function createRandomLocation(): Location

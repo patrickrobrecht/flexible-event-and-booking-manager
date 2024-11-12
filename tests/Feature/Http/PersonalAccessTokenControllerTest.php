@@ -25,12 +25,12 @@ class PersonalAccessTokenControllerTest extends TestCase
 
     public function testOwnPersonalAccessTokensCanBeListedWithCorrectAbility(): void
     {
-        $this->assertRouteOnlyAccessibleWithAbility('/personal-access-tokens', Ability::ManagePersonalAccessTokens);
+        $this->assertUserCanGetOnlyWithAbility('/personal-access-tokens', Ability::ManagePersonalAccessTokens);
     }
 
     public function testCreatePersonalAccessTokenFormIsOnlyAccessibleWithCorrectAbility(): void
     {
-        $this->assertRouteOnlyAccessibleWithAbility('/personal-access-tokens/create', Ability::ManagePersonalAccessTokens);
+        $this->assertUserCanGetOnlyWithAbility('/personal-access-tokens/create', Ability::ManagePersonalAccessTokens);
     }
 
     public function testEditPersonalAccessTokenFormIsAccessibleOnlyForOwnTokensWithCorrectAbility(): void
@@ -41,7 +41,7 @@ class PersonalAccessTokenControllerTest extends TestCase
         $userOwningTheToken = $token->tokenable;
 
         $editRoute = "/personal-access-tokens/{$token->id}/edit";
-        $this->assertRouteNotAccessibleAsGuestAndRedirectsToLogin($editRoute);
+        $this->assertGuestCannotGet($editRoute, true);
 
         // Another user cannot update the token.
         $userRole = $this->createUserRoleWithAbility(Ability::ManagePersonalAccessTokens);

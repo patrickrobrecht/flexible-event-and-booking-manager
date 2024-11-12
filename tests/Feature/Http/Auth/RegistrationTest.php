@@ -30,7 +30,7 @@ class RegistrationTest extends TestCase
     {
         Config::set('app.features.registration', true);
 
-        $this->assertRouteAccessibleAsGuest('/register');
+        $this->assertGuestCanGet('/register');
     }
 
     public function testNewUsersCanRegister(): void

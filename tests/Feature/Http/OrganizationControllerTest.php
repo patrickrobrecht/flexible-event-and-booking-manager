@@ -29,22 +29,22 @@ class OrganizationControllerTest extends TestCase
 
     public function testOrganizationsCanBeListedWithCorrectAbility(): void
     {
-        $this->assertRouteOnlyAccessibleWithAbility('/organizations', Ability::ViewOrganizations);
+        $this->assertUserCanGetOnlyWithAbility('/organizations', Ability::ViewOrganizations);
     }
 
     public function testSingleOrganizationIsAccessibleWithCorrectAbility(): void
     {
-        $this->assertRouteOnlyAccessibleWithAbility("/organizations/{$this->createRandomOrganization()->id}", Ability::ViewOrganizations);
+        $this->assertUserCanGetOnlyWithAbility("/organizations/{$this->createRandomOrganization()->id}", Ability::ViewOrganizations);
     }
 
     public function testCreateOrganizationFormIsOnlyAccessibleWithCorrectAbility(): void
     {
-        $this->assertRouteOnlyAccessibleWithAbility('/organizations/create', Ability::CreateOrganizations);
+        $this->assertUserCanGetOnlyWithAbility('/organizations/create', Ability::CreateOrganizations);
     }
 
     public function testEditOrganizationFormIsAccessibleOnlyWithCorrectAbility(): void
     {
-        $this->assertRouteOnlyAccessibleWithAbility("/organizations/{$this->createRandomOrganization()->id}/edit", Ability::EditOrganizations);
+        $this->assertUserCanGetOnlyWithAbility("/organizations/{$this->createRandomOrganization()->id}/edit", Ability::EditOrganizations);
     }
 
     private function createRandomOrganization(): Organization

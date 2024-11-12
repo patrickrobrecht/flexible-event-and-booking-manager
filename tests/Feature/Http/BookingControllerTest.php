@@ -52,7 +52,7 @@ class BookingControllerTest extends TestCase
         $users = self::createUsersWithBookings($bookingOption);
 
         $route = "/events/{$bookingOption->event->slug}/{$bookingOption->slug}/bookings";
-        $this->assertRouteOnlyAccessibleWithAbility($route, Ability::ViewBookingsOfEvent);
+        $this->assertUserCanGetOnlyWithAbility($route, Ability::ViewBookingsOfEvent);
 
         // Verify content of the page.
         $response = $this->get($route)->assertOk();
@@ -66,7 +66,7 @@ class BookingControllerTest extends TestCase
         self::createUsersWithBookings($bookingOption);
 
         $route = "/events/{$bookingOption->event->slug}/{$bookingOption->slug}/bookings?output=export";
-        $this->assertRouteOnlyAccessibleWithAbility($route, Ability::ExportBookingsOfEvent);
+        $this->assertUserCanGetOnlyWithAbility($route, Ability::ExportBookingsOfEvent);
     }
 
     #[DataProvider('visibilityProvider')]
@@ -77,8 +77,8 @@ class BookingControllerTest extends TestCase
         $bookingOption = self::createBookingOptionForEvent($visibility);
         self::createUsersWithBookings($bookingOption)
             ->each(fn (User $user) => $user->bookings->each(function (Booking $booking) {
-                $this->assertRouteOnlyAccessibleWithAbility("bookings/{$booking->id}", Ability::ViewBookingsOfEvent);
-                $this->assertRouteOnlyAccessibleWithAbility("bookings/{$booking->id}/pdf", Ability::ViewBookingsOfEvent);
+                $this->assertUserCanGetOnlyWithAbility("bookings/{$booking->id}", Ability::ViewBookingsOfEvent);
+                $this->assertUserCanGetOnlyWithAbility("bookings/{$booking->id}/pdf", Ability::ViewBookingsOfEvent);
             }));
     }
 
@@ -183,7 +183,7 @@ class BookingControllerTest extends TestCase
         $bookingOption = self::createBookingOptionForEvent($visibility);
         self::createUsersWithBookings($bookingOption)
             ->each(fn (User $user) => $user->bookings->each(function (Booking $booking) {
-                $this->assertRouteOnlyAccessibleWithAbility("bookings/{$booking->id}/edit", Ability::EditBookingsOfEvent);
+                $this->assertUserCanGetOnlyWithAbility("bookings/{$booking->id}/edit", Ability::EditBookingsOfEvent);
             }));
     }
 

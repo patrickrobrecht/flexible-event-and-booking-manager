@@ -20,7 +20,7 @@ class PasswordResetTest extends TestCase
 
     public function testResetPasswordLinkScreenCanBeRendered(): void
     {
-        $this->assertRouteAccessibleAsGuest('/forgot-password');
+        $this->assertGuestCanGet('/forgot-password');
     }
 
     public function testResetPasswordLinkCanBeRequested(): void

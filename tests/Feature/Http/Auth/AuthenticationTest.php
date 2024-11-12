@@ -24,7 +24,7 @@ class AuthenticationTest extends TestCase
 
     public function testLoginScreenCanBeRendered(): void
     {
-        $this->assertRouteAccessibleAsGuest('/login');
+        $this->assertGuestCanGet('/login');
     }
 
     public function testUsersCanAuthenticateUsingTheLoginScreen(): void

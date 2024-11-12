@@ -20,12 +20,12 @@ class AccountControllerTest extends TestCase
 
     public function testAccountIsAccessibleWithCorrectAbility(): void
     {
-        $this->assertRouteOnlyAccessibleWithAbility('/account', Ability::ViewAccount);
+        $this->assertUserCanGetOnlyWithAbility('/account', Ability::ViewAccount);
     }
 
     public function testEditAccountIsAccessibleWithCorrectAbility(): void
     {
-        $this->assertRouteOnlyAccessibleWithAbility('/account/edit', Ability::EditAccount);
+        $this->assertUserCanGetOnlyWithAbility('/account/edit', Ability::EditAccount);
     }
 
     public function testAccountCannotBeEditedWithoutAbility(): void
@@ -65,6 +65,6 @@ class AccountControllerTest extends TestCase
 
     public function testListOfOwnAbilitiesIsAccessibleWithCorrectAbility(): void
     {
-        $this->assertRouteOnlyAccessibleWithAbility('/account/abilities', Ability::ViewAbilities);
+        $this->assertUserCanGetOnlyWithAbility('/account/abilities', Ability::ViewAbilities);
     }
 }

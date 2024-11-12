@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Options\ApprovalStatus;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -19,6 +20,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class DocumentReview extends Model
 {
+    use HasFactory;
+
     protected $casts = [
         'document_id' => 'integer',
         'user_id' => 'integer',

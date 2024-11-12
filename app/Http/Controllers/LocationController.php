@@ -6,7 +6,6 @@ use App\Http\Requests\Filters\LocationFilterRequest;
 use App\Http\Requests\LocationRequest;
 use App\Models\Location;
 use App\Models\Organization;
-use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
@@ -41,7 +40,7 @@ class LocationController extends Controller
 
     public function store(LocationRequest $request): RedirectResponse
     {
-        $this->authorize('create', User::class);
+        $this->authorize('create', Location::class);
 
         $location = new Location();
         if ($location->fillAndSave($request->validated())) {

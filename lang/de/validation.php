@@ -142,6 +142,9 @@ return [
     */
 
     'custom' => [
+        'house_number' => [
+            'regex' => ':attribute muss eine Zahl mit optionalen Buchstabenzusatz sein.',
+        ],
         'terms_and_conditions' => [
             'accepted' => 'Die AGB müssen akzeptiert werden. Sonst ist eine Registrierung nicht möglich.',
         ],

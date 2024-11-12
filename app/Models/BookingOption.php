@@ -7,6 +7,7 @@ use App\Models\Traits\HasSlugForRouting;
 use App\Options\BookingRestriction;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -29,6 +30,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class BookingOption extends Model
 {
+    use HasFactory;
     use HasNameAndDescription;
     use HasSlugForRouting;
 

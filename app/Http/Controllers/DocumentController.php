@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DocumentController extends Controller
 {
-    public function index(DocumentFilterRequest $request)
+    public function index(DocumentFilterRequest $request): View
     {
         $this->authorize('viewAny', Document::class);
 
@@ -81,7 +81,7 @@ class DocumentController extends Controller
         return Storage::download($document->path, $document->file_name_from_title);
     }
 
-    public function stream(Document $document)
+    public function stream(Document $document): StreamedResponse
     {
         $this->authorize('view', $document);
 
@@ -109,7 +109,7 @@ class DocumentController extends Controller
         return back();
     }
 
-    public function destroy(Document $document)
+    public function destroy(Document $document): RedirectResponse
     {
         $this->authorize('forceDelete', $document);
 

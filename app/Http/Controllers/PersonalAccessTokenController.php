@@ -29,7 +29,6 @@ class PersonalAccessTokenController extends Controller
         $this->authorize('create', PersonalAccessToken::class);
 
         $newAccessToken = PersonalAccessToken::createTokenFromValidated($request->user(), $request->validated());
-        // phpcs:ignore Generic.Files.LineLength.TooLong
         Session::flash('success', __('Your personal access token is :token. Please make a note of it (e.g. in your password safe) - you will not be able to view it again.', [
             'token' => $newAccessToken->plainTextToken,
         ]));
@@ -46,10 +45,8 @@ class PersonalAccessTokenController extends Controller
         ]);
     }
 
-    public function update(
-        PersonalAccessToken $personalAccessToken,
-        PersonalAccessTokenRequest $request
-    ): RedirectResponse {
+    public function update(PersonalAccessToken $personalAccessToken, PersonalAccessTokenRequest $request): RedirectResponse
+    {
         $this->authorize('update', $personalAccessToken);
 
         if ($personalAccessToken->fillAndSave($request->validated())) {

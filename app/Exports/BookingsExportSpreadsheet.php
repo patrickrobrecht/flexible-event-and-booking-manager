@@ -17,9 +17,9 @@ class BookingsExportSpreadsheet extends Spreadsheet
      * @param Collection<Booking> $bookings
      */
     public function __construct(
-        private Event $event,
-        private BookingOption $bookingOption,
-        private Collection $bookings
+        private readonly Event $event,
+        private readonly BookingOption $bookingOption,
+        private readonly Collection $bookings
     ) {
         parent::__construct();
 

@@ -2,15 +2,20 @@
 
 namespace Tests\Feature\Livewire\Groups;
 
+use App\Livewire\Forms\GroupForm;
 use App\Livewire\Groups\EditGroup;
 use App\Models\Event;
 use App\Models\Group;
 use App\Models\Location;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 use Tests\Traits\ActsAsUser;
 
+#[CoversClass(Group::class)]
+#[CoversClass(EditGroup::class)]
+#[CoversClass(GroupForm::class)]
 class EditGroupTest extends TestCase
 {
     use ActsAsUser;

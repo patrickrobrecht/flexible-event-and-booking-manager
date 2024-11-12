@@ -101,7 +101,7 @@ Route::middleware('auth')->group(static function () {
 
     Route::model('organization', Organization::class);
     Route::resource('organizations', OrganizationController::class)
-        ->only(['index', 'create', 'store', 'edit', 'update']);
+        ->only(['index', 'create', 'store', 'show', 'edit', 'update']);
     Route::prefix('organizations/{organization}')->group(function () {
         Route::post('documents', [DocumentController::class, 'storeForOrganization'])
             ->name('organizations.documents.store');
@@ -137,8 +137,6 @@ Route::get('/', [DashboardController::class, 'index'])
 Route::resource('events', EventController::class)
     ->only(['show']);
 Route::resource('event-series', EventSeriesController::class)
-    ->only(['show']);
-Route::resource('organizations', OrganizationController::class)
     ->only(['show']);
 
 Route::model('booking_option', BookingOption::class);

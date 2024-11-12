@@ -183,6 +183,14 @@ class Event extends Model
             && $this->saveResponsibleUsers($validatedData);
     }
 
+    public function findOrCreateGroup(int|string $groupIndex): Group
+    {
+        return $this->groups()
+            ->firstOrCreate([
+                'name' => __('Group') . ' ' . $groupIndex,
+            ]);
+    }
+
     public function getAbilityToViewResponsibilities(): Ability
     {
         return Ability::ViewResponsibilitiesOfEvents;

@@ -94,8 +94,6 @@ class UserPolicy
 
     /**
      * Determine whether a user can register.
-     *
-     * @param ?User $user
      */
     public function register(?User $user): Response
     {

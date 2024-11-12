@@ -28,22 +28,29 @@ class UserRoleControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testUserRolesCanBeListedWithCorrectAbility(): void
+    public function testUserCanViewUserRolesOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('/user-roles', Ability::ViewUserRoles);
     }
 
-    public function testUserRoleIsOnlyAccessibleWithCorrectAbility(): void
+    public function testUserCanViewSingleUserRoleOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility("/user-roles/{$this->createRandomUserRole()->id}", Ability::ViewUserRoles);
     }
 
-    public function testCreateUserRoleFormIsOnlyAccessibleWithCorrectAbility(): void
+    public function testUserCanOpenCreateUserRoleFormOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('/user-roles/create', Ability::CreateUserRoles);
     }
 
-    public function testEditUserRoleFormIsAccessibleOnlyWithCorrectAbility(): void
+    public function testUserCanStoreUserRoleOnlyWithCorrectAbility(): void
+    {
+        $data = UserRole::factory()->makeOne()->toArray();
+
+        $this->assertUserCanPostOnlyWithAbility('user-roles', $data, Ability::CreateUserRoles, null);
+    }
+
+    public function testUserCanOpenEditUserRoleFormOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility("/user-roles/{$this->createRandomUserRole()->id}/edit", Ability::EditUserRoles);
     }

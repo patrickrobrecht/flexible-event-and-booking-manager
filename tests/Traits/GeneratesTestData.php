@@ -12,6 +12,7 @@ use App\Models\Group;
 use App\Models\Location;
 use App\Models\Organization;
 use App\Models\User;
+use App\Options\FileType;
 use App\Options\Visibility;
 use Closure;
 use Database\Factories\BookingFactory;
@@ -74,12 +75,39 @@ trait GeneratesTestData
             ->create();
     }
 
+    protected static function createChildEvent(Visibility $visibility, Event $event): Event
+    {
+        return Event::factory()
+            ->for($event, 'parentEvent')
+            ->for($event->location)
+            ->visibility($visibility)
+            ->create();
+    }
+
     protected static function createDocument(Closure $referenceProvider): Document
     {
         return Document::factory()
             ->for($referenceProvider(), 'reference')
             ->for(User::factory()->create(), 'uploadedByUser')
             ->create();
+    }
+
+    protected static function createDocuments(): Collection
+    {
+        return Document::factory()
+            ->for(fake()->randomElement([
+                self::createEvent(Visibility::Public),
+                self::createEventSeries(Visibility::Private),
+                self::createOrganization(),
+            ]), 'reference')
+            ->for(User::factory()->create(), 'uploadedByUser')
+            ->count(fake()->numberBetween(3, 5))
+            ->create()
+            ->each(function (Document $document) {
+                $document->file_type = FileType::PDF;
+                $document->path = $document->reference->getDocumentStoragePath() . '/' . $document->id . '.pdf';
+                $document->save();
+            });
     }
 
     protected static function createDocumentWithReview(Closure $referenceProvider, User $user): DocumentReview
@@ -90,10 +118,10 @@ trait GeneratesTestData
             ->create();
     }
 
-    protected static function createEvent(Visibility $visibility): Event
+    protected static function createEvent(Visibility $visibility = null): Event
     {
         return Event::factory()
-            ->visibility($visibility)
+            ->visibility($visibility ?? null)
             ->for(Location::factory()->create())
             ->create();
     }
@@ -134,7 +162,7 @@ trait GeneratesTestData
             $groups[] = $group->id;
         }
 
-        foreach ($event->bookings as $booking) {
+        foreach ($event->getBookings() as $booking) {
             $booking->groups()->attach(fake()->randomElement($groups));
         }
     }

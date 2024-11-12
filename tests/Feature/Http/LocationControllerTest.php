@@ -1,6 +1,6 @@
 <?php
 
-namespace Http;
+namespace Tests\Feature\Http;
 
 use App\Http\Controllers\LocationController;
 use App\Http\Requests\Filters\LocationFilterRequest;
@@ -25,17 +25,24 @@ class LocationControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testLocationsCanBeListedWithCorrectAbility(): void
+    public function testUserCanViewLocationsOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('/locations', Ability::ViewLocations);
     }
 
-    public function testCreateLocationFormIsOnlyAccessibleWithCorrectAbility(): void
+    public function testUserCanViewCreateLocationFormOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('/locations/create', Ability::CreateLocations);
     }
 
-    public function testEditLocationFormIsAccessibleOnlyWithCorrectAbility(): void
+    public function testUserCanStoreLocationOnlyWithCorrectAbility(): void
+    {
+        $data = Location::factory()->makeOne()->toArray();
+
+        $this->assertUserCanPostOnlyWithAbility('locations', $data, Ability::CreateLocations, null);
+    }
+
+    public function testUserCanViewEditLocationFormOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility("/locations/{$this->createRandomLocation()->id}/edit", Ability::EditLocations);
     }

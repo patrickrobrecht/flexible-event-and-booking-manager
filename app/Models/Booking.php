@@ -94,7 +94,7 @@ class Booking extends Model
         return Attribute::get(fn () => Carbon::now()->floatDiffInYears($this->date_of_birth));
     }
 
-    public function bookedByUser()
+    public function bookedByUser(): BelongsTo
     {
         return $this->belongsTo(User::class, 'booked_by_user_id');
     }
@@ -126,7 +126,7 @@ class Booking extends Model
         );
     }
 
-    public function scopePaymentStatus(Builder $query, int|PaymentStatus $paymentStatus)
+    public function scopePaymentStatus(Builder $query, int|PaymentStatus $paymentStatus): Builder
     {
         $payment = is_int($paymentStatus)
             ? $paymentStatus

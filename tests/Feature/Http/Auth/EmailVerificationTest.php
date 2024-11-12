@@ -27,14 +27,14 @@ class EmailVerificationTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testEmailVerificationPromptCanBeRendered(): void
+    public function testUserCanOpenEmailVerificationPrompt(): void
     {
         $this->actingAs($this->createUnverifiedUser())
-            ->get('/')
+            ->get('/verify-email')
             ->assertOk();
     }
 
-    public function testEmailVerificationLinkCanBeRequested(): void
+    public function testUserCanRequestEmailVerificationLink(): void
     {
         Notification::fake();
 
@@ -51,7 +51,7 @@ class EmailVerificationTest extends TestCase
         });
     }
 
-    public function testEmailCanBeVerified(): void
+    public function testUserCanVerifyEmail(): void
     {
         $user = $this->createUnverifiedUser();
 
@@ -70,7 +70,7 @@ class EmailVerificationTest extends TestCase
         $this->assertTrue($user->fresh()->hasVerifiedEmail());
     }
 
-    public function testEmailIsNotVerifiedWithInvalidHash(): void
+    public function testUserCannotVerifyEmailWithInvalidHash(): void
     {
         $user = $this->createUnverifiedUser();
 

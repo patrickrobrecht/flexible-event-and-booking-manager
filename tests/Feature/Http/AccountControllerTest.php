@@ -1,6 +1,6 @@
 <?php
 
-namespace Http;
+namespace Tests\Feature\Http;
 
 use App\Http\Controllers\AccountController;
 use App\Http\Requests\UserRequest;
@@ -18,24 +18,17 @@ class AccountControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testAccountIsAccessibleWithCorrectAbility(): void
+    public function testUserCanViewAccountOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('/account', Ability::ViewAccount);
     }
 
-    public function testEditAccountIsAccessibleWithCorrectAbility(): void
+    public function testUserCanOpenEditAccountFormOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('/account/edit', Ability::EditAccount);
     }
 
-    public function testAccountCannotBeEditedWithoutAbility(): void
-    {
-        $this->actingAsUserWithAbility(Ability::ViewAccount);
-
-        $this->put('/account', $this->getRandomUserData())->assertForbidden();
-    }
-
-    public function testAccountCanBeEditedWithAbility(): void
+    public function testUserCanUpdateAccountWithCorrectAbility(): void
     {
         $this->actingAsUserWithAbility(Ability::EditAccount);
 
@@ -44,7 +37,14 @@ class AccountControllerTest extends TestCase
             ->assertRedirect('/account/edit');
     }
 
-    public function testAccountEditThrowsErrorsForInvalidData(): void
+    public function testUserCannotUpdateAccountWithoutAbility(): void
+    {
+        $this->actingAsUserWithAbility(Ability::ViewAccount);
+
+        $this->put('/account', $this->getRandomUserData())->assertForbidden();
+    }
+
+    public function testUserReceivesErrorMessagesForInvalidAccountData(): void
     {
         $this->actingAsUserWithAbility(Ability::EditAccount);
 
@@ -63,7 +63,7 @@ class AccountControllerTest extends TestCase
         );
     }
 
-    public function testListOfOwnAbilitiesIsAccessibleWithCorrectAbility(): void
+    public function testUserCanViewAbilitiesOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('/account/abilities', Ability::ViewAbilities);
     }

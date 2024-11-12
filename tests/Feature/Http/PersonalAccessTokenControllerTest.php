@@ -23,17 +23,24 @@ class PersonalAccessTokenControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testOwnPersonalAccessTokensCanBeListedWithCorrectAbility(): void
+    public function testUserCanViewOwnPersonalAccessTokensOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('/personal-access-tokens', Ability::ManagePersonalAccessTokens);
     }
 
-    public function testCreatePersonalAccessTokenFormIsOnlyAccessibleWithCorrectAbility(): void
+    public function testUserCanOpenCreatePersonalAccessTokenFormOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('/personal-access-tokens/create', Ability::ManagePersonalAccessTokens);
     }
 
-    public function testEditPersonalAccessTokenFormIsAccessibleOnlyForOwnTokensWithCorrectAbility(): void
+    public function testUserCanStorePersonalAccessTokenOnlyWithCorrectAbility(): void
+    {
+        $data = PersonalAccessToken::factory()->makeOne()->toArray();
+
+        $this->assertUserCanPostOnlyWithAbility('personal-access-tokens', $data, Ability::ManagePersonalAccessTokens, null);
+    }
+
+    public function testUserCanOpenEditFormOnlyForOwnPersonalAccessTokensAndWithCorrectAbility(): void
     {
         $token = PersonalAccessToken::factory()
             ->for(User::factory()->create(), 'tokenable')
@@ -61,7 +68,7 @@ class PersonalAccessTokenControllerTest extends TestCase
         $this->get($editRoute)->assertOk();
     }
 
-    public function testDeletingPersonalAccessTokensIsOnlyAllowedForOwnTokensWithCorrectAbility(): void
+    public function testUserCanDeleteOnlyOwnPersonalAccessTokensAndWithCorrectAbility(): void
     {
         $token = PersonalAccessToken::factory()
             ->for(User::factory()->create(), 'tokenable')

@@ -30,12 +30,15 @@ class DashboardControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testTheDashboardIsAccessibleByEveryone(): void
+    public function testGuestCanViewTheDashboard(): void
     {
-        $this->assertGuestCanGet('/');
+        $this->createEvents(User::factory()->create(), 5);
+        $this->get('/')
+            ->assertOk()
+            ->assertDontSee('fa-file-contract'); // no booking
     }
 
-    public function testTheDashboardShowsOwnBookingsIfLoggedIn(): void
+    public function testUserCanViewTheDashboardWithOwnBookings(): void
     {
         $user = $this->actingAsAnyUser();
         $eventsCount = fake()->numberBetween(1, 5);
@@ -46,14 +49,6 @@ class DashboardControllerTest extends TestCase
             ->assertOk()
             ->assertSee('fa-file-contract');
         $events->each(fn ($event) => $response->assertSee($event->name));
-    }
-
-    public function testTheDashboardDoesNotShowBookingsAsGuest(): void
-    {
-        $this->createEvents(User::factory()->create(), 5);
-        $this->get('/')
-            ->assertOk()
-            ->assertDontSee('fa-file-contract');
     }
 
     private function createEvents(User $bookedByUser, int $eventsCount): Collection

@@ -1,6 +1,6 @@
 <?php
 
-namespace Http;
+namespace Tests\Feature\Http;
 
 use App\Http\Controllers\BookingOptionController;
 use App\Http\Requests\BookingOptionRequest;
@@ -31,16 +31,16 @@ class BookingOptionControllerTest extends TestCase
     use GeneratesTestData;
     use RefreshDatabase;
 
-    public function testBookingOptionOfPublicEventIsAccessibleByEveryone(): void
+    public function testGuestCanViewBookingOptionOfPublicEvent(): void
     {
         $bookingOption = self::createBookingOptionForEvent(Visibility::Public);
         $this->assertGuestCanGet("/events/{$bookingOption->event->slug}/booking-options/{$bookingOption->slug}");
     }
 
-    public function testBookingOptionOfPrivateEventIsNotAccessibleAsGuest(): void
+    public function testGuestCannotViewBookingOptionOfPrivateEvent(): void
     {
         $bookingOption = self::createBookingOptionForEvent(Visibility::Private);
-        $this->get("/events/{$bookingOption->event->slug}/booking-options/{$bookingOption->slug}")->assertForbidden();
+        $this->assertGuestCannotGet("/events/{$bookingOption->event->slug}/booking-options/{$bookingOption->slug}", false);
     }
 
     #[DataProvider('casesForBookingOptions')]
@@ -115,15 +115,27 @@ class BookingOptionControllerTest extends TestCase
         ];
     }
 
-    #[DataProvider('visibilityProvider')]
-    public function testCreateEventFormIsOnlyAccessibleWithCorrectAbility(Visibility $visibility): void
+    public function testUserCanOpenCreateBookingOptionFormOnlyWithCorrectAbility(): void
     {
-        $event = self::createEvent($visibility);
+        $event = self::createEvent();
         $this->assertUserCanGetOnlyWithAbility("/events/{$event->slug}/booking-options/create", Ability::ManageBookingOptionsOfEvent);
     }
 
+    public function testUserCanStoreBookingOptionOnlyWithCorrectAbility(): void
+    {
+        $event = self::createEvent();
+        $bookingOption = BookingOption::factory()->makeOne();
+        $data = [
+            ...$bookingOption->toArray(),
+            'available_from' => $bookingOption->available_from->format('Y-m-d\TH:i'),
+            'available_until' => $bookingOption->available_until->format('Y-m-d\TH:i'),
+        ];
+
+        $this->assertUserCanPostOnlyWithAbility("events/{$event->slug}/booking-options", $data, Ability::ManageBookingOptionsOfEvent, null);
+    }
+
     #[DataProvider('visibilityProvider')]
-    public function testEditEventFormIsAccessibleOnlyWithCorrectAbility(Visibility $visibility): void
+    public function testUserCanOpenEditBookingOptionFormOnlyWithCorrectAbility(Visibility $visibility): void
     {
         $bookingOption = self::createBookingOptionForEvent($visibility);
         $this->assertUserCanGetOnlyWithAbility("/events/{$bookingOption->event->slug}/booking-options/{$bookingOption->slug}/edit", Ability::ManageBookingOptionsOfEvent);

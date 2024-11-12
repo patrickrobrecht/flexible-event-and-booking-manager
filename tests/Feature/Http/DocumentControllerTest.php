@@ -1,6 +1,6 @@
 <?php
 
-namespace Http;
+namespace Tests\Feature\Http;
 
 use App\Http\Controllers\DocumentController;
 use App\Http\Requests\DocumentRequest;

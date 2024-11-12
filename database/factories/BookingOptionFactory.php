@@ -22,8 +22,8 @@ class BookingOptionFactory extends Factory
         return [
             'name' => __('Booking option') . ' #' . $this->faker->unique()->randomNumber(),
             'description' => $this->faker->sentences(2, true),
-            'available_from' => Carbon::yesterday()->startOfDay(),
-            'available_until' => Carbon::tomorrow()->endOfDay(),
+            'available_from' => $this->faker->dateTimeBetween('-30 years', '-1 day'),
+            'available_until' => $this->faker->dateTimeBetween('+1 day', '+30 days'),
             'price' => $this->faker->randomFloat(2, 5, 100),
         ];
     }

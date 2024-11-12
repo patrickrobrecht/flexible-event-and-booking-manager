@@ -30,22 +30,22 @@ class UserControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testUsersCanBeListedWithCorrectAbility(): void
+    public function testUserCanViewUsersOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('/users', Ability::ViewUsers);
     }
 
-    public function testUserIsOnlyAccessibleWithCorrectAbility(): void
+    public function testUserCanViewSingleUserOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility("/users/{$this->createRandomUser()->id}", Ability::ViewUsers);
     }
 
-    public function testCreateUserFormIsOnlyAccessibleWithCorrectAbility(): void
+    public function testUserCanOpenCreateUserFormOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('/users/create', Ability::CreateUsers);
     }
 
-    public function testUserIsStored(): void
+    public function testUserCanStoreUserWithCorrectAbility(): void
     {
         $this->actingAsUserWithAbility(Ability::CreateUsers);
 
@@ -69,7 +69,7 @@ class UserControllerTest extends TestCase
         Notification::assertNothingSent();
     }
 
-    public function testUserIsStoredAndNotifiedIfEnabled(): void
+    public function testUserCanStoreUserWithCorrectAbilityAndCreatedUserIsNotifiedIfEnabled(): void
     {
         $adminUser = $this->actingAsUserWithAbility(Ability::CreateUsers);
 
@@ -95,7 +95,7 @@ class UserControllerTest extends TestCase
         });
     }
 
-    public function testEditUserFormIsAccessibleOnlyWithCorrectAbility(): void
+    public function testUserCanOpenEditUserFormOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility("/users/{$this->createRandomUser()->id}/edit", Ability::EditUsers);
     }

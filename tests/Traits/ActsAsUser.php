@@ -153,7 +153,9 @@ trait ActsAsUser
     protected function assertUserCanPostWithAbility(string $route, array $data, Ability|array $ability, ?string $redirectRoute): void
     {
         $this->actingAsUserWithAbility($ability);
+        /** @noinspection PhpUnhandledExceptionInspection */
         $this->post($route, $data)
+            ->assertSessionHasNoErrors()
             ->assertRedirect($redirectRoute);
     }
 

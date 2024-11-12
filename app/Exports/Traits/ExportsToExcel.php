@@ -11,17 +11,6 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
  */
 trait ExportsToExcel
 {
-    public function createSheetFromCollection(
-        string $title,
-        Collection $collection,
-        array $headerColumns,
-        \Closure $rowProvider
-    ): Worksheet {
-        $sheet = $this->createSheet();
-        self::fillSheetFromCollection($sheet, $title, $collection, $headerColumns, $rowProvider);
-        return $sheet;
-    }
-
     public function setMetaData(string $title): void
     {
         $this->getProperties()
@@ -35,7 +24,7 @@ trait ExportsToExcel
         Collection $collection,
         array $headerColumns,
         \Closure $rowProvider
-    ): void {
+    ): Worksheet {
         $worksheet->setTitle(substr(str_replace(['*', ':', '/', '\\', '?', '[', ']'], '', $title), 0, 31));
         $worksheet->fromArray([
             [$title],
@@ -48,6 +37,8 @@ trait ExportsToExcel
         self::formatHeadline($worksheet, $columnCount);
         $worksheet->setAutoFilter([1, 3, $columnCount, 3]);
         self::setAutoSizeForColumns($worksheet, $columnCount);
+
+        return $worksheet;
     }
 
     public static function formatHeadline(Worksheet $worksheet, int $columnCount): void

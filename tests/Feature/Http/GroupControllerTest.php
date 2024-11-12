@@ -1,6 +1,6 @@
 <?php
 
-namespace Http;
+namespace Tests\Feature\Http;
 
 use App\Exports\GroupsExportSpreadsheet;
 use App\GroupGenerationMethods\AgeBasedGroupGenerationMethod;
@@ -39,7 +39,7 @@ class GroupControllerTest extends TestCase
     use GeneratesTestData;
     use RefreshDatabase;
 
-    public function testListOfGroupsIsAccessibleOnlyWithCorrectAbility(): void
+    public function testUserCanViewGroupsOnlyWithCorrectAbility(): void
     {
         $event = self::createEventWithBookingOptions(Visibility::Private);
 
@@ -51,23 +51,27 @@ class GroupControllerTest extends TestCase
         $event->bookings->each(fn (Booking $booking) => $response->assertSeeText($booking->bookedByUser?->name));
     }
 
-    public function testListOfGroupsCanBeExportedOnlyWithCorrectAbility(): void
+    public function testUserCanExportGroupsOnlyWithCorrectAbility(): void
     {
-        $event = self::createEventWithBookingOptions(Visibility::Private);
-        self::createGroups($event, 3);
+        $parentEvent = self::createEventWithBookingOptions(Visibility::Private);
+        self::createGroups($parentEvent, 3);
 
-        $route = "/events/{$event->slug}/groups?output=export";
-        $this->assertUserCanGetOnlyWithAbility($route, Ability::ExportGroupsOfEvent);
+        $childEvent = self::createChildEvent(Visibility::Private, $parentEvent);
+        $this->assertTrue($parentEvent->is($childEvent->parentEvent));
+        self::createGroups($childEvent, 4);
+
+        $this->assertUserCanGetOnlyWithAbility("/events/{$parentEvent->slug}/groups?output=export", Ability::ExportGroupsOfEvent);
+        $this->assertUserCanGetOnlyWithAbility("/events/{$childEvent->slug}/groups?output=export", Ability::ExportGroupsOfEvent);
     }
 
-    public function testListOfGroupsIsNotAccessibleForEventWithoutBookingOptions(): void
+    public function testUserCannotViewGroupsOfEventWithoutBookingOptions(): void
     {
         $event = self::createEvent(Visibility::Private);
         $this->assertUserCannotGetDespiteAbility("/events/{$event->slug}/groups", Ability::ViewBookingsOfEvent);
     }
 
     #[DataProvider('groupGenerationMethods')]
-    public function testGroupGenerationWorksWithCorrectAbility(GroupGenerationMethod $method): void
+    public function testUserCanGenerateGroupsWithCorrectAbility(GroupGenerationMethod $method): void
     {
         $event = self::createEventWithBookingOptions(Visibility::Private);
 
@@ -96,7 +100,7 @@ class GroupControllerTest extends TestCase
     }
 
     #[DataProvider('deleteGroupTestCases')]
-    public function testGroupTotalDeletionWorksWithCorrectAbility(\Closure $dataProvider, int $countAfterRequest): void
+    public function testUserCanDeleteGroupsWithCorrectAbility(\Closure $dataProvider, int $countAfterRequest): void
     {
         $event = self::createEventWithBookingOptions(Visibility::Private);
         self::createGroups($event, 3);

@@ -1,6 +1,6 @@
 <?php
 
-namespace Http;
+namespace Tests\Feature\Http;
 
 use App\Events\BookingCompleted;
 use App\Exports\BookingsExportSpreadsheet;
@@ -46,7 +46,7 @@ class BookingControllerTest extends TestCase
     use RefreshDatabase;
 
     #[DataProvider('visibilityProvider')]
-    public function testBookingsOfEventCanBeListedWithCorrectAbility(Visibility $visibility): void
+    public function testUserCanViewBookingsOfEventOnlyWithCorrectAbility(Visibility $visibility): void
     {
         $bookingOption = self::createBookingOptionForEvent($visibility);
         $users = self::createUsersWithBookings($bookingOption);
@@ -60,7 +60,7 @@ class BookingControllerTest extends TestCase
     }
 
     #[DataProvider('visibilityProvider')]
-    public function testBookingsOfEventCanBeExportedWithCorrectAbility(Visibility $visibility): void
+    public function testUserCanExportBookingsOfEventOnlyWithCorrectAbility(Visibility $visibility): void
     {
         $bookingOption = self::createBookingOptionForEvent($visibility);
         self::createUsersWithBookings($bookingOption);
@@ -70,7 +70,7 @@ class BookingControllerTest extends TestCase
     }
 
     #[DataProvider('visibilityProvider')]
-    public function testSingleBookingAreAccessibleWithCorrectAbility(Visibility $visibility): void
+    public function testUserCanViewSingleBookingOnlyWithCorrectAbility(Visibility $visibility): void
     {
         $this->actingAsUserWithAbility(Ability::ViewBookingsOfEvent);
 
@@ -83,7 +83,7 @@ class BookingControllerTest extends TestCase
     }
 
     #[DataProvider('visibilityProvider')]
-    public function testUserCanAccessOwnBookingsWithoutAbility(Visibility $visibility): void
+    public function testUserCanViewOwnBookingsWithoutAbility(Visibility $visibility): void
     {
         $bookingOption = self::createBookingOptionForEvent($visibility);
         $user = $this->actingAsAnyUser();
@@ -92,7 +92,7 @@ class BookingControllerTest extends TestCase
             ->each(fn (Booking $booking) => $this->get("bookings/{$booking->id}")->assertOk());
     }
 
-    public function testBookingIsStoredAndConfirmationSent(): void
+    public function testUserCanSubmitBookingAndReceivesConfirmationViaMail(): void
     {
         $user = $this->actingAsAnyUser();
 
@@ -122,7 +122,7 @@ class BookingControllerTest extends TestCase
         );
     }
 
-    public function testGuestBookingIsStoredAndConfirmationSent(): void
+    public function testGuestCanSubmitBookingAndReceivesConfirmationViaMail(): void
     {
         Notification::fake();
 
@@ -161,12 +161,12 @@ class BookingControllerTest extends TestCase
         );
     }
 
-    public function testBookingCannotBeCreatedBeforeAvailabilityPeriod(): void
+    public function testUserCannotCreateBookingBeforeAvailabilityPeriod(): void
     {
         $user = $this->actingAsAnyUser();
 
         $bookingOption = BookingOption::factory()
-            ->for(self::createEvent(Visibility::Public))
+            ->for(self::createEvent())
             ->availabilityStartingInFuture()
             ->create();
 
@@ -176,7 +176,7 @@ class BookingControllerTest extends TestCase
     }
 
     #[DataProvider('visibilityProvider')]
-    public function testEditBookingIsAccessibleOnlyWithCorrectAbility(Visibility $visibility): void
+    public function testUserCanOpenEditBookingFormOnlyWithCorrectAbility(Visibility $visibility): void
     {
         $this->actingAsUserWithAbility(Ability::ViewBookingsOfEvent);
 
@@ -188,7 +188,7 @@ class BookingControllerTest extends TestCase
     }
 
     #[DataProvider('visibilityProvider')]
-    public function testABookingCanBeDeletedAndRestoredOnlyWithCorrectAbility(Visibility $visibility): void
+    public function testUserCanDeleteAndRestoreBookingOnlyWithCorrectAbility(Visibility $visibility): void
     {
         $user = $this->actingAsUserWithAbility(Ability::DeleteAndRestoreBookingsOfEvent);
 

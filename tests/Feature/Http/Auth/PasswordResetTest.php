@@ -18,28 +18,16 @@ class PasswordResetTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testResetPasswordLinkScreenCanBeRendered(): void
+    public function testGuestCanOpenResetPasswordForm(): void
     {
         $this->assertGuestCanGet('/forgot-password');
     }
 
-    public function testResetPasswordLinkCanBeRequested(): void
+    public function testUserCanRequestResetPasswordLink(): void
     {
         Notification::fake();
 
         $user = User::factory()->create();
-
-        $this->post('/forgot-password', ['email' => $user->email]);
-
-        Notification::assertSentTo($user, ResetPasswordNotification::class);
-    }
-
-    public function testResetPasswordScreenCanBeRendered(): void
-    {
-        Notification::fake();
-
-        $user = User::factory()->create();
-
         $this->post('/forgot-password', ['email' => $user->email]);
 
         Notification::assertSentTo($user, ResetPasswordNotification::class, function ($notification) use ($user) {
@@ -49,12 +37,11 @@ class PasswordResetTest extends TestCase
         });
     }
 
-    public function testPasswordCanBeResetWithValidToken(): void
+    public function testUserCanResetPasswordWithValidToken(): void
     {
         Notification::fake();
 
         $user = User::factory()->create();
-
         $this->post('/forgot-password', ['email' => $user->email]);
 
         Notification::assertSentTo($user, ResetPasswordNotification::class, function ($notification) use ($user) {
@@ -69,5 +56,19 @@ class PasswordResetTest extends TestCase
 
             return true;
         });
+    }
+
+    public function testUserCannotResetPasswordWithInvalidToken(): void
+    {
+        $user = User::factory()->create();
+        $this
+            ->post('/reset-password', [
+                'token' => 'wrong-token',
+                'email' => $user->email,
+                'password' => 'password',
+                'password_confirmation' => 'password',
+            ])
+            ->assertSessionHasErrors()
+            ->assertRedirect();
     }
 }

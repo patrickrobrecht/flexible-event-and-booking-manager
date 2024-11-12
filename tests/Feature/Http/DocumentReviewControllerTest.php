@@ -1,6 +1,6 @@
 <?php
 
-namespace Http;
+namespace Tests\Feature\Http;
 
 use App\Http\Controllers\DocumentReviewController;
 use App\Http\Requests\DocumentReviewRequest;

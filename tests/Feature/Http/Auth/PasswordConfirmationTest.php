@@ -13,7 +13,7 @@ class PasswordConfirmationTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testConfirmPasswordScreenCanBeRendered(): void
+    public function testUserCanViewConfirmPasswordForm(): void
     {
         $user = User::factory()->create();
 
@@ -22,10 +22,11 @@ class PasswordConfirmationTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testPasswordCanBeConfirmed(): void
+    public function testUserCanConfirmPassword(): void
     {
         $user = User::factory()->create();
 
+        /** @noinspection PhpUnhandledExceptionInspection */
         $this->actingAs($user)
             ->post('/confirm-password', [
                 'password' => 'password',
@@ -34,7 +35,7 @@ class PasswordConfirmationTest extends TestCase
             ->assertSessionHasNoErrors();
     }
 
-    public function testPasswordIsNotConfirmedWithInvalidPassword(): void
+    public function testUserCannotConfirmWithInvalidPassword(): void
     {
         $user = User::factory()->create();
 

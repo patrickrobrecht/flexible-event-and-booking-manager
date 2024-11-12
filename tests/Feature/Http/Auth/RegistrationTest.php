@@ -19,21 +19,21 @@ class RegistrationTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testRegistrationScreenCannotBeRenderedIfNotEnabled(): void
+    public function testGuestCannotOpenRegistrationFormIfRegistrationIsDisabled(): void
     {
         Config::set('app.features.registration', false);
 
         $this->get('/register')->assertForbidden();
     }
 
-    public function testRegistrationScreenCanBeRenderedIfEnabled(): void
+    public function testGuestCanOpenRegistrationFormIfRegistrationIsEnabled(): void
     {
         Config::set('app.features.registration', true);
 
         $this->assertGuestCanGet('/register');
     }
 
-    public function testNewUsersCanRegister(): void
+    public function testNewUserCanRegister(): void
     {
         Config::set('app.features.registration', true);
         Config::set('app.urls.terms_and_conditions', '');
@@ -61,7 +61,7 @@ class RegistrationTest extends TestCase
         });
     }
 
-    public function testNewUsersCannotRegisterWithoutAcceptingTheTerms(): void
+    public function testNewUserCannotRegisterWithoutAcceptingTheTerms(): void
     {
         Config::set('app.features.registration', true);
 

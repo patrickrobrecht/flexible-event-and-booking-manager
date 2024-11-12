@@ -22,12 +22,12 @@ class AuthenticationTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testLoginScreenCanBeRendered(): void
+    public function testGuestCanViewLoginForm(): void
     {
         $this->assertGuestCanGet('/login');
     }
 
-    public function testUsersCanAuthenticateUsingTheLoginScreen(): void
+    public function testActiveUserCanLogin(): void
     {
         $user = User::factory()->create();
 
@@ -41,7 +41,7 @@ class AuthenticationTest extends TestCase
     }
 
     #[DataProvider('notActiveStatuses')]
-    public function testUsersCannotAuthenticateIfNotActive(ActiveStatus $activeStatus): void
+    public function testInactiveUserCannotLogin(ActiveStatus $activeStatus): void
     {
         $user = User::factory()
             ->status($activeStatus)
@@ -63,7 +63,7 @@ class AuthenticationTest extends TestCase
         ];
     }
 
-    public function testUsersCannotAuthenticateWithInvalidPassword(): void
+    public function testUserCannotLoginWithWrongPassword(): void
     {
         $user = User::factory()->create();
 
@@ -72,6 +72,15 @@ class AuthenticationTest extends TestCase
             'password' => 'wrong-password',
         ]);
 
+        $this->assertGuest();
+    }
+
+    public function testUserCanLogout(): void
+    {
+        $this->actingAsAnyUser();
+
+        $this->post(route('logout'))
+            ->assertRedirect('/');
         $this->assertGuest();
     }
 }

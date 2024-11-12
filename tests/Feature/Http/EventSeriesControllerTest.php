@@ -32,12 +32,12 @@ class EventSeriesControllerTest extends TestCase
     use GeneratesTestData;
     use RefreshDatabase;
 
-    public function testEventSeriesCanBeListedWithCorrectAbility(): void
+    public function testUserCanViewEventSeriesOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('/event-series', Ability::ViewEventSeries);
     }
 
-    public function testPublicEventSeriesIsAccessibleByEveryone(): void
+    public function testGuestCanViewPublicEventSeries(): void
     {
         $publicEventSeries = self::createEventSeries(Visibility::Public);
         $route = "/event-series/{$publicEventSeries->slug}";
@@ -47,7 +47,7 @@ class EventSeriesControllerTest extends TestCase
         $this->assertUserCanGetWithAbility($route, Ability::ViewPrivateEventSeries);
     }
 
-    public function testPrivateEventSeriesIsOnlyAccessibleWithCorrectAbility(): void
+    public function testUserCanViewPrivateEventSeriesOnlyWithCorrectAbility(): void
     {
         $privateEvent = self::createEventSeries(Visibility::Private);
         $route = "/event-series/{$privateEvent->slug}";
@@ -55,13 +55,20 @@ class EventSeriesControllerTest extends TestCase
         $this->assertUserCanGetOnlyWithAbility($route, Ability::ViewPrivateEventSeries, false);
     }
 
-    public function testCreateEventSeriesFormIsOnlyAccessibleWithCorrectAbility(): void
+    public function testUserCanOpenCreateEventSeriesFormOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('/event-series/create', Ability::CreateEventSeries);
     }
 
+    public function testUserCanStoreEventSeriesOnlyWithCorrectAbility(): void
+    {
+        $data = EventSeries::factory()->makeOne()->toArray();
+
+        $this->assertUserCanPostOnlyWithAbility('event-series', $data, Ability::CreateEventSeries, null);
+    }
+
     #[DataProvider('visibilityProvider')]
-    public function testEditEventSeriesFormIsAccessibleOnlyWithCorrectAbility(Visibility $visibility): void
+    public function testUserCanOpenEditEventSeriesFormOnlyWithCorrectAbility(Visibility $visibility): void
     {
         $eventSeries = self::createEventSeries($visibility);
         $this->assertUserCanGetOnlyWithAbility("/event-series/{$eventSeries->slug}/edit", Ability::EditEventSeries);

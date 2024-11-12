@@ -18,7 +18,7 @@ class PersonalAccessTokenFactory extends Factory
         return [
             'name' => $this->faker->word(),
             'token' => $this->faker->sha256(),
-            'abilities' => $this->faker->randomElements(Ability::cases(), $this->faker->numberBetween(1, count(Ability::cases()))),
+            'abilities' => $this->faker->randomElements(Ability::apiCases(), $this->faker->numberBetween(1, count(Ability::apiCases()))),
         ];
     }
 }

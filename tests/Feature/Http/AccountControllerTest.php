@@ -23,6 +23,11 @@ class AccountControllerTest extends TestCase
         $this->assertUserCanGetOnlyWithAbility('/account', Ability::ViewAccount);
     }
 
+    public function testUserCanViewAbilitiesOnlyWithCorrectAbility(): void
+    {
+        $this->assertUserCanGetOnlyWithAbility('/account/abilities', Ability::ViewAbilities);
+    }
+
     public function testUserCanOpenEditAccountFormOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('/account/edit', Ability::EditAccount);
@@ -58,13 +63,8 @@ class AccountControllerTest extends TestCase
     private function getRandomUserData(): array
     {
         return array_intersect_key(
-            User::factory()->unverified()->raw(),
+            User::factory()->raw(),
             array_flip(['first_name', 'last_name', 'street', 'house_number', 'postal_code', 'city', 'email'])
         );
-    }
-
-    public function testUserCanViewAbilitiesOnlyWithCorrectAbility(): void
-    {
-        $this->assertUserCanGetOnlyWithAbility('/account/abilities', Ability::ViewAbilities);
     }
 }

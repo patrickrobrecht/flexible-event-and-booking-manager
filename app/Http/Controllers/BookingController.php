@@ -27,11 +27,8 @@ class BookingController extends Controller
 {
     use StreamsExport;
 
-    public function index(
-        Event $event,
-        BookingOption $bookingOption,
-        BookingFilterRequest $request
-    ): StreamedResponse|View {
+    public function index(Event $event, BookingOption $bookingOption, BookingFilterRequest $request): StreamedResponse|View
+    {
         ValueHelper::setDefaults(Booking::defaultValuesForQuery());
 
         $bookingOption->load([
@@ -175,7 +172,7 @@ class BookingController extends Controller
         return Storage::download($formFieldValue->value);
     }
 
-    public function delete(Booking $booking)
+    public function delete(Booking $booking): RedirectResponse
     {
         $this->authorize('delete', $booking);
 
@@ -186,7 +183,7 @@ class BookingController extends Controller
         return back();
     }
 
-    public function restore(Booking $booking)
+    public function restore(Booking $booking): RedirectResponse
     {
         $this->authorize('restore', $booking);
 

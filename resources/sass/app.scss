@@ -1,20 +1,22 @@
+@use "sass:map";
+
 /**
  * Frontend styles via Bootstrap Framework.
  */
-@import 'node_modules/bootstrap/scss/bootstrap';
+@import '~bootstrap/scss/bootstrap';
 
 /**
  * Icons via Font Awesome.
  */
 $fa-font-path: '/lib';
-@import 'node_modules/@fortawesome/fontawesome-free/scss/fontawesome';
-@import 'node_modules/@fortawesome/fontawesome-free/scss/solid';
+@import '~@fortawesome/fontawesome-free/scss/fontawesome';
+@import '~@fortawesome/fontawesome-free/scss/solid';
 
 /*
  * Classes for column-count
  */
 @each $columnCount in [2, 3, 4] {
-    @each $breakpoint in map-keys($grid-breakpoints) {
+    @each $breakpoint in map.keys($grid-breakpoints) {
         @include media-breakpoint-up($breakpoint) {
             $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
 

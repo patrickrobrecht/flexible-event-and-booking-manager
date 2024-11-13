@@ -7,7 +7,6 @@ const convertToFileHash = require('laravel-mix-make-file-hash');
     'public/css',
     'public/js',
     'public/lib',
-    'public/webfonts',
 ].forEach(outputPath => fs.removeSync(outputPath));
 
 // Compile styles.

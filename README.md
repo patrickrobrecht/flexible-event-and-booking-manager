@@ -45,11 +45,11 @@ To get started, you need to install the following software:
 - [Bladestrap](https://github.com/portavice/bladestrap), Blade components for Bootstrap
 - [Bootstrap](https://getbootstrap.com/), a front-end toolkit
 - [Font Awesome](https://github.com/FortAwesome/Font-Awesome) for [icons](https://fontawesome.com/icons?d=gallery&m=free)
-- [Laravel](https://laravel.com/docs/10.x) framework
+- [Laravel](https://laravel.com/docs/11.x) framework
 - [Laravel Dompdf](https://github.com/barryvdh/laravel-dompdf) for PDF export
 - [Laravel Livewire](https://livewire.laravel.com/docs/) for dynamic UI without leading PHP
 - [Laravel Query Builder](https://spatie.be/docs/laravel-query-builder/v5/introduction) for custom filtering and sorting
-- [PhpSpreadsheet](https://phpspreadsheet.readthedocs.io/en/latest/) for Excel exports
+- [PhpSpreadsheet](https://phpspreadsheet.readthedocs.io/en/stable/) for Excel exports
 - [Laravel Sluggable](https://github.com/spatie/laravel-sluggable) to autogenerate slugs
 
 ### How to develop
@@ -84,6 +84,7 @@ Use `composer translate` to extract them to `lang/de.json`.
 - Create/update the `.env` configuration if necessary.
 - Run `php artisan migrate` to migrate the database to the latest version.
 - Upload files to the production system.
+- Optimize performance with caching for config, events, routes, views by running `php artisan optimize`.
 
 
 ## Configuration

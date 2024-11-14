@@ -7,7 +7,6 @@ use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
 use App\Options\ActiveStatus;
 use App\Policies\UserPolicy;
-use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
@@ -38,6 +37,6 @@ class RegisteredUserController extends Controller
 
         Auth::login($user, $request->boolean('remember'));
 
-        return redirect(RouteServiceProvider::HOME);
+        return redirect(route('dashboard'));
     }
 }

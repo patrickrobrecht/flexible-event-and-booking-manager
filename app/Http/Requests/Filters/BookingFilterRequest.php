@@ -2,14 +2,11 @@
 
 namespace App\Http\Requests\Filters;
 
-use App\Http\Controllers\BookingController;
-use App\Http\Requests\Traits\AuthorizationViaController;
 use App\Http\Requests\Traits\FiltersList;
 use App\Models\Booking;
 use App\Models\Group;
 use App\Options\FilterValue;
 use App\Options\PaymentStatus;
-use App\Policies\BookingPolicy;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
@@ -17,8 +14,6 @@ use Illuminate\Foundation\Http\FormRequest;
  */
 class BookingFilterRequest extends FormRequest
 {
-    /** {@see BookingPolicy} in {@see BookingController} */
-    use AuthorizationViaController;
     use FiltersList;
 
     /**

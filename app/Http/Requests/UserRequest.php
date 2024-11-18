@@ -2,12 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Controllers\UserController;
-use App\Http\Requests\Traits\AuthorizationViaController;
 use App\Http\Requests\Traits\ValidatesAddressFields;
 use App\Models\User;
 use App\Options\ActiveStatus;
-use App\Policies\UserPolicy;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -18,8 +15,6 @@ use Illuminate\Validation\Rules\Password;
  */
 class UserRequest extends FormRequest
 {
-    /** {@see UserPolicy} in {@see UserController} */
-    use AuthorizationViaController;
     use ValidatesAddressFields;
 
     protected function prepareForValidation(): void

@@ -2,14 +2,11 @@
 
 namespace App\Http\Requests\Filters;
 
-use App\Http\Controllers\UserController;
-use App\Http\Requests\Traits\AuthorizationViaController;
 use App\Http\Requests\Traits\FiltersList;
 use App\Models\User;
 use App\Models\UserRole;
 use App\Options\ActiveStatus;
 use App\Options\FilterValue;
-use App\Policies\UserPolicy;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
@@ -17,8 +14,6 @@ use Illuminate\Foundation\Http\FormRequest;
  */
 class UserFilterRequest extends FormRequest
 {
-    /** {@see UserPolicy} in {@see UserController} */
-    use AuthorizationViaController;
     use FiltersList;
 
     /**

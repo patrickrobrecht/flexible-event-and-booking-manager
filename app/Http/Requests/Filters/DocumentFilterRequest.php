@@ -2,14 +2,11 @@
 
 namespace App\Http\Requests\Filters;
 
-use App\Http\Controllers\DocumentController;
-use App\Http\Requests\Traits\AuthorizationViaController;
 use App\Http\Requests\Traits\FiltersList;
 use App\Models\Document;
 use App\Options\ApprovalStatus;
 use App\Options\FileType;
 use App\Options\FilterValue;
-use App\Policies\DocumentPolicy;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
@@ -17,8 +14,6 @@ use Illuminate\Foundation\Http\FormRequest;
  */
 class DocumentFilterRequest extends FormRequest
 {
-    /** {@see DocumentPolicy} in {@see DocumentController::index()} */
-    use AuthorizationViaController;
     use FiltersList;
 
     public function rules(): array

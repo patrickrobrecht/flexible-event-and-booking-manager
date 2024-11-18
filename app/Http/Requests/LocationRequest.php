@@ -2,11 +2,8 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Controllers\LocationController;
-use App\Http\Requests\Traits\AuthorizationViaController;
 use App\Http\Requests\Traits\ValidatesAddressFields;
 use App\Models\Location;
-use App\Policies\LocationPolicy;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
@@ -14,8 +11,6 @@ use Illuminate\Foundation\Http\FormRequest;
  */
 class LocationRequest extends FormRequest
 {
-    /** {@see LocationPolicy} in {@see LocationController} */
-    use AuthorizationViaController;
     use ValidatesAddressFields;
 
     /**

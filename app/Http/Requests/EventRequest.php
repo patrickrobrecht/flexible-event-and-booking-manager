@@ -2,12 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Controllers\EventController;
-use App\Http\Requests\Traits\AuthorizationViaController;
 use App\Http\Requests\Traits\ValidatesResponsibleUsers;
 use App\Models\Event;
 use App\Options\Visibility;
-use App\Policies\EventPolicy;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -17,8 +14,6 @@ use Illuminate\Validation\Rule;
  */
 class EventRequest extends FormRequest
 {
-    /** {@see EventPolicy} in {@see EventController} */
-    use AuthorizationViaController;
     use ValidatesResponsibleUsers;
 
     protected function prepareForValidation(): void

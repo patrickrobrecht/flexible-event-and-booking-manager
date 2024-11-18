@@ -2,11 +2,8 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Controllers\UserRoleController;
-use App\Http\Requests\Traits\AuthorizationViaController;
 use App\Models\UserRole;
 use App\Options\Ability;
-use App\Policies\UserRolePolicy;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -15,9 +12,6 @@ use Illuminate\Validation\Rule;
  */
 class UserRoleRequest extends FormRequest
 {
-    /** {@see UserRolePolicy} in {@see UserRoleController} */
-    use AuthorizationViaController;
-
     protected function prepareForValidation(): void
     {
         $this->merge([

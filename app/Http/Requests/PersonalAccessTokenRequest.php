@@ -2,17 +2,11 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Controllers\PersonalAccessTokenController;
-use App\Http\Requests\Traits\AuthorizationViaController;
 use App\Options\Ability;
-use App\Policies\PersonalAccessTokenPolicy;
 use Illuminate\Foundation\Http\FormRequest;
 
 class PersonalAccessTokenRequest extends FormRequest
 {
-    /** {@see PersonalAccessTokenPolicy} via {@see PersonalAccessTokenController} */
-    use AuthorizationViaController;
-
     protected function prepareForValidation(): void
     {
         $this->merge([

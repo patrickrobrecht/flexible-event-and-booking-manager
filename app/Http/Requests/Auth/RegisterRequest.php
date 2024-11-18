@@ -2,14 +2,11 @@
 
 namespace App\Http\Requests\Auth;
 
-use App\Http\Requests\Traits\AuthorizationViaController;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Password;
 
 class RegisterRequest extends FormRequest
 {
-    use AuthorizationViaController;
-
     public function rules(): array
     {
         return [

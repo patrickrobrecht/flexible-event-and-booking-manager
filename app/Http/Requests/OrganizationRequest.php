@@ -2,12 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Controllers\OrganizationController;
-use App\Http\Requests\Traits\AuthorizationViaController;
 use App\Http\Requests\Traits\ValidatesResponsibleUsers;
 use App\Models\Organization;
 use App\Options\ActiveStatus;
-use App\Policies\OrganizationPolicy;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -16,8 +13,6 @@ use Illuminate\Validation\Rule;
  */
 class OrganizationRequest extends FormRequest
 {
-    /** {@see OrganizationPolicy} in {@see OrganizationController} */
-    use AuthorizationViaController;
     use ValidatesResponsibleUsers;
 
     /**

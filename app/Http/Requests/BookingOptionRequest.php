@@ -2,12 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Controllers\BookingOptionController;
-use App\Http\Requests\Traits\AuthorizationViaController;
 use App\Models\BookingOption;
 use App\Models\Event;
 use App\Options\BookingRestriction;
-use App\Policies\BookingOptionPolicy;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -18,9 +15,6 @@ use Illuminate\Validation\Rule;
  */
 class BookingOptionRequest extends FormRequest
 {
-    /** {@see BookingOptionPolicy} in {@see BookingOptionController} */
-    use AuthorizationViaController;
-
     protected function prepareForValidation(): void
     {
         $this->merge([

@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Auth;
 
-use App\Http\Requests\Traits\AuthorizationViaController;
 use App\Models\User;
 use App\Options\ActiveStatus;
 use Illuminate\Auth\Events\Lockout;
@@ -15,8 +14,6 @@ use Illuminate\Validation\ValidationException;
 
 class LoginRequest extends FormRequest
 {
-    use AuthorizationViaController;
-
     public function rules(): array
     {
         return [

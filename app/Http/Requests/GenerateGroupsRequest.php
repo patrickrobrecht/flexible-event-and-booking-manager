@@ -2,11 +2,8 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Controllers\GroupController;
-use App\Http\Requests\Traits\AuthorizationViaController;
 use App\Models\Event;
 use App\Options\GroupGenerationMethod;
-use App\Policies\GroupPolicy;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -16,9 +13,6 @@ use Illuminate\Validation\Rule;
  */
 class GenerateGroupsRequest extends FormRequest
 {
-    /** {@see GroupPolicy::create()} in {@see GroupController::generate()} */
-    use AuthorizationViaController;
-
     protected $errorBag = 'generate';
 
     protected function prepareForValidation(): void

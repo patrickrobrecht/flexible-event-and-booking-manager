@@ -2,8 +2,6 @@
 
 namespace App\Http\Requests\Filters;
 
-use App\Http\Controllers\EventController;
-use App\Http\Requests\Traits\AuthorizationViaController;
 use App\Http\Requests\Traits\FiltersList;
 use App\Models\Document;
 use App\Models\Event;
@@ -13,7 +11,6 @@ use App\Models\Organization;
 use App\Options\EventType;
 use App\Options\FilterValue;
 use App\Options\Visibility;
-use App\Policies\EventPolicy;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
@@ -21,8 +18,6 @@ use Illuminate\Foundation\Http\FormRequest;
  */
 class EventFilterRequest extends FormRequest
 {
-    /** {@see EventPolicy} in {@see EventController} */
-    use AuthorizationViaController;
     use FiltersList;
 
     /**

@@ -2,13 +2,11 @@
 
 namespace App\Http\Requests\Filters;
 
-use App\Http\Requests\Traits\AuthorizationViaController;
 use App\Http\Requests\Traits\FiltersList;
 use App\Models\Event;
 use App\Models\Location;
 use App\Models\Organization;
 use App\Options\FilterValue;
-use App\Policies\LocationPolicy;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
@@ -16,8 +14,6 @@ use Illuminate\Foundation\Http\FormRequest;
  */
 class LocationFilterRequest extends FormRequest
 {
-    /** {@see LocationPolicy} in {@see LocationController} */
-    use AuthorizationViaController;
     use FiltersList;
 
     /**

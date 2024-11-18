@@ -2,13 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Controllers\BookingController;
-use App\Http\Requests\Traits\AuthorizationViaController;
 use App\Http\Requests\Traits\ValidatesAddressFields;
 use App\Models\Booking;
 use App\Models\BookingOption;
 use App\Options\FormElementType;
-use App\Policies\BookingPolicy;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -18,8 +15,6 @@ use Illuminate\Validation\Rule;
  */
 class BookingRequest extends FormRequest
 {
-    /** {@see BookingPolicy} in {@see BookingController} */
-    use AuthorizationViaController;
     use ValidatesAddressFields;
 
     public function prepareForValidation(): void

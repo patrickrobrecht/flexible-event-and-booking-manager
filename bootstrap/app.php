@@ -24,6 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
             )
             ->api(
                 prepend: [
+                    'auth:sanctum',
                     EnsureFrontendRequestsAreStateful::class,
                     'throttle:api',
                 ]

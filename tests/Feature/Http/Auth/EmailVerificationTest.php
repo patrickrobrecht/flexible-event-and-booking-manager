@@ -7,7 +7,6 @@ use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Models\User;
 use App\Notifications\VerifyEmailNotification;
-use App\Providers\RouteServiceProvider;
 use Database\Factories\UserFactory;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -19,7 +18,6 @@ use Tests\TestCase;
 
 #[CoversClass(EmailVerificationNotificationController::class)]
 #[CoversClass(EmailVerificationPromptController::class)]
-#[CoversClass(RouteServiceProvider::class)]
 #[CoversClass(UserFactory::class)]
 #[CoversClass(VerifyEmailController::class)]
 #[CoversClass(VerifyEmailNotification::class)]
@@ -64,7 +62,7 @@ class EmailVerificationTest extends TestCase
         );
         $this->actingAs($user)
             ->get($verificationUrl)
-            ->assertRedirect(RouteServiceProvider::HOME);
+            ->assertRedirect('/');
 
         Event::assertDispatched(Verified::class);
         $this->assertTrue($user->fresh()->hasVerifiedEmail());

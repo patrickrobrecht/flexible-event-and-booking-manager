@@ -225,7 +225,7 @@ enum Ability: string
     public static function apiCases(): array
     {
         return [
-            self::EditAccount,
+            self::ViewAccount,
         ];
     }
 }

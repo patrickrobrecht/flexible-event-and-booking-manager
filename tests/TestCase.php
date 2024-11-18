@@ -10,7 +10,6 @@ use Tests\Traits\ActsAsUser;
 abstract class TestCase extends BaseTestCase
 {
     use ActsAsUser;
-    use CreatesApplication;
     use RefreshDatabase;
     use WithFaker;
 }

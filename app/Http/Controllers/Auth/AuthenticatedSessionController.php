@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
-use App\Providers\RouteServiceProvider;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -31,7 +30,7 @@ class AuthenticatedSessionController extends Controller
         $user->timestamps = false; // Don't change updated_at column.
         $user->save();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        return redirect()->intended(route('dashboard'));
     }
 
     public function destroy(Request $request): RedirectResponse

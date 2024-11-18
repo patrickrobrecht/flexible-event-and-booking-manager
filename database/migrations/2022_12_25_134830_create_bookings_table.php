@@ -27,7 +27,7 @@ return new class extends Migration
 
             $table->foreignId('booked_by_user_id')->nullable()->constrained('users');
             $table->dateTime('booked_at')->nullable();
-            $table->unsignedDecimal('price', 8, 2)->nullable();
+            $table->decimal('price', 8, 2)->unsigned()->nullable();
             $table->timestamps();
         });
     }

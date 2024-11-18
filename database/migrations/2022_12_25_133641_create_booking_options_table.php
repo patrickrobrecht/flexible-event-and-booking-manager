@@ -20,7 +20,7 @@ return new class extends Migration
             $table->unsignedInteger('maximum_bookings')->nullable();
             $table->dateTime('available_from')->nullable();
             $table->dateTime('available_until')->nullable();
-            $table->unsignedDecimal('price', 8, 2)->nullable();
+            $table->decimal('price', 8, 2)->unsigned()->nullable();
             $table->json('price_conditions')->nullable();
             $table->json('restrictions')->nullable();
             $table->timestamps();

@@ -13,6 +13,13 @@ class PersonalAccessTokenRequest extends FormRequest
     /** {@see PersonalAccessTokenPolicy} via {@see PersonalAccessTokenController} */
     use AuthorizationViaController;
 
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'abilities' => $this->input('abilities', []), // Force array!
+        ]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *

@@ -41,7 +41,7 @@ use Spatie\QueryBuilder\Enums\SortDirection;
  *
  * @property-read int $booking_option_id
  *
- * @property-read ?float $age {@see self::age}
+ * @property-read ?float $age {@see self::age()}
  *
  * @property-read ?User $bookedByUser {@see self::bookedByUser()}
  * @property-read BookingOption $bookingOption {@see self::bookingOption()}
@@ -91,7 +91,7 @@ class Booking extends Model
 
     public function age(): Attribute
     {
-        return Attribute::get(fn () => Carbon::now()->floatDiffInYears($this->date_of_birth));
+        return Attribute::get(fn () => $this->date_of_birth?->diffInYears());
     }
 
     public function bookedByUser(): BelongsTo

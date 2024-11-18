@@ -8,12 +8,14 @@ use App\Models\PersonalAccessToken;
 use App\Models\User;
 use App\Options\Ability;
 use App\Policies\PersonalAccessTokenPolicy;
+use App\Providers\AppServiceProvider;
 use Database\Factories\PersonalAccessTokenFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 
 #[CoversClass(Ability::class)]
+#[CoversClass(AppServiceProvider::class)]
 #[CoversClass(PersonalAccessToken::class)]
 #[CoversClass(PersonalAccessTokenController::class)]
 #[CoversClass(PersonalAccessTokenFactory::class)]

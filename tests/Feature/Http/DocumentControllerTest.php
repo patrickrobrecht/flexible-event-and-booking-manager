@@ -108,11 +108,13 @@ class DocumentControllerTest extends TestCase
         $data = [
             'title' => 'NEW ' . $document->title,
         ];
+        $editRoute = route('documents.edit', $document);
         $this->assertUserCanPutOnlyWithAbility(
             "/documents/{$document->id}",
             $data,
             [$viewReferenceAbility, $editDocumentsAbility],
-            route('documents.edit', $document)
+            $editRoute,
+            $editRoute
         );
     }
 

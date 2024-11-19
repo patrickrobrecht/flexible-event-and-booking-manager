@@ -44,9 +44,7 @@ class PersonalAccessTokenControllerTest extends TestCase
 
     public function testUserCanOpenEditFormOnlyForOwnPersonalAccessTokensAndWithCorrectAbility(): void
     {
-        $token = PersonalAccessToken::factory()
-            ->for(User::factory()->create(), 'tokenable')
-            ->create();
+        $token = self::createToken();
         $userOwningTheToken = $token->tokenable;
 
         $editRoute = "/personal-access-tokens/{$token->id}/edit";
@@ -70,14 +68,14 @@ class PersonalAccessTokenControllerTest extends TestCase
         $this->get($editRoute)->assertOk();
     }
 
-    public function testUserCanDeleteOnlyOwnPersonalAccessTokensAndWithCorrectAbility(): void
+    public function testUserCanUpdateOnlyOwnPersonalAccessTokensAndWithCorrectAbility(): void
     {
-        $token = PersonalAccessToken::factory()
-            ->for(User::factory()->create(), 'tokenable')
-            ->create();
+        $token = self::createToken();
         $userOwningTheToken = $token->tokenable;
 
-        $deleteRoute = "/personal-access-tokens/{$token->id}";
+        $fromEditForm = $this->from("personal-access-tokens/{$token->id}/edit");
+        $updateRoute = "/personal-access-tokens/{$token->id}";
+        $updateData = array_intersect_key(PersonalAccessToken::factory()->makeOne()->toArray(), array_flip(['name', 'abilities']));
 
         // Another user cannot update the token.
         $userRole = $this->createUserRoleWithAbility(Ability::ManagePersonalAccessTokens);
@@ -85,15 +83,47 @@ class PersonalAccessTokenControllerTest extends TestCase
             ->hasAttached($userRole)
             ->create();
         $this->actingAs($anotherUser);
+        $fromEditForm->put($updateRoute, $updateData)->assertForbidden();
+
+        // User without the ability cannot delete own token.
+        $this->actingAs($userOwningTheToken);
+        $fromEditForm->put($updateRoute, $updateData)->assertForbidden();
+
+        // User with the ability can delete own token.
+        $userOwningTheToken->userRoles()->sync([$userRole->id]);
+        $userOwningTheToken->refresh(); // Load new user roles!
+        $fromEditForm->put($updateRoute, $updateData)->assertRedirect("personal-access-tokens/{$token->id}/edit");
+    }
+
+    public function testUserCanDeleteOnlyOwnPersonalAccessTokensAndWithCorrectAbility(): void
+    {
+        $token = self::createToken();
+        $userOwningTheToken = $token->tokenable;
+
+        $deleteRoute = "/personal-access-tokens/{$token->id}";
+
+        // Another user cannot delete the token.
+        $userRole = $this->createUserRoleWithAbility(Ability::ManagePersonalAccessTokens);
+        $anotherUser = User::factory()
+            ->hasAttached($userRole)
+            ->create();
+        $this->actingAs($anotherUser);
         $this->delete($deleteRoute)->assertForbidden();
 
-        // User without the ability cannot update own token.
+        // User without the ability cannot delete own token.
         $this->actingAs($userOwningTheToken);
         $this->delete($deleteRoute)->assertForbidden();
 
-        // User with the ability can update own token.
+        // User with the ability can delete own token.
         $userOwningTheToken->userRoles()->sync([$userRole->id]);
         $userOwningTheToken->refresh(); // Load new user roles!
-        $this->delete($deleteRoute)->assertRedirect()->assertRedirectToRoute('personal-access-tokens.index');
+        $this->delete($deleteRoute)->assertRedirectToRoute('personal-access-tokens.index');
+    }
+
+    private static function createToken(): PersonalAccessToken
+    {
+        return PersonalAccessToken::factory()
+            ->for(User::factory()->create(), 'tokenable')
+            ->create();
     }
 }

@@ -159,20 +159,28 @@ trait ActsAsUser
             ->assertRedirect($redirectRoute);
     }
 
-    protected function assertUserCanPutOnlyWithAbility(string $route, array $data, Ability|array $ability, ?string $redirectRoute): void
+    protected function assertUserCanPutOnlyWithAbility(string $route, array $data, Ability|array $ability, ?string $fromRoute, ?string $redirectRoute): void
     {
+        $from = isset($fromRoute)
+            ? $this->from($fromRoute)
+            : $this;
+
         // Cannot submit PUT request with all abilities except the required ones.
         $this->actingAsUserWithFullAbilitiesExcept($ability);
-        $this->put($route, $data)
+        $from->put($route, $data)
             ->assertForbidden();
 
-        $this->assertUserCanPutWithAbility($route, $data, $ability, $redirectRoute);
+        $this->assertUserCanPutWithAbility($route, $data, $ability, $fromRoute, $redirectRoute);
     }
 
-    protected function assertUserCanPutWithAbility(string $route, array $data, Ability|array $ability, ?string $redirectRoute): void
+    protected function assertUserCanPutWithAbility(string $route, array $data, Ability|array $ability, ?string $fromRoute, ?string $redirectRoute): void
     {
+        $from = isset($fromRoute)
+            ? $this->from($fromRoute)
+            : $this;
+
         $this->actingAsUserWithAbility($ability);
-        $this->put($route, $data)
+        $from->put($route, $data)
             ->assertRedirect($redirectRoute);
     }
 

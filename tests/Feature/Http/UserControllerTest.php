@@ -100,6 +100,15 @@ class UserControllerTest extends TestCase
         $this->assertUserCanGetOnlyWithAbility("/users/{$this->createRandomUser()->id}/edit", Ability::EditUsers);
     }
 
+    public function testUserCanUpdateUserOnlyWithCorrectAbility(): void
+    {
+        $user = $this->createRandomUser();
+        $data = User::factory()->makeOne()->toArray();
+
+        $editRoute = "/users/{$user->id}/edit";
+        $this->assertUserCanPutOnlyWithAbility("/users/{$user->id}", $data, Ability::EditUsers, $editRoute, $editRoute);
+    }
+
     private function createRandomUser(): User
     {
         return User::factory()->create();

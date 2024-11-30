@@ -47,6 +47,15 @@ class LocationControllerTest extends TestCase
         $this->assertUserCanGetOnlyWithAbility("/locations/{$this->createRandomLocation()->id}/edit", Ability::EditLocations);
     }
 
+    public function testUserCanUpdateLocationOnlyWithCorrectAbility(): void
+    {
+        $location = $this->createRandomLocation();
+        $data = Location::factory()->makeOne()->toArray();
+
+        $editRoute = "/locations/{$location->id}/edit";
+        $this->assertUserCanPutOnlyWithAbility("/locations/{$location->id}", $data, Ability::EditLocations, $editRoute, $editRoute);
+    }
+
     private function createRandomLocation(): Location
     {
         return Location::factory()->create();

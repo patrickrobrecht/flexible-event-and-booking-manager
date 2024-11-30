@@ -62,14 +62,7 @@ class EventControllerTest extends TestCase
 
     public function testUserCanStoreEventOnlyWithCorrectAbility(): void
     {
-        $locations = Location::factory()->count(5)->create();
-        $event = Event::factory()->makeOne();
-        $data = [
-            ...$event->toArray(),
-            'started_at' => $event->started_at->format('Y-m-d\TH:i'),
-            'finished_at' => $event->finished_at->format('Y-m-d\TH:i'),
-            'location_id' => $this->faker->randomElement($locations)->id,
-        ];
+        $data = $this->generateRandomEventData();
 
         $this->assertUserCanPostOnlyWithAbility('events', $data, Ability::CreateEvents, null);
     }
@@ -78,5 +71,30 @@ class EventControllerTest extends TestCase
     {
         $event = self::createEvent();
         $this->assertUserCanGetOnlyWithAbility("/events/{$event->slug}/edit", Ability::EditEvents);
+    }
+
+    public function testUserCanUpdateEventOnlyWithCorrectAbility(): void
+    {
+        $event = self::createEvent();
+        $data = $this->generateRandomEventData();
+
+        $this->assertUserCanPutOnlyWithAbility(
+            "/events/{$event->slug}",
+            $data,
+            Ability::EditEvents,
+            "/events/{$event->slug}/edit",
+            "/events/{$data['slug']}/edit"
+        );
+    }
+
+    private function generateRandomEventData(): array
+    {
+        $eventData = Event::factory()->makeOne();
+        return [
+            ...$eventData->toArray(),
+            'started_at' => $eventData->started_at->format('Y-m-d\TH:i'),
+            'finished_at' => $eventData->finished_at->format('Y-m-d\TH:i'),
+            'location_id' => $this->faker->randomElement(Location::factory()->count(3)->create())->id,
+        ];
     }
 }

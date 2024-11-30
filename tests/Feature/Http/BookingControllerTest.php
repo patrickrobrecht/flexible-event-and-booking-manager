@@ -23,7 +23,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Notifications\AnonymousNotifiable;
 use Illuminate\Support\Facades\Notification;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 use Tests\Traits\GeneratesTestData;
 
@@ -45,10 +44,9 @@ class BookingControllerTest extends TestCase
     use GeneratesTestData;
     use RefreshDatabase;
 
-    #[DataProvider('visibilityProvider')]
-    public function testUserCanViewBookingsOfEventOnlyWithCorrectAbility(Visibility $visibility): void
+    public function testUserCanViewBookingsOfEventOnlyWithCorrectAbility(): void
     {
-        $bookingOption = self::createBookingOptionForEvent($visibility);
+        $bookingOption = self::createBookingOptionForEvent();
         $users = self::createUsersWithBookings($bookingOption);
 
         $route = "/events/{$bookingOption->event->slug}/{$bookingOption->slug}/bookings";
@@ -59,22 +57,20 @@ class BookingControllerTest extends TestCase
         $users->each(fn (User $user) => $response->assertSeeText($user->name));
     }
 
-    #[DataProvider('visibilityProvider')]
-    public function testUserCanExportBookingsOfEventOnlyWithCorrectAbility(Visibility $visibility): void
+    public function testUserCanExportBookingsOfEventOnlyWithCorrectAbility(): void
     {
-        $bookingOption = self::createBookingOptionForEvent($visibility);
+        $bookingOption = self::createBookingOptionForEvent();
         self::createUsersWithBookings($bookingOption);
 
         $route = "/events/{$bookingOption->event->slug}/{$bookingOption->slug}/bookings?output=export";
         $this->assertUserCanGetOnlyWithAbility($route, Ability::ExportBookingsOfEvent);
     }
 
-    #[DataProvider('visibilityProvider')]
-    public function testUserCanViewSingleBookingOnlyWithCorrectAbility(Visibility $visibility): void
+    public function testUserCanViewSingleBookingOnlyWithCorrectAbility(): void
     {
         $this->actingAsUserWithAbility(Ability::ViewBookingsOfEvent);
 
-        $bookingOption = self::createBookingOptionForEvent($visibility);
+        $bookingOption = self::createBookingOptionForEvent();
         self::createUsersWithBookings($bookingOption)
             ->each(fn (User $user) => $user->bookings->each(function (Booking $booking) {
                 $this->assertUserCanGetOnlyWithAbility("bookings/{$booking->id}", Ability::ViewBookingsOfEvent);
@@ -82,10 +78,9 @@ class BookingControllerTest extends TestCase
             }));
     }
 
-    #[DataProvider('visibilityProvider')]
-    public function testUserCanViewOwnBookingsWithoutAbility(Visibility $visibility): void
+    public function testUserCanViewOwnBookingsWithoutAbility(): void
     {
-        $bookingOption = self::createBookingOptionForEvent($visibility);
+        $bookingOption = self::createBookingOptionForEvent();
         $user = $this->actingAsAnyUser();
 
         self::createBookingsForUser($bookingOption, $user)
@@ -127,10 +122,8 @@ class BookingControllerTest extends TestCase
         Notification::fake();
 
         $bookingOption = self::createBookingOptionForEvent(Visibility::Public);
-        $booking = Booking::factory()
-            ->withoutDateOfBirth()
-            ->makeOne();
-        $this->post("events/{$bookingOption->event->slug}/{$bookingOption->slug}/bookings", $booking->toArray())
+        $data = $this->generateRandomBookingData();
+        $this->post("events/{$bookingOption->event->slug}/{$bookingOption->slug}/bookings", $data)
             ->assertSessionDoesntHaveErrors()
             ->assertRedirect();
         $this->assertCount(1, $bookingOption->refresh()->bookings);
@@ -138,8 +131,8 @@ class BookingControllerTest extends TestCase
         Notification::assertSentTo(
             new AnonymousNotifiable(),
             BookingConfirmation::class,
-            static function ($notification, $channels, $notifiable) use ($booking) {
-                return $notifiable->routes['mail'] === $booking->email;
+            static function ($notification, $channels, $notifiable) use ($data) {
+                return $notifiable->routes['mail'] === $data['email'];
             }
         );
     }
@@ -175,24 +168,30 @@ class BookingControllerTest extends TestCase
             ->assertSeeText(__('Bookings are not possible yet.'));
     }
 
-    #[DataProvider('visibilityProvider')]
-    public function testUserCanOpenEditBookingFormOnlyWithCorrectAbility(Visibility $visibility): void
+    public function testUserCanOpenEditBookingFormOnlyWithCorrectAbility(): void
     {
         $this->actingAsUserWithAbility(Ability::ViewBookingsOfEvent);
 
-        $bookingOption = self::createBookingOptionForEvent($visibility);
+        $bookingOption = self::createBookingOptionForEvent();
         self::createUsersWithBookings($bookingOption)
             ->each(fn (User $user) => $user->bookings->each(function (Booking $booking) {
                 $this->assertUserCanGetOnlyWithAbility("bookings/{$booking->id}/edit", Ability::EditBookingsOfEvent);
             }));
     }
 
-    #[DataProvider('visibilityProvider')]
-    public function testUserCanDeleteAndRestoreBookingOnlyWithCorrectAbility(Visibility $visibility): void
+    public function testUserCanUpdateBookingOnlyWithCorrectAbility(): void
+    {
+        $booking = self::createBooking();
+
+        $editRoute = "/bookings/{$booking->id}/edit";
+        $this->assertUserCanPutOnlyWithAbility("/bookings/{$booking->id}", $this->generateRandomBookingData(), Ability::EditBookingsOfEvent, $editRoute, $editRoute);
+    }
+
+    public function testUserCanDeleteAndRestoreBookingOnlyWithCorrectAbility(): void
     {
         $user = $this->actingAsUserWithAbility(Ability::DeleteAndRestoreBookingsOfEvent);
 
-        $bookingOption = self::createBookingOptionForEvent($visibility);
+        $bookingOption = self::createBookingOptionForEvent();
         self::createBookingsForUser($bookingOption, User::factory()->create())
             ->each(function (Booking $booking) use ($user) {
                 $this->assertUserCan($user, 'delete', $booking);
@@ -208,5 +207,13 @@ class BookingControllerTest extends TestCase
                 $this->patch("bookings/{$booking->id}/restore")->assertRedirect();
                 $this->assertNotSoftDeleted($booking);
             });
+    }
+
+    private function generateRandomBookingData(): array
+    {
+        return Booking::factory()
+            ->withoutDateOfBirth()
+            ->makeOne()
+            ->toArray();
     }
 }

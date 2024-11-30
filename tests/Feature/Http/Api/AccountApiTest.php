@@ -2,7 +2,6 @@
 
 namespace Http\Api;
 
-
 use App\Models\PersonalAccessToken;
 use App\Models\User;
 use App\Options\Ability;

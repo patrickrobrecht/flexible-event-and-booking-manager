@@ -14,7 +14,6 @@ use App\Policies\EventSeriesPolicy;
 use Database\Factories\EventSeriesFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 use Tests\Traits\GeneratesTestData;
 
@@ -67,10 +66,23 @@ class EventSeriesControllerTest extends TestCase
         $this->assertUserCanPostOnlyWithAbility('event-series', $data, Ability::CreateEventSeries, null);
     }
 
-    #[DataProvider('visibilityProvider')]
-    public function testUserCanOpenEditEventSeriesFormOnlyWithCorrectAbility(Visibility $visibility): void
+    public function testUserCanOpenEditEventSeriesFormOnlyWithCorrectAbility(): void
     {
-        $eventSeries = self::createEventSeries($visibility);
+        $eventSeries = self::createEventSeries();
         $this->assertUserCanGetOnlyWithAbility("/event-series/{$eventSeries->slug}/edit", Ability::EditEventSeries);
+    }
+
+    public function testUserCanUpdateEventSeriesOnlyWithCorrectAbility(): void
+    {
+        $eventSeries = self::createEventSeries();
+        $data = EventSeries::factory()->makeOne()->toArray();
+
+        $this->assertUserCanPutOnlyWithAbility(
+            "/event-series/{$eventSeries->slug}",
+            $data,
+            Ability::EditEventSeries,
+            "/event-series/{$eventSeries->slug}/edit",
+            "/event-series/{$data['slug']}/edit"
+        );
     }
 }

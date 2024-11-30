@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Event;
 use App\Options\Visibility;
 use Carbon\Carbon;
+use Database\Factories\Traits\HasVisibility;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -13,6 +14,8 @@ use Illuminate\Support\Str;
  */
 class EventFactory extends Factory
 {
+    use HasVisibility;
+
     public function definition(): array
     {
         $name = fake()->unique()->words(3, true);
@@ -28,16 +31,5 @@ class EventFactory extends Factory
             'finished_at' => $startedAt->clone()->addHours(fake()->numberBetween(3, 168)),
             'website_url' => fake()->optional()->url(),
         ];
-    }
-
-    public function visibility(?Visibility $visibility): static
-    {
-        if ($visibility === null) {
-            return $this;
-        }
-
-        return $this->state(fn (array $attributes) => [
-            'visibility' => $visibility,
-        ]);
     }
 }

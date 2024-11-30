@@ -20,10 +20,10 @@ trait NamedOption
     public static function casesExcept(array|self $exceptions): array
     {
         $exceptionValues = is_array($exceptions)
-            ? array_map(fn (self $case) => $case->value, $exceptions)
+            ? array_map(static fn (self $case) => $case->value, $exceptions)
             : [$exceptions->value];
 
-        return self::casesFiltered(fn (self $case) => in_array($case, $exceptionValues, true));
+        return self::casesFiltered(static fn (self $case) => !in_array($case->value, $exceptionValues, true));
     }
 
     /**

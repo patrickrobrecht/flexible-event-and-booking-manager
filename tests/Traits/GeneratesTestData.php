@@ -68,7 +68,7 @@ trait GeneratesTestData
             ->create();
     }
 
-    protected static function createBookingOptionForEvent(Visibility $visibility): BookingOption
+    protected static function createBookingOptionForEvent(?Visibility $visibility = null): BookingOption
     {
         return BookingOption::factory()
             ->for(self::createEvent($visibility))
@@ -118,10 +118,10 @@ trait GeneratesTestData
             ->create();
     }
 
-    protected static function createEvent(Visibility $visibility = null): Event
+    protected static function createEvent(?Visibility $visibility = null): Event
     {
         return Event::factory()
-            ->visibility($visibility ?? null)
+            ->visibility($visibility)
             ->for(Location::factory()->create())
             ->create();
     }
@@ -142,7 +142,7 @@ trait GeneratesTestData
         return $event;
     }
 
-    protected static function createEventSeries(Visibility $visibility): EventSeries
+    protected static function createEventSeries(?Visibility $visibility = null): EventSeries
     {
         return EventSeries::factory()
             ->has(

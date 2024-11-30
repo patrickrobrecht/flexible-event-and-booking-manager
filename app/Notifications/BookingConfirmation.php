@@ -11,23 +11,8 @@ class BookingConfirmation extends Notification
 {
     use Queueable;
 
-    /**
-     * Create a new notification instance.
-     *
-     * @return void
-     */
-    public function __construct(private Booking $booking)
+    public function __construct(private readonly Booking $booking)
     {
-    }
-
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @return array
-     */
-    public function via($notifiable)
-    {
-        return ['mail'];
     }
 
     /**
@@ -63,13 +48,8 @@ class BookingConfirmation extends Notification
         return $mail;
     }
 
-    /**
-     * Get the array representation of the notification.
-     *
-     * @return array
-     */
-    public function toArray($notifiable)
+    public function via($notifiable)
     {
-        return $this->booking->toArray();
+        return ['mail'];
     }
 }

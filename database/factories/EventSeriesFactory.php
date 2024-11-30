@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\EventSeries;
 use App\Options\Visibility;
+use Database\Factories\Traits\HasVisibility;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -12,6 +13,8 @@ use Illuminate\Support\Str;
  */
 class EventSeriesFactory extends Factory
 {
+    use HasVisibility;
+
     public function definition(): array
     {
         $name = fake()->unique()->words(3, true);
@@ -21,12 +24,5 @@ class EventSeriesFactory extends Factory
             'slug' => Str::slug($name),
             'visibility' => fake()->randomElement(Visibility::values()),
         ];
-    }
-
-    public function visibility(Visibility $visibility): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'visibility' => $visibility,
-        ]);
     }
 }

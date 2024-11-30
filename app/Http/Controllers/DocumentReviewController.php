@@ -35,10 +35,9 @@ class DocumentReviewController extends Controller
         $review->user()->associate(Auth::user());
         if ($review->fillAndSave($validated) && $document->save()) {
             Session::flash('success', __('Saved comment successfully.'));
-            return redirect($document->getRouteForComments());
         }
 
-        return back();
+        return redirect($document->getRouteForComments());
     }
 
     public function update(DocumentReviewRequest $request, Document $document, DocumentReview $review): RedirectResponse
@@ -47,9 +46,8 @@ class DocumentReviewController extends Controller
 
         if ($review->fillAndSave($request->validated())) {
             Session::flash('success', __('Saved comment successfully.'));
-            return redirect($document->getRouteForComments());
         }
 
-        return back();
+        return redirect($document->getRouteForComments());
     }
 }

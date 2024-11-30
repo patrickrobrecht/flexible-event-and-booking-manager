@@ -18,8 +18,10 @@ use Closure;
 use Database\Factories\DocumentFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Tests\TestCase;
 use Tests\Traits\GeneratesTestData;
 
@@ -46,8 +48,19 @@ class DocumentControllerTest extends TestCase
     {
         $document = self::createDocument($referenceProvider);
 
-        $this->assertUserCanGetOnlyWithAbility("/documents/{$document->id}", [$viewReferenceAbility, Ability::ViewDocuments]);
-        $this->assertUserCanGetOnlyWithAbility("/documents/{$document->id}", [$viewReferenceAbility, $viewDocumentsAbility]);
+        Storage::shouldReceive('download')
+            ->with($document->path, $document->file_name_from_title)
+            ->andReturn(new StreamedResponse(fn () => 'Sample content'));
+        Storage::shouldReceive('response')
+            ->with($document->path)
+            ->andReturn(new StreamedResponse(fn () => 'Sample content'));
+
+        $urlPrefix = "/documents/{$document->id}";
+        foreach ([$urlPrefix, $urlPrefix . '/download', $urlPrefix . '/stream'] as $documentUrl) {
+            $this->assertUserCanGetWithAbility($documentUrl, [$viewReferenceAbility, Ability::ViewDocuments]);
+            $this->assertUserCanGetWithAbility($documentUrl, [$viewReferenceAbility, $viewDocumentsAbility]);
+            $this->assertUserCannotGetWithoutAbility($documentUrl, [$viewReferenceAbility, $viewDocumentsAbility, Ability::ViewDocuments]);
+        }
     }
 
     public static function referenceClassesWithViewAbility(): array
@@ -62,7 +75,7 @@ class DocumentControllerTest extends TestCase
     }
 
     #[DataProvider('referenceClassesWithViewAndCreateAbility')]
-    public function testUserCanAddDocumentOnlyWithCorrectAbility(Closure $referenceProvider, Ability $viewReferenceAbility, Ability $addDocumentsAbility): void
+    public function testUserCanAddDocumentWithCorrectAbility(Closure $referenceProvider, Ability $viewReferenceAbility, Ability $addDocumentsAbility): void
     {
         $reference = $referenceProvider();
         $storeUri = match ($reference::class) {
@@ -78,7 +91,7 @@ class DocumentControllerTest extends TestCase
             'file' => $file,
         ];
 
-        $this->assertUserCanPostOnlyWithAbility($storeUri, $data, [$viewReferenceAbility, $addDocumentsAbility], $reference->getRoute());
+        $this->assertUserCanPostWithAbility($storeUri, $data, [$viewReferenceAbility, $addDocumentsAbility], $reference->getRoute());
     }
 
     public static function referenceClassesWithViewAndCreateAbility(): array
@@ -101,7 +114,7 @@ class DocumentControllerTest extends TestCase
     }
 
     #[DataProvider('referenceClassesWithViewAndEditAbility')]
-    public function testUserCanUpdateDocumentOnlyWithCorrectAbility(Closure $referenceProvider, Ability $viewReferenceAbility, Ability $editDocumentsAbility): void
+    public function testUserCanUpdateDocumentWithCorrectAbility(Closure $referenceProvider, Ability $viewReferenceAbility, Ability $editDocumentsAbility): void
     {
         $document = self::createDocument($referenceProvider);
 
@@ -109,7 +122,7 @@ class DocumentControllerTest extends TestCase
             'title' => 'NEW ' . $document->title,
         ];
         $editRoute = route('documents.edit', $document);
-        $this->assertUserCanPutOnlyWithAbility(
+        $this->assertUserCanPutWithAbility(
             "/documents/{$document->id}",
             $data,
             [$viewReferenceAbility, $editDocumentsAbility],

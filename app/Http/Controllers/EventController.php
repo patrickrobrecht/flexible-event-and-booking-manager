@@ -114,11 +114,10 @@ class EventController extends Controller
 
         if ($event->fillAndSave($request->validated())) {
             Session::flash('success', __('Saved successfully.'));
-            // Slug may have changed, so we need to generate the URL here!
-            return redirect(route('events.edit', $event));
         }
 
-        return back();
+        // Slug may have changed, so we need to generate the URL here!
+        return redirect(route('events.edit', $event));
     }
 
     private function formValues(array $values = []): array

@@ -10,7 +10,6 @@ use App\Models\Traits\HasLocation;
 use App\Models\Traits\HasNameAndDescription;
 use App\Models\Traits\HasResponsibleUsers;
 use App\Models\Traits\HasSlugForRouting;
-use App\Models\Traits\HasWebsite;
 use App\Options\Ability;
 use App\Options\EventType;
 use App\Options\FilterValue;
@@ -36,6 +35,7 @@ use Spatie\QueryBuilder\Enums\SortDirection;
  * @property Visibility $visibility
  * @property ?Carbon $started_at
  * @property ?Carbon $finished_at
+ * @property ?string $website_url
  *
  * @property-read Collection|BookingOption[] $bookingOptions {@see Event::bookingOptions()}
  * @property-read Collection|Booking[] $bookings {@see Event::bookings()}
@@ -55,7 +55,6 @@ class Event extends Model
     use HasNameAndDescription;
     use HasResponsibleUsers;
     use HasSlugForRouting;
-    use HasWebsite;
 
     /**
      * The attributes that are mass assignable.

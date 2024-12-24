@@ -37,10 +37,26 @@ class BookingOptionControllerTest extends TestCase
         $this->assertGuestCanGet("/events/{$bookingOption->event->slug}/booking-options/{$bookingOption->slug}");
     }
 
+    public function testGuestCanViewBookingOptionOfPublicEventWithCustomFields(): void
+    {
+        $bookingOption = self::createBookingOptionForEventWithCustomFormFields(Visibility::Public);
+        $this->assertGuestCanGet("/events/{$bookingOption->event->slug}/booking-options/{$bookingOption->slug}");
+    }
+
     public function testGuestCannotViewBookingOptionOfPrivateEvent(): void
     {
         $bookingOption = self::createBookingOptionForEvent(Visibility::Private);
-        $this->assertGuestCannotGet("/events/{$bookingOption->event->slug}/booking-options/{$bookingOption->slug}", false);
+        $this->assertGuestCannotGet(
+            "/events/{$bookingOption->event->slug}/booking-options/{$bookingOption->slug}",
+            false
+        );
+    }
+
+    public function testUserCanViewBookingOptionOfPrivateEventWithCorrectAbility(): void
+    {
+        $bookingOption = self::createBookingOptionForEvent(Visibility::Private);
+        $this->actingAsUserWithAbility(Ability::ViewPrivateEvents);
+        $this->get("/events/{$bookingOption->event->slug}/booking-options/{$bookingOption->slug}")->assertOk();
     }
 
     #[DataProvider('casesForBookingOptions')]

@@ -33,7 +33,7 @@ trait NamedOption
      */
     public static function casesFiltered(Closure $closure): array
     {
-        return array_filter(self::cases(), fn (self $case) => $closure($case));
+        return array_filter(self::cases(), static fn (self $case) => $closure($case));
     }
 
     public static function exists(int|string $value): bool

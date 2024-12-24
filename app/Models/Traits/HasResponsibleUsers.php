@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Facades\Auth;
 
 /**
- * @property-read $responsibleUsers {@see self::responsibleUsers()}
+ * @property-read Collection|User[] $responsibleUsers {@see self::responsibleUsers()}
  *
  * @mixin Model
  */

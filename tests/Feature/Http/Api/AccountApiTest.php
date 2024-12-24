@@ -1,6 +1,6 @@
 <?php
 
-namespace Http\Api;
+namespace Tests\Feature\Http\Api;
 
 use App\Models\PersonalAccessToken;
 use App\Models\User;

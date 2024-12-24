@@ -1,6 +1,6 @@
 <?php
 
-namespace Livewire\Users;
+namespace Tests\Feature\Livewire\Users;
 
 use App\Livewire\Users\SearchUsers;
 use App\Models\User;

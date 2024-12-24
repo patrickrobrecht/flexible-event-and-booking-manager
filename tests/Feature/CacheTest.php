@@ -32,13 +32,13 @@ class CacheTest extends TestCase
 
     public function testRouteCache(): void
     {
-        $result = Artisan::call('route:cache');
-
-        $this->assertEquals(Command::SUCCESS, $result);
-        $this->assertFileExists(base_path('bootstrap/cache/routes-v7.php'));
         Artisan::call('route:clear');
 
         $result = Artisan::call('route:cache');
+        $this->assertEquals(Command::SUCCESS, $result);
+        $this->assertFileExists(base_path('bootstrap/cache/routes-v7.php'));
+
+        Artisan::call('route:clear');
     }
 
     public function testViewCache(): void

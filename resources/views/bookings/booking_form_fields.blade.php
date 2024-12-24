@@ -35,11 +35,11 @@
                                   name="{{ $inputName }}" type="{{ $field->type->value }}"
                                   :options="$allowedValues" :value="$value"
                                   :disabled="!$canEdit" :readonly="!$canEdit" :required="$required">
-                    {{ $field->name }} @if($field->required) * @endif
+                    {{ $field->name }}
                     @if(isset($field->hint) && $field->type !== \App\Options\FormElementType::Hidden)
                         <x-slot:hint>{!! $field->hint !!}</x-slot:hint>
                     @endif
-                    @if($field->type === \App\Options\FormElementType::File)
+                    @if($field->type === \App\Options\FormElementType::File && isset($booking))
                         <x-slot:appendText :container="!isset($value)">
                             @isset($value)
                                 @php

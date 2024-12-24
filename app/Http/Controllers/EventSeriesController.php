@@ -111,11 +111,10 @@ class EventSeriesController extends Controller
 
         if ($eventSeries->fillAndSave($request->validated())) {
             Session::flash('success', __('Saved successfully.'));
-            // Slug may have changed, so we need to generate the URL here!
-            return redirect(route('event-series.edit', $eventSeries));
         }
 
-        return back();
+        // Slug may have changed, so we need to generate the URL here!
+        return redirect(route('event-series.edit', $eventSeries));
     }
 
     private function formValues(array $values = []): array

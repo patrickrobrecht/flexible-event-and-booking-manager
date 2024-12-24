@@ -7,7 +7,6 @@ use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\HasDocuments;
 use App\Models\Traits\HasLocation;
 use App\Models\Traits\HasResponsibleUsers;
-use App\Models\Traits\HasWebsite;
 use App\Options\Ability;
 use App\Options\ActiveStatus;
 use App\Options\FilterValue;
@@ -25,6 +24,7 @@ use Spatie\QueryBuilder\AllowedFilter;
  * @property ActiveStatus $status
  * @property ?string $register_entry
  * @property ?string $representatives
+ * @property ?string $website_url
  *
  * @property Collection|Event[] $events {@see Organization::events()}
  * @property ?Organization $parentOrganization {@see Organization::parentOrganization()}
@@ -36,7 +36,6 @@ class Organization extends Model
     use HasFactory;
     use HasLocation;
     use HasResponsibleUsers;
-    use HasWebsite;
 
     /**
      * The attributes that are mass assignable.

@@ -60,6 +60,18 @@ class OrganizationControllerTest extends TestCase
         $this->assertUserCanGetOnlyWithAbility("/organizations/{$this->createRandomOrganization()->id}/edit", Ability::EditOrganizations);
     }
 
+    public function testUserCanUpdateOrganizationOnlyWithCorrectAbility(): void
+    {
+        $organization = $this->createRandomOrganization();
+        $data = [
+            ...Organization::factory()->makeOne()->toArray(),
+            'location_id' => $this->faker->randomElement(Location::factory()->count(5)->create())->id,
+        ];
+
+        $editRoute = "/organizations/{$organization->id}/edit";
+        $this->assertUserCanPutOnlyWithAbility("/organizations/{$organization->id}", $data, Ability::EditOrganizations, $editRoute, $editRoute);
+    }
+
     private function createRandomOrganization(): Organization
     {
         return self::createOrganization();

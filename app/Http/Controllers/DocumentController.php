@@ -103,7 +103,6 @@ class DocumentController extends Controller
 
         if ($document->fillAndSave($request->validated())) {
             Session::flash('success', __('Saved successfully.'));
-            return redirect(route('documents.edit', $document));
         }
 
         return back();
@@ -115,9 +114,8 @@ class DocumentController extends Controller
 
         if ($document->delete()) {
             Session::flash('success', __('Deleted successfully.'));
-            return redirect($document->reference->getRoute());
         }
 
-        return back();
+        return redirect($document->reference->getRoute());
     }
 }

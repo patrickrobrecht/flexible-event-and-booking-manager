@@ -117,7 +117,7 @@ class Document extends Model
 
     public function getRouteForComments(): string
     {
-        return $this->getRoute().'#comments';
+        return $this->getRoute() . '#comments';
     }
 
     public function scopeSearchTitleAndDescription(Builder $query, string ...$searchTerms): Builder

@@ -32,6 +32,13 @@ class EmailVerificationTest extends TestCase
             ->assertOk();
     }
 
+    public function testVerifiedUserOpeningVerificationPromptIsRedirectedToHome(): void
+    {
+        $this->actingAs(User::factory()->create())
+            ->get('/verify-email')
+            ->assertRedirect('/');
+    }
+
     public function testUserCanRequestEmailVerificationLink(): void
     {
         Notification::fake();
@@ -47,6 +54,16 @@ class EmailVerificationTest extends TestCase
         Notification::assertSentTo($user, VerifyEmailNotification::class, static function ($notification) use ($user) {
             return str_contains($notification->toMail($user)->render(), $user->greeting);
         });
+    }
+
+    public function testVerifiedRequestingVerificationLinkIsRedirectedToHome(): void
+    {
+        $verifiedUser = User::factory()->create();
+        $this->actingAs($verifiedUser)
+            ->post('email/verification-notification', [
+                'email' => $verifiedUser->email,
+            ])
+            ->assertRedirect('/');
     }
 
     public function testUserCanVerifyEmail(): void

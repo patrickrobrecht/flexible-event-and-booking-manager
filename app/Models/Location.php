@@ -6,7 +6,6 @@ use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\FiltersByRelationExistence;
 use App\Models\Traits\HasAddress;
-use App\Models\Traits\HasWebsite;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
@@ -18,6 +17,7 @@ use Spatie\QueryBuilder\AllowedFilter;
 /**
  * @property-read int $id
  * @property string $name
+ * @property ?string $website_url
  *
  * @property-read string[] $fullAddressBlock {@see Location::fullAddressBlock()}
  * @property-read string $nameOrAddress {@see Location::nameOrAddress()}
@@ -31,7 +31,6 @@ class Location extends Model
     use FiltersByRelationExistence;
     use HasAddress;
     use HasFactory;
-    use HasWebsite;
 
     /**
      * The attributes that are mass assignable.

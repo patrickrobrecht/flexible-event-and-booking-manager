@@ -47,4 +47,12 @@ enum FormElementType: string
     {
         return $this === self::Headline;
     }
+
+    /**
+     * @return static[]
+     */
+    public static function casesForFields(): array
+    {
+        return self::casesFiltered(static fn (self $case) => $case->isFormField());
+    }
 }

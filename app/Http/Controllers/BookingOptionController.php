@@ -60,10 +60,9 @@ class BookingOptionController extends Controller
 
         if ($bookingOption->fillAndSave($request->validated())) {
             Session::flash('success', __('Saved successfully.'));
-            // Slug may have changed, so we need to generate the URL here!
-            return redirect(route('booking-options.edit', [$event, $bookingOption]));
         }
 
-        return back();
+        // Slug may have changed, so we need to generate the URL here!
+        return redirect(route('booking-options.edit', [$event, $bookingOption]));
     }
 }

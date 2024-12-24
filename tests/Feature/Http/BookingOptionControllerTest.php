@@ -37,10 +37,26 @@ class BookingOptionControllerTest extends TestCase
         $this->assertGuestCanGet("/events/{$bookingOption->event->slug}/booking-options/{$bookingOption->slug}");
     }
 
+    public function testGuestCanViewBookingOptionOfPublicEventWithCustomFields(): void
+    {
+        $bookingOption = self::createBookingOptionForEventWithCustomFormFields(Visibility::Public);
+        $this->assertGuestCanGet("/events/{$bookingOption->event->slug}/booking-options/{$bookingOption->slug}");
+    }
+
     public function testGuestCannotViewBookingOptionOfPrivateEvent(): void
     {
         $bookingOption = self::createBookingOptionForEvent(Visibility::Private);
-        $this->assertGuestCannotGet("/events/{$bookingOption->event->slug}/booking-options/{$bookingOption->slug}", false);
+        $this->assertGuestCannotGet(
+            "/events/{$bookingOption->event->slug}/booking-options/{$bookingOption->slug}",
+            false
+        );
+    }
+
+    public function testUserCanViewBookingOptionOfPrivateEventWithCorrectAbility(): void
+    {
+        $bookingOption = self::createBookingOptionForEvent(Visibility::Private);
+        $this->actingAsUserWithAbility(Ability::ViewPrivateEvents);
+        $this->get("/events/{$bookingOption->event->slug}/booking-options/{$bookingOption->slug}")->assertOk();
     }
 
     #[DataProvider('casesForBookingOptions')]
@@ -124,20 +140,38 @@ class BookingOptionControllerTest extends TestCase
     public function testUserCanStoreBookingOptionOnlyWithCorrectAbility(): void
     {
         $event = self::createEvent();
-        $bookingOption = BookingOption::factory()->makeOne();
-        $data = [
-            ...$bookingOption->toArray(),
-            'available_from' => $bookingOption->available_from->format('Y-m-d\TH:i'),
-            'available_until' => $bookingOption->available_until->format('Y-m-d\TH:i'),
-        ];
+        $data = $this->generateRandomBookingOptionData();
 
         $this->assertUserCanPostOnlyWithAbility("events/{$event->slug}/booking-options", $data, Ability::ManageBookingOptionsOfEvent, null);
     }
 
-    #[DataProvider('visibilityProvider')]
-    public function testUserCanOpenEditBookingOptionFormOnlyWithCorrectAbility(Visibility $visibility): void
+    public function testUserCanOpenEditBookingOptionFormOnlyWithCorrectAbility(): void
     {
-        $bookingOption = self::createBookingOptionForEvent($visibility);
+        $bookingOption = self::createBookingOptionForEvent();
         $this->assertUserCanGetOnlyWithAbility("/events/{$bookingOption->event->slug}/booking-options/{$bookingOption->slug}/edit", Ability::ManageBookingOptionsOfEvent);
+    }
+
+    public function testUserCanUpdateBookingOptionOnlyWithCorrectAbility(): void
+    {
+        $bookingOption = self::createBookingOptionForEvent();
+        $data = $this->generateRandomBookingOptionData();
+
+        $this->assertUserCanPutOnlyWithAbility(
+            "/events/{$bookingOption->event->slug}/booking-options/{$bookingOption->slug}",
+            $data,
+            Ability::ManageBookingOptionsOfEvent,
+            "/events/{$bookingOption->event->slug}/booking-options/{$bookingOption->slug}/edit",
+            "/events/{$bookingOption->event->slug}/booking-options/{$data['slug']}/edit"
+        );
+    }
+
+    private function generateRandomBookingOptionData(): array
+    {
+        $bookingOption = BookingOption::factory()->makeOne();
+        return [
+            ...$bookingOption->toArray(),
+            'available_from' => $bookingOption->available_from->format('Y-m-d\TH:i'),
+            'available_until' => $bookingOption->available_until->format('Y-m-d\TH:i'),
+        ];
     }
 }

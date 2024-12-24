@@ -37,7 +37,8 @@ class AccountControllerTest extends TestCase
     {
         $this->actingAsUserWithAbility(Ability::EditAccount);
 
-        $this->put('/account', $this->getRandomUserData())
+        $this->from('/account/edit')
+            ->put('/account', $this->getRandomUserData())
             ->assertSessionDoesntHaveErrors()
             ->assertRedirect('/account/edit');
     }

@@ -8,17 +8,22 @@ use App\Models\Document;
 use App\Models\DocumentReview;
 use App\Models\Event;
 use App\Models\EventSeries;
+use App\Models\FormField;
+use App\Models\FormFieldValue;
 use App\Models\Group;
 use App\Models\Location;
 use App\Models\Organization;
 use App\Models\User;
 use App\Options\FileType;
+use App\Options\FormElementType;
 use App\Options\Visibility;
 use Closure;
 use Database\Factories\BookingFactory;
 use Database\Factories\BookingOptionFactory;
 use Database\Factories\EventFactory;
 use Database\Factories\EventSeriesFactory;
+use Database\Factories\FormFieldFactory;
+use Database\Factories\FormFieldValueFactory;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Collection;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -31,6 +36,10 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(EventFactory::class)]
 #[CoversClass(EventSeries::class)]
 #[CoversClass(EventSeriesFactory::class)]
+#[CoversClass(FormField::class)]
+#[CoversClass(FormFieldFactory::class)]
+#[CoversClass(FormFieldValue::class)]
+#[CoversClass(FormFieldValueFactory::class)]
 #[CoversClass(Group::class)]
 #[CoversClass(User::class)]
 #[CoversClass(UserFactory::class)]
@@ -42,12 +51,26 @@ trait GeneratesTestData
         return array_map(static fn (Visibility $method) => [$method], Visibility::cases());
     }
 
-    protected static function createBooking(): Booking
+    protected static function createBooking(?BookingOption $bookingOption = null): Booking
     {
-        return Booking::factory()
-            ->for(self::createBookingOptionForEvent(Visibility::Public))
+        $booking = Booking::factory()
+            ->for($bookingOption ?? self::createBookingOptionForEvent(Visibility::Public))
             ->has(User::factory(), 'bookedByUser')
             ->create();
+
+        if (isset($bookingOption) && $bookingOption->formFields->isNotEmpty()) {
+            foreach ($bookingOption->formFields as $formField) {
+                $booking->setFieldValue(
+                    $formField,
+                    FormFieldValue::factory()
+                        ->forFormField($formField)
+                        ->makeOne()
+                        ->value
+                );
+            }
+        }
+
+        return $booking;
     }
 
     protected static function createBookings(BookingOption $bookingOption): Collection
@@ -68,11 +91,35 @@ trait GeneratesTestData
             ->create();
     }
 
-    protected static function createBookingOptionForEvent(Visibility $visibility): BookingOption
+    protected static function createBookingOptionForEvent(?Visibility $visibility = null): BookingOption
     {
         return BookingOption::factory()
             ->for(self::createEvent($visibility))
             ->create();
+    }
+
+    protected static function createBookingOptionForEventWithCustomFormFields(?Visibility $visibility = null): BookingOption
+    {
+        $bookingOptionFactory = BookingOption::factory()
+            ->for(self::createEvent($visibility))
+            ->has(FormField::factory()->forColumn('first_name'))
+            ->has(FormField::factory()->forColumn('last_name'))
+            ->has(FormField::factory()->forColumn('email'));
+
+        foreach (FormElementType::casesForFields() as $type) {
+            $bookingOptionFactory
+                ->has(
+                    FormField::factory()
+                        ->count(random_int(2, 10))
+                        ->forType($type)
+                        ->sequence(
+                            ['required' => true],
+                            ['required' => false]
+                        )
+                );
+        }
+
+        return $bookingOptionFactory->create();
     }
 
     protected static function createChildEvent(Visibility $visibility, Event $event): Event
@@ -118,10 +165,10 @@ trait GeneratesTestData
             ->create();
     }
 
-    protected static function createEvent(Visibility $visibility = null): Event
+    protected static function createEvent(?Visibility $visibility = null): Event
     {
         return Event::factory()
-            ->visibility($visibility ?? null)
+            ->visibility($visibility)
             ->for(Location::factory()->create())
             ->create();
     }
@@ -142,7 +189,7 @@ trait GeneratesTestData
         return $event;
     }
 
-    protected static function createEventSeries(Visibility $visibility): EventSeries
+    protected static function createEventSeries(?Visibility $visibility = null): EventSeries
     {
         return EventSeries::factory()
             ->has(

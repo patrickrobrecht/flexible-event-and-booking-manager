@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Options\ActiveStatus;
 use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\RateLimiter;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
@@ -72,6 +73,38 @@ class AuthenticationTest extends TestCase
         ]);
 
         $this->assertGuest();
+    }
+
+    public function testLoginIsThrottledAfterMultipleFailedAttempts(): void
+    {
+        $wrongCredentials = [
+            'email' => 'mail@example.com',
+            'password' => 'wrongpassword',
+        ];
+
+        $maxAttempts = 5;
+        $key = $wrongCredentials['email'] . '|127.0.0.1';
+        RateLimiter::clear($key);
+
+        // Simulate failed login attempts.
+        for ($i = 0; $i < $maxAttempts; $i++) {
+            $response = $this->from('login')->post('login', $wrongCredentials);
+            $response->assertRedirect('login')
+                ->assertSessionHasErrors([
+                    'email' => __('auth.failed'),
+                ]);
+        }
+
+        // Check that the rate limiter is about to throttle.
+        $this->assertTrue(RateLimiter::tooManyAttempts($key, $maxAttempts));
+
+        // Simulate the throttled login attempt.
+        $this->post('login', $wrongCredentials)
+            ->assertRedirect('login')
+            ->assertSessionHas('errors', fn (string $error) => str_contains($error, 'Zu viele Loginversuche.'));
+
+        // Clear rate limit.
+        RateLimiter::clear($key);
     }
 
     public function testUserCanLogout(): void

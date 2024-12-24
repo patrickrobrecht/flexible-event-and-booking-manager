@@ -6,21 +6,20 @@ use App\Models\BookingOption;
 use App\Options\BookingRestriction;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends Factory<BookingOption>
  */
 class BookingOptionFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
+        $name = __('Booking option') . ' #' . $this->faker->unique()->randomNumber();
+
         return [
-            'name' => __('Booking option') . ' #' . $this->faker->unique()->randomNumber(),
+            'name' => $name,
+            'slug' => Str::slug($name),
             'description' => $this->faker->sentences(2, true),
             'available_from' => $this->faker->dateTimeBetween('-30 years', '-1 day'),
             'available_until' => $this->faker->dateTimeBetween('+1 day', '+30 days'),

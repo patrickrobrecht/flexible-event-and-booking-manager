@@ -41,11 +41,24 @@
                                   :value="$organization->register_entry ?? null"><i class="fa fa-fw fa-scale-balanced"></i> {{ __('Register entry') }}</x-bs::form.field>
                 <x-bs::form.field name="website_url" type="url"
                                   :value="$organization->website_url ?? null"><i class="fa fa-fw fa-display"></i> {{ __('Website') }}</x-bs::form.field>
+                <x-bs::form.field name="phone" type="tel"
+                                  :value="$organization->phone ?? null"><i class="fa fa-fw fa-phone"></i> {{ __('Phone number') }}</x-bs::form.field>
+                <x-bs::form.field name="email" type="email"
+                                  :value="$organization->email ?? null"><i class="fa fa-fw fa-at"></i> {{ __('E-mail') }}</x-bs::form.field>
                 <x-bs::form.field name="location_id" type="select"
                                   :options="$locations->pluck('nameOrAddress', 'id')"
                                   :value="$organization->location->id ?? null"><i class="fa fa-fw fa-location-pin"></i> {{ __('Location') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6">
+                <section class="my-3">
+                    <h2><i class="fa fa-fw fa-credit-card"></i> {{ __('Bank account details') }}</h2>
+                    <x-bs::form.field name="bank_account_holder" type="text" placeholder="{{ $organization->name ?? null }}"
+                                      :value="$organization->bank_account_holder ?? null">{{ __('Account holder') }}</x-bs::form.field>
+                    <x-bs::form.field name="iban" type="text"
+                                      :value="$organization->iban ?? null"><abbr title="{{ __('International Bank Account Number') }}">IBAN</abbr></x-bs::form.field>
+                    <x-bs::form.field name="bank_name" type="text"
+                                      :value="$organization->bank_name ?? null">{{ __('Name of the bank') }}</x-bs::form.field>
+                </section>
                 <section class="my-3">
                     <h2><i class="fa fa-fw fa-list-check"></i> {{ __('Responsibilities') }}</h2>
                     @livewire('users.search-users', [

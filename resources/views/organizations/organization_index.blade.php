@@ -92,6 +92,18 @@
                                 </x-slot:end>
                             </x-bs::list.item>
                         @endisset
+                        @isset($organization->phone)
+                            <x-bs::list.item>
+                                <i class="fa fa-fw fa-phone"></i>
+                                <a href="{{ $organization->website_url }}">{{ $organization->phone }}</a>
+                            </x-bs::list.item>
+                        @endisset
+                        @isset($organization->email)
+                            <x-bs::list.item>
+                                <i class="fa fa-fw fa-at"></i>
+                                <a href="mailto:{{ $organization->email }}">{{ $organization->email }}</a>
+                            </x-bs::list.item>
+                        @endisset
                         @isset($organization->website_url)
                             <x-bs::list.item>
                                 <i class="fa fa-fw fa-display"></i>

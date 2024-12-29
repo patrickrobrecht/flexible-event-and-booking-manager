@@ -25,7 +25,12 @@ use Spatie\QueryBuilder\AllowedFilter;
  * @property string $slug
  * @property ActiveStatus $status
  * @property ?string $register_entry
+ * @property ?string $phone
+ * @property ?string $email
  * @property ?string $website_url
+ * @property ?string $bank_account_holder
+ * @property ?string $iban
+ * @property ?string $bank_name
  *
  * @property Collection|Event[] $events {@see Organization::events()}
  * @property ?Organization $parentOrganization {@see Organization::parentOrganization()}
@@ -49,6 +54,8 @@ class Organization extends Model
         'slug',
         'status',
         'register_entry',
+        'phone',
+        'email',
         'website_url',
     ];
 

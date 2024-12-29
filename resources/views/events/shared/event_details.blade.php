@@ -6,7 +6,7 @@
     @isset($event->description)
         <x-bs::list.item>{{ $event->description }}</x-bs::list.item>
     @endisset
-    <x-bs::list.item>
+    <x-bs::list.item class="d-flex">
         <span class="me-3"><i class="fa fa-fw fa-clock" title="{{ __('Date') }}"></i></span>
         @include('events.shared.event_dates')
     </x-bs::list.item>
@@ -42,9 +42,26 @@
                             @else
                                 {{ $organization->name }}
                             @endcan
-                            @foreach($organization->location->fullAddressBlock as $line)
-                                <div>{{ $line }}</div>
-                            @endforeach
+                            <div class="d-flex">
+                                <span class="me-3"><i class="fa fa-fw fa-location-pin" title="{{ __('Address of organization') }}"></i></span>
+                                <div>
+                                    @foreach($organization->location->fullAddressBlock as $line)
+                                        <div>{{ $line }}</div>
+                                    @endforeach
+                                </div>
+                            </div>
+                            @isset($organization->phone)
+                                <div class="d-flex">
+                                    <span class="me-3"><i class="fa fa-fw fa-phone"></i></span>
+                                    {{ $organization->phone }}
+                                </div>
+                            @endisset
+                            @isset($organization->email)
+                                <div class="d-flex">
+                                    <span class="me-3"><i class="fa fa-fw fa-at"></i></span>
+                                    <a href="mailto:{{ $organization->email }}">{{ $organization->email }}</a>
+                                </div>
+                            @endisset
                         </li>
                     @endforeach
                 </ul>

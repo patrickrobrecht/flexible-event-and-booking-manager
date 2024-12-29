@@ -5,9 +5,11 @@ namespace App\Http\Requests;
 use App\Http\Requests\Traits\ValidatesResponsibleUsers;
 use App\Models\Organization;
 use App\Options\ActiveStatus;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Intervention\Validation\Rules\Iban;
 
 /**
  * @property ?Organization $organization
@@ -31,6 +33,11 @@ class OrganizationRequest extends FormRequest
      */
     public function rules(): array
     {
+        $hasEventsWithPaidBookingOptions = isset($this->organization)
+            && $this->organization->events()
+                ->whereHas('bookingOptions', fn (Builder $bookingOptions) => $bookingOptions->whereNotNull('price'))
+                ->exists();
+
         return [
             'name' => [
                 'required',
@@ -53,6 +60,17 @@ class OrganizationRequest extends FormRequest
                 'string',
                 'max:255',
             ],
+            'phone' => [
+                'nullable',
+                'string',
+                'max:255',
+                'regex:/^([0-9\s\ \+\(\)]*)$/',
+            ],
+            'email' => [
+                'nullable',
+                'email',
+                'max:255',
+            ],
             'website_url' => [
                 'nullable',
                 'url:http,https',
@@ -61,6 +79,24 @@ class OrganizationRequest extends FormRequest
             'location_id' => [
                 'required',
                 Rule::exists('locations', 'id'),
+            ],
+            'bank_account_holder' => [
+                'nullable', // name is fallback
+                'string',
+                'max:255',
+            ],
+            'iban' => [
+                $hasEventsWithPaidBookingOptions ? 'required' : 'nullable',
+                'required_with:bank_account_holder',
+                'required_with:bank_name',
+                new Iban(),
+            ],
+            'bank_name' => [
+                $hasEventsWithPaidBookingOptions ? 'required' : 'nullable',
+                'required_with:bank_account_holder',
+                'required_with:iban',
+                'string',
+                'max:255',
             ],
             ...$this->rulesForResponsibleUsers(),
         ];

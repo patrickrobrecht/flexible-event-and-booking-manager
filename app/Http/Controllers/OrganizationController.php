@@ -27,6 +27,7 @@ class OrganizationController extends Controller
                 ->withCount([
                     'documents',
                     'events',
+                    'eventSeries',
                 ])
                 ->paginate(10),
         ]));

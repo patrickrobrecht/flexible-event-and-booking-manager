@@ -40,7 +40,7 @@ class OrganizationControllerTest extends TestCase
     public function testOrganizationsAreShown(): void
     {
         $organizations = Organization::factory()
-            ->for(Location::factory()->create())
+            ->for(self::createLocation())
             ->count(5)
             ->create();
 
@@ -105,7 +105,7 @@ class OrganizationControllerTest extends TestCase
         bool $ok
     ): void {
         $organization = $organizationProvider()
-            ->for(Location::factory()->create())
+            ->for(self::createLocation())
             ->create();
         $data = [
             ...$dataProvider()->makeOne()->toArray(),
@@ -129,22 +129,23 @@ class OrganizationControllerTest extends TestCase
             [
                 // A bank account can be added for any organization.
                 fn () => Organization::factory(),
-                fn () => Organization::factory()->withBank(),
+                fn () => Organization::factory()->withBankAccount(),
                 true,
             ],
             [
                 // An organization without events does not require a bank account details, so they can be removed.
-                fn () => Organization::factory()->withBank(),
+                fn () => Organization::factory()->withBankAccount(),
                 fn () => Organization::factory(),
                 true,
             ],
             [
                 // An organization with events having only unpaid booking options does not require a bank account, so user is not forced to enter them.
                 fn () => Organization::factory()
-                    ->hasAttached(
+                    ->has(
                         Event::factory()
-                        ->for(Location::factory()->create())
-                        ->has(BookingOption::factory()->withoutPrice())
+                            ->for(self::createLocation())
+                            ->for(self::createOrganization())
+                            ->has(BookingOption::factory()->withoutPrice())
                     ),
                 fn () => Organization::factory(),
                 true,
@@ -152,10 +153,11 @@ class OrganizationControllerTest extends TestCase
             [
                 // An organization with paid booking requires bank account.
                 fn () => Organization::factory()
-                    ->withBank()
-                    ->hasAttached(
+                    ->withBankAccount()
+                    ->has(
                         Event::factory()
-                            ->for(Location::factory()->create())
+                            ->for(self::createLocation())
+                            ->for(self::createOrganization())
                             ->has(BookingOption::factory())
                     ),
                 fn () => Organization::factory(),

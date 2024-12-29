@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug');
             $table->string('visibility');
+            $table->foreignId('organization_id')->constrained('organizations');
             $table->foreignId('parent_event_series_id')->nullable()->constrained('event_series');
             $table->timestamps();
         });

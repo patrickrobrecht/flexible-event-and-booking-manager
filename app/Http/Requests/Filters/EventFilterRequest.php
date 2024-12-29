@@ -31,7 +31,7 @@ class EventFilterRequest extends FormRequest
             'filter.date_from' => $this->ruleForDate(),
             'filter.date_until' => $this->ruleForDate('filter.date_from'),
             'filter.event_series_id' => $this->ruleForAllowedOrExistsInDatabase(EventSeries::query(), FilterValue::values()),
-            'filter.organization_id' => $this->ruleForAllowedOrExistsInDatabase(Organization::query(), FilterValue::values()),
+            'filter.organization_id' => $this->ruleForAllowedOrExistsInDatabase(Organization::query(), [FilterValue::All->value]),
             'filter.location_id' => $this->ruleForAllowedOrExistsInDatabase(Location::query(), [FilterValue::All->value]),
             'filter.document_id' => $this->ruleForAllowedOrExistsInDatabase(Document::query(), FilterValue::values()),
             'filter.event_type' => $this->ruleForAllowedOrExistsInEnum(EventType::class, [FilterValue::All->value]),

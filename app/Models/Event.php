@@ -4,9 +4,10 @@ namespace App\Models;
 
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
+use App\Models\Traits\BelongsToLocation;
+use App\Models\Traits\BelongsToOrganization;
 use App\Models\Traits\FiltersByRelationExistence;
 use App\Models\Traits\HasDocuments;
-use App\Models\Traits\HasLocation;
 use App\Models\Traits\HasNameAndDescription;
 use App\Models\Traits\HasResponsibleUsers;
 use App\Models\Traits\HasSlugForRouting;
@@ -47,11 +48,12 @@ use Spatie\QueryBuilder\Enums\SortDirection;
  */
 class Event extends Model
 {
+    use BelongsToLocation;
+    use BelongsToOrganization;
     use BuildsQueryFromRequest;
     use FiltersByRelationExistence;
     use HasDocuments;
     use HasFactory;
-    use HasLocation;
     use HasNameAndDescription;
     use HasResponsibleUsers;
     use HasSlugForRouting;
@@ -165,20 +167,15 @@ class Event extends Model
         };
     }
 
-    public function scopeOrganization(Builder $query, int|string $organizationId): Builder
-    {
-        return $this->scopeRelation($query, $organizationId, 'organizations', fn (Builder $q) => $q->where('organization_id', '=', $organizationId));
-    }
-
     public function fillAndSave(array $validatedData): bool
     {
         $this->fill($validatedData);
         $this->location()->associate($validatedData['location_id'] ?? null);
         $this->eventSeries()->associate($validatedData['event_series_id'] ?? null);
         $this->parentEvent()->associate($validatedData['parent_event_id'] ?? null);
+        $this->organization()->associate($validatedData['organization_id'] ?? null);
 
         return $this->save()
-            && $this->organizations()->sync($validatedData['organization_id'] ?? [])
             && $this->saveResponsibleUsers($validatedData);
     }
 
@@ -247,8 +244,7 @@ class Event extends Model
             AllowedFilter::scope('date_until'),
             /** @see self::scopeEventSeries() */
             AllowedFilter::scope('event_series_id', 'eventSeries'),
-            /** @see self::scopeOrganization() */
-            AllowedFilter::scope('organization_id', 'organization'),
+            AllowedFilter::exact('organization_id'),
             AllowedFilter::exact('location_id')
                 ->ignore(FilterValue::All->value),
             /** @see self::scopeDocument() */

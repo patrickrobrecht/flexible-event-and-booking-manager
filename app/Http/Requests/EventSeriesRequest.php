@@ -39,6 +39,10 @@ class EventSeriesRequest extends FormRequest
                 'required',
                 Visibility::rule(),
             ],
+            'organization_id' => [
+                'required',
+                Rule::exists('organizations', 'id'),
+            ],
             'parent_event_series_id' => [
                 'nullable',
                 Rule::prohibitedIf(fn () => isset($this->event_series)

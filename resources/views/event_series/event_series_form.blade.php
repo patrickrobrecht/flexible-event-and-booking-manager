@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @php
+    use Portavice\Bladestrap\Support\Options;
     /** @var ?\App\Models\EventSeries $eventSeries */
     /** @var \Illuminate\Database\Eloquent\Collection|\App\Models\EventSeries[] $allEventSeries */
 
@@ -45,8 +46,11 @@
                 <x-bs::form.field name="visibility" type="select"
                                   :options="\App\Options\Visibility::toOptions()"
                                   :value="$eventSeries->visibility->value ?? null"><i class="fa fa-fw fa-eye"></i> {{ __('Visibility') }}</x-bs::form.field>
+                <x-bs::form.field name="organization_id" type="radio"
+                                  :options="Options::fromModels($organizations, 'name')"
+                                  :value="$eventSeries->organization_id ?? null"><i class="fa fa-fw fa-sitemap"></i> {{ __('Organization') }}</x-bs::form.field>
                 <x-bs::form.field name="parent_event_series_id" type="select"
-                                  :options="\Portavice\Bladestrap\Support\Options::fromModels($allEventSeries->except($eventSeries->id ?? null), 'name')->prepend(__('none'), '')"
+                                  :options="Options::fromModels($allEventSeries->except($eventSeries->id ?? null), 'name')->prepend(__('none'), '')"
                                   :value="$eventSeries->parent_event_series_id ?? null"
                                   :from-query="\Illuminate\Support\Facades\Request::routeIs('event-series.create')"><i class="fa fa-fw fa-calendar-days"></i> {{ __('Part of the event series') }}</x-bs::form.field>
 

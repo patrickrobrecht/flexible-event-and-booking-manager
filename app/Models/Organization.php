@@ -4,8 +4,8 @@ namespace App\Models;
 
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
+use App\Models\Traits\BelongsToLocation;
 use App\Models\Traits\HasDocuments;
-use App\Models\Traits\HasLocation;
 use App\Models\Traits\HasResponsibleUsers;
 use App\Models\Traits\HasSlugForRouting;
 use App\Options\Ability;
@@ -15,8 +15,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\QueryBuilder\AllowedFilter;
 
 /**
@@ -33,14 +32,14 @@ use Spatie\QueryBuilder\AllowedFilter;
  * @property ?string $bank_name
  *
  * @property Collection|Event[] $events {@see Organization::events()}
- * @property ?Organization $parentOrganization {@see Organization::parentOrganization()}
+ * @property Collection|EventSeries[] $eventSeries {@see self::eventSeries()}
  */
 class Organization extends Model
 {
+    use BelongsToLocation;
     use BuildsQueryFromRequest;
     use HasDocuments;
     use HasFactory;
-    use HasLocation;
     use HasResponsibleUsers;
     use HasSlugForRouting;
 
@@ -68,15 +67,14 @@ class Organization extends Model
         'status' => ActiveStatus::class,
     ];
 
-    public function events(): BelongsToMany
+    public function events(): HasMany
     {
-        return $this->belongsToMany(Event::class)
-            ->withTimestamps();
+        return $this->hasMany(Event::class);
     }
 
-    public function parentOrganization(): BelongsTo
+    public function eventSeries(): HasMany
     {
-        return $this->belongsTo(__CLASS__, 'parent_organization_id');
+        return $this->hasMany(EventSeries::class);
     }
 
     public function scopeEvent(Builder $query, int|string $eventId): Builder

@@ -41,6 +41,12 @@
                                   :from-query="true"><i class="fa fa-fw fa-calendar-days"></i> {{ __('Events') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6 col-xl-3">
+                <x-bs::form.field id="organization_id" name="filter[organization_id]" type="select"
+                                  :options="Options::fromModels($organizations, 'name')->prepend(__('all'), FilterValue::All->value)"
+                                  :cast="FilterValue::castToIntIfNoValue()"
+                                  :from-query="true"><i class="fa fa-fw fa-sitemap"></i> {{ __('Organization') }}</x-bs::form.field>
+            </div>
+            <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="document_id" name="filter[document_id]" type="select"
                                   :options="Options::fromArray(\App\Models\Document::filterOptions())"
                                   :from-query="true"><i class="fa fa-fw fa-file"></i> {{ __('Documents') }}</x-bs::form.field>

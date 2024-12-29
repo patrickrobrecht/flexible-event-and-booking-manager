@@ -8,7 +8,6 @@ use App\Models\Booking;
 use App\Models\BookingOption;
 use App\Models\Event;
 use App\Models\Group;
-use App\Models\Location;
 use App\Options\Ability;
 use Database\Factories\GroupFactory;
 use Illuminate\Database\Eloquent\Factories\Sequence;
@@ -51,7 +50,8 @@ class ManageGroupsTest extends TestCase
     public function testGroupDeleted(): void
     {
         $event = Event::factory()
-            ->for(Location::factory())
+            ->for(self::createLocation())
+            ->for(self::createOrganization())
             ->has(
                 Group::factory()
                     ->sequence(fn (Sequence $sequence) => [
@@ -78,7 +78,8 @@ class ManageGroupsTest extends TestCase
     public function testBookingMoved(): void
     {
         $event = Event::factory()
-            ->for(Location::factory())
+            ->for(self::createLocation())
+            ->for(self::createOrganization())
             ->has(
                 BookingOption::factory()
                     ->has(

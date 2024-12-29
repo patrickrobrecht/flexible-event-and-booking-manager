@@ -6,12 +6,12 @@ use App\Livewire\Forms\GroupForm;
 use App\Livewire\Groups\EditGroup;
 use App\Models\Event;
 use App\Models\Group;
-use App\Models\Location;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 use Tests\Traits\ActsAsUser;
+use Tests\Traits\GeneratesTestData;
 
 #[CoversClass(Group::class)]
 #[CoversClass(EditGroup::class)]
@@ -19,6 +19,7 @@ use Tests\Traits\ActsAsUser;
 class EditGroupTest extends TestCase
 {
     use ActsAsUser;
+    use GeneratesTestData;
 
     public function testComponentRendersCorrectly(): void
     {
@@ -76,7 +77,8 @@ class EditGroupTest extends TestCase
     {
         /** @var Event $event */
         $event = Event::factory(1)
-            ->for(Location::factory()->create())
+            ->for(self::createLocation())
+            ->for(self::createOrganization())
             ->create()
             ->first();
         $event->groups()->create([

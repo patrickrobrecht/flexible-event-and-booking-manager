@@ -26,7 +26,7 @@ class OrganizationFactory extends Factory
         ];
     }
 
-    public function withBank(): static
+    public function withBankAccount(): static
     {
         return $this->state(fn (array $attributes) => [
             'bank_account_holder' => $this->faker->company(),

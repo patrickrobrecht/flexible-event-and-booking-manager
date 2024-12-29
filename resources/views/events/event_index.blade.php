@@ -52,7 +52,7 @@
             </div>
             <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="organization_id" name="filter[organization_id]" type="select"
-                                  :options="Options::fromModels($organizations, 'name')->prependMany(\App\Models\Organization::filterOptions())"
+                                  :options="Options::fromModels($organizations, 'name')->prepend(__('all'), FilterValue::All->value)"
                                   :cast="FilterValue::castToIntIfNoValue()"
                                   :from-query="true"><i class="fa fa-fw fa-sitemap"></i> {{ __('Organization') }}</x-bs::form.field>
             </div>
@@ -120,18 +120,14 @@
                             </x-bs::list.item>
                         @endisset
                         <x-bs::list.item>
-                            <span class="text-nowrap"><i class="fa fa-fw fa-sitemap"></i> {{ __('Organizations') }}</span>
+                            <span class="text-nowrap"><i class="fa fa-fw fa-sitemap"></i> {{ __('Organization') }}</span>
                             <x-slot:end>
                                 <div class="text-end">
-                                    <ul class="list-unstyled">
-                                        @foreach($event->organizations as $organization)
-                                            @can('view', $organization)
-                                                <li><a href="{{ $organization->getRoute() }}">{{ $organization->name }}</a></li>
-                                            @else
-                                                <li>{{ $organization->name }}</li>
-                                            @endif
-                                        @endforeach
-                                    </ul>
+                                    @can('view', $event->organization)
+                                        <a href="{{ $event->organization->getRoute() }}">{{ $event->organization->name }}</a>
+                                    @else
+                                        {{ $event->organization->name }}
+                                    @endif
                                 </div>
                             </x-slot:end>
                         </x-bs::list.item>

@@ -137,14 +137,35 @@
                         <x-bs::list.item>
                             <span>
                                 <i class="fa fa-fw fa-calendar-days"></i>
-                                <a href="{{ route('events.index', [
-                                    'filter[organization_id]' => $organization->id,
-                                    'filter[date_from]' => '',
-                                    'filter[event_type]' => '',
-                                ]) }}" target="_blank">{{ __('Events') }}</a>
+                                @can('viewAny', \App\Models\Event::class)
+                                    <a href="{{ route('events.index', [
+                                        'filter[organization_id]' => $organization->id,
+                                        'filter[date_from]' => '',
+                                        'filter[event_type]' => '',
+                                    ]) }}" target="_blank">{{ __('Events') }}</a>
+                                @else
+                                    {{ __('Events') }}
+                                @endcan
                             </span>
                             <x-slot:end>
                                 <x-bs::badge>{{ formatInt($organization->events_count) }}</x-bs::badge>
+                            </x-slot:end>
+                        </x-bs::list.item>
+                        <x-bs::list.item>
+                            <span>
+                                <i class="fa fa-fw fa-calendar-week"></i>
+                                @can('viewAny', \App\Models\EventSeries::class)
+                                    <a href="{{ route('events.index', [
+                                        'filter[organization_id]' => $organization->id,
+                                        'filter[date_from]' => '',
+                                        'filter[event_type]' => '',
+                                    ]) }}" target="_blank">{{ __('Event series') }}</a>
+                                @else
+                                    {{ __('Event series') }}
+                                @endcan
+                            </span>
+                            <x-slot:end>
+                                <x-bs::badge>{{ formatInt($organization->event_series_count) }}</x-bs::badge>
                             </x-slot:end>
                         </x-bs::list.item>
                     </x-bs::list>

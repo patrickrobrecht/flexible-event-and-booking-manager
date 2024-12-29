@@ -31,41 +31,31 @@
     <x-bs::list.item class="d-flex">
         <span class="me-3"><i class="fa fa-fw fa-sitemap" title="{{ __('Organizations') }}"></i></span>
         <div>
-            @if($event->organizations->count() === 0)
-                {{ __('none') }}
+            @can('view', $event->organization)
+                <a href="{{ route('organizations.show', $event->organization) }}">{{ $event->organization->name }}</a>
             @else
-                <ul class="list-unstyled">
-                    @foreach($event->organizations as $organization)
-                        <li>
-                            @can('view', $organization)
-                                <a href="{{ route('organizations.show', $organization) }}">{{ $organization->name }}</a>
-                            @else
-                                {{ $organization->name }}
-                            @endcan
-                            <div class="d-flex">
-                                <span class="me-3"><i class="fa fa-fw fa-location-pin" title="{{ __('Address of organization') }}"></i></span>
-                                <div>
-                                    @foreach($organization->location->fullAddressBlock as $line)
-                                        <div>{{ $line }}</div>
-                                    @endforeach
-                                </div>
-                            </div>
-                            @isset($organization->phone)
-                                <div class="d-flex">
-                                    <span class="me-3"><i class="fa fa-fw fa-phone"></i></span>
-                                    {{ $organization->phone }}
-                                </div>
-                            @endisset
-                            @isset($organization->email)
-                                <div class="d-flex">
-                                    <span class="me-3"><i class="fa fa-fw fa-at"></i></span>
-                                    <a href="mailto:{{ $organization->email }}">{{ $organization->email }}</a>
-                                </div>
-                            @endisset
-                        </li>
+                {{ $event->organization->name }}
+            @endcan
+            <div class="d-flex">
+                <span class="me-3"><i class="fa fa-fw fa-location-pin" title="{{ __('Address of organization') }}"></i></span>
+                <div>
+                    @foreach($event->organization->location->fullAddressBlock as $line)
+                        <div>{{ $line }}</div>
                     @endforeach
-                </ul>
-            @endif
+                </div>
+            </div>
+            @isset($event->organization->phone)
+                <div class="d-flex">
+                    <span class="me-3"><i class="fa fa-fw fa-phone"></i></span>
+                    {{ $event->organization->phone }}
+                </div>
+            @endisset
+            @isset($event->organization->email)
+                <div class="d-flex">
+                    <span class="me-3"><i class="fa fa-fw fa-at"></i></span>
+                    <a href="mailto:{{ $event->organization->email }}">{{ $event->organization->email }}</a>
+                </div>
+            @endisset
         </div>
     </x-bs::list.item>
 </x-bs::list>

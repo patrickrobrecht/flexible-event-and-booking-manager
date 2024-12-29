@@ -131,5 +131,4 @@
 
 @push('scripts')
     @livewireScripts
-    <script src="{{ mix('/lib/alpinejs.min.js') }}" defer></script>
 @endpush

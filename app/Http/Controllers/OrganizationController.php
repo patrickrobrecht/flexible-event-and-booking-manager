@@ -27,6 +27,7 @@ class OrganizationController extends Controller
                 ->withCount([
                     'documents',
                     'events',
+                    'eventSeries',
                 ])
                 ->paginate(10),
         ]));
@@ -81,7 +82,8 @@ class OrganizationController extends Controller
             Session::flash('success', __('Saved successfully.'));
         }
 
-        return back();
+        // Slug may have changed, so we need to generate the URL here!
+        return redirect(route('organizations.edit', $organization));
     }
 
     private function formValues(array $values = []): array

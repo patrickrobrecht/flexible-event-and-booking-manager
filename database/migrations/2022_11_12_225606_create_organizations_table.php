@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('register_entry')->nullable();
             $table->string('representatives')->nullable();
             $table->string('website_url')->nullable();
-            $table->foreignId('parent_organization_id')->nullable()->constrained('organizations');
             $table->foreignId('location_id')->constrained('locations');
             $table->timestamps();
         });

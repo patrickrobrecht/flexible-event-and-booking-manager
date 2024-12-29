@@ -5,6 +5,7 @@ namespace Tests\Feature\Http;
 use App\Http\Controllers\EventSeriesController;
 use App\Http\Requests\EventSeriesRequest;
 use App\Http\Requests\Filters\EventSeriesFilterRequest;
+use App\Models\Event;
 use App\Models\EventSeries;
 use App\Options\Ability;
 use App\Options\EventSeriesType;
@@ -61,7 +62,7 @@ class EventSeriesControllerTest extends TestCase
 
     public function testUserCanStoreEventSeriesOnlyWithCorrectAbility(): void
     {
-        $data = EventSeries::factory()->makeOne()->toArray();
+        $data = $this->generateRandomEventSeriesData();
 
         $this->assertUserCanPostOnlyWithAbility('event-series', $data, Ability::CreateEventSeries, null);
     }
@@ -75,7 +76,7 @@ class EventSeriesControllerTest extends TestCase
     public function testUserCanUpdateEventSeriesOnlyWithCorrectAbility(): void
     {
         $eventSeries = self::createEventSeries();
-        $data = EventSeries::factory()->makeOne()->toArray();
+        $data = $this->generateRandomEventSeriesData();
 
         $this->assertUserCanPutOnlyWithAbility(
             "/event-series/{$eventSeries->slug}",
@@ -84,5 +85,14 @@ class EventSeriesControllerTest extends TestCase
             "/event-series/{$eventSeries->slug}/edit",
             "/event-series/{$data['slug']}/edit"
         );
+    }
+
+    private function generateRandomEventSeriesData(): array
+    {
+        $eventData = Event::factory()->makeOne();
+        return [
+            ...$eventData->toArray(),
+            'organization_id' => self::createOrganization()->id,
+        ];
     }
 }

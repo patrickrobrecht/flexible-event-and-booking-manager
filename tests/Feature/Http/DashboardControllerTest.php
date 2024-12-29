@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
+use Tests\Traits\GeneratesTestData;
 
 #[CoversClass(DashboardController::class)]
 #[CoversClass(Booking::class)]
@@ -28,6 +29,7 @@ use Tests\TestCase;
 #[CoversClass(LocationFactory::class)]
 class DashboardControllerTest extends TestCase
 {
+    use GeneratesTestData;
     use RefreshDatabase;
 
     public function testGuestCanViewTheDashboard(): void
@@ -54,7 +56,8 @@ class DashboardControllerTest extends TestCase
     private function createEvents(User $bookedByUser, int $eventsCount): Collection
     {
         return Event::factory()
-            ->for(Location::factory()->create())
+            ->for(self::createLocation())
+            ->for(self::createOrganization())
             ->has(
                 BookingOption::factory()
                     ->has(

@@ -29,7 +29,7 @@ class EventController extends Controller
                     ]),
                     'eventSeries',
                     'location',
-                    'organizations',
+                    'organization',
                     'parentEvent',
                     'responsibleUsers',
                 ])
@@ -56,7 +56,7 @@ class EventController extends Controller
                     'documents.uploadedByUser',
                     'eventSeries',
                     'location',
-                    'organizations',
+                    'organization',
                     'parentEvent.subEvents' => static fn (HasMany $query) => $query->withCount([
                         'documents',
                         'groups',

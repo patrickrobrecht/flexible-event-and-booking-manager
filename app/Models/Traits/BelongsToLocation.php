@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @property Location $location {@see HasLocation::location()}
+ * @property Location $location {@see self::location()}
  *
  * @mixin Model
  */
-trait HasLocation
+trait BelongsToLocation
 {
     public function location(): BelongsTo
     {

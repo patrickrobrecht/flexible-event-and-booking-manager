@@ -16,9 +16,6 @@ class SendBookingConfirmation implements ShouldQueue
     public function handle(BookingCompleted $event): void
     {
         $notification = Notification::route('mail', $event->booking->email);
-        if (isset($event->booking->bookedByUser) && $event->booking->bookedByUser->email !== $event->booking->email) {
-            $notification->route('mail', $event->booking->bookedByUser->email);
-        }
         $notification->notify(
             new BookingConfirmation($event->booking)
         );

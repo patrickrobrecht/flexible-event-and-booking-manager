@@ -91,7 +91,7 @@ Route::middleware('auth')->group(static function () {
     Route::model('organization', Organization::class);
     Route::resource('organizations', OrganizationController::class)
         ->only(['index', 'create', 'store', 'show', 'edit', 'update']);
-    Route::prefix('organizations/{organization}')->group(function () {
+    Route::prefix('organizations/{organization:slug}')->group(function () {
         Route::post('documents', [DocumentController::class, 'storeForOrganization'])
             ->name('organizations.documents.store');
     });

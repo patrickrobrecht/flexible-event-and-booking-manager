@@ -6,7 +6,6 @@ use App\Http\Controllers\EventController;
 use App\Http\Requests\EventRequest;
 use App\Http\Requests\Filters\EventFilterRequest;
 use App\Models\Event;
-use App\Models\Location;
 use App\Options\Ability;
 use App\Options\EventType;
 use App\Options\FilterValue;
@@ -94,7 +93,8 @@ class EventControllerTest extends TestCase
             ...$eventData->toArray(),
             'started_at' => $eventData->started_at->format('Y-m-d\TH:i'),
             'finished_at' => $eventData->finished_at->format('Y-m-d\TH:i'),
-            'location_id' => $this->faker->randomElement(Location::factory()->count(3)->create())->id,
+            'location_id' => self::createLocation()->id,
+            'organization_id' => self::createOrganization()->id,
         ];
     }
 }

@@ -2,6 +2,7 @@
 
 @php
     /** @var \App\Models\BookingOption $bookingOption */
+    $organization = $bookingOption->event->organization;
 @endphp
 
 @section('title')
@@ -73,9 +74,9 @@
                                 'price' => formatDecimal($bookingOption->price) . ' €',
                             ]) }}
                             <ul>
-                                <li>IBAN: {{ config('app.bank_account.iban') }}</li>
-                                <li>{{ __('Bank') }}: {{ config('app.bank_account.bank_name') }}</li>
-                                <li>{{ __('Account holder') }}: {{ config('app.bank_account.holder') }}</li>
+                                <li>{{ __('Account holder') }}: {{ $organization->bank_account_holder ?? $organization->name }}</li>
+                                <li>IBAN: {{ $organization->iban }}</li>
+                                <li>{{ __('Bank') }}: {{ $organization->bank_name }}</li>
                             </ul>
                         </x-bs::alert>
                     @endif

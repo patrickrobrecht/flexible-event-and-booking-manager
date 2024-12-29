@@ -7,6 +7,7 @@
         "php": "^8.2",
         "barryvdh/laravel-dompdf": "^3.0",
         "guzzlehttp/guzzle": "^7.9",
+        "intervention/validation": "^4.4",
         "laravel/framework": "^11.36",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.10",

@@ -70,9 +70,9 @@
                 <x-bs::form.field name="location_id" type="select"
                                   :options="$locations->pluck('nameOrAddress', 'id')"
                                   :value="$event->location_id ?? null"><i class="fa fa-fw fa-location-pin"></i> {{ __('Location') }}</x-bs::form.field>
-                <x-bs::form.field id="organization_id" name="organization_id[]" type="checkbox"
+                <x-bs::form.field name="organization_id" type="radio"
                                   :options="Options::fromModels($organizations, 'name')"
-                                  :value="isset($event) ? $event->organizations->pluck('id')->toArray() : []"><i class="fa fa-fw fa-sitemap"></i> {{ __('Organization') }}</x-bs::form.field>
+                                  :value="$event->organization_id ?? null"><i class="fa fa-fw fa-sitemap"></i> {{ __('Organization') }}</x-bs::form.field>
                 <x-bs::form.field name="parent_event_id" type="select"
                                   :options="Options::fromModels($events->except($event->id ?? null), 'name')->prepend(__('none'), '')"
                                   :value="$event->parent_event_id ?? null"

@@ -13,6 +13,7 @@ use Database\Factories\LocationFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
+use Tests\Traits\GeneratesTestData;
 
 #[CoversClass(FilterValue::class)]
 #[CoversClass(Location::class)]
@@ -23,6 +24,7 @@ use Tests\TestCase;
 #[CoversClass(LocationRequest::class)]
 class LocationControllerTest extends TestCase
 {
+    use GeneratesTestData;
     use RefreshDatabase;
 
     public function testUserCanViewLocationsOnlyWithCorrectAbility(): void
@@ -58,6 +60,6 @@ class LocationControllerTest extends TestCase
 
     private function createRandomLocation(): Location
     {
-        return Location::factory()->create();
+        return self::createLocation();
     }
 }

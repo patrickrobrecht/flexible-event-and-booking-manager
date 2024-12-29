@@ -71,10 +71,7 @@ class EventRequest extends FormRequest
                 Rule::exists('locations', 'id'),
             ],
             'organization_id' => [
-                'sometimes',
-                'array',
-            ],
-            'organization_id.*' => [
+                'required',
                 Rule::exists('organizations', 'id'),
             ],
             'parent_event_id' => [

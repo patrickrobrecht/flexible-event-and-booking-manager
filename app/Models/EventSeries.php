@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
+use App\Models\Traits\BelongsToOrganization;
 use App\Models\Traits\HasDocuments;
 use App\Models\Traits\HasResponsibleUsers;
 use App\Models\Traits\HasSlugForRouting;
@@ -31,6 +32,7 @@ use Spatie\QueryBuilder\AllowedFilter;
  */
 class EventSeries extends Model
 {
+    use BelongsToOrganization;
     use BuildsQueryFromRequest;
     use HasDocuments;
     use HasFactory;
@@ -100,6 +102,7 @@ class EventSeries extends Model
     public function fillAndSave(array $validatedData): bool
     {
         $this->fill($validatedData);
+        $this->organization()->associate($validatedData['organization_id']);
         $this->parentEventSeries()->associate($validatedData['parent_event_series_id'] ?? null);
 
         return $this->save()
@@ -129,6 +132,7 @@ class EventSeries extends Model
                 ->ignore(FilterValue::All->value),
             /** @see self::scopeEvent() */
             AllowedFilter::scope('event_id', 'event'),
+            AllowedFilter::exact('organization_id'),
             /** @see self::scopeDocument() */
             AllowedFilter::scope('document_id', 'document'),
             /** @see self::scopeEventSeriesType() */

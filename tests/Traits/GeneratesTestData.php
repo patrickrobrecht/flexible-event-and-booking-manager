@@ -127,6 +127,7 @@ trait GeneratesTestData
         return Event::factory()
             ->for($event, 'parentEvent')
             ->for($event->location)
+            ->for($event->organization)
             ->visibility($visibility)
             ->create();
     }
@@ -169,7 +170,8 @@ trait GeneratesTestData
     {
         return Event::factory()
             ->visibility($visibility)
-            ->for(Location::factory()->create())
+            ->for(self::createLocation())
+            ->for(self::createOrganization())
             ->create();
     }
 
@@ -177,7 +179,8 @@ trait GeneratesTestData
     {
         $event = Event::factory()
             ->visibility($visibility)
-            ->for(Location::factory()->create())
+            ->for(self::createLocation())
+            ->for(self::createOrganization())
             ->has(
                 BookingOption::factory()
                     ->count(fake()->numberBetween(3, 5))
@@ -191,10 +194,13 @@ trait GeneratesTestData
 
     protected static function createEventSeries(?Visibility $visibility = null): EventSeries
     {
+        $organization = self::createOrganization();
         return EventSeries::factory()
+            ->for($organization)
             ->has(
                 Event::factory()
-                    ->for(Location::factory()->create())
+                    ->for(self::createLocation())
+                    ->for($organization)
                     ->count(fake()->numberBetween(1, 5))
             )
             ->visibility($visibility)
@@ -214,10 +220,16 @@ trait GeneratesTestData
         }
     }
 
+    protected static function createLocation(): Location
+    {
+        return Location::factory()->create();
+    }
+
     protected static function createOrganization(): Organization
     {
         return Organization::factory()
-            ->for(Location::factory()->create())
+            ->for(self::createLocation())
+            ->withBankAccount()
             ->create();
     }
 

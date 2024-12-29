@@ -62,4 +62,11 @@ class BookingOptionFactory extends Factory
             'restrictions' => [$bookingRestriction],
         ]);
     }
+
+    public function withoutPrice(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'price' => null,
+        ]);
+    }
 }

@@ -13,12 +13,6 @@
             @endforeach
         </div>
     </x-bs::list.item>
-    @isset($organization->representatives)
-        <x-bs::list.item class="d-flex">
-            <span class="me-3"><i class="fa fa-fw fa-user-friends" title="{{ __('Representatives') }}"></i></span>
-            <div>{{ $organization->representatives }}</div>
-        </x-bs::list.item>
-    @endisset
     @isset($organization->register_entry)
             <x-bs::list.item class="d-flex">
             <span class="me-3"><i class="fa fa-fw fa-scale-balanced" title="{{ __('Register entry') }}"></i></span>

@@ -33,9 +33,22 @@ class OrganizationControllerTest extends TestCase
         $this->assertUserCanGetOnlyWithAbility('/organizations', Ability::ViewOrganizations);
     }
 
+    public function testOrganizationsAreShown(): void
+    {
+        $organizations = Organization::factory()
+            ->for(Location::factory()->create())
+            ->count(5)
+            ->create();
+
+        $this->actingAsUserWithAbility(Ability::ViewOrganizations);
+
+        $response = $this->get('/organizations')->assertOk();
+        $organizations->each(fn (Organization $organization) => $response->assertSee($organization->name));
+    }
+
     public function testUserCanViewSingleOrganizationOnlyWithCorrectAbility(): void
     {
-        $this->assertUserCanGetOnlyWithAbility("/organizations/{$this->createRandomOrganization()->id}", Ability::ViewOrganizations);
+        $this->assertUserCanGetOnlyWithAbility("/organizations/{$this->createRandomOrganization()->slug}", Ability::ViewOrganizations);
     }
 
     public function testUserCanOpenCreateOrganizationFormOnlyWithCorrectAbility(): void
@@ -57,7 +70,7 @@ class OrganizationControllerTest extends TestCase
 
     public function testUserCanOpenEditOrganizationFormOnlyWithCorrectAbility(): void
     {
-        $this->assertUserCanGetOnlyWithAbility("/organizations/{$this->createRandomOrganization()->id}/edit", Ability::EditOrganizations);
+        $this->assertUserCanGetOnlyWithAbility("/organizations/{$this->createRandomOrganization()->slug}/edit", Ability::EditOrganizations);
     }
 
     public function testUserCanUpdateOrganizationOnlyWithCorrectAbility(): void
@@ -68,8 +81,13 @@ class OrganizationControllerTest extends TestCase
             'location_id' => $this->faker->randomElement(Location::factory()->count(5)->create())->id,
         ];
 
-        $editRoute = "/organizations/{$organization->id}/edit";
-        $this->assertUserCanPutOnlyWithAbility("/organizations/{$organization->id}", $data, Ability::EditOrganizations, $editRoute, $editRoute);
+        $this->assertUserCanPutOnlyWithAbility(
+            "/organizations/{$organization->slug}",
+            $data,
+            Ability::EditOrganizations,
+            "/organizations/{$organization->slug}/edit",
+            "/organizations/{$data['slug']}/edit"
+        );
     }
 
     private function createRandomOrganization(): Organization

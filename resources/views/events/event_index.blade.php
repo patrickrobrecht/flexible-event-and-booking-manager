@@ -126,7 +126,7 @@
                                     <ul class="list-unstyled">
                                         @foreach($event->organizations as $organization)
                                             @can('view', $organization)
-                                                <li><a href="{{ route('organizations.show', $organization) }}">{{ $organization->name }}</a></li>
+                                                <li><a href="{{ $organization->getRoute() }}">{{ $organization->name }}</a></li>
                                             @else
                                                 <li>{{ $organization->name }}</li>
                                             @endif

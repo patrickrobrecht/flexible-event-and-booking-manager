@@ -47,6 +47,12 @@
                                   :options="Options::fromArray(\App\Models\Document::filterOptions())"
                                   :from-query="true"><i class="fa fa-fw fa-file"></i> {{ __('Documents') }}</x-bs::form.field>
             </div>
+            <div class="col-12 col-sm-6 col-xl-3">
+                <x-bs::form.field id="status" name="filter[status]" type="select"
+                                  :options="\App\Options\ActiveStatus::toOptionsWithAll()"
+                                  :cast="FilterValue::castToIntIfNoValue()"
+                                  :from-query="true"><i class="fa fa-fw fa-circle-question"></i> {{ __('Status') }}</x-bs::form.field>
+            </div>
             <div class="col-12 col-lg-6 col-xl-3">
                 <x-bs::form.field name="sort" type="select"
                                   :options="\App\Models\Organization::sortOptions()->getNamesWithLabels()"
@@ -63,7 +69,7 @@
                 <div class="card">
                     <div class="card-header">
                         <h2 class="card-title">
-                            <a href="{{ route('organizations.show', $organization) }}">{{ $organization->name }}</a>
+                            <a href="{{ $organization->getRoute() }}">{{ $organization->name }}</a>
                         </h2>
                         <x-badge.active-status :active="$organization->status" />
                     </div>
@@ -78,14 +84,6 @@
                                 </div>
                             </span>
                         </x-bs::list.item>
-                        @isset($organization->representatives)
-                            <x-bs::list.item>
-                                <span class="text-nowrap"><i class="fa fa-fw fa-user-friends"></i> {{ __('Representatives') }}</span>
-                                <x-slot:end>
-                                    <span class="text-end">{{ $organization->representatives }}</span>
-                                </x-slot:end>
-                            </x-bs::list.item>
-                        @endisset
                         @isset($organization->register_entry)
                             <x-bs::list.item>
                                 <span class="text-nowrap"><i class="fa fa-fw fa-scale-balanced"></i> {{ __('Register entry') }}</span>

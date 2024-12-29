@@ -7,6 +7,7 @@ use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\HasDocuments;
 use App\Models\Traits\HasLocation;
 use App\Models\Traits\HasResponsibleUsers;
+use App\Models\Traits\HasSlugForRouting;
 use App\Options\Ability;
 use App\Options\ActiveStatus;
 use App\Options\FilterValue;
@@ -21,9 +22,9 @@ use Spatie\QueryBuilder\AllowedFilter;
 /**
  * @property-read int $id
  * @property string $name
+ * @property string $slug
  * @property ActiveStatus $status
  * @property ?string $register_entry
- * @property ?string $representatives
  * @property ?string $website_url
  *
  * @property Collection|Event[] $events {@see Organization::events()}
@@ -36,6 +37,7 @@ class Organization extends Model
     use HasFactory;
     use HasLocation;
     use HasResponsibleUsers;
+    use HasSlugForRouting;
 
     /**
      * The attributes that are mass assignable.
@@ -44,9 +46,9 @@ class Organization extends Model
      */
     protected $fillable = [
         'name',
+        'slug',
         'status',
         'register_entry',
-        'representatives',
         'website_url',
     ];
 
@@ -110,6 +112,9 @@ class Organization extends Model
                 ->ignore(FilterValue::All->value),
             /** @see self::scopeDocument() */
             AllowedFilter::scope('document_id', 'document'),
+            AllowedFilter::exact('status')
+                ->default(ActiveStatus::Active->value)
+                ->ignore(FilterValue::All->value),
         ];
     }
 

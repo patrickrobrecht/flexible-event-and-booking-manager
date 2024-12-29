@@ -36,11 +36,16 @@
             @else
                 <ul class="list-unstyled">
                     @foreach($event->organizations as $organization)
-                        @can('view', $organization)
-                            <li><a href="{{ route('organizations.show', $organization) }}">{{ $organization->name }}</a></li>
-                        @else
-                            <li>{{ $organization->name }}</li>
-                        @endcan
+                        <li>
+                            @can('view', $organization)
+                                <a href="{{ route('organizations.show', $organization) }}">{{ $organization->name }}</a>
+                            @else
+                                {{ $organization->name }}
+                            @endcan
+                            @foreach($organization->location->fullAddressBlock as $line)
+                                <div>{{ $line }}</div>
+                            @endforeach
+                        </li>
                     @endforeach
                 </ul>
             @endif

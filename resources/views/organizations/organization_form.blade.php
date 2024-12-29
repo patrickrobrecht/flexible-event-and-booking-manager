@@ -23,11 +23,20 @@
             <div class="col-12 col-md-6">
                 <x-bs::form.field name="name" type="text"
                                   :value="$organization->name ?? null">{{ __('Name') }}</x-bs::form.field>
+                <x-bs::form.field name="slug" type="text"
+                                  :value="$organization->slug ?? null">
+                    {{ __('Slug') }}
+                    <x-slot:hint>
+                        {!! __('This field defines the path in the URL, such as :url. If you leave it empty, is auto-generated for you.', [
+                            'url' => isset($organization->slug)
+                                ? sprintf('<a href="%s" target="_blank">%s</a>', route('organizations.show', $organization), route('organizations.show', $organization, false))
+                                : '<strong>' . route('organizations.show', Str::of(__('Name of the organization'))->snake('-')) . '</strong>'
+                        ]) !!}
+                    </x-slot:hint>
+                </x-bs::form.field>
                 <x-bs::form.field name="status" type="select"
                                   :options="\App\Options\ActiveStatus::toOptions()"
                                   :value="$organization->status->value ?? null"><i class="fa fa-fw fa-circle-question"></i> {{ __('Status') }}</x-bs::form.field>
-                <x-bs::form.field name="representatives" type="text"
-                                  :value="$organization->representatives ?? null"><i class="fa fa-fw fa-user-friends"></i> {{ __('Representatives') }}</x-bs::form.field>
                 <x-bs::form.field name="register_entry" type="text"
                                   :value="$organization->register_entry ?? null"><i class="fa fa-fw fa-scale-balanced"></i> {{ __('Register entry') }}</x-bs::form.field>
                 <x-bs::form.field name="website_url" type="url"

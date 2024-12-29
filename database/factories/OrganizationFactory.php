@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Organization;
 use App\Options\ActiveStatus;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends Factory<Organization>
@@ -13,16 +14,13 @@ class OrganizationFactory extends Factory
 {
     public function definition(): array
     {
-        $managerNames = array_map(
-            static fn () => fake()->name(),
-            range(1, fake()->numberBetween(0, 3))
-        );
+        $name = $this->faker->company();
 
         return [
-            'name' => fake()->company(),
-            'representatives' => implode(', ', $managerNames),
+            'name' => $name,
+            'slug' => Str::slug($name),
             'status' => ActiveStatus::Active,
-            'website_url' => fake()->optional()->url(),
+            'website_url' => $this->faker->optional()->url(),
         ];
     }
 }

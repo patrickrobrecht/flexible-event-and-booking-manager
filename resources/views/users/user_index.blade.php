@@ -84,7 +84,7 @@
                             <x-bs::list.item>
                                 <span class="text-nowrap"><i class="fa fa-fw fa-phone"></i> {{ __('Phone number') }}</span>
                                 <x-slot:end>
-                                    <span class="text-end">{{ $user->phone }}</span>
+                                    <span class="text-end"><a href="{{ $user->phone_link }}">{{ $user->phone }}</a></span>
                                 </x-slot:end>
                             </x-bs::list.item>
                         @endisset
@@ -92,7 +92,7 @@
                             <span class="text-nowrap"><i class="fa fa-fw fa-at"></i> {{ __('E-mail') }}</span>
                             <x-slot:end>
                                 <span class="text-end">
-                                    {{ $user->email }}
+                                    <a href="mailto:{{ $user->email }}">{{ $user->email }}</a>
                                     @isset($user->email_verified_at)
                                         <x-bs::badge variant="success">{{ __('verified') }}</x-bs::badge>
                                     @else
@@ -160,7 +160,7 @@
                         </div>
                     @endcan
                     <div class="card-footer">
-                        <x-text.updated-human-diff :model="$user" />
+                        <x-text.updated-human-diff :model="$user"/>
                     </div>
                 </div>
             </div>

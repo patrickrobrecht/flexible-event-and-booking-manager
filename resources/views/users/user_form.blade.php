@@ -105,5 +105,5 @@
         </x-bs::button.group>
     </x-bs::form>
 
-    <x-text.timestamp :model="$editedUser ?? null" />
+    <x-text.timestamp :model="$editedUser ?? null"/>
 @endsection

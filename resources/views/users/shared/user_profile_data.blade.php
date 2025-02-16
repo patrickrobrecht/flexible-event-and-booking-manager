@@ -19,9 +19,9 @@
         <span class="text-nowrap me-3"><i class="fa fa-fw fa-cake-candles" title="{{ __('Date of birth') }}"></i> {{ formatDate($user->date_of_birth) }}</span>
     @endisset
     @isset($user->phone)
-        <span class="text-nowrap me-3"><i class="fa fa-fw fa-phone" title="{{ __('Phone number') }}"></i> {{ $user->phone }}</span>
+        <span class="text-nowrap me-3"><i class="fa fa-fw fa-phone" title="{{ __('Phone number') }}"></i> <a href="{{ $user->phone_link }}">{{ $user->phone }}</a></span>
     @endisset
-    <span class="text-nowrap me-3"><i class="fa fa-fw fa-at" title="{{ __('E-mail') }}"></i> {{ $user->email }}
+    <span class="text-nowrap me-3"><i class="fa fa-fw fa-at" title="{{ __('E-mail') }}"></i> <a href="mailto:{{ $user->email }}">{{ $user->email }}</a>
         @isset($user->email_verified_at)
             <x-bs::badge variant="success">{{ __('verified') }}</x-bs::badge>
         @else

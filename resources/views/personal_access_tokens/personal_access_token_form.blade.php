@@ -55,5 +55,5 @@
         </x-bs::button.group>
     </x-bs::form>
 
-    <x-text.timestamp :model="$token ?? null" />
+    <x-text.timestamp :model="$token ?? null"/>
 @endsection

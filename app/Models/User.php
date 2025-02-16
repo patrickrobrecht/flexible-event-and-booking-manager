@@ -6,6 +6,7 @@ use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\FiltersByRelationExistence;
 use App\Models\Traits\HasAddress;
+use App\Models\Traits\HasPhone;
 use App\Models\Traits\Searchable;
 use App\Notifications\AccountCreatedNotification;
 use App\Notifications\ResetPasswordNotification;
@@ -61,6 +62,7 @@ class User extends Authenticatable implements MustVerifyEmail
     use HasAddress;
     use HasApiTokens;
     use HasFactory;
+    use HasPhone;
     use Notifiable;
     use Searchable;
 

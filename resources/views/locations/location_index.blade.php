@@ -52,7 +52,7 @@
         </div>
     </x-form.filter>
 
-    <x-alert.count class="mt-3" :count="$locations->total()" />
+    <x-alert.count class="mt-3" :count="$locations->total()"/>
 
     <div class="row my-3">
         @foreach($locations as $location)
@@ -107,7 +107,7 @@
                         </div>
                     @endcan
                     <div class="card-footer">
-                        <x-text.updated-human-diff :model="$location" />
+                        <x-text.updated-human-diff :model="$location"/>
                     </div>
                 </div>
             </div>

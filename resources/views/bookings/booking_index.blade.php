@@ -150,11 +150,15 @@
                         @endisset
                         <x-bs::list.item>
                             <i class="fa fa-fw fa-at"></i>
-                            {{ $booking->email }}
+                            <a href="mailto:{{ $booking->email }}">{{ $booking->email }}</a>
                         </x-bs::list.item>
                         <x-bs::list.item>
                             <i class="fa fa-fw fa-phone"></i>
-                            {{ $booking->phone ?? __('none') }}
+                            @isset($booking->phone)
+                                <a href="{{ $booking->phone_link }}">{{ $booking->phone }}</a>
+                            @else
+                                {{ __('none') }}
+                            @endisset
                         </x-bs::list.item>
                         <x-bs::list.item>
                             <i class="fa fa-fw fa-road"></i>

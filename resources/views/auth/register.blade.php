@@ -19,7 +19,6 @@
             <x-bs::form.field name="password" type="password" required
                               autocomplete="current-password">{{ __('Password') }}</x-bs::form.field>
             <x-bs::form.field name="password_confirmation" type="password" required>{{ __('Confirm password') }}</x-bs::form.field>
-            <x-bs::form.field name="remember" type="checkbox" :options="[1 => __('Remember me')]" cast="int"/>
             @php
                 $termsAndConditions = config('app.urls.terms_and_conditions');
             @endphp
@@ -35,7 +34,10 @@
                 <x-bs::form.field name="terms_and_conditions" type="checkbox" :options="$option" :allow-html="true"/>
             @endif
 
-            <x-form.button class="w-100">{{ __('Register') }}</x-form.button>
+            <x-bs::button @class([
+                'mt-3' => $termsAndConditions,
+                'w-100',
+            ])>{{ __('Register') }}</x-bs::button>
         </x-bs::form>
     </x-card.centered>
 @endsection

@@ -71,7 +71,7 @@
                         <h2 class="card-title">
                             <a href="{{ $organization->getRoute() }}">{{ $organization->name }}</a>
                         </h2>
-                        <x-badge.active-status :active="$organization->status" />
+                        <x-badge.active-status :active="$organization->status"/>
                     </div>
                     <x-bs::list :flush="true">
                         <x-bs::list.item>

@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\HasAddress;
+use App\Models\Traits\HasPhone;
 use App\Options\DeletedFilter;
 use App\Options\FilterValue;
 use App\Options\FormElementType;
@@ -53,6 +54,7 @@ class Booking extends Model
     use BuildsQueryFromRequest;
     use HasAddress;
     use HasFactory;
+    use HasPhone;
     use SoftDeletes;
 
     /**

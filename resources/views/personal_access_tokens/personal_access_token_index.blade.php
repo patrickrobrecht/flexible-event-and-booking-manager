@@ -24,7 +24,7 @@
         @endcan
     </x-bs::button.group>
 
-    <x-alert.count class="mt-3" :count="$user->tokens->count()" />
+    <x-alert.count class="mt-3" :count="$user->tokens->count()"/>
 
     <div class="row my-3">
         @foreach($user->tokens as $token)
@@ -44,7 +44,7 @@
                             <x-button.edit href="{{ route('personal-access-tokens.edit', $token) }}"/>
                         @endcan
                         @can('forceDelete', $token)
-                            <x-button.delete form="delete-{{ $token->id }}" />
+                            <x-button.delete form="delete-{{ $token->id }}"/>
                             <x-bs::form id="delete-{{ $token->id }}" method="DELETE"
                                         action="{{ route('personal-access-tokens.destroy', $token) }}"/>
                         @endcan

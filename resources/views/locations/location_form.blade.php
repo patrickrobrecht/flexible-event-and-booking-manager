@@ -40,5 +40,5 @@
         </x-bs::button.group>
     </x-bs::form>
 
-    <x-text.timestamp :model="$location ?? null" />
+    <x-text.timestamp :model="$location ?? null"/>
 @endsection

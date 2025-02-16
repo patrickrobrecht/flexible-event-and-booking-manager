@@ -3,32 +3,27 @@
     "scripts": {
         "cs": "npm run csCSS && npm run csJS",
         "csCSS": "stylelint resources/sass/*.scss",
-        "csJS": "eslint webpack.mix.js eslint.config.cjs",
+        "csJS": "eslint eslint.config.cjs vite.config.mjs",
         "csfix": "npm run csfixCSS && npm run csfixJS",
         "csfixCSS": "stylelint resources/sass/*.scss --fix",
-        "csfixJS": "eslint webpack.mix.js eslint.config.cjs --fix",
-        "dev": "npm run development",
-        "development": "mix",
-        "watch": "mix watch",
-        "watch-poll": "mix watch -- --watch-options-poll=1000",
-        "hot": "mix watch --hot",
-        "prod": "npm run production",
-        "production": "mix --production"
+        "csfixJS": "eslint eslint.config.cjs vite.config.mjs --fix",
+        "dev": "vite",
+        "build": "vite build"
     },
     "devDependencies": {
         "@eslint/js": "^9.20.0",
         "@fortawesome/fontawesome-free": "^6.7.2",
         "alpinejs": "^3.14.8",
+        "axios": "^1.7.9",
         "bootstrap": "^5.3.3",
         "eslint": "^9.20.1",
-        "fs-extra": "^11.3.0",
-        "laravel-mix": "^6.0.49",
-        "laravel-mix-make-file-hash": "^2.2.0",
-        "resolve-url-loader": "^5.0.0",
+        "laravel-vite-plugin": "^1.2.0",
         "sass": "^1.85.0",
         "sass-loader": "^16.0.5",
         "stylelint": "^16.14.1",
-        "stylelint-config-recommended-scss": "^14.1.0"
+        "stylelint-config-recommended-scss": "^14.1.0",
+        "vite": "^6.1.0",
+        "vite-plugin-static-copy": "^2.2.0"
     },
     "stylelint": {
         "extends": "stylelint-config-recommended-scss",

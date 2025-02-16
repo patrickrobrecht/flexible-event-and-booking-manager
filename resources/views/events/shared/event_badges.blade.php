@@ -10,12 +10,24 @@
 @if($showParentEvent && isset($event->parentEvent))
     <x-bs::badge variant="primary">
         <span><i class="fa fa-fw fa-calendar-days"></i>{{ __('Part of the event') }}</span>
-        <a class="link-light" href="{{ route('events.show', $event->parentEvent) }}">{{ $event->parentEvent->name }}</a>
+        <a class="link-light" href="{{ $event->parentEvent->getRoute() }}">{{ $event->parentEvent->name }}</a>
     </x-bs::badge>
 @endif
 @if($showSeries && isset($event->eventSeries))
     <x-bs::badge variant="primary">
         <span><i class="fa fa-fw fa-calendar-week"></i> {{ __('Part of the event series') }}</span>
-        <a class="link-light" href="{{ route('event-series.show', $event->eventSeries->slug) }}">{{ $event->eventSeries->name }}</a>
+        @can('view', $event->eventSeries)
+            <a class="link-light" href="{{ $event->eventSeries->getRoute() }}">{{ $event->eventSeries->name }}</a>
+        @else
+            {{ $event->eventSeries->name }}
+        @endcan
     </x-bs::badge>
 @endif
+<x-bs::badge variant="primary">
+    <span><i class="fa fa-fw fa-sitemap"></i> {{ __('Organization') }}:</span>
+    @can('view', $event->organization)
+        <a class="link-light" href="{{ $event->organization->getRoute() }}">{{ $event->organization->name }}</a>
+    @else
+        {{ $event->organization->name }}
+    @endcan
+</x-bs::badge>

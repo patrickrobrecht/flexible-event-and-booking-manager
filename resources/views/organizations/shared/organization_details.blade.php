@@ -48,4 +48,16 @@
             </div>
         </x-bs::list.item>
     @endisset
+    @can('viewAny', \App\Models\Event::class)
+        <x-bs::list.item>
+            <span class="me-3"><i class="fa fa-fw fa-calendar-days"></i></span>
+            <a href="{{ route('events.index', ['filter[organization_id]' => $organization->id]) }}">{{ __('Events') }}</a>
+        </x-bs::list.item>
+    @endcan
+    @can('viewAny', \App\Models\EventSeries::class)
+        <x-bs::list.item>
+            <span class="me-3"><i class="fa fa-fw fa-calendar-week"></i></span>
+            <a href="{{ route('event-series.index', ['filter[organization_id]' => $organization->id]) }}">{{ __('Event series') }}</a>
+        </x-bs::list.item>
+    @endcan
 </x-bs::list>

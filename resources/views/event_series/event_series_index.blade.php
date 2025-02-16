@@ -81,6 +81,18 @@
                             <x-badge.visibility :visibility="$eventSeriesItem->visibility"/>
                         </x-bs::list.item>
                         <x-bs::list.item>
+                            <span class="text-nowrap"><i class="fa fa-fw fa-sitemap"></i> {{ __('Organization') }}</span>
+                            <x-slot:end>
+                                <div class="text-end">
+                                    @can('view', $eventSeriesItem->organization)
+                                        <a href="{{ $eventSeriesItem->organization->getRoute() }}">{{ $eventSeriesItem->organization->name }}</a>
+                                    @else
+                                        {{ $eventSeriesItem->organization->name }}
+                                    @endif
+                                </div>
+                            </x-slot:end>
+                        </x-bs::list.item>
+                        <x-bs::list.item>
                             @isset($eventSeriesItem->parentEventSeries)
                                 <span class="text-nowrap"><i class="fa fa-fw fa-calendar-week"></i> {{ __('Part of the event series') }}</span>
                                 <x-slot:end>

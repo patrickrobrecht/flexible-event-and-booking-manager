@@ -22,6 +22,7 @@ class EventSeriesController extends Controller
         return view('event_series.event_series_index', [
             'eventSeries' => EventSeries::buildQueryFromRequest()
                 ->with([
+                    'organization',
                     'parentEventSeries',
                     'responsibleUsers',
                 ])

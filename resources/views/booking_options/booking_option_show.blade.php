@@ -1,8 +1,9 @@
 @extends('layouts.app')
 
 @php
+    /** @var \App\Models\Event $event */
     /** @var \App\Models\BookingOption $bookingOption */
-    $organization = $bookingOption->event->organization;
+    $organization = $event->organization;
 @endphp
 
 @section('title')
@@ -22,7 +23,9 @@
 @endsection
 
 @section('content')
-    <div class="row">
+    @include('events.shared.event_badges')
+
+    <div class="row my-3">
         <div class="col-12 col-lg-4">
             @include('events.shared.event_details')
         </div>

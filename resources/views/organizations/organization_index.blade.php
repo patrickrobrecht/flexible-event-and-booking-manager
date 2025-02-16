@@ -155,11 +155,7 @@
                             <span>
                                 <i class="fa fa-fw fa-calendar-week"></i>
                                 @can('viewAny', \App\Models\EventSeries::class)
-                                    <a href="{{ route('events.index', [
-                                        'filter[organization_id]' => $organization->id,
-                                        'filter[date_from]' => '',
-                                        'filter[event_type]' => '',
-                                    ]) }}" target="_blank">{{ __('Event series') }}</a>
+                                    <a href="{{ route('event-series.index', ['filter[organization_id]' => $organization->id]) }}" target="_blank">{{ __('Event series') }}</a>
                                 @else
                                     {{ __('Event series') }}
                                 @endcan

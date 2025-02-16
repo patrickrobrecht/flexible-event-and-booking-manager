@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Requests\Traits\ValidatesBelongsToOrganization;
 use App\Http\Requests\Traits\ValidatesResponsibleUsers;
 use App\Models\Event;
+use App\Models\EventSeries;
 use App\Options\Visibility;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
@@ -14,6 +16,7 @@ use Illuminate\Validation\Rule;
  */
 class EventRequest extends FormRequest
 {
+    use ValidatesBelongsToOrganization;
     use ValidatesResponsibleUsers;
 
     protected function prepareForValidation(): void
@@ -31,6 +34,8 @@ class EventRequest extends FormRequest
      */
     public function rules(): array
     {
+        $organization = $this->getOrganizationFromRequest();
+
         return [
             'name' => [
                 'required',
@@ -77,13 +82,49 @@ class EventRequest extends FormRequest
             'parent_event_id' => [
                 'nullable',
                 Rule::prohibitedIf(fn () => isset($this->event) && $this->event->subEvents->count() > 0),
-                Rule::exists('events', 'id')
-                    ->whereNull('parent_event_id')
-                    ->whereNot('id', $this->event->id ?? null),
+                function ($attribute, $value, $fail) use ($organization) {
+                    if (!isset($value)) {
+                        return;
+                    }
+
+                    $parentEvent = Event::query()->find($value);
+                    if (!isset($parentEvent) || $parentEvent->id === $this->event->id || $parentEvent->parent_event_id !== null) {
+                        $fail(__('validation.exists', [
+                            'attribute' => __('validation.attributes.parent_event_id'),
+                        ]));
+                        return;
+                    }
+
+                    if (isset($parentEvent, $organization) && $parentEvent->organization_id !== $organization->id) {
+                        $fail(__('validation.organization', [
+                            'attribute' => __('validation.attributes.parent_event_id'),
+                            'organization' => $organization->name,
+                        ]));
+                    }
+                },
             ],
             'event_series_id' => [
                 'nullable',
-                Rule::exists('event_series', 'id'),
+                function ($attribute, $value, $fail) use ($organization) {
+                    if (!isset($value)) {
+                        return;
+                    }
+
+                    $eventSeries = EventSeries::query()->find($value);
+                    if (!isset($eventSeries)) {
+                        $fail(__('validation.exists', [
+                            'attribute' => __('validation.attributes.event_series_id'),
+                        ]));
+                        return;
+                    }
+
+                    if (isset($eventSeries, $organization) && $eventSeries->organization_id !== $organization->id) {
+                        $fail(__('validation.organization', [
+                            'attribute' => __('validation.attributes.event_series_id'),
+                            'organization' => $organization->name,
+                        ]));
+                    }
+                },
             ],
             ...$this->rulesForResponsibleUsers(),
         ];

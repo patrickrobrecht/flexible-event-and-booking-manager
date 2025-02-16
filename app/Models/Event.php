@@ -83,6 +83,9 @@ class Event extends Model
         'visibility' => Visibility::class,
         'started_at' => 'datetime',
         'finished_at' => 'datetime',
+        'parent_event_id' => 'integer',
+        'event_series_id' => 'integer',
+        'organization_id' => 'integer',
     ];
 
     public function bookingOptions(): HasMany

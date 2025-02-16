@@ -56,6 +56,9 @@ class Organization extends Model
         'phone',
         'email',
         'website_url',
+        'bank_account_holder',
+        'iban',
+        'bank_name',
     ];
 
     /**

@@ -68,6 +68,7 @@ class BookingOptionRequest extends FormRequest
                 'numeric',
                 'gte:0',
                 'lte:999999.99',
+                Rule::prohibitedIf(!isset($this->event->organization->iban)),
             ],
             'book_for_self_only' => [
                 'nullable',

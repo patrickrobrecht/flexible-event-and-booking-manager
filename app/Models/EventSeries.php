@@ -46,7 +46,9 @@ class EventSeries extends Model
      */
     protected $casts = [
         'events_count' => 'integer',
+        'organization_id' => 'integer',
         'visibility' => Visibility::class,
+        'parent_event_series_id' => 'integer',
     ];
 
     /**

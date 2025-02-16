@@ -130,6 +130,9 @@ return [
     'url' => ':attribute muss eine URL sein.',
     'uuid' => ':attribute muss ein UUID sein.',
 
+    // Custom rules
+    'organization' => ':attribute muss zur Organisation :organization gehören.',
+
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Language Lines
@@ -143,7 +146,10 @@ return [
 
     'custom' => [
         'house_number' => [
-            'regex' => ':attribute muss eine Zahl mit optionalen Buchstabenzusatz sein.',
+            'regex' => ':attribute muss eine Zahl mit optionalem Buchstabenzusatz sein.',
+        ],
+        'price' => [
+            'prohibited' => 'Ein Preis darf nur gesetzt werden, wenn bei der Organisation eine Bankverbindung hinterlegt ist.',
         ],
         'terms_and_conditions' => [
             'accepted' => 'Die AGB müssen akzeptiert werden. Sonst ist eine Registrierung nicht möglich.',

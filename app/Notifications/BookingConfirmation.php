@@ -27,6 +27,15 @@ class BookingConfirmation extends Notification
             ->line(__('we received your booking:'))
             ->line($this->booking->first_name . ' ' . $this->booking->last_name);
 
+        if (isset($this->booking->bookedByUser) && $this->booking->bookedByUser->email !== $this->booking->email) {
+            $mail->cc($this->booking->bookedByUser->email);
+        }
+
+        $organization = $this->booking->bookingOption->event->organization;
+        if (isset($organization->email)) {
+            $mail->replyTo($organization->email, $organization->name);
+        }
+
         if (isset($this->booking->street)) {
             $mail->line($this->booking->street . ' ' . ($this->booking->house_number ?? ''));
         }
@@ -39,9 +48,9 @@ class BookingConfirmation extends Notification
                 'price' => formatDecimal($this->booking->price) . ' €',
             ]));
             $mail->lines([
-                'IBAN: ' . config('app.bank_account.iban'),
-                __('Bank') . ': ' . config('app.bank_account.bank_name'),
-                __('Account holder') . ': ' . config('app.bank_account.holder'),
+                __('Account holder') . ': ' . ($organization->bank_account_holder ?? $organization->name),
+                'IBAN: ' . $organization->iban,
+                __('Bank') . ': ' .$organization->bank_name,
             ]);
         }
 

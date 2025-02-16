@@ -81,7 +81,7 @@ class DocumentControllerTest extends TestCase
         $storeUri = match ($reference::class) {
             Event::class => "events/{$reference->slug}/documents",
             EventSeries::class => "event-series/{$reference->slug}/documents",
-            Organization::class => "organizations/{$reference->id}/documents",
+            Organization::class => "organizations/{$reference->slug}/documents",
         };
 
         $file = UploadedFile::fake()->create('document.pdf', 100, 'application/pdf');

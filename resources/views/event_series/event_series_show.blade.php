@@ -27,17 +27,7 @@
 @endsection
 
 @section('content')
-    @isset($eventSeries->parentEventSeries)
-        <x-bs::badge variant="primary">
-            <span>
-                <i class="fa fa-fw fa-calendar-week"></i>
-                {{ __('Part of the event series') }}
-            </span>
-            <a href="{{ route('event-series.show', $eventSeries->parentEventSeries->slug) }}" class="link-light">
-                {{ $eventSeries->parentEventSeries->name }}
-            </a>
-        </x-bs::badge>
-    @endisset
+    @include('event_series.shared.event_series_badges')
 
     <div class="row my-3">
         <div id="events" class="col-12 col-xl-6 col-xxl-4">

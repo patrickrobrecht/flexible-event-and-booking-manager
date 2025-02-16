@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Requests\Traits\ValidatesBelongsToOrganization;
 use App\Http\Requests\Traits\ValidatesResponsibleUsers;
 use App\Models\EventSeries;
 use App\Options\Visibility;
@@ -13,6 +14,7 @@ use Illuminate\Validation\Rule;
  */
 class EventSeriesRequest extends FormRequest
 {
+    use ValidatesBelongsToOrganization;
     use ValidatesResponsibleUsers;
 
     /**
@@ -22,6 +24,8 @@ class EventSeriesRequest extends FormRequest
      */
     public function rules(): array
     {
+        $organization = $this->getOrganizationFromRequest();
+
         return [
             'name' => [
                 'required',
@@ -39,13 +43,33 @@ class EventSeriesRequest extends FormRequest
                 'required',
                 Visibility::rule(),
             ],
+            'organization_id' => [
+                'required',
+                Rule::exists('organizations', 'id'),
+            ],
             'parent_event_series_id' => [
                 'nullable',
-                Rule::prohibitedIf(fn () => isset($this->event_series)
-                                            && $this->event_series->subEventSeries->count() > 0),
-                Rule::exists('event_series', 'id')
-                    ->whereNull('parent_event_series_id')
-                    ->whereNot('id', $this->event_series->id ?? null),
+                Rule::prohibitedIf(fn () => isset($this->event_series) && $this->event_series->subEventSeries->count() > 0),
+                function ($attribute, $value, $fail) use ($organization) {
+                    if (!isset($value)) {
+                        return;
+                    }
+
+                    $parentEventSeries = EventSeries::query()->find($value);
+                    if (!isset($parentEventSeries) || $parentEventSeries->id === $this->event_series->id || $parentEventSeries->parent_event_series_id !== null) {
+                        $fail(__('validation.exists', [
+                            'attribute' => __('validation.attributes.parent_event_series_id'),
+                        ]));
+                        return;
+                    }
+
+                    if (isset($parentEventSeries, $organization) && $parentEventSeries->organization_id !== $organization->id) {
+                        $fail(__('validation.organization', [
+                            'attribute' => __('validation.attributes.parent_event_series_id'),
+                            'organization' => $organization->name,
+                        ]));
+                    }
+                },
             ],
             ...$this->rulesForResponsibleUsers(),
         ];

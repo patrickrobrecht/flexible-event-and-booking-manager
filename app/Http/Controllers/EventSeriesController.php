@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\EventSeriesRequest;
 use App\Http\Requests\Filters\EventSeriesFilterRequest;
 use App\Models\EventSeries;
+use App\Models\Organization;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
@@ -21,6 +22,7 @@ class EventSeriesController extends Controller
         return view('event_series.event_series_index', [
             'eventSeries' => EventSeries::buildQueryFromRequest()
                 ->with([
+                    'organization',
                     'parentEventSeries',
                     'responsibleUsers',
                 ])
@@ -30,6 +32,10 @@ class EventSeriesController extends Controller
                     'subEventSeries',
                 ])
                 ->paginate(18),
+            'organizations' => Organization::query()
+                ->whereHas('eventSeries')
+                ->orderBy('name')
+                ->get(),
         ]);
     }
 
@@ -95,14 +101,15 @@ class EventSeriesController extends Controller
     {
         $this->authorize('update', $eventSeries);
 
-        return view('event_series.event_series_form', $this->formValues([
+        return view('event_series.event_series_form', [
             'eventSeries' => $eventSeries->loadMissing([
                 'events' => fn (HasMany $events) => $events->withCount([
                     'documents',
                     'groups',
                 ]),
             ]),
-        ]));
+            ...$this->formValues(),
+        ]);
     }
 
     public function update(EventSeries $eventSeries, EventSeriesRequest $request): RedirectResponse
@@ -117,13 +124,16 @@ class EventSeriesController extends Controller
         return redirect(route('event-series.edit', $eventSeries));
     }
 
-    private function formValues(array $values = []): array
+    private function formValues(): array
     {
-        return array_replace([
+        return [
             'allEventSeries' => EventSeries::query()
                 ->whereNull('parent_event_series_id')
                 ->orderBy('name')
                 ->get(),
-        ], $values);
+            'organizations' => Organization::query()
+                ->orderBy('name')
+                ->get(),
+        ];
     }
 }

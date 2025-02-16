@@ -41,6 +41,12 @@
                                   :from-query="true"><i class="fa fa-fw fa-calendar-days"></i> {{ __('Events') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6 col-xl-3">
+                <x-bs::form.field id="organization_id" name="filter[organization_id]" type="select"
+                                  :options="Options::fromModels($organizations, 'name')->prepend(__('all'), FilterValue::All->value)"
+                                  :cast="FilterValue::castToIntIfNoValue()"
+                                  :from-query="true"><i class="fa fa-fw fa-sitemap"></i> {{ __('Organization') }}</x-bs::form.field>
+            </div>
+            <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="document_id" name="filter[document_id]" type="select"
                                   :options="Options::fromArray(\App\Models\Document::filterOptions())"
                                   :from-query="true"><i class="fa fa-fw fa-file"></i> {{ __('Documents') }}</x-bs::form.field>
@@ -73,6 +79,18 @@
                         <x-bs::list.item>
                             <i class="fa fa-fw fa-eye" title="{{ __('Visibility') }}"></i>
                             <x-badge.visibility :visibility="$eventSeriesItem->visibility"/>
+                        </x-bs::list.item>
+                        <x-bs::list.item>
+                            <span class="text-nowrap"><i class="fa fa-fw fa-sitemap"></i> {{ __('Organization') }}</span>
+                            <x-slot:end>
+                                <div class="text-end">
+                                    @can('view', $eventSeriesItem->organization)
+                                        <a href="{{ $eventSeriesItem->organization->getRoute() }}">{{ $eventSeriesItem->organization->name }}</a>
+                                    @else
+                                        {{ $eventSeriesItem->organization->name }}
+                                    @endif
+                                </div>
+                            </x-slot:end>
                         </x-bs::list.item>
                         <x-bs::list.item>
                             @isset($eventSeriesItem->parentEventSeries)

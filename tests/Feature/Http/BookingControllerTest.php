@@ -129,11 +129,12 @@ class BookingControllerTest extends TestCase
         Notification::assertSentTo(
             new AnonymousNotifiable(),
             BookingConfirmation::class,
-            static function ($notification, $channels, $notifiable) use ($user, $booking) {
+            static function ($notification, $channels, $notifiable) use ($booking, $bookingOption) {
                 $mailContent = $notification->toMail(new AnonymousNotifiable())->render();
-                return $notifiable->routes['mail'] === $user->email
+                return $notifiable->routes['mail'] === $booking->email
                     && str_contains($mailContent, $booking->first_name)
-                    && str_contains($mailContent, $booking->price . ' €');
+                    && str_contains($mailContent, formatDecimal($bookingOption->price) . ' €')
+                    && str_contains($mailContent, $bookingOption->event->organization->iban);
             }
         );
     }

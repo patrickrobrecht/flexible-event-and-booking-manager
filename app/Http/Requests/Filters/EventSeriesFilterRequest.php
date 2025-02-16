@@ -6,6 +6,7 @@ use App\Http\Requests\Traits\FiltersList;
 use App\Models\Document;
 use App\Models\Event;
 use App\Models\EventSeries;
+use App\Models\Organization;
 use App\Options\EventSeriesType;
 use App\Options\FilterValue;
 use App\Options\Visibility;
@@ -27,6 +28,7 @@ class EventSeriesFilterRequest extends FormRequest
             'filter.name' => $this->ruleForText(),
             'filter.visibility' => $this->ruleForAllowedOrExistsInEnum(Visibility::class, [FilterValue::All->value]),
             'filter.event_id' => $this->ruleForAllowedOrExistsInDatabase(Event::query(), FilterValue::values()),
+            'filter.organization_id' => $this->ruleForAllowedOrExistsInDatabase(Organization::query(), [FilterValue::All->value]),
             'filter.document_id' => $this->ruleForAllowedOrExistsInDatabase(Document::query(), FilterValue::values()),
             'filter.event_series_type' => $this->ruleForAllowedOrExistsInEnum(EventSeriesType::class, [FilterValue::All->value]),
             'sort' => [

@@ -7,7 +7,7 @@
 
     <title>@yield('title')</title>
 
-    <link rel="stylesheet" href="{{ mix('css/app.css') }}">
+    @vite('resources/css/app.css')
     @stack('styles')
 </head>
 <body>
@@ -49,7 +49,7 @@
     @include('layouts.footer')
 
     @section('scripts')
-        <script src="{{ mix('/lib/bootstrap.bundle.min.js') }}"></script>
+        @vite('resources/lib/bootstrap.bundle.min.js')
         @stack('scripts')
     @show
 </body>

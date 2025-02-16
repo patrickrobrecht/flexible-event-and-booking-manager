@@ -7,13 +7,8 @@
         "csfix": "npm run csfixCSS && npm run csfixJS",
         "csfixCSS": "stylelint resources/sass/*.scss --fix",
         "csfixJS": "eslint webpack.mix.js eslint.config.cjs --fix",
-        "dev": "npm run development",
-        "development": "mix",
-        "watch": "mix watch",
-        "watch-poll": "mix watch -- --watch-options-poll=1000",
-        "hot": "mix watch --hot",
-        "prod": "npm run production",
-        "production": "mix --production"
+        "dev": "vite",
+        "build": "vite build"
     },
     "devDependencies": {
         "@eslint/js": "^9.20.0",

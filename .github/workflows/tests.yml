@@ -38,7 +38,7 @@ jobs:
         run: npm clean-install
 
       - name: Build
-        run: npm run production
+        run: npm run build
 
       - name: Run tests
         run: composer test

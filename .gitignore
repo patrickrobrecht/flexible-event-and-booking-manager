@@ -2,11 +2,7 @@
 /.phpunit.cache
 /.vscode
 /node_modules
-/public/mix.js.map
-/public/mix-manifest.json
-/public/css/
-/public/js/
-/public/lib
+/public/build
 /public/hot
 /public/storage
 /storage/*.key

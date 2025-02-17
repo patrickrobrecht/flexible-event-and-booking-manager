@@ -20,9 +20,9 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <span>
                             @can('view', $booking)
-                                <a class="fw-bold" href="{{ route('bookings.show', $booking) }}" target="_blank">{{ $booking->first_name }} {{ $booking->last_name }}</a>
+                                <a href="{{ route('bookings.show', $booking) }}" target="_blank">{{ $booking->first_name }} <strong>{{ $booking->last_name }}</strong></a>
                             @else
-                                <strong>{{ $booking->first_name }} {{ $booking->last_name }}</strong>
+                                {{ $booking->first_name }} <strong>{{ $booking->last_name }}</strong>
                             @endcan
                             @isset($event->parentEvent)
                                 @php
@@ -39,7 +39,7 @@
                             </span>
                         @endisset
                     </div>
-                    <div class="text-nowrap">
+                    <div class="small text-nowrap">
                         <i class="fa fa-fw fa-clock" title="{{ __('Booking date') }}"></i>
                         @isset($booking->booked_at)
                             {{ formatDateTime($booking->booked_at) }}

@@ -87,6 +87,7 @@ class Booking extends Model
         'booking_option_id' => 'integer',
         'date_of_birth' => 'date',
         'booked_at' => 'datetime',
+        'price' => 'float',
         'paid_at' => 'datetime',
         'deleted_at' => 'datetime',
     ];

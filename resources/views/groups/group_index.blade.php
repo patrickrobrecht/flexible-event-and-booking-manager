@@ -5,7 +5,7 @@
 @endphp
 
 @section('title')
-    {{ $event->name }} | {{ __('Groups') }}
+    {{ __('Groups') }} | {{ $event->name }}
 @endsection
 
 @section('breadcrumbs')

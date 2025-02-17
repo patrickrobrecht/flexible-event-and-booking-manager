@@ -9,7 +9,7 @@
 @endphp
 
 @section('title')
-    {{ $bookingOption->event->name }}: {{ $bookingOption->name }} | {{ __('Bookings') }}
+    {{ __('Bookings') }} | {{ $bookingOption->event->name }}: {{ $bookingOption->name }}
 @endsection
 
 @section('breadcrumbs')
@@ -26,6 +26,11 @@
 @section('headline-buttons')
     @can('book', $bookingOption)
         <x-button.create href="{{ route('booking-options.show', [$event, $bookingOption]) }}">{{ __('Book') }}</x-button.create>
+    @endcan
+    @can('viewAnyPaymentStatus', \App\Models\Booking::class)
+        <x-bs::button.link href="{{ route('bookings.index.payments', [$event, $bookingOption]) }}">
+            <i class="fa fa-fw fa-euro-sign"></i> {{ __('Payments') }}
+        </x-bs::button.link>
     @endcan
     @can('viewGroups', $event)
         <x-bs::button.link href="{{ route('groups.index', $event) }}" variant="secondary">
@@ -92,7 +97,7 @@
                             @can('view', $booking)
                                 <a href="{{ route('bookings.show', $booking) }}">{{ $booking->first_name }} {{ $booking->last_name }}</a>
                             @else
-                                {{ $booking->first_name }} {{ $booking->last_name }}
+                                {{ $booking->first_name }} <strong>{{ $booking->last_name }}</strong>
                             @endcan
                         </h2>
                         <div class="card-subtitle">{{ $bookingOption->name }}</div>

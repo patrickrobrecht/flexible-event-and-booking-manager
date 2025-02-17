@@ -64,6 +64,8 @@ Route::middleware('auth')->group(static function () {
     Route::prefix('events/{event:slug}')->group(function () {
         Route::resource('{booking_option:slug}/bookings', BookingController::class)
             ->only(['index']);
+        Route::get('{booking_option:slug}/payments', [BookingController::class, 'indexPayments'])
+            ->name('bookings.index.payments');
         Route::resource('booking-options', BookingOptionController::class)
             ->only(['show', 'create', 'store', 'edit', 'update']);
         Route::resource('groups', GroupController::class)

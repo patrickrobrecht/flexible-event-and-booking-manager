@@ -62,6 +62,18 @@ class BookingController extends Controller
         ]);
     }
 
+    public function indexPayments(Event $event, BookingOption $bookingOption): View
+    {
+        $this->authorize('viewAnyPaymentStatus', Booking::class);
+
+        return view('bookings.booking_index_payments', [
+            'event' => $event,
+            'bookingOption' => $bookingOption->load([
+                'bookings.groups',
+            ]),
+        ]);
+    }
+
     public function show(Booking $booking): View
     {
         $this->authorize('view', $booking);

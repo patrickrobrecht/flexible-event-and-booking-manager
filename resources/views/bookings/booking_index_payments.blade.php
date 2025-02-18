@@ -6,6 +6,7 @@
 
     $unpaidBookings = $bookingOption->bookings->whereNull('paid_at');
     $paidBookings = $bookingOption->bookings->whereNotNull('paid_at')->sortBy('paid_at');
+    $noErrors = new \Illuminate\Support\ViewErrorBag();
 @endphp
 
 @section('title')
@@ -50,18 +51,25 @@
                 <x-bs::list>
                     @foreach($unpaidBookings->sortBy(fn (\App\Models\Booking $booking) => $booking->booked_at) as $booking)
                         @php
+                            $optionName = sprintf('%s <strong>%s</strong>', $booking->first_name, $booking->last_name);
+                            if (\Illuminate\Support\Facades\Auth::user()->can('view', $booking)) {
+                                $optionName = sprintf('<a href="%s" target="_blank">%s</a>', route('bookings.show', $booking), $optionName);
+                            }
+
                             $group = $booking->getGroup($event);
+                            if (isset($group)) {
+                                $optionName = sprintf('%s (%s)', $optionName, $group->name);
+                            }
                         @endphp
                         <x-bs::list.item>
                             <div>
-                                @can('view', $booking)
-                                    <a href="{{ route('bookings.show', $booking) }}" target="_blank">{{ $booking->first_name }} <strong>{{ $booking->last_name }}</strong></a>
+                                @can('updateAnyPaymentStatus', [\App\Models\Booking::class, $bookingOption])
+                                    <x-bs::form.field name="booking_id[]" form="paymentStatusForm"
+                                                      type="checkbox" :options="\Portavice\Bladestrap\Support\Options::fromArray([$booking->id => $optionName])"
+                                                      :allow-html="true" :error-bag="$noErrors"/>
                                 @else
-                                    {{ $booking->first_name }} <strong>{{ $booking->last_name }}</strong>
+                                    {!! $optionName !!}
                                 @endcan
-                                @isset($group)
-                                    ({{ $group->name }})
-                                @endisset
                                 <div class="small text-nowrap">
                                     <i class="fa fa-fw fa-clock" title="{{ __('Booking date') }}"></i>
                                     @isset($booking->booked_at)
@@ -77,6 +85,16 @@
                         </x-bs::list.item>
                     @endforeach
                 </x-bs::list>
+                @can('updateAnyPaymentStatus', [\App\Models\Booking::class, $bookingOption])
+                    @error('booking_id')
+                        <span class="is-invalid"></span>
+                        <x-bs::form.feedback name="booking_id"/>
+                    @enderror
+                    <x-bs::form id="paymentStatusForm" class="mt-3" method="PUT" action="{{ route('bookings.store.payments', [$event, $bookingOption]) }}">
+                        <x-bs::form.field name="paid_at" type="datetime-local" :required="true">{{ __('Paid at') }}</x-bs::form.field>
+                        <x-bs::button class="w-100"><i class="fa fa-fw fa-save"></i> {{ __('Save payments') }}</x-bs::button>
+                    </x-bs::form>
+                @endcan
             @endif
         </div>
         <div class="col-12 col-md-6 col-lg-9">

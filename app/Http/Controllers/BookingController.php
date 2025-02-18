@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\BookingCompleted;
 use App\Exports\BookingsExportSpreadsheet;
 use App\Http\Controllers\Traits\StreamsExport;
+use App\Http\Requests\BookingPaymentRequest;
 use App\Http\Requests\BookingRequest;
 use App\Http\Requests\Filters\BookingFilterRequest;
 use App\Models\Booking;
@@ -142,6 +143,22 @@ class BookingController extends Controller
             if (Auth::user()?->can('view', $booking)) {
                 return redirect(route('bookings.show', $booking));
             }
+        }
+
+        return back();
+    }
+
+    public function storePayments(Event $event, BookingOption $bookingOption, BookingPaymentRequest $request): RedirectResponse
+    {
+        $this->authorize('updateAnyPaymentStatus', [Booking::class, $bookingOption]);
+
+        $saved = Booking::query()
+            ->whereIn('id', $request->validated('booking_id'))
+            ->update([
+                'paid_at' => $request->validated('paid_at'),
+            ]);
+        if ($saved) {
+            Session::flash('success', __('Saved successfully.'));
         }
 
         return back();

@@ -64,14 +64,22 @@ Route::middleware('auth')->group(static function () {
     Route::prefix('events/{event:slug}')->group(function () {
         Route::resource('{booking_option:slug}/bookings', BookingController::class)
             ->only(['index']);
+
+        Route::get('{booking_option:slug}/payments', [BookingController::class, 'indexPayments'])
+            ->name('bookings.index.payments');
+        Route::put('{booking_option:slug}/payments', [BookingController::class, 'updatePayments'])
+            ->name('bookings.update.payments');
+
         Route::resource('booking-options', BookingOptionController::class)
             ->only(['show', 'create', 'store', 'edit', 'update']);
+
         Route::resource('groups', GroupController::class)
             ->only(['index']);
         Route::post('groups/generate', [GroupController::class, 'generate'])
             ->name('groups.generate');
         Route::delete('groups', [GroupController::class, 'destroyAll'])
             ->name('groups.deleteAll');
+
         Route::post('documents', [DocumentController::class, 'storeForEvent'])
             ->name('events.documents.store');
     });

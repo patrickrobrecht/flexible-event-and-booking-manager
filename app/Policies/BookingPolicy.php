@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Booking;
+use App\Models\BookingOption;
 use App\Models\User;
 use App\Options\Ability;
 use App\Policies\Traits\ChecksAbilities;
@@ -78,6 +79,11 @@ class BookingPolicy
     public function updateBookingComment(User $user, Booking $booking): Response
     {
         return $this->requireAbility($user, Ability::EditBookingComment);
+    }
+
+    public function updateAnyPaymentStatus(User $user, BookingOption $bookingOption): Response
+    {
+        return $this->requireAbility($user, Ability::EditPaymentStatus);
     }
 
     public function updatePaymentStatus(User $user, Booking $booking): Response

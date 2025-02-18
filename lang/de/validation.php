@@ -145,6 +145,9 @@ return [
     */
 
     'custom' => [
+        'booking_id' => [
+            'required' => 'Mindestens eine Anmeldung muss ausgewählt werden.',
+        ],
         'house_number' => [
             'regex' => ':attribute muss eine Zahl mit optionalem Buchstabenzusatz sein.',
         ],
@@ -175,6 +178,7 @@ return [
         'available_until' => 'Ende des Anmeldezeitraums',
         'bank_account_holder' => 'Kontoinhaber',
         'bank_name' => 'Name der Bank',
+        'booking_id' => 'Anmeldung',
         'booking_option_id' => 'Anmeldeoption',
         'city' => 'Stadt',
         'comment' => 'Kommentar',

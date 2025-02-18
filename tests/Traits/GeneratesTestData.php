@@ -79,7 +79,9 @@ trait GeneratesTestData
             ->for($bookingOption)
             ->has(User::factory(), 'bookedByUser')
             ->count(fake()->numberBetween(5, 42))
-            ->create();
+            ->create([
+                'price' => $bookingOption->price,
+            ]);
     }
 
     protected static function createBookingsForUser(BookingOption $bookingOption, User $user): Collection
@@ -88,7 +90,9 @@ trait GeneratesTestData
             ->for($bookingOption)
             ->for($user, 'bookedByUser')
             ->count(fake()->numberBetween(1, 3))
-            ->create();
+            ->create([
+                'price' => $bookingOption->price,
+            ]);
     }
 
     protected static function createBookingOptionForEvent(?Visibility $visibility = null): BookingOption

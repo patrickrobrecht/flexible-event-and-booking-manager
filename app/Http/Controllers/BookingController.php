@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\BookingCompleted;
 use App\Exports\BookingsExportSpreadsheet;
 use App\Http\Controllers\Traits\StreamsExport;
+use App\Http\Requests\BookingPaymentRequest;
 use App\Http\Requests\BookingRequest;
 use App\Http\Requests\Filters\BookingFilterRequest;
 use App\Models\Booking;
@@ -59,6 +60,18 @@ class BookingController extends Controller
             ]),
             'bookingOption' => $bookingOption,
             'bookings' => $bookingsQuery->paginate(24),
+        ]);
+    }
+
+    public function indexPayments(Event $event, BookingOption $bookingOption): View
+    {
+        $this->authorize('viewAnyPaymentStatus', Booking::class);
+
+        return view('bookings.booking_index_payments', [
+            'event' => $event,
+            'bookingOption' => $bookingOption->load([
+                'bookings.groups',
+            ]),
         ]);
     }
 
@@ -153,6 +166,22 @@ class BookingController extends Controller
         if ($booking->fillAndSave($request->validated())) {
             Session::flash('success', __('Saved successfully.'));
             return redirect(route('bookings.edit', $booking));
+        }
+
+        return back();
+    }
+
+    public function updatePayments(Event $event, BookingOption $bookingOption, BookingPaymentRequest $request): RedirectResponse
+    {
+        $this->authorize('updateAnyPaymentStatus', [Booking::class, $bookingOption]);
+
+        $saved = Booking::query()
+            ->whereIn('id', $request->validated('booking_id'))
+            ->update([
+                'paid_at' => $request->validated('paid_at'),
+            ]);
+        if ($saved) {
+            Session::flash('success', __('Saved successfully.'));
         }
 
         return back();

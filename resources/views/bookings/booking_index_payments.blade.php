@@ -4,7 +4,7 @@
     /** @var \App\Models\Event $event */
     /** @var \App\Models\BookingOption $bookingOption */
 
-    $unpaidBookings = $bookingOption->bookings->whereNull('paid_at');
+    $unpaidBookings = $bookingOption->bookings->whereNotNull('price')->whereNull('paid_at');
     $paidBookings = $bookingOption->bookings->whereNotNull('paid_at')->sortBy('paid_at');
     $noErrors = new \Illuminate\Support\ViewErrorBag();
 @endphp
@@ -46,6 +46,9 @@
             <h2>{{ __('Not yet paid') }}</h2>
             <div class="mb-3">
                 <x-bs::badge :variant="$unpaidBookings->isEmpty() ? 'success' : 'danger'">{{ formatTransChoice(':count bookings', $unpaidBookings->count()) }}</x-bs::badge>
+                @if($unpaidBookings->isNotEmpty())
+                    <x-bs::badge variant="danger">{{ formatDecimal($unpaidBookings->sum('price')) }}&nbsp;€</x-bs::badge>
+                @endif
             </div>
             @if($unpaidBookings->isNotEmpty())
                 <x-bs::list>
@@ -90,7 +93,7 @@
                         <span class="is-invalid"></span>
                         <x-bs::form.feedback name="booking_id"/>
                     @enderror
-                    <x-bs::form id="paymentStatusForm" class="mt-3" method="PUT" action="{{ route('bookings.store.payments', [$event, $bookingOption]) }}">
+                    <x-bs::form id="paymentStatusForm" class="mt-3" method="PUT" action="{{ route('bookings.update.payments', [$event, $bookingOption]) }}">
                         <x-bs::form.field name="paid_at" type="datetime-local" :required="true">{{ __('Paid at') }}</x-bs::form.field>
                         <x-bs::button class="w-100"><i class="fa fa-fw fa-save"></i> {{ __('Save payments') }}</x-bs::button>
                     </x-bs::form>
@@ -102,6 +105,7 @@
             <div class="mb-3">
                 <x-bs::badge>{{ formatTransChoice(':count bookings', $paidBookings->count()) }}</x-bs::badge>
                 @if($paidBookings->isNotEmpty())
+                    <x-bs::badge>{{ formatDecimal($paidBookings->sum('price')) }}&nbsp;€</x-bs::badge>
                     <x-bs::badge>{{ __('Latest payment') }}: {{ formatDate($paidBookings->last()->paid_at) }}</x-bs::badge>
                 @endif
             </div>

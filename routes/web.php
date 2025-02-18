@@ -67,8 +67,8 @@ Route::middleware('auth')->group(static function () {
 
         Route::get('{booking_option:slug}/payments', [BookingController::class, 'indexPayments'])
             ->name('bookings.index.payments');
-        Route::put('{booking_option:slug}/payments', [BookingController::class, 'storePayments'])
-            ->name('bookings.store.payments');
+        Route::put('{booking_option:slug}/payments', [BookingController::class, 'updatePayments'])
+            ->name('bookings.update.payments');
 
         Route::resource('booking-options', BookingOptionController::class)
             ->only(['show', 'create', 'store', 'edit', 'update']);

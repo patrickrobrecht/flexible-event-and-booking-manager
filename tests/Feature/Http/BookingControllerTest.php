@@ -5,6 +5,7 @@ namespace Tests\Feature\Http;
 use App\Events\BookingCompleted;
 use App\Exports\BookingsExportSpreadsheet;
 use App\Http\Controllers\BookingController;
+use App\Http\Requests\BookingPaymentRequest;
 use App\Http\Requests\BookingRequest;
 use App\Http\Requests\Filters\BookingFilterRequest;
 use App\Listeners\SendBookingConfirmation;
@@ -38,6 +39,7 @@ use Tests\Traits\GeneratesTestData;
 #[CoversClass(BookingController::class)]
 #[CoversClass(BookingFactory::class)]
 #[CoversClass(BookingFilterRequest::class)]
+#[CoversClass(BookingPaymentRequest::class)]
 #[CoversClass(BookingPolicy::class)]
 #[CoversClass(BookingRequest::class)]
 #[CoversClass(BookingsExportSpreadsheet::class)]
@@ -96,6 +98,19 @@ class BookingControllerTest extends TestCase
                 $this->assertUserCanGetOnlyWithAbility("bookings/{$booking->id}", Ability::ViewBookingsOfEvent);
                 $this->assertUserCanGetOnlyWithAbility("bookings/{$booking->id}/pdf", Ability::ViewBookingsOfEvent);
             }));
+    }
+
+    public function testUserCanViewPaymentsOnlyWithCorrectAbility(): void
+    {
+        $bookingOption = self::createBookingOptionForEvent();
+        $bookings = self::createBookings($bookingOption);
+
+        $route = "/events/{$bookingOption->event->slug}/{$bookingOption->slug}/payments";
+        $this->assertUserCanGetOnlyWithAbility($route, Ability::ViewPaymentStatus);
+
+        // Verify content of the page.
+        $response = $this->get($route)->assertOk();
+        $bookings->each(fn (Booking $booking) => $response->assertSeeText($booking->first_name)->assertSeeText($booking->last_name));
     }
 
     public function testUserCanViewOwnBookingsWithoutAbility(): void
@@ -230,6 +245,42 @@ class BookingControllerTest extends TestCase
 
         $editRoute = "/bookings/{$booking->id}/edit";
         $this->assertUserCanPutOnlyWithAbility("/bookings/{$booking->id}", $this->generateRandomBookingData($booking->bookingOption), Ability::EditBookingsOfEvent, $editRoute, $editRoute);
+    }
+
+    public function testUserCanUpdatePaymentsOnlyWithCorrectAbility(): void
+    {
+        $bookingOption = self::createBookingOptionForEvent();
+        $bookings = self::createBookings($bookingOption);
+        $bookings2 = self::createBookings($bookingOption);
+
+        $route = "/events/{$bookingOption->event->slug}/{$bookingOption->slug}/payments";
+        $data = [
+            'booking_id' => $bookings->pluck('id')->toArray(),
+            'paid_at' => $this->faker->dateTime()->format('Y-m-d\TH:i'),
+        ];
+        $this->assertUserCanPutOnlyWithAbility($route, $data, Ability::EditPaymentStatus, $route, $route);
+
+        $this->assertEquals($bookings->count(), $bookingOption->bookings()->whereNotNull('paid_at')->count());
+        $this->assertEquals($bookings2->count(), $bookingOption->bookings()->whereNull('paid_at')->count());
+    }
+
+    public function testUserCannotUpdatePaidBookings(): void
+    {
+        $bookingOption = self::createBookingOptionForEvent();
+        $bookings = self::createBookings($bookingOption);
+        /** @var Booking $booking */
+        $booking = $bookings->first();
+        $booking->paid_at = $this->faker->dateTime();
+        $booking->save();
+
+        $route = "/events/{$bookingOption->event->slug}/{$bookingOption->slug}/payments";
+        $data = [
+            'booking_id' => [$booking->id],
+            'paid_at' => $this->faker->dateTime()->format('Y-m-d\TH:i'),
+        ];
+        $this->actingAsUserWithAbility(Ability::EditPaymentStatus);
+        $this->put($route, $data)
+            ->assertSessionHasErrors(['booking_id']);
     }
 
     public function testUserCanDeleteAndRestoreBookingOnlyWithCorrectAbility(): void

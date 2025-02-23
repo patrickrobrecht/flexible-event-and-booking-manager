@@ -16,7 +16,6 @@ class BookingOptionFactory extends Factory
     public function definition(): array
     {
         $name = __('Booking option') . ' #' . $this->faker->unique()->randomNumber();
-        $price = $this->faker->optional(0.8)->randomFloat(2, 5, 100);
 
         return [
             'name' => $name,
@@ -24,8 +23,8 @@ class BookingOptionFactory extends Factory
             'description' => $this->faker->sentences(2, true),
             'available_from' => $this->faker->dateTimeBetween('-30 years', '-1 day'),
             'available_until' => $this->faker->dateTimeBetween('+1 day', '+30 days'),
-            'price' => $price,
-            'payment_due_days' => $price === null ? null : $this->faker->numberBetween(5, 10),
+            'price' => $this->faker->randomFloat(2, 5, 100),
+            'payment_due_days' => $this->faker->numberBetween(5, 10),
             'confirmation_text' => $this->faker->optional()->paragraph(),
         ];
     }

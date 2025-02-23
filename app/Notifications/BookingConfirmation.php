@@ -44,14 +44,19 @@ class BookingConfirmation extends Notification
         }
 
         if (isset($this->booking->price) && $this->booking->price > 0) {
-            $mail->line(__('Please transfer :price to the following bank account:', [
+            $mail->line(__('Please transfer :price to the following bank account by :date:', [
                 'price' => formatDecimal($this->booking->price) . ' €',
+                'date' => formatDate($this->booking->payment_deadline),
             ]));
             $mail->lines([
                 __('Account holder') . ': ' . ($organization->bank_account_holder ?? $organization->name),
                 'IBAN: ' . $organization->iban,
                 __('Bank') . ': ' .$organization->bank_name,
             ]);
+        }
+
+        if (isset($this->booking->bookingOption->confirmation_text)) {
+            $mail->line($this->booking->bookingOption->confirmation_text);
         }
 
         return $mail;

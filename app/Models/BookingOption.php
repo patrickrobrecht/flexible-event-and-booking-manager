@@ -100,6 +100,13 @@ class BookingOption extends Model
         ]);
     }
 
+    public function getPaymentDeadline(?Carbon $bookedAt = null): Carbon
+    {
+        return ($bookedAt ?? Carbon::now())
+            ->endOfDay()
+            ->addWeekdays($this->payment_due_days);
+    }
+
     public function isRestrictedBy(BookingRestriction $restriction): bool
     {
         return in_array($restriction->value, $this->restrictions ?? [], true);

@@ -43,6 +43,7 @@ use Spatie\QueryBuilder\Enums\SortDirection;
  * @property-read int $booking_option_id
  *
  * @property-read ?float $age {@see self::age()}
+ * @property-read ?Carbon $payment_deadline {@see self::paymentDeadline()}
  *
  * @property-read ?User $bookedByUser {@see self::bookedByUser()}
  * @property-read BookingOption $bookingOption {@see self::bookingOption()}
@@ -94,7 +95,14 @@ class Booking extends Model
 
     public function age(): Attribute
     {
-        return Attribute::get(fn () => $this->date_of_birth?->diffInYears());
+        return Attribute::get(fn () => $this->date_of_birth?->diffInYears())
+            ->shouldCache();
+    }
+
+    public function paymentDeadline(): Attribute
+    {
+        return Attribute::get(fn () => isset($this->price) ? $this->bookingOption->getPaymentDeadline($this->booked_at) : null)
+            ->shouldCache();
     }
 
     public function bookedByUser(): BelongsTo

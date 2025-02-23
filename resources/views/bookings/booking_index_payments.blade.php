@@ -54,6 +54,8 @@
                 <x-bs::list>
                     @foreach($unpaidBookings->sortBy(fn (\App\Models\Booking $booking) => $booking->booked_at) as $booking)
                         @php
+                            $booking->setRelation('bookingOption', $bookingOption);
+
                             $optionName = sprintf('%s <strong>%s</strong>', $booking->first_name, $booking->last_name);
                             if (\Illuminate\Support\Facades\Auth::user()->can('view', $booking)) {
                                 $optionName = sprintf('<a href="%s" target="_blank">%s</a>', route('bookings.show', $booking), $optionName);
@@ -74,12 +76,19 @@
                                     {!! $optionName !!}
                                 @endcan
                                 <div class="small text-nowrap">
-                                    <i class="fa fa-fw fa-clock" title="{{ __('Booking date') }}"></i>
-                                    @isset($booking->booked_at)
-                                        {{ formatDateTime($booking->booked_at) }}
-                                    @else
-                                        <x-bs::badge variant="danger">{{ __('Booking not completed yet') }}</x-bs::badge>
-                                    @endisset
+                                    <span title="{{ __('Booking date') }}">
+                                        <i class="fa fa-fw fa-clock"></i>
+                                        @isset($booking->booked_at)
+                                            {{ formatDateTime($booking->booked_at) }}
+                                        @else
+                                            <x-bs::badge variant="danger">{{ __('Booking not completed yet') }}</x-bs::badge>
+                                        @endisset
+                                    </span>
+                                    → <span @class([
+                                        'text-danger' => $booking->payment_deadline->isPast(),
+                                    ]) title="{{ __('Payment deadline') }}">
+                                        <i class="fa fa-fw fa-euro-sign"></i> {{ formatDate($booking->payment_deadline) }}
+                                    </span>
                                 </div>
                             </div>
                             <x-slot:end>

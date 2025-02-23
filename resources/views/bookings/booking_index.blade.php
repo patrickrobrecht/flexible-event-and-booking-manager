@@ -87,6 +87,9 @@
 
     <div class="row my-3">
         @foreach($bookings as $booking)
+            @php
+                $booking->setRelation('bookingOption', $bookingOption);
+            @endphp
             <div class="col-12 col-md-6 col-lg-4 col-xxl-3 mb-3">
                 <div class="card">
                     <div @class([

@@ -70,9 +70,12 @@ class BookingOptionRequest extends FormRequest
                 'lte:999999.99',
                 Rule::prohibitedIf(!isset($this->event->organization->iban)),
             ],
-            'book_for_self_only' => [
+            'payment_due_days' => [
                 'nullable',
-                'bool',
+                'required_with:price',
+                'integer',
+                'gte:0',
+                'lte:365',
             ],
             'restrictions' => [
                 'nullable',
@@ -80,6 +83,10 @@ class BookingOptionRequest extends FormRequest
             ],
             'restrictions.*' => [
                 BookingRestriction::rule(),
+            ],
+            'confirmation_text' => [
+                'nullable',
+                'string',
             ],
         ];
     }

@@ -22,7 +22,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property ?Carbon $available_until
  * @property ?float $price
  * @property array $price_conditions
+ * @property ?int $payment_due_days
  * @property array $restrictions
+ * @property string $confirmation_text
  *
  * @property-read Collection|Booking[] $bookings {@see self::bookings()}
  * @property-read Event $event {@see self::event()}
@@ -48,7 +50,9 @@ class BookingOption extends Model
         'available_until',
         'price',
         'price_conditions',
+        'payment_due_days',
         'restrictions',
+        'confirmation_text',
     ];
 
     /**
@@ -62,6 +66,7 @@ class BookingOption extends Model
         'available_until' => 'datetime',
         'price' => 'float',
         'price_conditions' => 'json',
+        'payment_due_days' => 'integer',
         'restrictions' => 'json', /* @see BookingRestriction */
     ];
 

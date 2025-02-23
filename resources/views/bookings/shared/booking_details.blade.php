@@ -5,7 +5,7 @@
 @endif
 
 <div class="row">
-    <div class="col-12 col-md-6 vstack mb-3">
+    <div class="col-12 col-lg-6 vstack mb-3">
         <div>
             <i class="fa fa-fw fa-clock" title="{{ __('Booking date') }}"></i>
             @isset($booking->booked_at)
@@ -27,8 +27,10 @@
             @endisset
         </div>
         <div>
-            <i class="fa fa-fw fa-euro" title="{{ __('Price') }}"></i>
-            @include('bookings.shared.payment-status')
+            <i class="fa fa-fw fa-euro" title="{{ __('Price') }}"></i> @include('bookings.shared.payment-status')
+            <div class="mt-3">
+                @include('booking_options.shared.booking_option_payment')
+            </div>
         </div>
     </div>
     @can('viewGroups', $booking->bookingOption->event)
@@ -41,7 +43,7 @@
                         $group->event->name,
                     ]);
             @endphp
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-lg-6">
                 <h2><i class="fa fa-fw fa-people-group"></i> {{ __('Groups') }}</h2>
                 <x-bs::list class="mb-3">
                     @foreach($groups as $group)

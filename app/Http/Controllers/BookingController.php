@@ -131,7 +131,8 @@ class BookingController extends Controller
 
         if ($booking->fillAndSave($request->validated())) {
             $message = __('Your booking has been saved successfully.')
-                . ' ' . __('We will send you a confirmation by e-mail shortly.');
+                . ' ' . __('We will send you a confirmation by e-mail shortly.')
+                . ' ' . ($bookingOption->confirmation_text ?? '');
             Session::flash('success', $message);
 
             event(new BookingCompleted($booking));

@@ -38,7 +38,7 @@
         <div class="col-12 col-md-4">
             @include('events.shared.event_details')
         </div>
-        <div class="col-12 col-md-8">
+        <div class="col-12 col-md-8 mt-3 mt-md-0">
             @include('bookings.shared.booking_details')
 
             @include('bookings.booking_form_fields', [

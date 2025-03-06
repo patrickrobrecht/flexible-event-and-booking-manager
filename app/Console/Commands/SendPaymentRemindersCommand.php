@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 
-class SendPaymentReminders extends Command
+class SendPaymentRemindersCommand extends Command
 {
     protected $signature = 'app:send-payment-reminders
         {--dry-run : If set the reminders are only listed, but not actually sent.}';
@@ -40,7 +40,7 @@ class SendPaymentReminders extends Command
             ->get();
 
         if ($bookingOptions->isEmpty()) {
-            $this->info('There are no booking options with overdue bookings.');
+            $this->info('There are no booking options with unpaid bookings to check.');
             return self::SUCCESS;
         }
 

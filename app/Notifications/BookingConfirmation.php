@@ -22,19 +22,16 @@ class BookingConfirmation extends Notification
      */
     public function toMail($notifiable)
     {
-        $mail = (new MailMessage())
-            ->subject(config('app.name') . ': ' . __('Booking'))
+        $mail = $this->booking->prepareMailMessage()
+            ->subject(
+                config('app.name')
+                . ': '
+                . __('Booking no. :id', [
+                    'id' => $this->booking->id,
+                ])
+            )
             ->line(__('we received your booking:'))
-            ->line($this->booking->first_name . ' ' . $this->booking->last_name);
-
-        if (isset($this->booking->bookedByUser) && $this->booking->bookedByUser->email !== $this->booking->email) {
-            $mail->cc($this->booking->bookedByUser->email);
-        }
-
-        $organization = $this->booking->bookingOption->event->organization;
-        if (isset($organization->email)) {
-            $mail->replyTo($organization->email, $organization->name);
-        }
+            ->line($this->booking->name);
 
         if (isset($this->booking->street)) {
             $mail->line($this->booking->street . ' ' . ($this->booking->house_number ?? ''));
@@ -48,11 +45,7 @@ class BookingConfirmation extends Notification
                 'price' => formatDecimal($this->booking->price) . ' €',
                 'date' => formatDate($this->booking->payment_deadline),
             ]));
-            $mail->lines([
-                __('Account holder') . ': ' . ($organization->bank_account_holder ?? $organization->name),
-                'IBAN: ' . $organization->iban,
-                __('Bank') . ': ' .$organization->bank_name,
-            ]);
+            $mail->lines($this->booking->bookingOption->event->organization->bank_account_lines);
         }
 
         if (isset($this->booking->bookingOption->confirmation_text)) {

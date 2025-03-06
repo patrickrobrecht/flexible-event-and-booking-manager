@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\HasAddress;
+use App\Models\Traits\HasFullName;
 use App\Models\Traits\HasPhone;
 use App\Options\DeletedFilter;
 use App\Options\FilterValue;
@@ -21,6 +22,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Session;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -55,6 +57,7 @@ class Booking extends Model
     use BuildsQueryFromRequest;
     use HasAddress;
     use HasFactory;
+    use HasFullName;
     use HasPhone;
     use SoftDeletes;
 
@@ -199,6 +202,24 @@ class Booking extends Model
         }
 
         return true;
+    }
+
+    public function prepareMailMessage(): MailMessage
+    {
+        $mail = new MailMessage();
+        $mail->greeting($this->bookedByUser->greeting ?? $this->greeting);
+
+        if (isset($this->bookedByUser) && $this->bookedByUser->email !== $this->email) {
+            $mail->cc($this->bookedByUser->email);
+        }
+
+        $organization = $this->bookingOption->event->organization;
+        if (isset($organization->email)) {
+            $mail->bcc($organization->email)
+                ->replyTo($organization->email, $organization->name);
+        }
+
+        return $mail;
     }
 
     public function getGroup(Event $event): ?Group

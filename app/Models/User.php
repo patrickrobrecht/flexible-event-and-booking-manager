@@ -6,6 +6,7 @@ use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\FiltersByRelationExistence;
 use App\Models\Traits\HasAddress;
+use App\Models\Traits\HasFullName;
 use App\Models\Traits\HasPhone;
 use App\Models\Traits\Searchable;
 use App\Notifications\AccountCreatedNotification;
@@ -17,7 +18,6 @@ use App\Options\FilterValue;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -45,9 +45,6 @@ use Spatie\QueryBuilder\Enums\SortDirection;
  * @property ActiveStatus $status
  * @property ?Carbon $last_login_at
  *
- * @property-read string greeting {@see User::greeting()}
- * @property-read string $name {@see User::name()}
- *
  * @property-read Collection|Booking[] $bookings {@see self::bookings()}
  * @property-read Collection|Event[] $responsibleForEvents {@see self::responsibleForEvents()}
  * @property-read Collection|EventSeries[] $responsibleForEventSeries {@see self::responsibleForEventSeries()}
@@ -62,6 +59,7 @@ class User extends Authenticatable implements MustVerifyEmail
     use HasAddress;
     use HasApiTokens;
     use HasFactory;
+    use HasFullName;
     use HasPhone;
     use Notifiable;
     use Searchable;
@@ -106,16 +104,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'status' => ActiveStatus::class,
         'last_login_at' => 'datetime',
     ];
-
-    public function greeting(): Attribute
-    {
-        return new Attribute(fn () => __('Hello :name', ['name' => $this->name]));
-    }
-
-    public function name(): Attribute
-    {
-        return new Attribute(fn () => $this->first_name . ' ' . $this->last_name);
-    }
 
     public function bookings(): HasMany
     {

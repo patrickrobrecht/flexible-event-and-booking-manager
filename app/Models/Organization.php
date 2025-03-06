@@ -12,6 +12,7 @@ use App\Options\Ability;
 use App\Options\ActiveStatus;
 use App\Options\FilterValue;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -30,6 +31,8 @@ use Spatie\QueryBuilder\AllowedFilter;
  * @property ?string $bank_account_holder
  * @property ?string $iban
  * @property ?string $bank_name
+ *
+ * @property-read array $bank_account_lines {@see self::bankAccountLines()}
  *
  * @property Collection|Event[] $events {@see Organization::events()}
  * @property Collection|EventSeries[] $eventSeries {@see self::eventSeries()}
@@ -69,6 +72,15 @@ class Organization extends Model
     protected $casts = [
         'status' => ActiveStatus::class,
     ];
+
+    public function bankAccountLines(): Attribute
+    {
+        return Attribute::get(fn () => isset($this->iban, $this->bank_name) ? [
+            __('Account holder') . ': ' . ($this->bank_account_holder ?? $this->name),
+            'IBAN: ' . $this->iban,
+            __('Bank') . ': ' .$this->bank_name,
+        ] : [])->shouldCache();
+    }
 
     public function events(): HasMany
     {

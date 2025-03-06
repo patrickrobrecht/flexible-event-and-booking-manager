@@ -51,12 +51,15 @@ trait GeneratesTestData
         return array_map(static fn (Visibility $method) => [$method], Visibility::cases());
     }
 
-    protected static function createBooking(?BookingOption $bookingOption = null): Booking
+    protected static function createBooking(?BookingOption $bookingOption = null, array $attributes = []): Booking
     {
         $booking = Booking::factory()
             ->for($bookingOption ?? self::createBookingOptionForEvent(Visibility::Public))
-            ->has(User::factory(), 'bookedByUser')
-            ->create();
+            ->for(User::factory(), 'bookedByUser')
+            ->create([
+                ...$attributes,
+                'price' => $bookingOption?->price,
+            ]);
 
         if (isset($bookingOption) && $bookingOption->formFields->isNotEmpty()) {
             foreach ($bookingOption->formFields as $formField) {
@@ -95,11 +98,11 @@ trait GeneratesTestData
             ]);
     }
 
-    protected static function createBookingOptionForEvent(?Visibility $visibility = null): BookingOption
+    protected static function createBookingOptionForEvent(?Visibility $visibility = null, array $attributes = []): BookingOption
     {
         return BookingOption::factory()
             ->for(self::createEvent($visibility))
-            ->create();
+            ->create($attributes);
     }
 
     protected static function createBookingOptionForEventWithCustomFormFields(?Visibility $visibility = null): BookingOption

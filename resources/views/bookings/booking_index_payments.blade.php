@@ -75,6 +75,11 @@
                                 @else
                                     {!! $optionName !!}
                                 @endcan
+                                @isset($booking->comment)
+                                    <div class="small">
+                                        <i class="fa fa-fw fa-comment" title="{{ __('Comment') }}"></i> <span>{{ $booking->comment }}</span>
+                                    </div>
+                                @endisset
                                 <div class="small text-nowrap">
                                     <span title="{{ __('Booking date') }}">
                                         <i class="fa fa-fw fa-clock"></i>
@@ -137,6 +142,11 @@
                                             @endcan
                                             @isset($group)
                                                 ({{ $group->name }})
+                                            @endisset
+                                            @isset($booking->comment)
+                                                <div class="small">
+                                                    <i class="fa fa-fw fa-comment" title="{{ __('Comment') }}"></i> <span>{{ $booking->comment }}</span>
+                                                </div>
                                             @endisset
                                             <div class="small text-nowrap">
                                                 <i class="fa fa-fw fa-clock" title="{{ __('Booking date') }}"></i>

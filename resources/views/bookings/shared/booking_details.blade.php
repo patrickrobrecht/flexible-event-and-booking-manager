@@ -26,6 +26,12 @@
                 {{ __('Guest') }}
             @endisset
         </div>
+        @can('viewPaymentStatus', $booking)
+            <div>
+                <i class="fa fa-fw fa-comment" title="{{ __('Comment') }}"></i>
+                <span>{{ $booking->comment ?? '—' }}</span>
+            </div>
+        @endcan
         <div>
             <i class="fa fa-fw fa-euro" title="{{ __('Price') }}"></i> @include('bookings.shared.payment-status')
             <div class="mt-3">

@@ -29,6 +29,7 @@ class ManageGroups extends Component
     public string $sort = 'name';
 
     public array $bookingOptionIds;
+    public bool $showComment = false;
 
     public GroupForm $form;
 

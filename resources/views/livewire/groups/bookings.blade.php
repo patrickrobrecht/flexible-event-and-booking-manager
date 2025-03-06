@@ -39,6 +39,11 @@
                             </span>
                         @endisset
                     </div>
+                    @if($showComment && isset($booking->comment))
+                        <div class="small">
+                            <i class="fa fa-fw fa-comment" title="{{ __('Comment') }}"></i> <span>{{ $booking->comment }}</span>
+                        </div>
+                    @endif
                     <div class="small text-nowrap">
                         <i class="fa fa-fw fa-clock" title="{{ __('Booking date') }}"></i>
                         @isset($booking->booked_at)

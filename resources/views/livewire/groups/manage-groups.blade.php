@@ -31,6 +31,10 @@
                               :options="$bookingOptions" :allow-html="true"
                               wire:model.live="bookingOptionIds">{{ __('Booking options') }}</x-bs::form.field>
         </div>
+        <div class="col-12 col-md-6 col-xl-3">
+            <x-bs::form.field name="show_comment" type="checkbox" :options="\Portavice\Bladestrap\Support\Options::one(__('Show comments'))"
+                              wire:model.live="showComment"/>
+        </div>
     </div>
 
     @include('layouts.alerts')

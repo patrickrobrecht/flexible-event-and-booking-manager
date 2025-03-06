@@ -195,6 +195,9 @@ class Event extends Model
         return Ability::ViewResponsibilitiesOfEvents;
     }
 
+    /**
+     * @return Collection<BookingOption>
+     */
     public function getBookingOptions(): Collection
     {
         if (isset($this->parentEvent)) {
@@ -210,6 +213,9 @@ class Event extends Model
         return $this->bookingOptions;
     }
 
+    /**
+     * @return Collection<Booking>
+     */
     public function getBookings(): Collection
     {
         if (isset($this->parentEvent)) {

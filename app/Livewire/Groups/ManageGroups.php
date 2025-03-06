@@ -7,6 +7,7 @@ use App\Models\Booking;
 use App\Models\Event;
 use App\Models\Group;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
 use Livewire\Attributes\Locked;
@@ -30,6 +31,7 @@ class ManageGroups extends Component
 
     public array $bookingOptionIds;
     public bool $showComment = false;
+    public array $showFields = [];
 
     public GroupForm $form;
 
@@ -165,10 +167,14 @@ class ManageGroups extends Component
 
     private function sortBookings(): void
     {
+        $bookings = $this->event->getBookings();
+        $bookings->load([
+            'formFieldValues' => fn (HasMany $formFieldValues) => $formFieldValues->whereIn('form_field_id', $this->showFields),
+        ]);
         $this->groups = $this->groups
-            ->map(function (Group $group) {
+            ->map(function (Group $group) use ($bookings) {
                 $group['bookings'] = $this->sortBookingsInGroup(
-                    $this->event->getBookings()->filter(
+                    $bookings->filter(
                         fn (Booking $booking) => $booking->getGroup($this->event)?->is($group)
                     )
                 );

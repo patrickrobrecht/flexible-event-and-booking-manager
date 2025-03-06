@@ -5,6 +5,9 @@
             $averageAge = $averageAge = $bookingsForOption->average('age');
         @endphp
         @if(in_array($bookingOption->id, $bookingOptionIds, true) && $bookingsForOption->count() > 0)
+            @php
+                $formFields = $bookingOption->formFields->whereIn('id', $showFields);
+            @endphp
             <x-bs::list.item variant="primary">
                 {{ $bookingOption->name }} ({{ formatInt($bookingsForOption->count()) }})
                 @isset($averageAge)
@@ -52,6 +55,11 @@
                             <x-bs::badge variant="danger">{{ __('Booking not completed yet') }}</x-bs::badge>
                         @endisset
                     </div>
+                    @foreach($formFields as $formField)
+                        <div>
+                            {{ $formField->name }}: {{ $booking->getFieldValue($formField) }}
+                        </div>
+                    @endforeach
                 </x-bs::list.item>
             @endforeach
         @endif

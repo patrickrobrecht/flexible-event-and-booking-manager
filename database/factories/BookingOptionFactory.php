@@ -15,7 +15,7 @@ class BookingOptionFactory extends Factory
 {
     public function definition(): array
     {
-        $name = __('Booking option') . ' #' . $this->faker->unique()->randomNumber();
+        $name = __('Booking option') . ' #' . Str::padLeft($this->faker->unique()->randomNumber(), 8, '0');
 
         return [
             'name' => $name,

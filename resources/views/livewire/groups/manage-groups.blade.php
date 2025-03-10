@@ -33,13 +33,13 @@
                     @if(in_array($bookingOption->id, $bookingOptionIds, true))
                         @php
                             $showDetailsName = sprintf('show_details[%s]', $bookingOption->id);
-                            $fields = $bookingOption->formFields->filter(fn (\App\Models\FormField $f) => !isset($f->column));
+                            $fields = $bookingOption->formFields->filter(fn (\App\Models\FormField $f) => !isset($f->column) && $f->type->isFormField());
                         @endphp
                         @if($fields->isNotEmpty())
                             <x-bs::dropdown.button variant="light" class="ms-3 px-1 py-0">
                                 <span class="small">{{ __('Show fields') }}</span>
                                 <x-slot:dropdown>
-                                    <div class="mx-2">
+                                    <div class="mx-3 cols-lg-2 cols-xl-3 cols-xxl-4">
                                         <x-bs::form.field :name="$showDetailsName" type="checkbox" :options="\Portavice\Bladestrap\Support\Options::fromModels($fields, 'name')"
                                                           wire:model.live="showFields"></x-bs::form.field>
                                     </div>

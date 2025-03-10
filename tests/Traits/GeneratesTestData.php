@@ -182,7 +182,7 @@ trait GeneratesTestData
             ->create();
     }
 
-    protected static function createEventWithBookingOptions(Visibility $visibility): Event
+    protected static function createEventWithBookingOptions(?Visibility $visibility = null): Event
     {
         $event = Event::factory()
             ->visibility($visibility)
@@ -195,6 +195,17 @@ trait GeneratesTestData
             ->create();
 
         $event->bookingOptions->each(fn (BookingOption $bookingOption) => self::createBookings($bookingOption));
+
+        return $event;
+    }
+
+    protected static function createEventWithBookings(?Visibility $visibility = null): Event
+    {
+        $event = self::createEventWithBookingOptions();
+
+        foreach ($event->bookingOptions as $bookingOption) {
+            self::createBookings($bookingOption);
+        }
 
         return $event;
     }

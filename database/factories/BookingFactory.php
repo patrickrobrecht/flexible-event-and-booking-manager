@@ -28,6 +28,7 @@ class BookingFactory extends Factory
             'email' => sprintf('%s.%s@%s', Str::slug($firstName), Str::slug($lastName), fake()->unique()->domainName()),
             'date_of_birth' => fake()->date(),
             'booked_at' => $this->faker->dateTime(),
+            'comment' => $this->faker->optional()->text(),
         ];
     }
 

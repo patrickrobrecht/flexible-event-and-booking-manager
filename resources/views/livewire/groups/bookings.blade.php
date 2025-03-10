@@ -63,9 +63,30 @@
                             <i class="fa fa-fw fa-comment" title="{{ __('Comment') }}"></i> <span>{{ $booking->comment }}</span>
                         </div>
                     @endif
+                    @if(in_array('email', $showBookingData, true))
+                        <div class="small">
+                            <i class="fa fa-fw fa-at" title="{{ __('E-mail') }}"></i> <a href="mailto:{{ $booking->email }}">{{ $booking->email }}</a>
+                        </div>
+                    @endif
+                    @if(isset($booking->phone) && in_array('phone', $showBookingData, true))
+                        <div class="small">
+                            <i class="fa fa-fw fa-phone" title="{{ __('Phone number') }}"></i> <a href="{{ $booking->phone_link }}">{{ $booking->phone }}</a>
+                        </div>
+                    @endif
+                    @if($booking->hasAnyFilledAddressField() && in_array('address', $showBookingData, true))
+                        <div class="small">
+                            <i class="fa fa-fw fa-road" title="{{ __('Address') }}"></i> <div class="d-inline-block">
+                                <div class="d-flex flex-column">
+                                    @foreach($booking->addressBlock as $addressLine)
+                                        <div>{{ $addressLine }}</div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                     @foreach($formFields as $formField)
-                        <div>
-                            {{ $formField->name }}: {{ $booking->getFieldValue($formField) ?? '—' }}
+                        <div class="small">
+                            <i class="fa fa-fw fa-file-lines"></i> {{ $formField->name }}: {{ $booking->getFieldValue($formField) ?? '—' }}
                         </div>
                     @endforeach
                 </x-bs::list.item>

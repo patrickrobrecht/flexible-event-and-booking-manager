@@ -14,7 +14,7 @@
             <x-bs::form.field name="sort" type="select" :options="\App\Models\Booking::sortOptions()->getNamesWithLabels()"
                               wire:model.live="sort" form="export-form">{{ __('Sorting') }}</x-bs::form.field>
         </div>
-        <div class="col-12 col-md-6 col-lg-5 col-xxl-7">
+        <div class="col-12 col-md-6 col-lg-5 col-xxl-6">
             <div class="form-label">{{ __('Booking options') }}</div>
             @foreach($event->getBookingOptions() as $bookingOption)
                 @php
@@ -33,43 +33,26 @@
                     @if(in_array($bookingOption->id, $bookingOptionIds, true))
                         @php
                             $showDetailsName = sprintf('show_details[%s]', $bookingOption->id);
-                            $fields = $bookingOption->formFields->filter(fn (\App\Models\FormField $f) => !in_array($f->column, ['first_name', 'last_name', 'date_of_birth']));
-                            $optionsForFields = \Portavice\Bladestrap\Support\Options::fromModels($fields, 'name');
+                            $fields = $bookingOption->formFields->filter(fn (\App\Models\FormField $f) => !isset($f->column));
                         @endphp
-                        <x-bs::dropdown.button variant="light" class="ms-3 px-1 py-0">
-                            <span class="small">{{ __('Show fields') }}</span>
-                            <x-slot:dropdown>
-                                @php
-                                    $showDetailsName = sprintf('show_details[%s]', $bookingOption->id);
-                                    $fields = $bookingOption->formFields->filter(
-                                        fn (\App\Models\FormField $f) => $f->type->isFormField()
-                                            && !in_array($f->column, ['first_name', 'last_name', 'date_of_birth'])
-                                    );
-                                    $optionsForFields = \Portavice\Bladestrap\Support\Options::fromModels($fields, 'name');
-                                @endphp
-                                <div class="mx-2">
-                                    <x-bs::form.field :name="$showDetailsName" type="checkbox" :options="$optionsForFields"
-                                                      wire:model.live="showFields"></x-bs::form.field>
-                                </div>
-                            </x-slot:dropdown>
-                        </x-bs::dropdown.button>
+                        @if($fields->isNotEmpty())
+                            <x-bs::dropdown.button variant="light" class="ms-3 px-1 py-0">
+                                <span class="small">{{ __('Show fields') }}</span>
+                                <x-slot:dropdown>
+                                    <div class="mx-2">
+                                        <x-bs::form.field :name="$showDetailsName" type="checkbox" :options="\Portavice\Bladestrap\Support\Options::fromModels($fields, 'name')"
+                                                          wire:model.live="showFields"></x-bs::form.field>
+                                    </div>
+                                </x-slot:dropdown>
+                            </x-bs::dropdown.button>
+                        @endif
                     @endif
                 </div>
             @endforeach
         </div>
-        <div class="col-12 col-md-6 col-lg-3 col-xxl-2">
-            @php
-                $displayOptions = \Portavice\Bladestrap\Support\Options::fromArray([
-                    'booked_at' => __('Booking date'),
-                ]);
-                if (\Illuminate\Support\Facades\Auth::user()?->can('viewAnyPaymentStatus', \App\Models\Booking::class)) {
-                    $displayOptions->append(__('Payment status'), 'paid_at');
-                }
-                if (\Illuminate\Support\Facades\Auth::user()?->can('updateAnyBookingComment', \App\Models\Booking::class)) {
-                    $displayOptions->append(__('Comments'), 'comment');
-                }
-            @endphp
+        <div class="col-12 col-md-6 col-lg-3 col-xxl-3">
             <x-bs::form.field name="show_booking_data" type="checkbox" :options="$displayOptions"
+                              check-container-class="cols-xxl-2"
                               wire:model.live="showBookingData">{{ __('Display options') }}</x-bs::form.field>
         </div>
     </div>

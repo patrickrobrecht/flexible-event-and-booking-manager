@@ -45,7 +45,6 @@ class GroupController extends Controller
                     'bookingOptions' => fn (HasMany $bookingOptionsQuery) => $bookingOptionsQuery->withCount([
                         'bookings',
                     ]),
-                    'bookingOptions.formFields',
                 ]),
         ]);
     }

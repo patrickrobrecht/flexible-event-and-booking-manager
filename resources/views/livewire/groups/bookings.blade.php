@@ -42,22 +42,30 @@
                             </span>
                         @endisset
                     </div>
-                    @if($showComment && isset($booking->comment))
+                    @if(in_array('booked_at', $showBookingData, true))
+                        <div class="small text-nowrap">
+                            <i class="fa fa-fw fa-clock" title="{{ __('Booking date') }}"></i>
+                            @isset($booking->booked_at)
+                                {{ formatDateTime($booking->booked_at) }}
+                            @else
+                                <x-bs::badge variant="danger">{{ __('Booking not completed yet') }}</x-bs::badge>
+                            @endisset
+                        </div>
+                    @endif
+                    @if(isset($booking->price) && in_array('paid_at', $showBookingData, true) && \Illuminate\Support\Facades\Auth::user()?->can('viewPaymentStatus', $booking))
+                        <div class="small">
+                            <i class="fa fa-fw fa-euro-sign" title="{{ __('Payment status') }}"></i>
+                            @include('bookings.shared.payment-status')
+                        </div>
+                    @endif
+                    @if(isset($booking->comment) && in_array('comment', $showBookingData, true) && \Illuminate\Support\Facades\Auth::user()?->can('updateBookingComment', $booking))
                         <div class="small">
                             <i class="fa fa-fw fa-comment" title="{{ __('Comment') }}"></i> <span>{{ $booking->comment }}</span>
                         </div>
                     @endif
-                    <div class="small text-nowrap">
-                        <i class="fa fa-fw fa-clock" title="{{ __('Booking date') }}"></i>
-                        @isset($booking->booked_at)
-                            {{ formatDateTime($booking->booked_at) }}
-                        @else
-                            <x-bs::badge variant="danger">{{ __('Booking not completed yet') }}</x-bs::badge>
-                        @endisset
-                    </div>
                     @foreach($formFields as $formField)
                         <div>
-                            {{ $formField->name }}: {{ $booking->getFieldValue($formField) }}
+                            {{ $formField->name }}: {{ $booking->getFieldValue($formField) ?? '—' }}
                         </div>
                     @endforeach
                 </x-bs::list.item>

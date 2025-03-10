@@ -28,6 +28,7 @@ class ManageGroupsTest extends TestCase
 
     public function testComponentRendersCorrectly(): void
     {
+        $this->actingAsUserWithAbility(Ability::ManageGroupsOfEvent);
         Livewire::test(ManageGroups::class)
             ->assertStatus(200);
     }

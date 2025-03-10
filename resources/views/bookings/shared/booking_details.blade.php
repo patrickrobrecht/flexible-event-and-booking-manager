@@ -26,7 +26,7 @@
                 {{ __('Guest') }}
             @endisset
         </div>
-        @can('viewPaymentStatus', $booking)
+        @can('updateBookingComment', $booking)
             <div>
                 <i class="fa fa-fw fa-comment" title="{{ __('Comment') }}"></i>
                 <span>{{ $booking->comment ?? '—' }}</span>

@@ -76,6 +76,11 @@ class BookingPolicy
         return $this->requireAbility($user, Ability::EditBookingsOfEvent);
     }
 
+    public function updateAnyBookingComment(User $user, ?BookingOption $bookingOption = null): Response
+    {
+        return $this->requireAbility($user, Ability::EditBookingComment);
+    }
+
     public function updateBookingComment(User $user, Booking $booking): Response
     {
         return $this->requireAbility($user, Ability::EditBookingComment);

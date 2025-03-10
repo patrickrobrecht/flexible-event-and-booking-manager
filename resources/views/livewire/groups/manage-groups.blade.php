@@ -9,26 +9,25 @@
         value ? modal.show() : modal.hide();
     });
 }">
-    <div class="row mb-3">
-        <div class="col-12 col-md-6 col-xl-3">
-            <x-bs::form.field name="sort" type="select"
-                              :options="\App\Models\Booking::sortOptions()->getNamesWithLabels()"
+    <div class="row my-3">
+        <div class="col-12 col-md-6 col-lg-4 col-xxl-3">
+            <x-bs::form.field name="sort" type="select" :options="\App\Models\Booking::sortOptions()->getNamesWithLabels()"
                               wire:model.live="sort" form="export-form">{{ __('Sorting') }}</x-bs::form.field>
         </div>
-        <div class="col-12 col-md-6 col-xl-5">
+        <div class="col-12 col-md-6 col-lg-5 col-xxl-7">
             <div class="form-label">{{ __('Booking options') }}</div>
             @foreach($event->getBookingOptions() as $bookingOption)
                 @php
                     $checkBoxOptionForBookingOption = \Portavice\Bladestrap\Support\Options::fromArray([
                         $bookingOption->id => sprintf(
-                            '<a href="%s" target="_blank">%s</a> (%s)',
+                            '<span class="text-nowrap"><a href="%s" target="_blank">%s</a> (%s)</span>',
                             route('bookings.index', [$event->parentEvent ?? $event, $bookingOption]),
                             $bookingOption->name,
                             formatInt($bookingOption->bookings_count ?? $bookingOption->bookings()->count())
                         )
                     ]);
                 @endphp
-                <div class="d-flex">
+                <div class="d-flex flex-wrap">
                     <x-bs::form.field name="booking_options" type="checkbox" :options="$checkBoxOptionForBookingOption" :allow-html="true"
                                       wire:model.live="bookingOptionIds"/>
                     @if(in_array($bookingOption->id, $bookingOptionIds, true))
@@ -58,9 +57,20 @@
                 </div>
             @endforeach
         </div>
-        <div class="col-12 col-md-6 col-xl-3">
-            <x-bs::form.field name="show_comment" type="checkbox" :options="\Portavice\Bladestrap\Support\Options::one(__('Show comments'))"
-                              wire:model.live="showComment"/>
+        <div class="col-12 col-md-6 col-lg-3 col-xxl-2">
+            @php
+                $displayOptions = \Portavice\Bladestrap\Support\Options::fromArray([
+                    'booked_at' => __('Booking date'),
+                ]);
+                if (\Illuminate\Support\Facades\Auth::user()?->can('viewAnyPaymentStatus', \App\Models\Booking::class)) {
+                    $displayOptions->append(__('Payment status'), 'paid_at');
+                }
+                if (\Illuminate\Support\Facades\Auth::user()?->can('updateAnyBookingComment', \App\Models\Booking::class)) {
+                    $displayOptions->append(__('Comments'), 'comment');
+                }
+            @endphp
+            <x-bs::form.field name="show_booking_data" type="checkbox" :options="$displayOptions"
+                              wire:model.live="showBookingData">{{ __('Display options') }}</x-bs::form.field>
         </div>
     </div>
 

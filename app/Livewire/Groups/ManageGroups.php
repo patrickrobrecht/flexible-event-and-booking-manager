@@ -30,7 +30,9 @@ class ManageGroups extends Component
     public string $sort = 'name';
 
     public array $bookingOptionIds;
-    public bool $showComment = false;
+    public array $showBookingData = [
+        'booked_at',
+    ];
     public array $showFields = [];
 
     public GroupForm $form;
@@ -47,6 +49,7 @@ class ManageGroups extends Component
         $this->event->loadMissing([
             /** Bookings loaded by @see Event::getBookingOptions() */
             /** Bookings loaded by @see Event::getBookings() */
+            'bookingOptions.formFields',
             'groups.event',
         ]);
         $this->groups = $this->event->groups->keyBy('id');
@@ -168,9 +171,12 @@ class ManageGroups extends Component
     private function sortBookings(): void
     {
         $bookings = $this->event->getBookings();
-        $bookings->load([
-            'formFieldValues' => fn (HasMany $formFieldValues) => $formFieldValues->whereIn('form_field_id', $this->showFields),
-        ]);
+        if (count($this->showFields) > 0) {
+            $bookings->load([
+                'formFieldValues' => fn (HasMany $formFieldValues) => $formFieldValues
+                    ->whereIn('form_field_id', $this->showFields),
+            ]);
+        }
         $this->groups = $this->groups
             ->map(function (Group $group) use ($bookings) {
                 $group['bookings'] = $this->sortBookingsInGroup(

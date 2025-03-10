@@ -146,10 +146,12 @@
                                 {{ __('Guest') }}
                             @endisset
                         </x-bs::list.item>
-                        <x-bs::list.item>
-                            <i class="fa fa-fw fa-comment" title="{{ __('Comment') }}"></i>
-                            <span>{{ $booking->comment ?? '—' }}</span>
-                        </x-bs::list.item>
+                        @can('updateBookingComment', $booking)
+                            <x-bs::list.item>
+                                <i class="fa fa-fw fa-comment" title="{{ __('Comment') }}"></i>
+                                <span>{{ $booking->comment ?? '—' }}</span>
+                            </x-bs::list.item>
+                        @endcan
                         <x-bs::list.item>
                             <i class="fa fa-fw fa-euro" title="{{ __('Price') }}"></i>
                             @include('bookings.shared.payment-status')

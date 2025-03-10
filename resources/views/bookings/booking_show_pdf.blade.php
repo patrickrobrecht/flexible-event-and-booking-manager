@@ -7,6 +7,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
+    <title>{{ $bookingOption->name }} {{ $booking->name }}</title>
     <style>
         body {
             font-family: Helvetica, serif;
@@ -14,6 +15,11 @@
 
         table {
             width: 100%;
+        }
+
+        h1, h2 {
+            margin-top: 4px;
+            margin-bottom: 2px;
         }
 
         td {
@@ -28,13 +34,21 @@
         .underline {
             border-bottom: 1px solid;
         }
+
+        .small {
+            font-size: .875em;
+        }
+
+        .d-print-none {
+            display: none;
+        }
     </style>
 </head>
 <body>
     <p>{{ __('Booking no. :id', [
         'id' => $booking->id,
-    ]) }}</p>
-    <h1>{{ $bookingOption->name }} {{ $booking->first_name }} {{ $booking->last_name }}</h1>
+    ]) }} • <strong>{{ $bookingOption->name }}</strong></p>
+    <h1>{{ $booking->name }}</h1>
 
     <table>
         <tbody>
@@ -62,7 +76,12 @@
                 <td class="label">{{ __('Booked by') }}</td>
                 <td>
                     @isset($booking->bookedByUser)
-                        {{ $booking->bookedByUser->first_name }} {{ $booking->bookedByUser->last_name }}
+                        {{ $booking->bookedByUser->name }}
+                        @isset($booking->bookedByUser->email_verified_at)
+                            <br/>{{ $booking->bookedByUser->email }} <span class="small">({{ __('verified at :date', [
+                                'date' => formatDateTime($booking->bookedByUser->email_verified_at)
+                            ]) }})</span>
+                        @endisset
                     @else
                         {{ __('Guest') }}
                     @endisset
@@ -74,7 +93,7 @@
                     @isset($booking->price)
                         {{ formatDecimal($booking->price) }}&nbsp;€
                         @isset($booking->paid_at)
-                            {{ __('paid') }} ({{ $booking->paid_at->isMidnight()
+                            <strong>{{ __('paid') }}</strong> ({{ $booking->paid_at->isMidnight()
                                 ? formatDate($booking->paid_at)
                                 : formatDateTime($booking->paid_at) }})
                         @else
@@ -92,10 +111,11 @@
         <table>
             <tbody>
             @foreach($bookingOption->formFields as $field)
-                @if(!$field->type->isFormField())
+                @if($field->type->isStatic())
                     <tr>
                         <td colspan="2">
                             <h2>{{ $field->name }}</h2>
+                            <div class="small">{!! $field->hint !!}</div>
                         </td>
                     </tr>
                 @else
@@ -105,7 +125,7 @@
                             $label = $field->allowed_values[0] ?? $field->name;
                         }
 
-                        $value = $booking->getFieldValueAsText($field) ?? '-';
+                        $value = $booking->getFieldValueAsText($field) ?? '—';
                         if ($field->type === \App\Options\FormElementType::File) {
                             $value = isset($value) ? __('File uploaded.') : __('No file uploaded.');
                         }
@@ -133,7 +153,7 @@
             </tr>
             <tr>
                 <td class="label">{{ __('Phone number') }}</td>
-                <td class="underline">{{ $booking->phone ?? '-' }}</td>
+                <td class="underline">{{ $booking->phone ?? '—' }}</td>
             </tr>
             <tr>
                 <td class="label">{{ __('E-mail') }}</td>
@@ -141,15 +161,15 @@
             </tr>
             <tr>
                 <td class="label">{{ __('Street') }}</td>
-                <td class="underline">{{ $booking->street ?? '-' }}</td>
+                <td class="underline">{{ $booking->street ?? '—' }}</td>
             </tr>
             <tr>
                 <td class="label">{{ __('House number') }}</td>
-                <td class="underline">{{ $booking->house_number ?? '-' }}</td>
+                <td class="underline">{{ $booking->house_number ?? '—' }}</td>
             </tr>
             <tr>
                 <td class="label">{{ __('Postal code') }}</td>
-                <td class="underline">{{ $booking->postal_code ?? '-' }}</td>
+                <td class="underline">{{ $booking->postal_code ?? '—' }}</td>
             </tr>
             <tr>
                 <td class="label">{{ __('City') }}</td>

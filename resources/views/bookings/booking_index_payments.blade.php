@@ -75,6 +75,13 @@
                                 @else
                                     {!! $optionName !!}
                                 @endcan
+                                @can('updateBookingComment', $booking)
+                                    @isset($booking->comment)
+                                        <div class="small">
+                                            <i class="fa fa-fw fa-comment" title="{{ __('Comment') }}"></i> <span>{{ $booking->comment }}</span>
+                                        </div>
+                                    @endisset
+                                @endcan
                                 <div class="small text-nowrap">
                                     <span title="{{ __('Booking date') }}">
                                         <i class="fa fa-fw fa-clock"></i>
@@ -138,6 +145,13 @@
                                             @isset($group)
                                                 ({{ $group->name }})
                                             @endisset
+                                            @can('updateBookingComment', $booking)
+                                                @isset($booking->comment)
+                                                    <div class="small">
+                                                        <i class="fa fa-fw fa-comment" title="{{ __('Comment') }}"></i> <span>{{ $booking->comment }}</span>
+                                                    </div>
+                                                @endisset
+                                            @endcan
                                             <div class="small text-nowrap">
                                                 <i class="fa fa-fw fa-clock" title="{{ __('Booking date') }}"></i>
                                                 @isset($booking->booked_at)

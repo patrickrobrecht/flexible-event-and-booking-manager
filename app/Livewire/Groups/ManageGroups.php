@@ -6,15 +6,28 @@ use App\Livewire\Forms\GroupForm;
 use App\Models\Booking;
 use App\Models\Event;
 use App\Models\Group;
+use App\Traits\LoadsPropertiesFromSession;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
 use Livewire\Component;
+use Portavice\Bladestrap\Support\Options;
 
 class ManageGroups extends Component
 {
+    use LoadsPropertiesFromSession;
+
+    private $propertiesSavedInSession = [
+        'sort' => 'string',
+        'bookingOptionIds' => 'int[]',
+        'showBookingData' => 'string[]',
+        'showFields' => 'int[]',
+    ];
+
     #[Locked]
     public Event $event;
 
@@ -27,8 +40,11 @@ class ManageGroups extends Component
     public Collection $bookingsWithoutGroup;
 
     public string $sort = 'name';
-
     public array $bookingOptionIds;
+    public array $showBookingData = [
+        'booked_at',
+    ];
+    public array $showFields = [];
 
     public GroupForm $form;
 
@@ -37,6 +53,8 @@ class ManageGroups extends Component
         $this->event = $event;
         $this->loadData();
         $this->bookingOptionIds = $this->event->getBookingOptions()->pluck('id')->toArray();
+
+        $this->loadSettingsFromSession();
     }
 
     private function loadData(): void
@@ -44,6 +62,7 @@ class ManageGroups extends Component
         $this->event->loadMissing([
             /** Bookings loaded by @see Event::getBookingOptions() */
             /** Bookings loaded by @see Event::getBookings() */
+            'bookingOptions.formFields',
             'groups.event',
         ]);
         $this->groups = $this->event->groups->keyBy('id');
@@ -143,7 +162,28 @@ class ManageGroups extends Component
     {
         $this->sortBookings();
 
-        return view('livewire.groups.manage-groups');
+        return view('livewire.groups.manage-groups', [
+            'displayOptions' => $this->getDisplayOptions(),
+        ]);
+    }
+
+    private function getDisplayOptions(): Options
+    {
+        $conditionalDisplayOptions = [];
+        if (Auth::user()?->can('viewAnyPaymentStatus', Booking::class)) {
+            $conditionalDisplayOptions['paid_at'] = __('Payment status');
+        }
+        if (Auth::user()?->can('updateAnyBookingComment', Booking::class)) {
+            $conditionalDisplayOptions['comment'] = __('Comments');
+        }
+
+        return Options::fromArray([
+            'booked_at' => __('Booking date'),
+            ...$conditionalDisplayOptions,
+            'email' => __('E-mail'),
+            'phone' => __('Phone number'),
+            'address' => __('Address'),
+        ]);
     }
 
     /**
@@ -162,12 +202,27 @@ class ManageGroups extends Component
         $this->bookingOptionIds = array_map('intval', $this->bookingOptionIds);
     }
 
+    /**
+     * React on any changes.
+     */
+    public function updated(): void
+    {
+        $this->storeSettingsInSession();
+    }
+
     private function sortBookings(): void
     {
+        $bookings = $this->event->getBookings();
+        if (count($this->showFields) > 0) {
+            $bookings->load([
+                'formFieldValues' => fn (HasMany $formFieldValues) => $formFieldValues
+                    ->whereIn('form_field_id', $this->showFields),
+            ]);
+        }
         $this->groups = $this->groups
-            ->map(function (Group $group) {
+            ->map(function (Group $group) use ($bookings) {
                 $group['bookings'] = $this->sortBookingsInGroup(
-                    $this->event->getBookings()->filter(
+                    $bookings->filter(
                         fn (Booking $booking) => $booking->getGroup($this->event)?->is($group)
                     )
                 );
@@ -185,5 +240,10 @@ class ManageGroups extends Component
     private function sortBookingsInGroup(Collection $bookings): Collection
     {
         return Booking::sort($bookings, $this->sort);
+    }
+
+    public function getSessionKey(string $propertyName): string
+    {
+        return 'groups-settings-' . $this->event->id . '-' . $propertyName;
     }
 }

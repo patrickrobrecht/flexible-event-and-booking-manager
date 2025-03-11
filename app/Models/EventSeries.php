@@ -134,7 +134,8 @@ class EventSeries extends Model
                 ->ignore(FilterValue::All->value),
             /** @see self::scopeEvent() */
             AllowedFilter::scope('event_id', 'event'),
-            AllowedFilter::exact('organization_id'),
+            AllowedFilter::exact('organization_id')
+                ->ignore(FilterValue::All->value),
             /** @see self::scopeDocument() */
             AllowedFilter::scope('document_id', 'document'),
             /** @see self::scopeEventSeriesType() */

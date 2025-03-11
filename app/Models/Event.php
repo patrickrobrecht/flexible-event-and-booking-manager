@@ -21,7 +21,6 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -42,7 +41,6 @@ use Spatie\QueryBuilder\Enums\SortDirection;
  * @property-read Collection|Booking[] $bookings {@see Event::bookings()}
  * @property-read ?EventSeries $eventSeries {@see Event::eventSeries()}
  * @property-read Collection|Group[] $groups {@see self::groups()}
- * @property-read Collection|Organization[] $organizations {@see Event::organizations()}
  * @property-read ?Event $parentEvent {@see Event::parentEvent()}
  * @property-read Collection|Event[] $subEvents {@see Event::subEvents()}
  */
@@ -107,13 +105,6 @@ class Event extends Model
     public function eventSeries(): BelongsTo
     {
         return $this->belongsTo(EventSeries::class, 'event_series_id');
-    }
-
-    public function organizations(): BelongsToMany
-    {
-        return $this->belongsToMany(Organization::class)
-            ->orderBy('name')
-            ->withTimestamps();
     }
 
     public function parentEvent(): BelongsTo
@@ -253,7 +244,8 @@ class Event extends Model
             AllowedFilter::scope('date_until'),
             /** @see self::scopeEventSeries() */
             AllowedFilter::scope('event_series_id', 'eventSeries'),
-            AllowedFilter::exact('organization_id'),
+            AllowedFilter::exact('organization_id')
+                ->ignore(FilterValue::All->value),
             AllowedFilter::exact('location_id')
                 ->ignore(FilterValue::All->value),
             /** @see self::scopeDocument() */

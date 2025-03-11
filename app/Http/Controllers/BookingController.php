@@ -90,31 +90,30 @@ class BookingController extends Controller
     {
         $this->authorize('viewPDF', $booking);
 
+        $directoryPath = $booking->bookingOption->getFilePath();
+        Storage::disk('local')->makeDirectory($directoryPath);
+
         $fileName = str_replace(' ', '', implode('-', [
             $booking->id,
             $booking->first_name,
             $booking->last_name,
         ])) . '.pdf';
-        $directoryPath = $booking->bookingOption->getFilePath();
-        $filePath = $directoryPath . '/' . $fileName;
 
-        if (!Storage::disk('local')->exists($filePath)) {
-            Storage::disk('local')->makeDirectory($directoryPath);
-            Pdf::loadView('bookings.booking_show_pdf', [
-                'booking' => $booking->loadMissing([
-                    'bookingOption.formFields',
+        $filePath = $directoryPath . '/' . $fileName;
+        Pdf::loadView('bookings.booking_show_pdf', [
+            'booking' => $booking->loadMissing([
+                'bookingOption.formFields',
+            ]),
+        ])
+            ->addInfo([
+                'Author' => config('app.owner'),
+                'Title' => implode(' ', [
+                    $booking->bookingOption->name,
+                    $booking->first_name,
+                    $booking->last_name,
                 ]),
             ])
-                ->addInfo([
-                    'Author' => config('app.owner'),
-                    'Title' => implode(' ', [
-                        $booking->bookingOption->name,
-                        $booking->first_name,
-                        $booking->last_name,
-                    ]),
-                ])
-               ->save(Storage::disk('local')->path($filePath));
-        }
+           ->save(Storage::disk('local')->path($filePath));
 
         return Storage::disk('local')->download($filePath);
     }

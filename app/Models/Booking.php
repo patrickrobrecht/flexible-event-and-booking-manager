@@ -49,7 +49,7 @@ use Spatie\QueryBuilder\Enums\SortDirection;
  *
  * @property-read ?float $age {@see self::age()}
  * @property-read string $file_name {@see self::fileName()}
- * @property-read string $file_name_for_pdf {@see self::fileNameForPdf()}
+ * @property-read string $file_name_for_pdf_download {@see self::fileNameForPdfDownload()}
  * @property-read ?Carbon $payment_deadline {@see self::paymentDeadline()}
  *
  * @property-read ?User $bookedByUser {@see self::bookedByUser()}
@@ -116,7 +116,7 @@ class Booking extends Model
         ])));
     }
 
-    protected function fileNameForPdf(): Attribute
+    protected function fileNameForPdfDownload(): Attribute
     {
         return Attribute::get(fn () => $this->prefixFileNameWithGroup($this->file_name . '.pdf'));
     }
@@ -317,7 +317,7 @@ class Booking extends Model
         $directoryPath = $this->bookingOption->getFilePath();
         Storage::disk('local')->makeDirectory($directoryPath);
 
-        $filePath = Storage::disk('local')->path($directoryPath . '/' . $this->file_name . '.pdf');
+        $filePath = $directoryPath . '/' . $this->file_name . '.pdf';
         Pdf::loadView('bookings.booking_show_pdf', [
             'booking' => $this->loadMissing([
                 'bookingOption.formFields',
@@ -331,7 +331,7 @@ class Booking extends Model
                     $this->last_name,
                 ]),
             ])
-            ->save($filePath);
+            ->save(Storage::disk('local')->path($filePath));
 
         return $filePath;
     }

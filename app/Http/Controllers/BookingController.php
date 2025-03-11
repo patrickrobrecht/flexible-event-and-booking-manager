@@ -60,7 +60,7 @@ class BookingController extends Controller
             $files = [];
 
             foreach ($bookings as $booking) {
-                $files[$booking->storePdfFile()] = $booking->file_name_for_pdf;
+                $files[Storage::disk('local')->path($booking->storePdfFile())] = $booking->file_name_for_pdf_download;
             }
 
             return Zip::create($event->slug . '-' . $bookingOption->slug . '.zip', $files);
@@ -124,7 +124,21 @@ class BookingController extends Controller
         $this->authorize('viewPDF', $booking);
 
         return Storage::disk('local')
-            ->download($booking->storePdfFile(), $booking->file_name_for_pdf);
+            ->download($booking->storePdfFile(), $booking->file_name_for_pdf_download);
+    }
+
+    public function downloadFile(Booking $booking, FormFieldValue $formFieldValue): StreamedResponse
+    {
+        $this->authorize('view', $booking);
+
+        if (
+            $formFieldValue->formField->type !== FormElementType::File
+            || $booking->isNot($formFieldValue->booking)
+        ) {
+            abort(404);
+        }
+
+        return Storage::download($formFieldValue->value, $formFieldValue->file_name_for_download);
     }
 
     public function store(Event $event, BookingOption $bookingOption, BookingRequest $request): RedirectResponse
@@ -194,20 +208,6 @@ class BookingController extends Controller
         }
 
         return back();
-    }
-
-    public function downloadFile(Booking $booking, FormFieldValue $formFieldValue): StreamedResponse
-    {
-        $this->authorize('view', $booking);
-
-        if (
-            $formFieldValue->formField->type !== FormElementType::File
-            || $booking->isNot($formFieldValue->booking)
-        ) {
-            abort(404);
-        }
-
-        return Storage::download($formFieldValue->value, $formFieldValue->file_name_for_download);
     }
 
     public function delete(Booking $booking): RedirectResponse

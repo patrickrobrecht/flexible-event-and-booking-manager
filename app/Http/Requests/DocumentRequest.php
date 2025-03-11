@@ -2,11 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\ApprovalStatus;
+use App\Enums\FileType;
 use App\Http\Requests\Traits\ValidatesFiles;
 use App\Models\Document;
 use App\Models\Traits\HasDocuments;
-use App\Options\ApprovalStatus;
-use App\Options\FileType;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Http\FormRequest;

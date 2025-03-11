@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Options;
+namespace App\Enums;
 
-use App\Options\Traits\NamedOption;
+use App\Enums\Traits\NamedOption;
 
 enum Ability: string
 {

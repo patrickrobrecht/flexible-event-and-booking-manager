@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Enums\FormElementType;
 use App\Models\FormField;
-use App\Options\FormElementType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

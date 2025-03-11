@@ -2,14 +2,14 @@
 
 namespace Tests\Feature\Http;
 
+use App\Enums\Ability;
+use App\Enums\BookingRestriction;
+use App\Enums\Visibility;
 use App\Http\Controllers\BookingOptionController;
 use App\Http\Requests\BookingOptionRequest;
 use App\Models\Booking;
 use App\Models\BookingOption;
 use App\Models\User;
-use App\Options\Ability;
-use App\Options\BookingRestriction;
-use App\Options\Visibility;
 use App\Policies\BookingOptionPolicy;
 use Closure;
 use Database\Factories\BookingOptionFactory;

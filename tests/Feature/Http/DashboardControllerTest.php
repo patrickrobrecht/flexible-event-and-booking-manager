@@ -18,11 +18,11 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 use Tests\Traits\GeneratesTestData;
 
-#[CoversClass(DashboardController::class)]
 #[CoversClass(Booking::class)]
 #[CoversClass(BookingFactory::class)]
 #[CoversClass(BookingOption::class)]
 #[CoversClass(BookingOptionFactory::class)]
+#[CoversClass(DashboardController::class)]
 #[CoversClass(Event::class)]
 #[CoversClass(EventFactory::class)]
 #[CoversClass(Location::class)]

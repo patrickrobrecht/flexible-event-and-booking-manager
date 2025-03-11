@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Enums\ActiveStatus;
 use App\Models\Organization;
-use App\Options\ActiveStatus;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 

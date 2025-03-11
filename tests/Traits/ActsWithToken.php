@@ -2,9 +2,9 @@
 
 namespace Tests\Traits;
 
+use App\Enums\Ability;
 use App\Models\PersonalAccessToken;
 use App\Models\User;
-use App\Options\Ability;
 use Illuminate\Testing\TestResponse;
 use Laravel\Sanctum\NewAccessToken;
 

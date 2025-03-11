@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
+use App\Enums\BookingRestriction;
+use App\Enums\FormElementType;
 use App\Models\Traits\HasNameAndDescription;
 use App\Models\Traits\HasSlugForRouting;
-use App\Options\BookingRestriction;
-use App\Options\FormElementType;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

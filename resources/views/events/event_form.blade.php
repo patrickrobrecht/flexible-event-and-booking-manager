@@ -49,7 +49,7 @@
                 <x-bs::form.field name="website_url" type="text"
                                   :value="$event->website_url ?? null"><i class="fa fa-fw fa-display"></i> {{ __('Website') }}</x-bs::form.field>
                 <x-bs::form.field name="visibility" type="select"
-                                  :options="\App\Options\Visibility::toOptions()"
+                                  :options="\App\Enums\Visibility::toOptions()"
                                   :value="$event->visibility->value ?? null"><i class="fa fa-fw fa-eye"></i> {{ __('Visibility') }}</x-bs::form.field>
                 <x-bs::form.field name="started_at" type="datetime-local"
                                   :value="isset($event->started_at) ? $event->started_at->format('Y-m-d\TH:i') : null"><i class="fa fa-fw fa-clock"></i> {{ __('Start date') }}</x-bs::form.field>

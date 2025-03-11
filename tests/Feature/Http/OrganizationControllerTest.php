@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Http;
 
+use App\Enums\Ability;
+use App\Enums\FilterValue;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Requests\Filters\OrganizationFilterRequest;
 use App\Http\Requests\OrganizationRequest;
@@ -9,8 +11,6 @@ use App\Models\BookingOption;
 use App\Models\Event;
 use App\Models\Location;
 use App\Models\Organization;
-use App\Options\Ability;
-use App\Options\FilterValue;
 use App\Policies\OrganizationPolicy;
 use Closure;
 use Database\Factories\OrganizationFactory;

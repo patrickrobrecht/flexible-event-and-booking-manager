@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\GroupGenerationMethod;
 use App\Exports\GroupsExportSpreadsheet;
 use App\Http\Controllers\Traits\StreamsExport;
 use App\Http\Requests\Filters\GroupFilterRequest;
@@ -9,7 +10,6 @@ use App\Http\Requests\GenerateGroupsRequest;
 use App\Models\Booking;
 use App\Models\Event;
 use App\Models\Group;
-use App\Options\GroupGenerationMethod;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Request;

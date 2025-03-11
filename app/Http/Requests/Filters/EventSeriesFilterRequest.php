@@ -2,14 +2,14 @@
 
 namespace App\Http\Requests\Filters;
 
+use App\Enums\EventSeriesType;
+use App\Enums\FilterValue;
+use App\Enums\Visibility;
 use App\Http\Requests\Traits\FiltersList;
 use App\Models\Document;
 use App\Models\Event;
 use App\Models\EventSeries;
 use App\Models\Organization;
-use App\Options\EventSeriesType;
-use App\Options\FilterValue;
-use App\Options\Visibility;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**

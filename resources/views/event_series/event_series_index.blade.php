@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @php
-    use App\Options\FilterValue;
+    use App\Enums\FilterValue;
     use Portavice\Bladestrap\Support\Options;
 
     /** @var \Illuminate\Pagination\LengthAwarePaginator|\App\Models\EventSeries[] $eventSeries */
@@ -32,7 +32,7 @@
             </div>
             <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="visibility" name="filter[visibility]" type="select"
-                                  :options="\App\Options\Visibility::toOptionsWithAll()"
+                                  :options="\App\Enums\Visibility::toOptionsWithAll()"
                                   :from-query="true"><i class="fa fa-fw fa-eye"></i> {{ __('Visibility') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6 col-xl-3">
@@ -53,7 +53,7 @@
             </div>
             <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="event_series_type" name="filter[event_series_type]" type="select"
-                                  :options="\App\Options\EventSeriesType::toOptionsWithAll()"
+                                  :options="\App\Enums\EventSeriesType::toOptionsWithAll()"
                                   :from-query="true"><i class="fa fa-fw fa-calendar-check"></i> {{ __('Event series type') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-lg-6 col-xl-3">

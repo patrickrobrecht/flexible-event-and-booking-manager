@@ -55,7 +55,7 @@
                     </div>
                     <div class="col-12 col-lg-6">
                         <x-bs::form.field id="restrictions" name="restrictions[]" type="switch"
-                                          :options="\App\Options\BookingRestriction::toOptions()"
+                                          :options="\App\Enums\BookingRestriction::toOptions()"
                                           :value="$bookingOption->restrictions ?? null">{{ __('Restrictions') }}</x-bs::form.field>
                     </div>
                 </div>

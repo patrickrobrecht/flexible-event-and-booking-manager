@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @php
-    use App\Options\FilterValue;
+    use App\Enums\FilterValue;
 
     /** @var \Illuminate\Pagination\LengthAwarePaginator|\App\Models\Document[] $documents */
 @endphp
@@ -23,12 +23,12 @@
             </div>
             <div class="col-12 col-sm-6 col-xl-3">
                 <x-bs::form.field id="file_type" name="filter[file_type]" type="select"
-                                  :options="\App\Options\FileType::toOptionsWithAll()"
+                                  :options="\App\Enums\FileType::toOptionsWithAll()"
                                   :from-query="true"><i class="fa fa-fw fa-file-circle-question"></i> {{ __('File type') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-sm-6 col-xl-3">
                 <x-bs::form.field id="approval_status" name="filter[approval_status]" type="select"
-                                  :options="\App\Options\ApprovalStatus::toOptionsWithAll()"
+                                  :options="\App\Enums\ApprovalStatus::toOptionsWithAll()"
                                   :cast="FilterValue::castToIntIfNoValue()"
                                   :from-query="true"><i class="fa fa-fw fa-circle-question"></i> {{ __('Approval status') }}</x-bs::form.field>
             </div>

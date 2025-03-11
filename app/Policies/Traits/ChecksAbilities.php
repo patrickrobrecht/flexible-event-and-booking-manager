@@ -2,8 +2,8 @@
 
 namespace App\Policies\Traits;
 
+use App\Enums\Ability;
 use App\Models\User;
-use App\Options\Ability;
 use Closure;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;

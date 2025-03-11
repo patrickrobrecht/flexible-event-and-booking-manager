@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use App\Enums\Ability;
+use App\Enums\EventType;
+use App\Enums\FilterValue;
+use App\Enums\Visibility;
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\BelongsToLocation;
@@ -11,10 +15,6 @@ use App\Models\Traits\HasDocuments;
 use App\Models\Traits\HasNameAndDescription;
 use App\Models\Traits\HasResponsibleUsers;
 use App\Models\Traits\HasSlugForRouting;
-use App\Options\Ability;
-use App\Options\EventType;
-use App\Options\FilterValue;
-use App\Options\Visibility;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;

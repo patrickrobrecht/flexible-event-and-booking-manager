@@ -2,11 +2,11 @@
 
 namespace Tests\Feature\Http;
 
+use App\Enums\Ability;
 use App\Http\Controllers\PersonalAccessTokenController;
 use App\Http\Requests\PersonalAccessTokenRequest;
 use App\Models\PersonalAccessToken;
 use App\Models\User;
-use App\Options\Ability;
 use App\Policies\PersonalAccessTokenPolicy;
 use App\Providers\AppServiceProvider;
 use Database\Factories\PersonalAccessTokenFactory;

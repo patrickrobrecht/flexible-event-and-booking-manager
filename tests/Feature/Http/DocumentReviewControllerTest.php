@@ -2,13 +2,13 @@
 
 namespace Tests\Feature\Http;
 
+use App\Enums\Ability;
+use App\Enums\ApprovalStatus;
+use App\Enums\Visibility;
 use App\Http\Controllers\DocumentReviewController;
 use App\Http\Requests\DocumentReviewRequest;
 use App\Models\Document;
 use App\Models\DocumentReview;
-use App\Options\Ability;
-use App\Options\ApprovalStatus;
-use App\Options\Visibility;
 use App\Policies\DocumentReviewPolicy;
 use Closure;
 use Database\Factories\DocumentReviewFactory;

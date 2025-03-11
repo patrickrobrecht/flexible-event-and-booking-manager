@@ -2,12 +2,12 @@
 
 namespace Tests\Feature\Http;
 
+use App\Enums\Ability;
+use App\Enums\FilterValue;
 use App\Http\Controllers\LocationController;
 use App\Http\Requests\Filters\LocationFilterRequest;
 use App\Http\Requests\LocationRequest;
 use App\Models\Location;
-use App\Options\Ability;
-use App\Options\FilterValue;
 use App\Policies\LocationPolicy;
 use Database\Factories\LocationFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;

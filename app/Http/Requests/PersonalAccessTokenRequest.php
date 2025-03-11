@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Options\Ability;
+use App\Enums\Ability;
 use Illuminate\Foundation\Http\FormRequest;
 
 class PersonalAccessTokenRequest extends FormRequest

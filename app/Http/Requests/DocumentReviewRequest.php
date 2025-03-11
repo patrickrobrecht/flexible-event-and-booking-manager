@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\ApprovalStatus;
 use App\Models\Document;
 use App\Models\DocumentReview;
-use App\Options\ApprovalStatus;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**

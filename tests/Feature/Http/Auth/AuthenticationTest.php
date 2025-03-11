@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Http\Auth;
 
+use App\Enums\ActiveStatus;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
-use App\Options\ActiveStatus;
 use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\RateLimiter;

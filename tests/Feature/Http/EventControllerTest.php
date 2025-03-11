@@ -2,14 +2,14 @@
 
 namespace Tests\Feature\Http;
 
+use App\Enums\Ability;
+use App\Enums\EventType;
+use App\Enums\FilterValue;
+use App\Enums\Visibility;
 use App\Http\Controllers\EventController;
 use App\Http\Requests\EventRequest;
 use App\Http\Requests\Filters\EventFilterRequest;
 use App\Models\Event;
-use App\Options\Ability;
-use App\Options\EventType;
-use App\Options\FilterValue;
-use App\Options\Visibility;
 use App\Policies\EventPolicy;
 use Database\Factories\EventFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;

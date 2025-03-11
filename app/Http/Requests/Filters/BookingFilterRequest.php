@@ -2,14 +2,14 @@
 
 namespace App\Http\Requests\Filters;
 
+use App\Enums\DeletedFilter;
+use App\Enums\FilterValue;
+use App\Enums\PaymentStatus;
 use App\Http\Requests\Traits\FiltersList;
 use App\Models\Booking;
 use App\Models\BookingOption;
 use App\Models\Event;
 use App\Models\Group;
-use App\Options\DeletedFilter;
-use App\Options\FilterValue;
-use App\Options\PaymentStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 

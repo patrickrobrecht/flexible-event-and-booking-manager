@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Enums\Ability;
+use App\Enums\ActiveStatus;
+use App\Enums\FilterValue;
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\FiltersByRelationExistence;
@@ -12,9 +15,6 @@ use App\Models\Traits\Searchable;
 use App\Notifications\AccountCreatedNotification;
 use App\Notifications\ResetPasswordNotification;
 use App\Notifications\VerifyEmailNotification;
-use App\Options\Ability;
-use App\Options\ActiveStatus;
-use App\Options\FilterValue;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;

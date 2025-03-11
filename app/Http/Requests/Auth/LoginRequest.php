@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Enums\ActiveStatus;
 use App\Models\User;
-use App\Options\ActiveStatus;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Auth\SessionGuard;
 use Illuminate\Foundation\Http\FormRequest;

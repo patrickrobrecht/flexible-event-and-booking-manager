@@ -2,15 +2,15 @@
 
 namespace App\Models;
 
+use App\Enums\Ability;
+use App\Enums\ActiveStatus;
+use App\Enums\FilterValue;
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\BelongsToLocation;
 use App\Models\Traits\HasDocuments;
 use App\Models\Traits\HasResponsibleUsers;
 use App\Models\Traits\HasSlugForRouting;
-use App\Options\Ability;
-use App\Options\ActiveStatus;
-use App\Options\FilterValue;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;

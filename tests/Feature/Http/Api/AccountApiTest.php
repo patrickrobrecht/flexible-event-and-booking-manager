@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Http\Api;
 
+use App\Enums\Ability;
 use App\Models\PersonalAccessToken;
 use App\Models\User;
-use App\Options\Ability;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

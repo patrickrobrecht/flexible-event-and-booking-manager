@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\ActiveStatus;
 use App\Http\Requests\Traits\ValidatesAddressFields;
 use App\Models\User;
-use App\Options\ActiveStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;

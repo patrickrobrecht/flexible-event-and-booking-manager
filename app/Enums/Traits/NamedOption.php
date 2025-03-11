@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Options\Traits;
+namespace App\Enums\Traits;
 
-use App\Options\FilterValue;
+use App\Enums\FilterValue;
 use Closure;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\In;

@@ -2,12 +2,12 @@
 
 namespace App\Http\Requests\Filters;
 
+use App\Enums\FilterValue;
 use App\Http\Requests\Traits\FiltersList;
 use App\Models\Document;
 use App\Models\Event;
 use App\Models\Location;
 use App\Models\Organization;
-use App\Options\FilterValue;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**

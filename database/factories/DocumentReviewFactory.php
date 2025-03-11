@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Enums\ApprovalStatus;
 use App\Models\DocumentReview;
-use App\Options\ApprovalStatus;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

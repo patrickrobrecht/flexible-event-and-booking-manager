@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\GroupGenerationMethod;
 use App\Models\Event;
-use App\Options\GroupGenerationMethod;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;

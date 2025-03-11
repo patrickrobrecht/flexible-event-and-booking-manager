@@ -15,7 +15,8 @@
         "phpoffice/phpspreadsheet": "^3.9",
         "portavice/bladestrap": "^1.4",
         "spatie/laravel-query-builder": "^6.3",
-        "spatie/laravel-sluggable": "^3.7"
+        "spatie/laravel-sluggable": "^3.7",
+        "stechstudio/laravel-zipstream": "^5.4"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.14",

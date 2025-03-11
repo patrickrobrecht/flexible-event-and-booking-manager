@@ -3,13 +3,18 @@
 namespace App\Models;
 
 use App\Options\FormElementType;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 
 /**
  * @property int $id
  * @property string $value
+ *
+ * @property-read string $file_extension {@see self::fileExtension()}
+ * @property-read string $file_name_for_download {@see self::fileNameForDownload()}
  *
  * @property Booking $booking {@see FormFieldValue::booking()}
  * @property FormField $formField {@see FormFieldValue::formField()}
@@ -21,6 +26,26 @@ class FormFieldValue extends Model
     protected $fillable = [
         'value',
     ];
+
+    protected function fileExtension(): Attribute
+    {
+        return Attribute::get(fn () => Str::of($this->value)->afterLast('.'));
+    }
+
+    protected function fileNameForDownload(): Attribute
+    {
+        return Attribute::get(function () {
+            if ($this->formField->type !== FormElementType::File) {
+                return null;
+            }
+
+            return $this->booking->prefixFileNameWithGroup(
+                $this->booking->file_name
+                . '-' . Str::slug($this->formField->name)
+                . '.' . $this->file_extension
+            );
+        });
+    }
 
     public function booking(): BelongsTo
     {

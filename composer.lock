@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "079207855b41e42a63133598a9f886bb",
+    "content-hash": "64287a298655c5ef18cc4a254e7b9aed",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -3527,27 +3527,27 @@
         },
         {
             "name": "portavice/bladestrap",
-            "version": "v1.4.0",
+            "version": "v1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/portavice/bladestrap.git",
-                "reference": "5009e3f48c233c8f1d39c2ae430d355a96079eeb"
+                "reference": "f11dd8c757411c93dcb36edcebb2771be4b69fd5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/portavice/bladestrap/zipball/5009e3f48c233c8f1d39c2ae430d355a96079eeb",
-                "reference": "5009e3f48c233c8f1d39c2ae430d355a96079eeb",
+                "url": "https://api.github.com/repos/portavice/bladestrap/zipball/f11dd8c757411c93dcb36edcebb2771be4b69fd5",
+                "reference": "f11dd8c757411c93dcb36edcebb2771be4b69fd5",
                 "shasum": ""
             },
             "require": {
-                "illuminate/console": "^10.24|^11.0",
-                "illuminate/http": "^10.24|^11.0",
-                "illuminate/support": "^10.24|^11.0",
-                "illuminate/view": "^10.24|^11.0",
+                "illuminate/console": "^10.24|^11.0|^12.0",
+                "illuminate/http": "^10.24|^11.0|^12.0",
+                "illuminate/support": "^10.24|^11.0|^12.0",
+                "illuminate/view": "^10.24|^11.0|^12.0",
                 "php": "^8.1"
             },
             "require-dev": {
-                "orchestra/testbench": "^8.22|^9.0",
+                "orchestra/testbench": "^8.22|^9.0|^10.0",
                 "phpunit/phpunit": "^10.4|^11.1",
                 "portavice/laravel-pint-config": "^2.0"
             },
@@ -3578,9 +3578,9 @@
             "description": "Blade components for Bootstrap 5",
             "support": {
                 "issues": "https://github.com/portavice/bladestrap/issues",
-                "source": "https://github.com/portavice/bladestrap/tree/v1.4.0"
+                "source": "https://github.com/portavice/bladestrap/tree/v1.5.0"
             },
-            "time": "2024-11-22T13:42:31+00:00"
+            "time": "2025-03-11T14:16:21+00:00"
         },
         {
             "name": "psr/clock",

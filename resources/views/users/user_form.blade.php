@@ -82,8 +82,7 @@
                                   :options="$userRoles->pluck('name', 'id')"
                                   :value="isset($editedUser) ? $editedUser->userRoles->pluck('id')->toArray() : []"
                                   :valuesToInt="true"><i class="fa fa-fw fa-user-group"></i> {{ __('User role') }}</x-bs::form.field>
-                <x-bs::form.field name="status" type="select"
-                                  :options="\App\Options\ActiveStatus::toOptions()"
+                <x-bs::form.field name="status" type="select" :options="\App\Enums\ActiveStatus::toOptions()"
                                   :value="$editedUser->status->value ?? null"><i class="fa fa-fw fa-circle-question"></i> {{ __('Status') }}</x-bs::form.field>
                 @if(!isset($editedUser))
                     <x-bs::form.field name="send_notification" type="checkbox"

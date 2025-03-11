@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Enums\Ability;
 use App\Models\UserRole;
-use App\Options\Ability;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

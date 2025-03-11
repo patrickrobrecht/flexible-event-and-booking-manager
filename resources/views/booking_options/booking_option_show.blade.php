@@ -30,14 +30,14 @@
         </div>
         <div class="col-12 col-lg-8 pt-3 pt-lg-0">
             @auth
-                @if($bookingOption->isRestrictedBy(\App\Options\BookingRestriction::VerifiedEmailAddressRequired) && Auth::user()?->email_verified_at === null)
+                @if($bookingOption->isRestrictedBy(\App\Enums\BookingRestriction::VerifiedEmailAddressRequired) && Auth::user()?->email_verified_at === null)
                     <x-bs::alert variant="danger">
                         {{ __('Bookings are only available for logged-in users with a verified email address.') }}
                         <a href="{{ route('verification.notice') }}" class="alert-link">{{ __('Verify e-mail address') }}</a>
                     </x-bs::alert>
                 @endif
             @else
-                @if($bookingOption->isRestrictedBy(\App\Options\BookingRestriction::AccountRequired))
+                @if($bookingOption->isRestrictedBy(\App\Enums\BookingRestriction::AccountRequired))
                     <x-bs::alert variant="danger">
                         {{ __('Bookings are only available for logged-in users.') }}
                         <a href="{{ route('login') }}" class="alert-link">{{ __('Login') }}</a>

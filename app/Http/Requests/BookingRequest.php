@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\FormElementType;
 use App\Http\Requests\Traits\ValidatesAddressFields;
 use App\Models\Booking;
 use App\Models\BookingOption;
-use App\Options\FormElementType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 

@@ -30,7 +30,7 @@
     <div class="cols-lg-2 cols-xxl-3 mb-3">
         @include('user_roles.ability_group', [
             'selectedAbilities' => $userRole->abilities,
-            'abilityGroups' => \App\Options\AbilityGroup::casesAtRootLevel(),
+            'abilityGroups' => \App\Enums\AbilityGroup::casesAtRootLevel(),
             'editable' => false,
             'headlineLevel' => 3,
         ])

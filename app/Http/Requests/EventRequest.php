@@ -2,11 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\Visibility;
 use App\Http\Requests\Traits\ValidatesBelongsToOrganization;
 use App\Http\Requests\Traits\ValidatesResponsibleUsers;
 use App\Models\Event;
 use App\Models\EventSeries;
-use App\Options\Visibility;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;

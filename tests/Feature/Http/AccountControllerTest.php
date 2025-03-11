@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Http;
 
+use App\Enums\Ability;
 use App\Http\Controllers\AccountController;
 use App\Http\Requests\UserRequest;
 use App\Models\User;
-use App\Options\Ability;
 use App\Policies\UserPolicy;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;

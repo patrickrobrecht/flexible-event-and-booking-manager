@@ -2,13 +2,13 @@
 
 namespace Tests\Feature\Livewire\Groups;
 
+use App\Enums\Ability;
 use App\Livewire\Forms\GroupForm;
 use App\Livewire\Groups\ManageGroups;
 use App\Models\Booking;
 use App\Models\BookingOption;
 use App\Models\Event;
 use App\Models\Group;
-use App\Options\Ability;
 use App\Policies\BookingPolicy;
 use Database\Factories\GroupFactory;
 use Illuminate\Database\Eloquent\Factories\Sequence;

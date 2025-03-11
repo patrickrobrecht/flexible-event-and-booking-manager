@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
+use App\Enums\ApprovalStatus;
+use App\Enums\FileType;
+use App\Enums\FilterValue;
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\Searchable;
-use App\Options\ApprovalStatus;
-use App\Options\FileType;
-use App\Options\FilterValue;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;

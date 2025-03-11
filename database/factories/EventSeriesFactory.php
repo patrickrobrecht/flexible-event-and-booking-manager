@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Enums\Visibility;
 use App\Models\EventSeries;
-use App\Options\Visibility;
 use Database\Factories\Traits\HasVisibility;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;

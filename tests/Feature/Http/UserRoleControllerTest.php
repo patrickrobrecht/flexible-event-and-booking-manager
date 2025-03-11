@@ -2,22 +2,22 @@
 
 namespace Tests\Feature\Http;
 
+use App\Enums\Ability;
+use App\Enums\AbilityGroup;
+use App\Enums\FilterValue;
 use App\Http\Controllers\UserRoleController;
 use App\Http\Requests\Filters\UserRoleFilterRequest;
 use App\Http\Requests\UserRoleRequest;
 use App\Models\UserRole;
-use App\Options\Ability;
-use App\Options\AbilityGroup;
-use App\Options\FilterValue;
 use App\Policies\UserRolePolicy;
 use Database\Factories\UserRoleFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 
-#[CoversClass(FilterValue::class)]
 #[CoversClass(Ability::class)]
 #[CoversClass(AbilityGroup::class)]
+#[CoversClass(FilterValue::class)]
 #[CoversClass(UserRole::class)]
 #[CoversClass(UserRoleController::class)]
 #[CoversClass(UserRoleFactory::class)]

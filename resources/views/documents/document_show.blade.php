@@ -105,7 +105,7 @@
                                     <i class="fa fa-fw fa-comment"></i> {{ __('Comment') }}
                                 </x-bs::form.field>
                                 @can('approve', $document)
-                                    <x-bs::form.field name="approval_status" type="radio" :options="\App\Options\ApprovalStatus::toOptions()"
+                                    <x-bs::form.field name="approval_status" type="radio" :options="\App\Enums\ApprovalStatus::toOptions()"
                                                       :value="$document->approval_status->value ?? null"><i class="fa fa-fw fa-circle-question"></i> {{ __('Approval status') }}</x-bs::form.field>
                                 @endcan
                                 <x-bs::button><i class="fa fa-fw fa-save"></i> {{ __('Add comment') }}</x-bs::button>

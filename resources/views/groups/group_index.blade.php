@@ -56,7 +56,7 @@
                 <div class="row">
                     <div class="col-12 col-sm-6">
                         <x-bs::form.field name="method" :error-bag="$validationErrorsForGeneration"
-                                          type="radio" :options="\App\Options\GroupGenerationMethod::toOptions()">{{ __('Method') }}</x-bs::form.field>
+                                          type="radio" :options="\App\Enums\GroupGenerationMethod::toOptions()">{{ __('Method') }}</x-bs::form.field>
                         <x-bs::form.field name="groups_count" :error-bag="$validationErrorsForGeneration"
                                           type="number" min="1" step="1">{{ __('Number of groups') }}</x-bs::form.field>
                     </div>

@@ -2,6 +2,10 @@
 
 namespace Tests\Feature\Http;
 
+use App\Enums\Ability;
+use App\Enums\ApprovalStatus;
+use App\Enums\FileType;
+use App\Enums\Visibility;
 use App\Http\Controllers\DocumentController;
 use App\Http\Requests\DocumentRequest;
 use App\Http\Requests\Filters\DocumentFilterRequest;
@@ -9,10 +13,6 @@ use App\Models\Document;
 use App\Models\Event;
 use App\Models\EventSeries;
 use App\Models\Organization;
-use App\Options\Ability;
-use App\Options\ApprovalStatus;
-use App\Options\FileType;
-use App\Options\Visibility;
 use App\Policies\DocumentPolicy;
 use Closure;
 use Database\Factories\DocumentFactory;

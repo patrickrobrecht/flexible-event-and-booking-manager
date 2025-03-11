@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Enums\BookingRestriction;
 use App\Models\BookingOption;
-use App\Options\BookingRestriction;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;

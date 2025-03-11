@@ -2,8 +2,8 @@
 
 namespace App\Models\Traits;
 
+use App\Enums\Ability;
 use App\Models\User;
-use App\Options\Ability;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;

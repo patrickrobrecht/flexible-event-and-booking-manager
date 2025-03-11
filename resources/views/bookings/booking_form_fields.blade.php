@@ -21,13 +21,13 @@
 
                     $value = $booking?->getFieldValue($field);
                     $required = $field->required;
-                    if ($field->type === \App\Options\FormElementType::Hidden) {
+                    if ($field->type === \App\Enums\FormElementType::Hidden) {
                         $value = $field->allowed_values[0] ?? null;
                     } elseif ($field->isDate()) {
                         $value = $value?->format('Y-m-d');
                     } elseif ($field->isSingleCheckbox()) {
                         $allowedValues = \Portavice\Bladestrap\Support\Options::one($field->allowed_values[0] ?? $field->name);
-                    } elseif ($field->type === \App\Options\FormElementType::File) {
+                    } elseif ($field->type === \App\Enums\FormElementType::File) {
                         $required = $required && !isset($value);
                     }
                 @endphp
@@ -36,10 +36,10 @@
                                   :options="$allowedValues" :value="$value"
                                   :disabled="!$canEdit" :readonly="!$canEdit" :required="$required">
                     {{ $field->name }}
-                    @if(isset($field->hint) && $field->type !== \App\Options\FormElementType::Hidden)
+                    @if(isset($field->hint) && $field->type !== \App\Enums\FormElementType::Hidden)
                         <x-slot:hint>{!! $field->hint !!}</x-slot:hint>
                     @endif
-                    @if($field->type === \App\Options\FormElementType::File && isset($booking))
+                    @if($field->type === \App\Enums\FormElementType::File && isset($booking))
                         <x-slot:appendText :container="!isset($value)">
                             @isset($value)
                                 @php

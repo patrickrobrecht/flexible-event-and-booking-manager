@@ -2,14 +2,14 @@
 
 namespace Tests\Feature\Http;
 
+use App\Enums\Ability;
+use App\Enums\ActiveStatus;
+use App\Enums\FilterValue;
 use App\Http\Controllers\UserController;
 use App\Http\Requests\Filters\UserFilterRequest;
 use App\Http\Requests\UserRequest;
 use App\Models\User;
 use App\Notifications\AccountCreatedNotification;
-use App\Options\Ability;
-use App\Options\ActiveStatus;
-use App\Options\FilterValue;
 use App\Policies\UserPolicy;
 use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -17,9 +17,9 @@ use Illuminate\Support\Facades\Notification;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 
-#[CoversClass(FilterValue::class)]
 #[CoversClass(AccountCreatedNotification::class)]
 #[CoversClass(ActiveStatus::class)]
+#[CoversClass(FilterValue::class)]
 #[CoversClass(User::class)]
 #[CoversClass(UserController::class)]
 #[CoversClass(UserFactory::class)]

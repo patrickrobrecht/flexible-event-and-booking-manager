@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\FormElementType;
 use App\Events\BookingCompleted;
 use App\Exports\BookingsExportSpreadsheet;
 use App\Http\Controllers\Traits\StreamsExport;
@@ -13,7 +14,6 @@ use App\Models\BookingOption;
 use App\Models\Event;
 use App\Models\FormField;
 use App\Models\FormFieldValue;
-use App\Options\FormElementType;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;

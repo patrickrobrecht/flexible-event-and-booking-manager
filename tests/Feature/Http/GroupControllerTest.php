@@ -2,6 +2,9 @@
 
 namespace Tests\Feature\Http;
 
+use App\Enums\Ability;
+use App\Enums\GroupGenerationMethod;
+use App\Enums\Visibility;
 use App\Exports\GroupsExportSpreadsheet;
 use App\GroupGenerationMethods\AgeBasedGroupGenerationMethod;
 use App\GroupGenerationMethods\GeneralGroupGenerationMethod;
@@ -13,9 +16,6 @@ use App\Http\Requests\GenerateGroupsRequest;
 use App\Models\Booking;
 use App\Models\Event;
 use App\Models\Group;
-use App\Options\Ability;
-use App\Options\GroupGenerationMethod;
-use App\Options\Visibility;
 use App\Policies\GroupPolicy;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;

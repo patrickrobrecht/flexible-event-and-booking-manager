@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\ActiveStatus;
 use App\Http\Requests\Traits\ValidatesResponsibleUsers;
 use App\Models\Organization;
-use App\Options\ActiveStatus;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;

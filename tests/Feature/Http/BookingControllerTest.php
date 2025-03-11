@@ -2,6 +2,12 @@
 
 namespace Tests\Feature\Http;
 
+use App\Enums\Ability;
+use App\Enums\DeletedFilter;
+use App\Enums\FilterValue;
+use App\Enums\FormElementType;
+use App\Enums\PaymentStatus;
+use App\Enums\Visibility;
 use App\Events\BookingCompleted;
 use App\Exports\BookingsExportSpreadsheet;
 use App\Http\Controllers\BookingController;
@@ -15,12 +21,6 @@ use App\Models\FormField;
 use App\Models\FormFieldValue;
 use App\Models\User;
 use App\Notifications\BookingConfirmation;
-use App\Options\Ability;
-use App\Options\DeletedFilter;
-use App\Options\FilterValue;
-use App\Options\FormElementType;
-use App\Options\PaymentStatus;
-use App\Options\Visibility;
 use App\Policies\BookingPolicy;
 use Database\Factories\BookingFactory;
 use Database\Factories\FormFieldFactory;
@@ -45,12 +45,12 @@ use Tests\Traits\GeneratesTestData;
 #[CoversClass(BookingRequest::class)]
 #[CoversClass(BookingsExportSpreadsheet::class)]
 #[CoversClass(DeletedFilter::class)]
+#[CoversClass(FilterValue::class)]
 #[CoversClass(FormElementType::class)]
 #[CoversClass(FormField::class)]
 #[CoversClass(FormFieldFactory::class)]
 #[CoversClass(FormFieldValue::class)]
 #[CoversClass(FormFieldValueFactory::class)]
-#[CoversClass(FilterValue::class)]
 #[CoversClass(PaymentStatus::class)]
 #[CoversClass(SendBookingConfirmation::class)]
 class BookingControllerTest extends TestCase

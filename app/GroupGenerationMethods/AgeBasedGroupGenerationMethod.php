@@ -2,6 +2,7 @@
 
 namespace App\GroupGenerationMethods;
 
+use App\Enums\GroupGenerationMethod;
 use App\Models\Booking;
 use Illuminate\Database\Eloquent\Collection;
 

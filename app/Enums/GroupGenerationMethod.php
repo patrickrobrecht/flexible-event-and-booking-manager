@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Options;
+namespace App\Enums;
 
+use App\Enums\Traits\NamedOption;
 use App\GroupGenerationMethods\AgeBasedGroupGenerationMethod;
 use App\GroupGenerationMethods\GeneratesGroups;
 use App\GroupGenerationMethods\RandomizedAgeBasedGroupGenerationMethod;
 use App\GroupGenerationMethods\RandomizedGroupGenerationMethod;
 use App\Models\Booking;
-use App\Options\Traits\NamedOption;
 use Illuminate\Database\Eloquent\Collection;
 
 enum GroupGenerationMethod: string
@@ -20,7 +20,7 @@ enum GroupGenerationMethod: string
 
     /**
      * @param  Collection<Booking> $bookings
-     * @return array<int,Collection<Booking>>
+     * @return Collection
      */
     public function generateGroups(int $groupsCount, Collection $bookings): array
     {

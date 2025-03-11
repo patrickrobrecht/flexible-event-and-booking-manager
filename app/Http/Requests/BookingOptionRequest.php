@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\BookingRestriction;
 use App\Models\BookingOption;
 use App\Models\Event;
-use App\Options\BookingRestriction;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;

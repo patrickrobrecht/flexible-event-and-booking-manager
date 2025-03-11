@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @php
-    use App\Options\FilterValue;
     use Portavice\Bladestrap\Support\Options;
 
     /** @var \Illuminate\Pagination\LengthAwarePaginator|\App\Models\UserRole[] $userRoles */

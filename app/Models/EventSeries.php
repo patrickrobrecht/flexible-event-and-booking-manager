@@ -2,16 +2,16 @@
 
 namespace App\Models;
 
+use App\Enums\Ability;
+use App\Enums\EventSeriesType;
+use App\Enums\FilterValue;
+use App\Enums\Visibility;
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\BelongsToOrganization;
 use App\Models\Traits\HasDocuments;
 use App\Models\Traits\HasResponsibleUsers;
 use App\Models\Traits\HasSlugForRouting;
-use App\Options\Ability;
-use App\Options\EventSeriesType;
-use App\Options\FilterValue;
-use App\Options\Visibility;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

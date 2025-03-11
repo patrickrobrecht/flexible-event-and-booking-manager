@@ -2,8 +2,8 @@
 
 namespace App\GroupGenerationMethods;
 
+use App\Enums\GroupGenerationMethod;
 use App\Models\Booking;
-use App\Options\GroupGenerationMethod;
 use Illuminate\Database\Eloquent\Collection;
 
 /**

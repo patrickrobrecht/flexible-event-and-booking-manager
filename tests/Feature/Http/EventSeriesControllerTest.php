@@ -2,15 +2,15 @@
 
 namespace Tests\Feature\Http;
 
+use App\Enums\Ability;
+use App\Enums\EventSeriesType;
+use App\Enums\FilterValue;
+use App\Enums\Visibility;
 use App\Http\Controllers\EventSeriesController;
 use App\Http\Requests\EventSeriesRequest;
 use App\Http\Requests\Filters\EventSeriesFilterRequest;
 use App\Models\Event;
 use App\Models\EventSeries;
-use App\Options\Ability;
-use App\Options\EventSeriesType;
-use App\Options\FilterValue;
-use App\Options\Visibility;
 use App\Policies\EventSeriesPolicy;
 use Database\Factories\EventSeriesFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;

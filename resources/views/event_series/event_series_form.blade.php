@@ -44,7 +44,7 @@
                     </x-slot:hint>
                 </x-bs::form.field>
                 <x-bs::form.field name="visibility" type="select"
-                                  :options="\App\Options\Visibility::toOptions()"
+                                  :options="\App\Enums\Visibility::toOptions()"
                                   :value="$eventSeries->visibility->value ?? null"><i class="fa fa-fw fa-eye"></i> {{ __('Visibility') }}</x-bs::form.field>
                 <x-bs::form.field name="organization_id" type="radio"
                                   :options="Options::fromModels($organizations, 'name')"

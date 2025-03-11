@@ -43,7 +43,7 @@
             </div>
         </div>
         <x-bs::form.field id="abilities" name="abilities[]" type="switch"
-                          :options="\Portavice\Bladestrap\Support\Options::fromEnum(\App\Options\Ability::apiCases(), 'getTranslatedName')"
+                          :options="\Portavice\Bladestrap\Support\Options::fromEnum(\App\Enums\Ability::apiCases(), 'getTranslatedName')"
                           :value="$token->abilities ?? []"
                           check-container-class="cols-lg-2 cols-xl-3 cols-xxl-4"><i class="fa fa-fw fa-user-shield"></i> {{ __('Abilities') }}</x-bs::form.field>
 

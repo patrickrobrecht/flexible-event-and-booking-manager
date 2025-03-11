@@ -2,6 +2,9 @@
 
 namespace Tests\Traits;
 
+use App\Enums\FileType;
+use App\Enums\FormElementType;
+use App\Enums\Visibility;
 use App\Models\Booking;
 use App\Models\BookingOption;
 use App\Models\Document;
@@ -14,9 +17,6 @@ use App\Models\Group;
 use App\Models\Location;
 use App\Models\Organization;
 use App\Models\User;
-use App\Options\FileType;
-use App\Options\FormElementType;
-use App\Options\Visibility;
 use Closure;
 use Database\Factories\BookingFactory;
 use Database\Factories\BookingOptionFactory;

@@ -2,10 +2,10 @@
 
 namespace Tests\Traits;
 
+use App\Enums\Ability;
+use App\Enums\ActiveStatus;
 use App\Models\User;
 use App\Models\UserRole;
-use App\Options\Ability;
-use App\Options\ActiveStatus;
 use Database\Factories\UserFactory;
 use Database\Seeders\UserRoleSeeder;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithDatabase;

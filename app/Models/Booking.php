@@ -2,15 +2,15 @@
 
 namespace App\Models;
 
+use App\Enums\DeletedFilter;
+use App\Enums\FilterValue;
+use App\Enums\FormElementType;
+use App\Enums\PaymentStatus;
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\HasAddress;
 use App\Models\Traits\HasFullName;
 use App\Models\Traits\HasPhone;
-use App\Options\DeletedFilter;
-use App\Options\FilterValue;
-use App\Options\FormElementType;
-use App\Options\PaymentStatus;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;

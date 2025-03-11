@@ -41,7 +41,7 @@
             <div class="col-12 col-sm-6 col-xl-3">
                 <x-bs::form.field id="organization_id" name="filter[organization_id]" type="select"
                                   :options="Options::fromModels($organizations, 'name')->prependMany(\App\Models\Organization::filterOptions())"
-                                  :cast="\App\Options\FilterValue::castToIntIfNoValue()"
+                                  :cast="\App\Enums\FilterValue::castToIntIfNoValue()"
                                   :from-query="true"><i class="fa fa-fw fa-sitemap"></i> {{ __('Organization') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-lg-6 col-xl-3">

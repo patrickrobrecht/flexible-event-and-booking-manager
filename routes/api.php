@@ -1,6 +1,6 @@
 <?php
 
-use App\Options\Ability;
+use App\Enums\Ability;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

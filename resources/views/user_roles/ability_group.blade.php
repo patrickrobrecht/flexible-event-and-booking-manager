@@ -1,6 +1,6 @@
 @php
-    /** @var \App\Options\Ability[] $selectedAbilities */
-    /** @var \App\Options\AbilityGroup[] $abilityGroups */
+    /** @var \App\Enums\Ability[] $selectedAbilities */
+    /** @var \App\Enums\AbilityGroup[] $abilityGroups */
     /** @var int $headlineLevel */
     $headlineTag = $headlineLevel <= 6 ? "h{$headlineLevel}" : 'strong';
     $childHeadlineLevel = $headlineLevel + 1;

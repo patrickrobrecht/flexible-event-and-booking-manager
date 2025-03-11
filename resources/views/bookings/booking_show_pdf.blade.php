@@ -126,7 +126,7 @@
                         }
 
                         $value = $booking->getFieldValueAsText($field) ?? '—';
-                        if ($field->type === \App\Options\FormElementType::File) {
+                        if ($field->type === \App\Enums\FormElementType::File) {
                             $value = isset($value) ? __('File uploaded.') : __('No file uploaded.');
                         }
                     @endphp

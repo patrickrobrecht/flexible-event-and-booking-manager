@@ -34,7 +34,9 @@ class FormFieldValueFactory extends Factory
     public function randomValue(FormField $formField): mixed
     {
         return match ($formField->type) {
-            FormElementType::Checkbox => $this->faker->randomElements($formField->allowed_values, $this->faker->numberBetween(1, count($formField->allowed_values))),
+            FormElementType::Checkbox => count($formField->allowed_values) === 1
+                ? (int) $this->faker->boolean()
+                : $this->faker->randomElements($formField->allowed_values, $this->faker->numberBetween(1, count($formField->allowed_values))),
             FormElementType::Date => $this->faker->date('Y-m-d'),
             FormElementType::DateTime => $this->faker->date('Y-m-d\TH:i'),
             FormElementType::Email => $this->faker->email(),

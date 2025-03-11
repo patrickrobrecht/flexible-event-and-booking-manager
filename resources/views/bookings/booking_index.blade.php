@@ -74,12 +74,20 @@
         </div>
 
         <x-slot:addButtons>
-            @can('exportBookings', $bookingOption)
-                <button type="submit" class="btn btn-primary" name="output" value="export">
-                    <i class="fa fa-download"></i>
-                    {{ __('Export') }}
-                </button>
-            @endcan
+            <x-bs::button.group>
+                <x-bs::dropdown.button :nested-in-group="true">
+                    <i class="fa fa-fw fa-download"></i> {{ __('Export') }}
+                    <x-slot:dropdown>
+                        @can('exportBookings', $bookingOption)
+                            <li><button class="dropdown-item" type="submit" name="output" value="export"><i class="fa fa-fw fa-file-excel"></i> {{ __('Excel file') }}</button></li>
+                        @endcan
+                        <li><button class="dropdown-item" type="submit" name="output" value="pdf"><i class="fa fa-fw fa-file-pdf"></i> {{ __('PDFs in zip file') }}</button></li>
+                        @foreach($bookingOption->formFieldsForFiles as $formField)
+                            <li><button class="dropdown-item" type="submit" name="output" value="{{ $formField->id }}"><i class="fa fa-fw fa-file"></i> {{ $formField->name }}</button></li>
+                        @endforeach
+                    </x-slot:dropdown>
+                </x-bs::dropdown.button>
+            </x-bs::button.group>
         </x-slot:addButtons>
     </x-form.filter>
 

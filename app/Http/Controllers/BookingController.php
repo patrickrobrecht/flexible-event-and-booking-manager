@@ -11,30 +11,30 @@ use App\Http\Requests\Filters\BookingFilterRequest;
 use App\Models\Booking;
 use App\Models\BookingOption;
 use App\Models\Event;
+use App\Models\FormField;
 use App\Models\FormFieldValue;
 use App\Options\FormElementType;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Portavice\Bladestrap\Support\ValueHelper;
+use STS\ZipStream\Builder;
+use STS\ZipStream\Facades\Zip;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class BookingController extends Controller
 {
     use StreamsExport;
 
-    public function index(Event $event, BookingOption $bookingOption, BookingFilterRequest $request): StreamedResponse|View
+    public function index(Event $event, BookingOption $bookingOption, BookingFilterRequest $request): Builder|StreamedResponse|View
     {
         ValueHelper::setDefaults(Booking::defaultValuesForQuery());
-
-        $bookingOption->load([
-            'formFields',
-        ]);
 
         $bookingsQuery = Booking::buildQueryFromRequest($bookingOption->bookings())
             ->with([
@@ -42,17 +42,50 @@ class BookingController extends Controller
                 'groups' => fn (BelongsToMany $groups) => $groups->where('event_id', '=', $event->id),
             ]);
 
-        if ($request->query('output') === 'export') {
+        $output = $request->query('output');
+        if ($output === 'export') {
             $this->authorize('exportBookings', $bookingOption);
 
-            $fileName = $event->slug . '-' . $bookingOption->slug;
             return $this->streamExcelExport(
                 new BookingsExportSpreadsheet($event, $bookingOption, $bookingsQuery->get()),
-                str_replace(' ', '-', $fileName) . '.xlsx',
+                $event->slug . '-' . $bookingOption->slug . '.xlsx',
             );
         }
 
         $this->authorize('viewBookings', $bookingOption);
+
+        if ($output === 'pdf') {
+            /** @var Collection<Booking> $bookings */
+            $bookings = $bookingsQuery->get();
+            $files = [];
+
+            foreach ($bookings as $booking) {
+                $files[Storage::disk('local')->path($booking->storePdfFile())] = $booking->file_name_for_pdf_download;
+            }
+
+            return Zip::create($event->slug . '-' . $bookingOption->slug . '.zip', $files);
+        }
+
+        if (is_numeric($output)) {
+            /** @var FormField $formField */
+            $formField = FormField::query()->find((int) $output);
+
+            /** @var Collection<FormFieldValue> $formFieldValues */
+            $formFieldValues = $formField->formFieldValues()
+                ->whereIn('booking_id', $bookingsQuery->toBase()->select('id'))
+                ->with([
+                    'booking',
+                ])
+                ->get();
+
+            $files = [];
+            foreach ($formFieldValues as $formFieldValue) {
+                $formFieldValue->setRelation('formField', $formField);
+                $files[Storage::disk('local')->path($formFieldValue->value)] = $formFieldValue->file_name_for_download;
+            }
+
+            return Zip::create($event->slug . '-' . $bookingOption->slug . '-' . Str::slug($formField->name) . '.zip', $files);
+        }
 
         return view('bookings.booking_index', [
             'event' => $event->load([
@@ -90,32 +123,22 @@ class BookingController extends Controller
     {
         $this->authorize('viewPDF', $booking);
 
-        $directoryPath = $booking->bookingOption->getFilePath();
-        Storage::disk('local')->makeDirectory($directoryPath);
+        return Storage::disk('local')
+            ->download($booking->storePdfFile(), $booking->file_name_for_pdf_download);
+    }
 
-        $fileName = str_replace(' ', '', implode('-', [
-            $booking->id,
-            $booking->first_name,
-            $booking->last_name,
-        ])) . '.pdf';
+    public function downloadFile(Booking $booking, FormFieldValue $formFieldValue): StreamedResponse
+    {
+        $this->authorize('view', $booking);
 
-        $filePath = $directoryPath . '/' . $fileName;
-        Pdf::loadView('bookings.booking_show_pdf', [
-            'booking' => $booking->loadMissing([
-                'bookingOption.formFields',
-            ]),
-        ])
-            ->addInfo([
-                'Author' => config('app.owner'),
-                'Title' => implode(' ', [
-                    $booking->bookingOption->name,
-                    $booking->first_name,
-                    $booking->last_name,
-                ]),
-            ])
-           ->save(Storage::disk('local')->path($filePath));
+        if (
+            $formFieldValue->formField->type !== FormElementType::File
+            || $booking->isNot($formFieldValue->booking)
+        ) {
+            abort(404);
+        }
 
-        return Storage::disk('local')->download($filePath);
+        return Storage::download($formFieldValue->value, $formFieldValue->file_name_for_download);
     }
 
     public function store(Event $event, BookingOption $bookingOption, BookingRequest $request): RedirectResponse
@@ -185,20 +208,6 @@ class BookingController extends Controller
         }
 
         return back();
-    }
-
-    public function downloadFile(Booking $booking, FormFieldValue $formFieldValue): StreamedResponse
-    {
-        $this->authorize('view', $booking);
-
-        if (
-            $booking->isNot($formFieldValue->booking)
-            || $formFieldValue->formField->type !== FormElementType::File
-        ) {
-            abort(404);
-        }
-
-        return Storage::download($formFieldValue->value);
     }
 
     public function delete(Booking $booking): RedirectResponse

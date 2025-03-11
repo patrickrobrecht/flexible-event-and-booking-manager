@@ -29,6 +29,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Notifications\AnonymousNotifiable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 use Tests\Traits\GeneratesTestData;
@@ -64,10 +65,14 @@ class BookingControllerTest extends TestCase
 
         $route = "/events/{$bookingOption->event->slug}/{$bookingOption->slug}/bookings";
         $this->assertUserCanGetOnlyWithAbility($route, Ability::ViewBookingsOfEvent);
+        $this->assertUserCanGetOnlyWithAbility($route . '?output=pdf', Ability::ViewBookingsOfEvent);
 
         // Verify content of the page.
         $response = $this->get($route)->assertOk();
         $users->each(fn (User $user) => $response->assertSeeText($user->name));
+
+        // Cleanup generated PDFs.
+        $this->assertTrue(Storage::disk('local')->deleteDirectory($bookingOption->getFilePath()));
     }
 
     public function testUserCanExportBookingsOfEventOnlyWithCorrectAbility(): void
@@ -88,6 +93,24 @@ class BookingControllerTest extends TestCase
         $this->assertUserCanGetOnlyWithAbility($route, Ability::ExportBookingsOfEvent);
     }
 
+    public function testUserCanDownloadUploadedFilesForBookingsOnlyWithCorrectAbility(): void
+    {
+        $this->actingAsUserWithAbility(Ability::ViewBookingsOfEvent);
+
+        $bookingOption = self::createBookingOptionForEventWithCustomFormFields()->refresh();
+        for ($i = 1; $i <= $this->faker->numberBetween(3, 20); $i++) {
+            self::createBooking($bookingOption);
+        }
+
+        foreach ($bookingOption->formFieldsForFiles as $formFieldForFile) {
+            $route = "/events/{$bookingOption->event->slug}/{$bookingOption->slug}/bookings?output={$formFieldForFile->id}";
+            $this->assertUserCanGetOnlyWithAbility($route, Ability::ViewBookingsOfEvent);
+        }
+
+        // Cleanup generated files.
+        $this->assertTrue(Storage::disk('local')->deleteDirectory($bookingOption->getFilePath()));
+    }
+
     public function testUserCanViewSingleBookingOnlyWithCorrectAbility(): void
     {
         $this->actingAsUserWithAbility(Ability::ViewBookingsOfEvent);
@@ -98,6 +121,27 @@ class BookingControllerTest extends TestCase
                 $this->assertUserCanGetOnlyWithAbility("bookings/{$booking->id}", Ability::ViewBookingsOfEvent);
                 $this->assertUserCanGetOnlyWithAbility("bookings/{$booking->id}/pdf", Ability::ViewBookingsOfEvent);
             }));
+
+        // Cleanup generated PDFs.
+        $this->assertTrue(Storage::disk('local')->deleteDirectory($bookingOption->getFilePath()));
+    }
+
+    public function testUserCanViewUploadedFileForBookingOnlyWithCorrectAbility(): void
+    {
+        $this->actingAsUserWithAbility(Ability::ViewBookingsOfEvent);
+
+        $bookingOption = self::createBookingOptionForEventWithCustomFormFields()->refresh();
+        $booking = self::createBooking($bookingOption)->refresh();
+
+        $this->assertUserCanGetOnlyWithAbility("bookings/{$booking->id}", Ability::ViewBookingsOfEvent);
+        $this->assertUserCanGetOnlyWithAbility("bookings/{$booking->id}/pdf", Ability::ViewBookingsOfEvent);
+        foreach ($bookingOption->formFieldsForFiles as $formFieldForFile) {
+            $formFieldValue = $booking->formFieldValues->firstWhere('form_field_id', $formFieldForFile->id);
+            $this->assertUserCanGetOnlyWithAbility("bookings/{$booking->id}/file/{$formFieldValue->id}", Ability::ViewBookingsOfEvent);
+        }
+
+        // Cleanup generated files.
+        $this->assertTrue(Storage::disk('local')->deleteDirectory($bookingOption->getFilePath()));
     }
 
     public function testUserCanViewPaymentsOnlyWithCorrectAbility(): void
@@ -164,7 +208,7 @@ class BookingControllerTest extends TestCase
     public function testGuestCanSubmitBookingWithCustomFormAndReceivesConfirmationViaMail(): void
     {
         $this->assertGuestCanSubmitBookingAndReceivesConfirmationViaMail(
-            self::createBookingOptionForEventWithCustomFormFields(Visibility::Public)
+            self::createBookingOptionForEventWithCustomFormFields(Visibility::Public, [FormElementType::Date, FormElementType::Text])
         );
     }
 
@@ -244,7 +288,9 @@ class BookingControllerTest extends TestCase
         $booking = self::createBooking();
 
         $editRoute = "/bookings/{$booking->id}/edit";
-        $this->assertUserCanPutOnlyWithAbility("/bookings/{$booking->id}", $this->generateRandomBookingData($booking->bookingOption), Ability::EditBookingsOfEvent, $editRoute, $editRoute);
+        $data = $this->generateRandomBookingData($booking->bookingOption);
+        $this->assertUserCanPutOnlyWithAbility("/bookings/{$booking->id}", $data, Ability::EditBookingsOfEvent, $editRoute, $editRoute);
+        $this->assertEquals($data['first_name'], $booking->refresh()->first_name);
     }
 
     public function testUserCanUpdatePaymentsOnlyWithCorrectAbility(): void
@@ -264,7 +310,7 @@ class BookingControllerTest extends TestCase
         $this->assertEquals($bookings2->count(), $bookingOption->bookings()->whereNull('paid_at')->count());
     }
 
-    public function testUserCannotUpdatePaidBookings(): void
+    public function testUserCannotUpdatePaymentOfPaidBookings(): void
     {
         $bookingOption = self::createBookingOptionForEvent();
         $bookings = self::createBookings($bookingOption);
@@ -308,10 +354,12 @@ class BookingControllerTest extends TestCase
     private function generateRandomBookingData(BookingOption $bookingOption): array
     {
         if ($bookingOption->formFields->isEmpty()) {
-            return Booking::factory()
+            $data = Booking::factory()
                 ->withoutDateOfBirth()
                 ->makeOne()
                 ->toArray();
+            unset($data['comment']);
+            return $data;
         }
 
         $data = [];

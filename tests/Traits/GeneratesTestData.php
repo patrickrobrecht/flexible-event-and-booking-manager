@@ -26,6 +26,7 @@ use Database\Factories\FormFieldFactory;
 use Database\Factories\FormFieldValueFactory;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 #[CoversClass(Booking::class)]
@@ -63,13 +64,18 @@ trait GeneratesTestData
 
         if (isset($bookingOption) && $bookingOption->formFields->isNotEmpty()) {
             foreach ($bookingOption->formFields as $formField) {
-                $booking->setFieldValue(
-                    $formField,
-                    FormFieldValue::factory()
+                if ($formField->type === FormElementType::File) {
+                    $filePath = $bookingOption->getFilePath() . '/' . fake()->uuid(). '.txt';
+                    Storage::disk('local')->put($filePath, 'Test File Contents');
+                    $value = $filePath;
+                } else {
+                    $value = FormFieldValue::factory()
                         ->forFormField($formField)
                         ->makeOne()
-                        ->value
-                );
+                        ->value;
+                }
+
+                $booking->setFieldValue($formField, $value);
             }
         }
 
@@ -105,7 +111,7 @@ trait GeneratesTestData
             ->create($attributes);
     }
 
-    protected static function createBookingOptionForEventWithCustomFormFields(?Visibility $visibility = null): BookingOption
+    protected static function createBookingOptionForEventWithCustomFormFields(?Visibility $visibility = null, ?array $formElementTypes = null): BookingOption
     {
         $bookingOptionFactory = BookingOption::factory()
             ->for(self::createEvent($visibility))
@@ -113,8 +119,8 @@ trait GeneratesTestData
             ->has(FormField::factory()->forColumn('last_name'))
             ->has(FormField::factory()->forColumn('email'));
 
-        foreach (FormElementType::casesForFields() as $type) {
-            $bookingOptionFactory
+        foreach ($formElementTypes ?? FormElementType::casesForFields() as $type) {
+            $bookingOptionFactory = $bookingOptionFactory
                 ->has(
                     FormField::factory()
                         ->count(random_int(2, 10))

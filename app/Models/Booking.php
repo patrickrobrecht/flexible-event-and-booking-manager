@@ -11,6 +11,7 @@ use App\Options\DeletedFilter;
 use App\Options\FilterValue;
 use App\Options\FormElementType;
 use App\Options\PaymentStatus;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -25,6 +26,8 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\Enums\SortDirection;
@@ -45,6 +48,8 @@ use Spatie\QueryBuilder\Enums\SortDirection;
  * @property-read int $booking_option_id
  *
  * @property-read ?float $age {@see self::age()}
+ * @property-read string $file_name {@see self::fileName()}
+ * @property-read string $file_name_for_pdf_download {@see self::fileNameForPdfDownload()}
  * @property-read ?Carbon $payment_deadline {@see self::paymentDeadline()}
  *
  * @property-read ?User $bookedByUser {@see self::bookedByUser()}
@@ -96,13 +101,27 @@ class Booking extends Model
         'deleted_at' => 'datetime',
     ];
 
-    public function age(): Attribute
+    protected function age(): Attribute
     {
         return Attribute::get(fn () => $this->date_of_birth?->diffInYears())
             ->shouldCache();
     }
 
-    public function paymentDeadline(): Attribute
+    protected function fileName(): Attribute
+    {
+        return Attribute::get(fn () => Str::slug(implode('-', [
+            $this->id,
+            $this->first_name,
+            $this->last_name,
+        ])));
+    }
+
+    protected function fileNameForPdfDownload(): Attribute
+    {
+        return Attribute::get(fn () => $this->prefixFileNameWithGroup($this->file_name . '.pdf'));
+    }
+
+    protected function paymentDeadline(): Attribute
     {
         return Attribute::get(fn () => isset($this->price) ? $this->bookingOption->getPaymentDeadline($this->booked_at) : null)
             ->shouldCache();
@@ -204,6 +223,17 @@ class Booking extends Model
         return true;
     }
 
+    public function prefixFileNameWithGroup(string $baseFileName): string
+    {
+        $downloadFileName = $baseFileName;
+        $group = $this->getGroup($this->bookingOption->event);
+        if (isset($group)) {
+            $downloadFileName = Str::slug($group->name) . '-' . $downloadFileName;
+        }
+
+        return $downloadFileName;
+    }
+
     public function prepareMailMessage(): MailMessage
     {
         $mail = new MailMessage();
@@ -280,6 +310,30 @@ class Booking extends Model
         }
 
         return $value;
+    }
+
+    public function storePdfFile(): string
+    {
+        $directoryPath = $this->bookingOption->getFilePath();
+        Storage::disk('local')->makeDirectory($directoryPath);
+
+        $filePath = $directoryPath . '/' . $this->file_name . '.pdf';
+        Pdf::loadView('bookings.booking_show_pdf', [
+            'booking' => $this->loadMissing([
+                'bookingOption.formFields',
+            ]),
+        ])
+            ->addInfo([
+                'Author' => config('app.owner'),
+                'Title' => implode(' ', [
+                    $this->bookingOption->name,
+                    $this->first_name,
+                    $this->last_name,
+                ]),
+            ])
+            ->save(Storage::disk('local')->path($filePath));
+
+        return $filePath;
     }
 
     public static function allowedFilters(): array

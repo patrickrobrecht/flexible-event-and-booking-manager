@@ -20,9 +20,10 @@
 /.gitignore export-ignore
 /composer.json export-ignore
 /composer.lock export-ignore
-/coverage.xml export-ignore
 /eslint.config.cjs export-ignore
 /package.json export-ignore
 /package-lock.json export-ignore
 /phpunit.xml export-ignore
+/phpunit_coverage.xml export-ignore
+/phpunit_report.xml export-ignore
 /webpack.mix.js

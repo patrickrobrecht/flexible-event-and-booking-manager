@@ -40,6 +40,7 @@ use Tests\Traits\GeneratesTestData;
 #[CoversClass(BookingController::class)]
 #[CoversClass(BookingFactory::class)]
 #[CoversClass(BookingFilterRequest::class)]
+#[CoversClass(BookingOption::class)]
 #[CoversClass(BookingPaymentRequest::class)]
 #[CoversClass(BookingPolicy::class)]
 #[CoversClass(BookingRequest::class)]

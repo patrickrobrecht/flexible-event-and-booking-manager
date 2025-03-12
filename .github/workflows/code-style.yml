@@ -19,7 +19,7 @@ jobs:
           php-version: 8.4
 
       - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-interaction
+        run: composer install --prefer-dist --no-interaction --no-progress
 
       - name: Setup Node
         uses: actions/setup-node@v4

@@ -7,7 +7,9 @@ use App\Enums\FilterValue;
 use App\Http\Controllers\LocationController;
 use App\Http\Requests\Filters\LocationFilterRequest;
 use App\Http\Requests\LocationRequest;
+use App\Models\Event;
 use App\Models\Location;
+use App\Models\Organization;
 use App\Policies\LocationPolicy;
 use Database\Factories\LocationFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -15,6 +17,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 use Tests\Traits\GeneratesTestData;
 
+#[CoversClass(Event::class)]
 #[CoversClass(FilterValue::class)]
 #[CoversClass(Location::class)]
 #[CoversClass(LocationController::class)]
@@ -22,6 +25,7 @@ use Tests\Traits\GeneratesTestData;
 #[CoversClass(LocationFilterRequest::class)]
 #[CoversClass(LocationPolicy::class)]
 #[CoversClass(LocationRequest::class)]
+#[CoversClass(Organization::class)]
 class LocationControllerTest extends TestCase
 {
     use GeneratesTestData;

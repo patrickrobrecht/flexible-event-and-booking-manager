@@ -3,6 +3,10 @@ name: Run tests
 on:
   - push
 
+permissions:
+  checks: write
+  pull-requests: write # necessary to publish results in PR
+
 jobs:
   tests:
     runs-on: ubuntu-latest
@@ -25,9 +29,10 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
+          coverage: ${{ matrix.php-version == '8.4' && 'xdebug' || 'none' }}
 
       - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-interaction
+        run: composer install --prefer-dist --no-interaction --no-progress
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -40,5 +45,42 @@ jobs:
       - name: Build
         run: npm run production
 
-      - name: Run tests
+      - name: Run tests (PHP <= 8.3)
+        if: matrix.php-version != '8.4'
         run: composer test
+
+      - name: Run tests with coverage (PHP 8.4)
+        if: matrix.php-version == '8.4'
+        run: composer test -- --coverage-clover=phpunit_coverage.xml --log-junit=phpunit_report.xml
+
+      - name: Upload coverage report to GitHub Artifacts
+        id: artifact-upload-step
+        if: matrix.php-version == '8.4'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Code coverage report (PHP ${{ matrix.php-version }})
+          path: |
+            phpunit_coverage.xml
+            phpunit_report.xml
+          if-no-files-found: warn
+
+      - name: Calculate coverage percentage
+        if: matrix.php-version == '8.4'
+        run: |
+          COVERAGE=$(php -r "
+            \$xml = simplexml_load_file('phpunit_coverage.xml');
+            \$metrics = \$xml->project->metrics;
+            \$covered = (int) \$metrics['coveredelements'];
+            \$total = (int) \$metrics['elements'];
+            echo \$total > 0 ? round((\$covered / \$total) * 100, 2) : 0;
+          ")
+          echo "COVERAGE=$COVERAGE"
+          echo "COVERAGE=$COVERAGE" >> $GITHUB_ENV
+
+      - name: Comment test results in PR
+        if: matrix.php-version == '8.4'
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          files: phpunit_report.xml
+          check_run: false # disabled because of https://github.com/EnricoMi/publish-unit-test-result-action/issues/12
+          comment_title: "Test results (coverage: ${{ env.COVERAGE }}%)"

@@ -8,6 +8,7 @@ use App\Http\Controllers\OrganizationController;
 use App\Http\Requests\Filters\OrganizationFilterRequest;
 use App\Http\Requests\OrganizationRequest;
 use App\Models\BookingOption;
+use App\Models\Document;
 use App\Models\Event;
 use App\Models\Location;
 use App\Models\Organization;
@@ -20,6 +21,8 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 use Tests\Traits\GeneratesTestData;
 
+#[CoversClass(Document::class)]
+#[CoversClass(Event::class)]
 #[CoversClass(FilterValue::class)]
 #[CoversClass(Organization::class)]
 #[CoversClass(OrganizationController::class)]

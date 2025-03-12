@@ -16,16 +16,17 @@
     <php>
         <env name="APP_ENV" value="testing"/>
         <env name="BCRYPT_ROUNDS" value="4"/>
-        <env name="CACHE_DRIVER" value="array"/>
+        <env name="CACHE_STORE" value="array"/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>
-        <env name="TELESCOPE_ENABLED" value="false"/>
     </php>
     <source>
         <include>
             <directory suffix=".php">./app</directory>
+            <file>./bootstrap/app.php</file>
             <directory suffix=".php">./database/factories</directory>
+            <directory suffix=".php">./routes</directory>
         </include>
     </source>
 </phpunit>

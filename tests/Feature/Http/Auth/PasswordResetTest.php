@@ -14,6 +14,7 @@ use Tests\TestCase;
 #[CoversClass(NewPasswordController::class)]
 #[CoversClass(PasswordResetLinkController::class)]
 #[CoversClass(ResetPasswordNotification::class)]
+#[CoversClass(User::class)]
 class PasswordResetTest extends TestCase
 {
     use RefreshDatabase;

@@ -12,6 +12,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 
 #[CoversClass(AccountController::class)]
+#[CoversClass(User::class)]
 #[CoversClass(UserPolicy::class)]
 #[CoversClass(UserRequest::class)]
 class AccountControllerTest extends TestCase

@@ -9,6 +9,7 @@ use App\Enums\Visibility;
 use App\Http\Controllers\EventSeriesController;
 use App\Http\Requests\EventSeriesRequest;
 use App\Http\Requests\Filters\EventSeriesFilterRequest;
+use App\Models\Document;
 use App\Models\Event;
 use App\Models\EventSeries;
 use App\Policies\EventSeriesPolicy;
@@ -18,6 +19,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 use Tests\Traits\GeneratesTestData;
 
+#[CoversClass(Document::class)]
+#[CoversClass(Event::class)]
 #[CoversClass(EventSeries::class)]
 #[CoversClass(EventSeriesController::class)]
 #[CoversClass(EventSeriesFactory::class)]

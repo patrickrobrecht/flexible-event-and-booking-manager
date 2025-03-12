@@ -18,6 +18,7 @@ use Tests\TestCase;
 
 #[CoversClass(EmailVerificationNotificationController::class)]
 #[CoversClass(EmailVerificationPromptController::class)]
+#[CoversClass(User::class)]
 #[CoversClass(UserFactory::class)]
 #[CoversClass(VerifyEmailController::class)]
 #[CoversClass(VerifyEmailNotification::class)]

@@ -24,6 +24,7 @@ use Tests\TestCase;
 use Tests\Traits\GeneratesTestData;
 
 #[CoversClass(AgeBasedGroupGenerationMethod::class)]
+#[CoversClass(Event::class)]
 #[CoversClass(GeneralGroupGenerationMethod::class)]
 #[CoversClass(GenerateGroupsRequest::class)]
 #[CoversClass(Group::class)]

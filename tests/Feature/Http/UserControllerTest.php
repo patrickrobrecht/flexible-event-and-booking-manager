@@ -9,6 +9,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Requests\Filters\UserFilterRequest;
 use App\Http\Requests\UserRequest;
 use App\Models\User;
+use App\Models\UserRole;
 use App\Notifications\AccountCreatedNotification;
 use App\Policies\UserPolicy;
 use Database\Factories\UserFactory;
@@ -26,6 +27,7 @@ use Tests\TestCase;
 #[CoversClass(UserFilterRequest::class)]
 #[CoversClass(UserPolicy::class)]
 #[CoversClass(UserRequest::class)]
+#[CoversClass(UserRole::class)]
 class UserControllerTest extends TestCase
 {
     use RefreshDatabase;
@@ -111,6 +113,8 @@ class UserControllerTest extends TestCase
 
     private function createRandomUser(): User
     {
-        return User::factory()->create();
+        return User::factory()
+            ->has(UserRole::factory()->count(2))
+            ->create();
     }
 }

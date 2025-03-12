@@ -8,7 +8,9 @@
 
 # Ignore for export
 /.git export-ignore
+/.github export-ignore
 /.idea export-ignore
+/.phpunit.cache export-ignore
 /node_modules export-ignore
 /tests export-ignore
 
@@ -16,9 +18,10 @@
 /.env.testing export-ignore
 /.gitattributes export-ignore
 /.gitignore export-ignore
-/.phpunit.result.cache export-ignore
 /composer.json export-ignore
 /composer.lock export-ignore
+/coverage.xml export-ignore
+/eslint.config.cjs export-ignore
 /package.json export-ignore
 /package-lock.json export-ignore
 /phpunit.xml export-ignore

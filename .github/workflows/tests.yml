@@ -25,9 +25,10 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
+          coverage: ${{ matrix.php-version == '8.4' && 'xdebug' || 'none' }}
 
       - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-interaction
+        run: composer install --prefer-dist --no-interaction --no-progress
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -40,5 +41,18 @@ jobs:
       - name: Build
         run: npm run production
 
-      - name: Run tests
+      - name: Run tests (without coverage)
+        if: matrix.php-version != '8.4'
         run: composer test
+
+      - name: Run tests with coverage (PHP 8.4)
+        if: matrix.php-version == '8.4'
+        run: composer test -- --coverage-clover=coverage.xml
+
+      - name: Upload coverage report to GitHub Artifacts
+        if: matrix.php-version == '8.4'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Code coverage report (PHP ${{ matrix.php-version }})
+          path: coverage.xml
+          if-no-files-found: warn

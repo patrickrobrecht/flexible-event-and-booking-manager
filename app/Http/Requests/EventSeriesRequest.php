@@ -56,7 +56,7 @@ class EventSeriesRequest extends FormRequest
                     }
 
                     $parentEventSeries = EventSeries::query()->find($value);
-                    if (!isset($parentEventSeries) || $parentEventSeries->id === $this->event_series->id || $parentEventSeries->parent_event_series_id !== null) {
+                    if (!isset($parentEventSeries) || $parentEventSeries->id === $this->event_series?->id || $parentEventSeries->parent_event_series_id !== null) {
                         $fail(__('validation.exists', [
                             'attribute' => __('validation.attributes.parent_event_series_id'),
                         ]));

@@ -88,7 +88,7 @@ class EventRequest extends FormRequest
                     }
 
                     $parentEvent = Event::query()->find($value);
-                    if (!isset($parentEvent) || $parentEvent->id === $this->event->id || $parentEvent->parent_event_id !== null) {
+                    if (!isset($parentEvent) || $parentEvent->id === $this->event?->id || $parentEvent->parent_event_id !== null) {
                         $fail(__('validation.exists', [
                             'attribute' => __('validation.attributes.parent_event_id'),
                         ]));

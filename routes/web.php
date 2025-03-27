@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\ApiDocumentationController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\BookingOptionController;
 use App\Http\Controllers\DashboardController;
@@ -125,6 +126,12 @@ Route::middleware('auth')->group(static function () {
         ->name('account.edit');
     Route::put('account', [AccountController::class, 'update'])
         ->name('account.update');
+
+    // API Documentation
+    Route::get('api-docs', [ApiDocumentationController::class, 'index'])
+        ->name('api-docs.index');
+    Route::get('api-docs/spec', [ApiDocumentationController::class, 'spec'])
+        ->name('api-docs.spec');
 });
 
 // Pages that can be public

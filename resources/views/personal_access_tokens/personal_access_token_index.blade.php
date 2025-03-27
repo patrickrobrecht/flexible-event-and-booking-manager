@@ -16,15 +16,15 @@
 @endsection
 
 @section('content')
-    <x-bs::button.group>
-        @can('create', \App\Models\PersonalAccessToken::class)
-            <x-button.create href="{{ route('personal-access-tokens.create') }}">
-                {{ __('Create personal access token') }}
-            </x-button.create>
-        @endcan
-    </x-bs::button.group>
+    @include('docs.docs-link')
 
-    <x-alert.count class="mt-3" :count="$user->tokens->count()"/>
+    @can('create', \App\Models\PersonalAccessToken::class)
+        <x-button.create href="{{ route('personal-access-tokens.create') }}">
+            {{ __('Create personal access token') }}
+        </x-button.create>
+    @endcan
+
+    <x-alert.count class="mt-3" :count="$user->tokens->count()" />
 
     <div class="row my-3">
         @foreach($user->tokens as $token)

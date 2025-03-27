@@ -28,6 +28,7 @@ if (fs.existsSync('./resources/js')) {
 let filesFromLibraries = [
     'node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid*.*',
     'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js',
+    'node_modules/rapidoc/dist/rapidoc-min.js',
 ];
 mix.copy(filesFromLibraries, 'public/lib');
 mix.copy('node_modules/alpinejs/dist/cdn.min.js', 'public/lib/alpinejs.min.js');

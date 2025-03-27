@@ -80,6 +80,10 @@ and `composer csfix` to fix code style violations before every commit
 Any texts in the code MUST be in English.
 Use `composer translate` to extract them to `lang/de.json`.
 
+### How to release
+- Update version in `CHANGELOG.md` and `config/app.php`.
+- Create a tag in Git and publish corresponding release notes in GitLab.
+
 ### How to deploy
 - Run `composer production` to remove development dependencies.
 - Create/update the `.env` configuration if necessary.

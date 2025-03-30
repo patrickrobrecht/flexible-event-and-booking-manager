@@ -33,10 +33,10 @@ class ApiTest extends TestCase
 
     public function testDataCannotBeRequestedWithInvalidToken(): void
     {
-        $token = $this->createTokenWithAbility(Ability::ViewAccount);
+        $token = $this->createTokenWithAbility(Ability::ViewOrganizations);
 
         $this->withHeadersForApiRequest($token->accessToken->id.'|invalidTokenString')
-            ->get('api/account')
+            ->get('api/organizations')
             ->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
@@ -50,24 +50,24 @@ class ApiTest extends TestCase
         ]);
 
         $this->withHeadersForApiRequest($token->plainTextToken)
-            ->get('api/account')
+            ->get('api/organizations')
             ->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
     public function testDataCanBeRequestedAsJsonOrXml(): void
     {
-        $this->withHeadersForApiRequestWithAbility(Ability::ViewAccount)
+        $this->withHeadersForApiRequestWithAbility(Ability::ViewOrganizations)
             ->withHeader('Accept', 'application/xml')
-            ->get('api/account')
+            ->get('api/organizations')
             ->assertUnsupportedMediaType();
     }
 
     #[DataProvider('acceptHeaders')]
     public function testDataCannotBeRequestedAsXml(string $acceptHeader): void
     {
-        $this->withHeadersForApiRequestWithAbility(Ability::ViewAccount)
+        $this->withHeadersForApiRequestWithAbility(Ability::ViewOrganizations)
             ->withHeader('Accept', $acceptHeader)
-            ->get('api/account')
+            ->get('api/organizations')
             ->assertOk();
     }
 
@@ -102,8 +102,8 @@ class ApiTest extends TestCase
             ['404-path', 'de', Response::HTTP_NOT_FOUND, 'API-Endpunkt api/404-path existiert nicht.'],
             ['404-path', 'en', Response::HTTP_NOT_FOUND, 'API endpoint api/404-path does not exist.'],
             ['404-path', 'fr', Response::HTTP_NOT_FOUND, 'API-Endpunkt api/404-path existiert nicht.'], // German is default
-            ['account', 'de_DE', Response::HTTP_FORBIDDEN, 'Token hat nicht die erforderlichen Berechtigung „Eigenes Konto ansehen“.'],
-            ['account', 'en_US', Response::HTTP_FORBIDDEN, 'Token does not have the required ability "View own account".'],
+            ['organizations', 'de_DE', Response::HTTP_FORBIDDEN, 'Token hat nicht die erforderlichen Berechtigung „Organisationen ansehen“.'],
+            ['organizations', 'en_US', Response::HTTP_FORBIDDEN, 'Token does not have the required ability "View organizations".'],
         ];
     }
 
@@ -113,10 +113,10 @@ class ApiTest extends TestCase
         Config::set('api.throttle.max_attempts', $maxAttempts);
         Config::set('api.throttle.decay_minutes', 1);
 
-        $withHeaders = $this->withHeadersForApiRequestWithAbility(Ability::ViewAccount);
+        $withHeaders = $this->withHeadersForApiRequestWithAbility(Ability::ViewOrganizations);
 
         // Make the maximum number of attempts and assert decreasing remaining limit.
-        $route = '/api/account';
+        $route = '/api/organizations';
         for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
             $withHeaders->get($route)
                 ->assertOk()

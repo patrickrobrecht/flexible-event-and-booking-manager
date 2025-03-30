@@ -26,6 +26,7 @@ use Database\Factories\FormFieldFactory;
 use Database\Factories\FormFieldValueFactory;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -47,6 +48,13 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(Visibility::class)]
 trait GeneratesTestData
 {
+    public function createCollection(Factory $factory, ?int $count = null): Collection
+    {
+        return $factory
+            ->count($count ?? $this->faker->numberBetween(5, 10))
+            ->create();
+    }
+
     public static function visibilityProvider(): array
     {
         return array_map(static fn (Visibility $method) => [$method], Visibility::cases());

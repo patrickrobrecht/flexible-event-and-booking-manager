@@ -16,7 +16,7 @@ use Spatie\QueryBuilder\AllowedFilter;
 
 /**
  * @property-read int $id
- * @property string $name
+ * @property ?string $name
  * @property ?string $website_url
  *
  * @property-read string[] $fullAddressBlock {@see Location::fullAddressBlock()}

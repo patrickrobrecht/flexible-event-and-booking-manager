@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Enums\Visibility;
 use App\Models\EventSeries;
+use Database\Factories\Traits\BelongsToOrganization;
 use Database\Factories\Traits\HasVisibility;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -13,6 +14,7 @@ use Illuminate\Support\Str;
  */
 class EventSeriesFactory extends Factory
 {
+    use BelongsToOrganization;
     use HasVisibility;
 
     public function definition(): array

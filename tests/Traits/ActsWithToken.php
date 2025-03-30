@@ -5,6 +5,7 @@ namespace Tests\Traits;
 use App\Enums\Ability;
 use App\Models\PersonalAccessToken;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Testing\TestResponse;
 use Laravel\Sanctum\NewAccessToken;
 
@@ -32,9 +33,19 @@ trait ActsWithToken
     /**
      * @param  Ability|Ability[]  $ability
      */
+    protected function assertTokenCannotGetDespiteAbility(string $route, Ability|array $ability): TestResponse
+    {
+        return $this->withHeadersForApiRequestWithAbility($ability)
+            ->get($route)
+            ->assertForbidden();
+    }
+
+    /**
+     * @param  Ability|Ability[]  $ability
+     */
     protected function assertTokenCannotGetWithoutAbility(string $route, Ability|array $ability): TestResponse
     {
-        return $this->withHeadersForApiRequestWithAbility(Ability::casesExcept($ability))
+        return $this->withHeadersForApiRequestWithAbility(Ability::apiCasesExcept($ability))
             ->get($route)
             ->assertForbidden();
     }
@@ -45,14 +56,19 @@ trait ActsWithToken
     protected function createTokenWithAbility(Ability|array $ability): NewAccessToken
     {
         $user = User::factory()->create();
+        $name = is_array($ability)
+            ? implode(', ', array_map(static fn ($case) => $case->value, $ability))
+            : $ability->value;
+
         return PersonalAccessToken::createTokenFromValidated($user, [
-            'name' => 'Test Token',
+            'name' => 'Test Token with ' . $name,
             'abilities' => is_array($ability) ? $ability : [$ability],
         ]);
     }
 
     protected function withHeadersForApiRequest(string $tokenString): self
     {
+        Auth::forgetGuards();
         return $this->withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $tokenString,

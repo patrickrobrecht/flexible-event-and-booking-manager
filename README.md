@@ -9,7 +9,8 @@ This application allows to manage events, their booking forms and bookings via a
 
 ## Features
 - Manage events and event series, locations, and organizations
-  - Events and series can have a parent event (series). 
+  - Events and series can have a parent event (series).
+  - Events, series, locations, organizations can be requested via a read-only API.
 - Manage booking options and their booking forms (for events without a parent event)
   - Users editing booking forms can see a preview for the booking forms if bookings are not enabled yet.
 - Bookings

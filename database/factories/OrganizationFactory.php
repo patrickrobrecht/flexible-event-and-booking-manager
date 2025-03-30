@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Enums\ActiveStatus;
 use App\Models\Organization;
+use Database\Factories\Traits\BelongsToLocation;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -12,6 +13,8 @@ use Illuminate\Support\Str;
  */
 class OrganizationFactory extends Factory
 {
+    use BelongsToLocation;
+
     public function definition(): array
     {
         $name = $this->faker->company();

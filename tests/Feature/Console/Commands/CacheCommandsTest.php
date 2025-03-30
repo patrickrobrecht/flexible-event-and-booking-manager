@@ -1,12 +1,19 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Console\Commands;
 
+use App\Listeners\CacheOpenApiDocListener;
+use Illuminate\Console\Events\CommandFinished;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Cache;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\NullOutput;
 use Tests\TestCase;
 
-class CacheTest extends TestCase
+#[CoversClass(CacheOpenApiDocListener::class)]
+class CacheCommandsTest extends TestCase
 {
     public function testConfigCache(): void
     {
@@ -17,6 +24,15 @@ class CacheTest extends TestCase
         $this->assertFileExists(base_path('bootstrap/cache/config.php'));
 
         Artisan::call('config:clear');
+    }
+
+    public function testYamlFileIsUpdatedWhenConfigIsCached(): void
+    {
+        Cache::forget('open-api-spec');
+
+        event(new CommandFinished('config:cache', new ArrayInput([]), new NullOutput(), 0));
+
+        $this->assertNotNull(Cache::get('open-api-spec'));
     }
 
     public function testEventCache(): void

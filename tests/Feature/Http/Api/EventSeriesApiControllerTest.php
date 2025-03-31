@@ -6,7 +6,9 @@ use App\Enums\Ability;
 use App\Enums\Visibility;
 use App\Http\Controllers\Api\EventSeriesApiController;
 use App\Http\Requests\Filters\EventSeriesFilterRequest;
+use App\Http\Resources\EventSeriesResource;
 use App\Models\EventSeries;
+use App\Models\QueryBuilder\SortOptions;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 use Tests\Traits\ActsWithToken;
@@ -14,6 +16,8 @@ use Tests\Traits\GeneratesTestData;
 
 #[CoversClass(EventSeriesApiController::class)]
 #[CoversClass(EventSeriesFilterRequest::class)]
+#[CoversClass(EventSeriesResource::class)]
+#[CoversClass(SortOptions::class)]
 class EventSeriesApiControllerTest extends TestCase
 {
     use ActsWithToken;

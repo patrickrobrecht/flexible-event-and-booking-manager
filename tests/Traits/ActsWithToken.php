@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Testing\TestResponse;
 use Laravel\Sanctum\NewAccessToken;
+use Symfony\Component\HttpFoundation\Response;
 
 trait ActsWithToken
 {
@@ -33,11 +34,11 @@ trait ActsWithToken
     /**
      * @param  Ability|Ability[]  $ability
      */
-    protected function assertTokenCannotGetDespiteAbility(string $route, Ability|array $ability): TestResponse
+    protected function assertTokenCannotGetDespiteAbility(string $route, Ability|array $ability, int $statusCode = Response::HTTP_FORBIDDEN): TestResponse
     {
         return $this->withHeadersForApiRequestWithAbility($ability)
             ->get($route)
-            ->assertForbidden();
+            ->assertStatus($statusCode);
     }
 
     /**

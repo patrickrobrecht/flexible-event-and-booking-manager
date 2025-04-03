@@ -6,6 +6,7 @@ use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\FiltersByRelationExistence;
 use App\Models\Traits\HasAddress;
+use App\Models\Traits\HasIdForRouting;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
@@ -31,6 +32,7 @@ class Location extends Model
     use FiltersByRelationExistence;
     use HasAddress;
     use HasFactory;
+    use HasIdForRouting;
 
     /**
      * The attributes that are mass assignable.

@@ -24,9 +24,7 @@
     <source>
         <include>
             <directory suffix=".php">./app</directory>
-            <file>./bootstrap/app.php</file>
             <directory suffix=".php">./database/factories</directory>
-            <directory suffix=".php">./routes</directory>
         </include>
     </source>
 </phpunit>

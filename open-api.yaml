@@ -1,0 +1,1139 @@
+# OpenAPI Definitions: https://swagger.io/specification/
+openapi: 3.1.0
+
+# General information
+info:
+  title: {{APP_NAME}} API
+  description: |
+    This API allows access to data of the {{APP_NAME}} application.
+
+    ## Response type and language
+    All endpoints return JSON data with `Content-Type: application/json`.
+    Request another response type than JSON via `Accept` header will result in a `415 Unsupported Media Type` response.
+
+    The JSON format is described in detail for every API endpoint. `null` values are always omitted to reduce the size of the response.
+
+    An `Accept-Language` header can be used to switch between German and English error messages.
+
+    ## Throttling requests
+    Requests are limited to {{API_THROTTLE_REQUESTS_MAX_ATTEMPTS}} requests per {{API_THROTTLE_REQUESTS_DECAY_MINUTES}} minutes.
+    The `X-RateLimit-Remaining` header in every response informs about how many requests are still allowed without exceeding the limit.
+    Requests actually exceeding the limit will result in a `429 Too Many Requests` response.
+  version: {{APP_VERSION}}
+
+# Server addresses
+servers:
+  - url: {{API_ROOT_URL}}
+    description: {{API_SERVER_DESCRIPTION}}
+
+# Authentication
+security:
+  - bearer_token: [ ]
+
+# Tags for grouping of API endpoints (ordered as in the UI for API documentation)
+tags:
+  - name: Events
+    description: Access event with their event series, locations and organizations.
+  - name: Event series
+    description: Access event series with their events and organizations.
+  - name: Locations
+    description: Access location data with their events and organizations.
+  - name: Organizations
+    description: Access organizations with their events, event series and locations.
+
+# API endpoints (ordered alphabetically)
+paths:
+  /event-series:
+    get:
+      operationId: get-event-series
+      summary: Get list of event series
+      description: Returns a paginated list of all event series.
+      tags:
+        - Event series
+      parameters:
+        - in: query
+          name: filter[name]
+          description: Filters for event series with a name containing the given search term.
+          schema:
+            type: string
+        - in: query
+          name: filter[visibility]
+          description: Filters for event series with the given visibility.
+          schema:
+            type: string
+            default: '*'
+            enum:
+              - '*'
+              - public
+              - private
+        - in: query
+          name: filter[event_id]
+          description: Filters for event series having events or not.
+          schema:
+            type: string
+            enum:
+              - '*'
+              - '+'
+              - '-'
+        - in: query
+          name: filter[organization_id]
+          description: Filters for event series which belong to the organization with the given ID.
+          schema:
+            type: int
+        - in: query
+          name: filter[event_series_type]
+          description: Filters for event series of the selected type.
+          schema:
+            type: string
+            default: '*'
+            enum:
+              - '*'
+              - main_event_series
+              - part_of_event_series
+              - event_with_part_series
+              - event_without_part_series
+        - in: query
+          name: include
+          description: Includes additional data such as related objects or counts in the response.
+          schema:
+            type: array
+            explode: true
+            items:
+              type: string
+              enum:
+                - events_count
+                - organization
+                - organization.location
+                - parent_event_series
+                - sub_event_series
+                - sub_event_series_count
+        - in: query
+          name: sort
+          description: Sorts the event series by the selected criterion (`-` at the beginning means descending order).
+          schema:
+            type: string
+            default: name
+            enum:
+              - name
+              - '-name'
+              - created_at
+              - '-created_at'
+              - updated_at
+              - '-updated_at'
+        - $ref: '#/components/parameters/page'
+      responses:
+        200:
+          description: the attributes and requested relations of the event series
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/_list'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          allOf:
+                            - $ref: '#/components/schemas/model.event_series'
+                            - $ref: '#/components/schemas/include.events_count_of_event_series'
+                            - $ref: '#/components/schemas/include.organization_of_event_series'
+                            - $ref: '#/components/schemas/include.parent_event_series'
+                            - $ref: '#/components/schemas/include.sub_event_series'
+                            - $ref: '#/components/schemas/include.sub_event_series_count'
+        401:
+          $ref: '#/components/responses/401'
+        415:
+          $ref: '#/components/responses/415'
+        422:
+          $ref: '#/components/responses/422'
+        429:
+          $ref: '#/components/responses/429'
+  /event-series/{slug}:
+    get:
+      operationId: get-single-event-series
+      summary: Get single event series
+      description: Return a single event series.
+      tags:
+        - Event series
+      parameters:
+        - in: path
+          name: slug
+          description: the slug of an event series
+          schema:
+            type: string
+          required: true
+        - in: query
+          name: include
+          description: Includes additional data such as related objects or counts in the response.
+          schema:
+            type: array
+            explode: true
+            items:
+              type: string
+              enum:
+                - organization
+                - organization.location
+                - parent_event_series
+                - sub_event_series
+      responses:
+        200:
+          description: the attributes of the event series
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    allOf:
+                      - $ref: '#/components/schemas/model.event_series'
+                      - $ref: '#/components/schemas/include.organization_of_event_series'
+                      - $ref: '#/components/schemas/include.parent_event_series'
+                      - $ref: '#/components/schemas/include.sub_event_series'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+        415:
+          $ref: '#/components/responses/415'
+        429:
+          $ref: '#/components/responses/429'
+  /events:
+    get:
+      operationId: get-events
+      summary: Get list of events
+      description: Returns a paginated list of all events.
+      tags:
+        - Events
+      parameters:
+        - in: query
+          name: filter[search]
+          description: Filters for events with a name or description containing the given search term.
+          schema:
+            type: string
+        - in: query
+          name: filter[visibility]
+          description: Filters for events with the given visibility.
+          schema:
+            type: string
+            default: '*'
+            enum:
+              - '*'
+              - public
+              - private
+        - in: query
+          name: filter[date_from]
+          description: Filters for events started at or after the given date.
+          schema:
+            type: string
+            pattern: '^\d{4}-\d{2}-\d{2}$'
+        - in: query
+          name: filter[date_until]
+          description: Filters for events ending at or before the given date.
+          schema:
+            type: string
+            pattern: '^\d{4}-\d{2}-\d{2}$'
+        - in: query
+          name: filter[event_series_id]
+          description: Filters for events belonging to the event series with the given ID.
+          schema:
+            type:
+              - integer
+              - string
+            enum:
+              - '*'
+              - '+'
+              - '-'
+        - in: query
+          name: filter[organization_id]
+          description: Filters for events of the organization with the given ID.
+          schema:
+            type: int
+            minimum: 1
+        - in: query
+          name: filter[location_id]
+          description: Filters for events taking place at the location with the given ID.
+          schema:
+            type: int
+            minimum: 1
+        - in: query
+          name: filter[event_type]
+          description: Filters for events of the given type.
+          schema:
+            type: string
+            default: '*'
+            enum:
+              - '*'
+              - main_event
+              - part_of_event
+              - event_with_parts
+              - event_without_parts
+        - in: query
+          name: include
+          description: Includes additional data such as related objects or counts in the response.
+          schema:
+            type: array
+            explode: true
+            items:
+              type: string
+              enum:
+                - event_series
+                - location
+                - organization
+                - organization.location
+                - parent_event
+                - sub_events
+                - sub_events_count
+        - in: query
+          name: sort
+          description: Sorts the events by the selected criterion (`-` at the beginning means descending order).
+          schema:
+            type: string
+            default: name
+            enum:
+              - name
+              - '-name'
+              - created_at
+              - '-created_at'
+              - updated_at
+              - '-updated_at'
+              - period
+              - '-period'
+        - $ref: '#/components/parameters/page'
+      responses:
+        200:
+          description: the attributes and requested relations of the events
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/_list'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          allOf:
+                            - $ref: '#/components/schemas/model.event'
+                            - $ref: '#/components/schemas/include.event_series'
+                            - $ref: '#/components/schemas/include.location_of_event'
+                            - $ref: '#/components/schemas/include.organization_of_event'
+                            - $ref: '#/components/schemas/include.parent_event'
+                            - $ref: '#/components/schemas/include.sub_events'
+                            - $ref: '#/components/schemas/include.sub_events_count'
+        401:
+          $ref: '#/components/responses/401'
+        415:
+          $ref: '#/components/responses/415'
+        422:
+          $ref: '#/components/responses/422'
+        429:
+          $ref: '#/components/responses/429'
+  /events/{slug}:
+    get:
+      operationId: get-single-event
+      summary: Get single event
+      description: Return a single event.
+      tags:
+        - Events
+      parameters:
+        - in: path
+          name: slug
+          description: the slug of an event
+          schema:
+            type: string
+          required: true
+        - in: query
+          name: include
+          description: Includes additional data such as related objects or counts in the response.
+          schema:
+            type: array
+            explode: true
+            items:
+              type: string
+              enum:
+                - event_series
+                - location
+                - organization
+                - organization.location
+                - parent_event
+                - sub_events
+      responses:
+        200:
+          description: the attributes of the event
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    allOf:
+                      - $ref: '#/components/schemas/model.event'
+                      - $ref: '#/components/schemas/include.event_series'
+                      - $ref: '#/components/schemas/include.location_of_event'
+                      - $ref: '#/components/schemas/include.organization_of_event'
+                      - $ref: '#/components/schemas/include.parent_event'
+                      - $ref: '#/components/schemas/include.sub_events'
+                      - $ref: '#/components/schemas/include.sub_events_count'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+        415:
+          $ref: '#/components/responses/415'
+        429:
+          $ref: '#/components/responses/429'
+  /locations:
+    get:
+      operationId: get-locations
+      summary: Get list of locations
+      description: Returns a paginated list of all locations.
+      tags:
+        - Locations
+      parameters:
+        - in: query
+          name: filter[name]
+          description: Filters for locations with a name containing the given search term.
+          schema:
+            type: string
+        - in: query
+          name: filter[address]
+          description: Filters for locations with address data containing the given search term.
+          schema:
+            type: string
+        - in: query
+          name: filter[event_id]
+          description: Filters for locations which are part of an event or not.
+          schema:
+            type: string
+            default: '*'
+            enum:
+              - '*'
+              - '+'
+              - '-'
+        - in: query
+          name: include
+          description: Includes additional data such as related objects or counts in the response.
+          schema:
+            type: array
+            explode: true
+            items:
+              type: string
+              enum:
+                - events_count
+                - organizations
+                - organizations_count
+        - in: query
+          name: sort
+          description: Sorts the locations by the selected criterion (`-` at the beginning means descending order).
+          schema:
+            type: string
+            default: name
+            enum:
+              - name
+              - '-name'
+              - created_at
+              - '-created_at'
+              - updated_at
+              - '-updated_at'
+        - $ref: '#/components/parameters/page'
+      responses:
+        200:
+          description: the attributes and requested relations of the locations
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/_list'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          allOf:
+                            - $ref: '#/components/schemas/model.location'
+                            - $ref: '#/components/schemas/include.events_count_of_location'
+                            - $ref: '#/components/schemas/include.organizations_of_location'
+                            - $ref: '#/components/schemas/include.organizations_count_of_location'
+        401:
+          $ref: '#/components/responses/401'
+        415:
+          $ref: '#/components/responses/415'
+        422:
+          $ref: '#/components/responses/422'
+        429:
+          $ref: '#/components/responses/429'
+  /locations/{id}:
+    get:
+      operationId: get-single-location
+      summary: Get single location
+      description: Return a single location.
+      tags:
+        - Locations
+      parameters:
+        - in: path
+          name: id
+          description: the ID of a location
+          schema:
+            type: int
+          required: true
+        - in: query
+          name: include
+          description: Includes additional data such as related objects or counts in the response.
+          schema:
+            type: array
+            explode: true
+            items:
+              type: string
+              enum:
+                - events_count
+                - organizations
+      responses:
+        200:
+          description: the attributes of the location
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    allOf:
+                      - $ref: '#/components/schemas/model.location'
+                      - $ref: '#/components/schemas/include.organizations_of_location'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+        415:
+          $ref: '#/components/responses/415'
+        429:
+          $ref: '#/components/responses/429'
+  /organizations:
+    get:
+      operationId: get-organizations
+      summary: Get list of organizations
+      description: Returns a paginated list of all organizations.
+      tags:
+        - Organizations
+      parameters:
+        - in: query
+          name: filter[name]
+          description: Filters for organizations with a name containing the given search term.
+          schema:
+            type: string
+        - in: query
+          name: filter[event_id]
+          description: Filters for organizations having events or not.
+          schema:
+            type: string
+            default: '*'
+            enum:
+              - '*'
+              - '+'
+              - '-'
+        - in: query
+          name: filter[location_id]
+          description: Filters for organizations located at the location with the given ID.
+          schema:
+            type:
+              - integer
+              - string
+            default: '*'
+        - in: query
+          name: filter[status]
+          description: Filters for organizations that are active (1), inactive (0) or archived (2).
+          schema:
+            default: '*'
+            type:
+              - integer
+              - string
+            enum:
+              - '*'
+              - 1
+              - 0
+              - 2
+        - in: query
+          name: include
+          description: Includes additional data such as related objects or counts in the response.
+          schema:
+            type: array
+            explode: true
+            items:
+              type: string
+              enum:
+                - event_series_count
+                - events_count
+                - location
+        - in: query
+          name: sort
+          description: Sorts the organizations by the selected criterion (`-` at the beginning means descending order).
+          schema:
+            type: string
+            default: name
+            enum:
+              - name
+              - '-name'
+              - created_at
+              - '-created_at'
+              - updated_at
+              - '-updated_at'
+        - $ref: '#/components/parameters/page'
+      responses:
+        200:
+          description: the attributes and requested relations of the organizations
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/_list'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          allOf:
+                            - $ref: '#/components/schemas/model.organization'
+                            - $ref: '#/components/schemas/include.event_series_count_of_organization'
+                            - $ref: '#/components/schemas/include.events_count_of_organization'
+                            - $ref: '#/components/schemas/include.location_of_organization'
+        401:
+          $ref: '#/components/responses/401'
+        415:
+          $ref: '#/components/responses/415'
+        422:
+          $ref: '#/components/responses/422'
+        429:
+          $ref: '#/components/responses/429'
+  /organizations/{slug}:
+    get:
+      operationId: get-single-organization
+      summary: Get single organization
+      description: Return a single organization.
+      tags:
+        - Organizations
+      parameters:
+        - in: path
+          name: slug
+          description: the slug of an organization
+          schema:
+            type: string
+          required: true
+        - in: query
+          name: include
+          description: Includes additional data such as related objects or counts in the response.
+          schema:
+            type: array
+            explode: true
+            items:
+              type: string
+              enum:
+                - location
+      responses:
+        200:
+          description: the attributes of the organization
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    allOf:
+                      - $ref: '#/components/schemas/model.organization'
+                      - $ref: '#/components/schemas/include.location_of_organization'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+        415:
+          $ref: '#/components/responses/415'
+        429:
+          $ref: '#/components/responses/429'
+
+components:
+  securitySchemes:
+    bearer_token:
+      description: Authorization via a bearer token in HTTP header.
+      type: http
+      scheme: bearer
+
+  # parameter descriptions used above
+  parameters:
+    page:
+      in: query
+      name: page
+      description: the page number for the paginated response
+      schema:
+        type: integer
+        default: 1
+
+  ########################################################################################################################
+  # GENERIC RESPONSES
+  ########################################################################################################################
+  responses:
+    401:
+      description: Unauthenticated. Returned if the request does not contain a correct personal access token.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                description: the main error message
+                type: string
+    403:
+      description: Forbidden. Returned if the personal access token does not have the required ability (see `message`).
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                description: the main error message
+                type: string
+    404:
+      description: Not Found. Returned if the requested object was not found.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                description: the main error message
+                type: string
+    415:
+      description: Unsupported Media Type. Will occur if you request another response format than JSON via `Accept` header.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                description: the main error message
+                type: string
+    422:
+      description: Unprocessable Content. Usually returned if the query or body parameters were invalid.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                description: the main error message
+                type: string
+              errors:
+                description: the list of detailed error messages (separated for each query parameter)
+                type: object
+                properties:
+                  '*':
+                    description: list of error message for the field
+                    type: array
+                    items:
+                      type: string
+    429:
+      description: Too Many Requests. You exceeded the limit for requests per minute. Try again later.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                description: the main error message
+                type: string
+
+  schemas:
+    ########################################################################################################################
+    # BASE SCHEMAS
+    ########################################################################################################################
+    # paginated list of results
+    _list:
+      description: a list of objects with paging metadata attached
+      properties:
+        links:
+          description: hyperlinks to other pages for the query parameters
+          properties:
+            first:
+              description: the URL to the first page for the query parameters
+              type: string
+              format: uri
+            last:
+              description: the URL to the last page for the query parameters
+              type: string
+              format: uri
+            prev:
+              description: the URL to the previous page for the query parameters
+              type: string
+              format: uri
+            next:
+              description: the URL to the next page for the query parameters
+              type: string
+              format: uri
+        meta:
+          description: Metadata for page numbers, count, etc.
+          properties:
+            current_page:
+              description: the current page number
+              type: integer
+              minimum: 1
+            from:
+              description: the index of the first object on the current page in the result set
+              oneOf:
+                - type: integer
+                  minimum: 1
+                - type: 'null'
+            last_page:
+              description: the number of the last page
+              type: integer
+              minimum: 1
+            links:
+              description: a collection of links for pagination.
+              type: array
+              items:
+                properties:
+                  url:
+                    description: the URL for the current request
+                    type: string
+                    format: uri
+                  label:
+                    description: a description of the link (e. g. Next, Prev, or a page number)
+                    type: string
+                  active:
+                    description: a bool determining if the URL is active
+                    type:
+                      - boolean
+            path:
+              description: the base path of the API endpoint
+              type: string
+              format: uri
+            per_page:
+              description: the number of objects shown per page
+              type: integer
+              minimum: 1
+            to:
+              description: the index of the last object on the current page in the result set
+              oneOf:
+                - type: integer
+                  minimum: 1
+                - type: 'null'
+            total:
+              description: the total number of objects in the result set.
+              type: integer
+
+    ########################################################################################################################
+    # MODELS
+    ########################################################################################################################
+    id:
+      description: the unique identifier of this object
+      type: integer
+      format: int64
+      minimum: 1
+    model:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/id'
+        created_at:
+          description: timestamp of object creation (ISO 8601)
+          type: string
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{6}Z$'
+        updated_at:
+          description: timestamp of last object modification (ISO 8601)
+          type: string
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{6}Z$'
+    model.event_series:
+      allOf:
+        - $ref: '#/components/schemas/model'
+        - type: object
+          properties:
+            name:
+              description: the name of the event series
+              type: string
+            slug:
+              description: the slug used in the URL
+              type: string
+            visibility:
+              description: whether the event series is public or private
+              type: string
+              enum:
+                - private
+                - public
+    model.event_series_or_null:
+      oneOf:
+        - $ref: '#/components/schemas/model.event_series'
+        - type: 'null'
+    model.event:
+      allOf:
+        - $ref: '#/components/schemas/model'
+        - type: object
+          properties:
+            name:
+              description: the name of the event
+              type: string
+            slug:
+              description: the slug used in the URL
+              type: string
+            description:
+              description: the description text
+              type:
+                - string
+                - 'null'
+            visibility:
+              description: whether the event is public or private
+              type: string
+              enum:
+                - private
+                - public
+            started_at:
+              description: the start date and time of the event
+              type:
+                - string
+                - 'null'
+              pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{6}Z$'
+            finished_at:
+              description: the end date and time of the event
+              type:
+                - string
+                - 'null'
+              pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{6}Z$'
+            website_url:
+              description: the website of the event with additional information
+              type:
+                - string
+                - 'null'
+              format: uri
+    model.event_or_null:
+      oneOf:
+        - $ref: '#/components/schemas/model.event'
+        - type: 'null'
+    model.location:
+      allOf:
+        - $ref: '#/components/schemas/model'
+        - type: object
+          properties:
+            name:
+              description: the name of the location
+              type:
+                - string
+                - 'null'
+            street:
+              description: the street name (without house number)
+              type:
+                - string
+                - 'null'
+            house_number:
+              description: the house number
+              type:
+                - string
+                - 'null'
+            postal_code:
+              description: the postal code
+              type:
+                - string
+                - 'null'
+            city:
+              description: the city
+              type:
+                - string
+                - 'null'
+            website_url:
+              description: the website of the location with additional information
+              type:
+                - string
+                - 'null'
+              format: uri
+    model.organization:
+      allOf:
+        - $ref: '#/components/schemas/model'
+        - type: object
+          properties:
+            name:
+              description: the name of the organization
+              type: string
+            slug:
+              description: the slug used in the URL
+              type: string
+            status:
+              description: whether the organization is active (1), inactive (0) or archived (2)
+              type: integer
+              minimum: 0
+              maximum: 2
+            register_entry:
+              description: the official register entry
+              type:
+                - string
+                - 'null'
+            phone:
+              description: the phone number
+              type:
+                - string
+                - 'null'
+            email:
+              description: the email address
+              type:
+                - string
+                - 'null'
+            website_url:
+              description: the website of the organization with additional information
+              type:
+                - string
+                - 'null'
+              format: uri
+            bank_account_holder:
+              description: the name of the bank account holder, may be equal to the organization's name
+              type:
+                - string
+                - 'null'
+            iban:
+              description: the IBAN of the organization
+              type:
+                - string
+                - 'null'
+            bank_name:
+              description: the name of the bank of the organization's bank account
+              type:
+                - string
+                - 'null'
+
+    ########################################################################################################################
+    # INCLUDED COUNTS AND RELATIONS
+    ########################################################################################################################
+    include.event_series:
+      type: object
+      properties:
+        event_series:
+          description: the event series of the event (loaded via `include=event_series`)
+          allOf:
+            - $ref: '#/components/schemas/model.event_series_or_null'
+    include.event_series_count_of_organization:
+      type: object
+      properties:
+        event_series_count:
+          description: the number of event series of the organization (loaded via `include=event_series_count`)
+          type: integer
+          minimum: 0
+    include.events_count_of_event_series:
+      type: object
+      properties:
+        events_count:
+          description: the number of events of the event series (loaded via `include=events_count`)
+          type: integer
+          minimum: 0
+    include.events_count_of_location:
+      type: object
+      properties:
+        events_count:
+          description: the number of sub events of the event (loaded via `include=events_count`)
+          type: integer
+          minimum: 0
+    include.events_count_of_organization:
+      type: object
+      properties:
+        events_count:
+          description: the number of events of the organization (loaded via `include=events_count`)
+          type: integer
+          minimum: 0
+    include.location_of_event:
+      type: object
+      properties:
+        location:
+          description: the location of the event (loaded via `include=location`)
+          allOf:
+            - $ref: '#/components/schemas/model.location'
+    include.location_of_organization:
+      type: object
+      properties:
+        location:
+          description: the location of the organization (loaded via `include=location`)
+          allOf:
+            - $ref: '#/components/schemas/model.location'
+    include.organization_of_event:
+      type: object
+      properties:
+        organization:
+          description: the organization responsible for the event (loaded via `include=organization`)
+          allOf:
+            - $ref: '#/components/schemas/model.organization'
+            - type: object
+              properties:
+                location:
+                  description: the location of the organization (loaded via `include=organization.location`)
+                  $ref: '#/components/schemas/model.location'
+    include.organization_of_event_series:
+      type: object
+      properties:
+        organization:
+          description: the organization responsible for the event series (loaded via `include=organization`)
+          allOf:
+            - $ref: '#/components/schemas/model.organization'
+            - type: object
+              properties:
+                location:
+                  description: the location of the organization (loaded via `include=organization.location`)
+                  $ref: '#/components/schemas/model.location'
+    include.organizations_of_location:
+      type: object
+      properties:
+        organizations:
+          description: the organizations located in the location (loaded via `include=organizations`)
+          allOf:
+            - $ref: '#/components/schemas/model.organization'
+    include.organizations_count_of_location:
+      type: object
+      properties:
+        organizations_count:
+          description: the number of organizations located in the location (loaded via `include=organizations_count`)
+          type: integer
+          minimum: 0
+    include.parent_event:
+      type: object
+      properties:
+        parent_event:
+          description: the parent event of the event (loaded via `include=parent_event`)
+          allOf:
+            - $ref: '#/components/schemas/model.event_or_null'
+    include.parent_event_series:
+      type: object
+      properties:
+        parent_event_series:
+          description: the parent event series of the event series (loaded via `include=parent_event_series`)
+          allOf:
+            - $ref: '#/components/schemas/model.event_series_or_null'
+    include.sub_event_series_count:
+      type: object
+      properties:
+        sub_event_series_count:
+          description: the number of sub event series of the event series (loaded via `include=sub_event_series_count`)
+          type: integer
+          minimum: 0
+    include.sub_event_series:
+      type: object
+      properties:
+        sub_event_series:
+          description: the sub event series of the event series (loaded via `include=sub_event_series`)
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/model.event_series'
+    include.sub_events:
+      type: object
+      properties:
+        sub_events:
+          description: the sub events of the event (loaded via `include=sub_events`)
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/model.event'
+    include.sub_events_count:
+      type: object
+      properties:
+        sub_events_count:
+          description: the number of sub events of the event (loaded via `include=sub_events_count`)
+          type: integer
+          minimum: 0

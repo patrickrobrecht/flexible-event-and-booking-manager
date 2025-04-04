@@ -5,6 +5,8 @@ namespace Database\Factories;
 use App\Enums\Visibility;
 use App\Models\Event;
 use Carbon\Carbon;
+use Database\Factories\Traits\BelongsToLocation;
+use Database\Factories\Traits\BelongsToOrganization;
 use Database\Factories\Traits\HasVisibility;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -14,6 +16,8 @@ use Illuminate\Support\Str;
  */
 class EventFactory extends Factory
 {
+    use BelongsToLocation;
+    use BelongsToOrganization;
     use HasVisibility;
 
     public function definition(): array

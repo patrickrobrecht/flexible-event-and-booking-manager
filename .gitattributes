@@ -1,10 +1,18 @@
 * text=auto eol=lf
 
-*.blade.php diff=html
-*.css diff=css
-*.html diff=html
-*.md diff=markdown
-*.php diff=php
+*.blade.php text diff=html
+*.cjs text diff=javascript
+*.css text diff=css
+*.html text diff=html
+*.js text diff=javascript
+*.json text diff=json
+*.md text diff=markdown
+*.php text diff=php
+*.scss text diff=css
+*.txt text diff=text
+*.xml text diff=xml
+*.yaml text diff=yaml
+*.yml text diff=yaml
 
 # Ignore for export
 /.git export-ignore
@@ -26,4 +34,4 @@
 /phpunit.xml export-ignore
 /phpunit_coverage.xml export-ignore
 /phpunit_report.xml export-ignore
-/webpack.mix.js
+/webpack.mix.js export-ignore

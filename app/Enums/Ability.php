@@ -3,6 +3,7 @@
 namespace App\Enums;
 
 use App\Enums\Traits\NamedOption;
+use Closure;
 
 enum Ability: string
 {
@@ -225,7 +226,36 @@ enum Ability: string
     public static function apiCases(): array
     {
         return [
-            self::ViewAccount,
+            self::ViewEvents,
+            self::ViewPrivateEvents,
+            self::ViewEventSeries,
+            self::ViewPrivateEventSeries,
+            self::ViewOrganizations,
+            self::ViewLocations,
         ];
+    }
+
+    /**
+     * @param static|static[] $exceptions
+     *
+     * @return static[]
+     */
+    public static function apiCasesExcept(array|self $exceptions): array
+    {
+        $exceptionValues = is_array($exceptions)
+            ? array_map(static fn (self $case) => $case->value, $exceptions)
+            : [$exceptions->value];
+
+        return self::apiCasesFiltered(static fn (self $case) => !in_array($case->value, $exceptionValues, true));
+    }
+
+    /**
+     * @param Closure(static): bool $closure
+     *
+     * @return static[]
+     */
+    public static function apiCasesFiltered(Closure $closure): array
+    {
+        return array_filter(self::apiCases(), static fn (self $case) => $closure($case));
     }
 }

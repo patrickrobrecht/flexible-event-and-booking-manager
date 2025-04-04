@@ -24,6 +24,8 @@
 @endsection
 
 @section('content')
+    @include('docs.docs-link')
+
     <x-bs::form method="{{ isset($token) ? 'PUT' : 'POST' }}"
                 action="{{ isset($token) ? route('personal-access-tokens.update', $token) : route('personal-access-tokens.store') }}">
         <div class="row">

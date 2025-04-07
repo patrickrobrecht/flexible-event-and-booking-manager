@@ -17,17 +17,17 @@ class ApiDocumentationControllerTest extends TestCase
 {
     public function testUserCanViewApiDocumentationOnlyWithCorrectAbility(): void
     {
-        $this->assertUserCanGetOnlyWithAbility('api-docs', Ability::ManagePersonalAccessTokens);
+        $this->assertUserCanGetOnlyWithAbility('api-docs', Ability::ViewApiDocumentation);
     }
 
     public function testUserCanViewYamlFileOnlyWithCorrectAbility(): void
     {
-        $this->assertUserCanGetOnlyWithAbility('api-docs/spec', Ability::ManagePersonalAccessTokens);
+        $this->assertUserCanGetOnlyWithAbility('api-docs/spec', Ability::ViewApiDocumentation);
     }
 
     public function testYamlFileContainsReplacements(): void
     {
-        $this->actingAsUserWithAbility(Ability::ManagePersonalAccessTokens);
+        $this->actingAsUserWithAbility(Ability::ViewApiDocumentation);
         $this->get('api-docs/spec')
             ->assertOk()
             ->assertSeeText('Test App')
@@ -39,7 +39,7 @@ class ApiDocumentationControllerTest extends TestCase
     {
         Config::set('app.debug', $isDebugEnabled);
         Cache::forget('open-api-spec');
-        $this->assertUserCanGetWithAbility('api-docs/spec', Ability::ManagePersonalAccessTokens);
+        $this->assertUserCanGetWithAbility('api-docs/spec', Ability::ViewApiDocumentation);
         // .yaml file contents is cached if and only if debugging is not enabled.
         $this->assertEquals(!$isDebugEnabled, Cache::has('open-api-spec'));
     }

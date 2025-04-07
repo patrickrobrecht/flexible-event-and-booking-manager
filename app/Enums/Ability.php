@@ -77,6 +77,8 @@ enum Ability: string
     case ViewAccount = 'users.view_account';
     case ViewAbilities = 'users.view_account.abilities';
     case EditAccount = 'users.edit_account';
+
+    case ViewApiDocumentation = 'api.docs.view';
     case ManagePersonalAccessTokens = 'personal_access_tokens.manage_own';
 
     public function dependsOnAbility(): ?self
@@ -129,9 +131,13 @@ enum Ability: string
             // Users and abilities
             self::CreateUsers,
             self::EditUsers => self::ViewUsers,
+
             self::CreateUserRoles,
             self::EditUserRoles => self::ViewUserRoles,
+
             self::EditAccount => self::ViewAccount,
+
+            self::ManagePersonalAccessTokens => self::ViewApiDocumentation,
 
             default => null,
         };
@@ -198,8 +204,9 @@ enum Ability: string
             self::EditUserRoles => AbilityGroup::UserRoles,
             self::ViewAccount,
             self::ViewAbilities,
-            self::EditAccount,
-            self::ManagePersonalAccessTokens => AbilityGroup::OwnAccount,
+            self::EditAccount => AbilityGroup::OwnAccount,
+            self::ViewApiDocumentation,
+            self::ManagePersonalAccessTokens => AbilityGroup::ApiAccess,
         };
     }
 
@@ -274,7 +281,9 @@ enum Ability: string
             self::ViewAccount => __('View own account'),
             self::ViewAbilities => __('View abilities'),
             self::EditAccount => __('Edit own account'),
+
             self::ManagePersonalAccessTokens => __('Manage personal access tokens'),
+            self::ViewApiDocumentation => __('View API documentation'),
         };
     }
 

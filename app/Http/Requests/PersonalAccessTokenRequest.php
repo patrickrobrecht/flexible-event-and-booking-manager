@@ -6,6 +6,7 @@ use App\Enums\Ability;
 use App\Http\Requests\Traits\ValidatesAbilities;
 use App\Models\PersonalAccessToken;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Stringable;
 
 /**
@@ -30,6 +31,9 @@ class PersonalAccessTokenRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
+                Rule::unique('personal_access_tokens', 'name')
+                    ->where('tokenable_id', $this->user()->id)
+                    ->ignore($this->personal_access_token->id ?? null),
             ],
             'expires_at' => [
                 'nullable',

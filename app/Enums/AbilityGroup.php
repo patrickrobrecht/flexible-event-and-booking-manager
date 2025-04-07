@@ -22,6 +22,7 @@ enum AbilityGroup
     case Users;
     case UserRoles;
     case OwnAccount;
+    case ApiAccess;
 
     /**
      * @param list<Ability> $abilities
@@ -53,7 +54,8 @@ enum AbilityGroup
 
             self::Users,
             self::UserRoles,
-            self::OwnAccount => self::UsersAndAbilities,
+            self::OwnAccount,
+            self::ApiAccess => self::UsersAndAbilities,
 
             default => null,
         };
@@ -81,6 +83,7 @@ enum AbilityGroup
             self::Users => 'fa-users',
             self::UserRoles => 'fa-user-group',
             self::OwnAccount => 'fa-user-circle',
+            self::ApiAccess => 'fa-file-code',
         };
     }
 
@@ -106,6 +109,7 @@ enum AbilityGroup
             self::Users => __('Users'),
             self::UserRoles => __('User roles'),
             self::OwnAccount => __('Own account'),
+            self::ApiAccess => __('Access to the REST API'),
         };
     }
 

@@ -93,6 +93,9 @@ class DocumentReviewControllerTest extends TestCase
             ->assertRedirect($documentReview->document->getRouteForComments());
     }
 
+    /**
+     * @return array<int, array{Closure}>
+     */
     public static function referenceClasses(): array
     {
         return [

@@ -26,6 +26,7 @@ enum FormElementType: string
         return match ($this) {
             self::Headline => __('headline'),
             self::Date => __('date field'),
+            self::DateTime => __('datetime field'),
             self::Email => __('email field'),
             self::File => __('file upload field'),
             self::Checkbox => __('checkbox field'),

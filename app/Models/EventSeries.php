@@ -28,7 +28,7 @@ use Spatie\QueryBuilder\AllowedFilter;
  *
  * @property-read Collection|Event[] $events {@see EventSeries::events()}
  * @property-read ?EventSeries $parentEventSeries {@see EventSeries::parentEventSeries()}
- * @property-read Collection|EventSeries[] subEventSeries {@see EventSeries::subEventSeries()}
+ * @property-read Collection|EventSeries[] $subEventSeries {@see EventSeries::subEventSeries()}
  */
 class EventSeries extends Model
 {
@@ -39,11 +39,6 @@ class EventSeries extends Model
     use HasResponsibleUsers;
     use HasSlugForRouting;
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'events_count' => 'integer',
         'organization_id' => 'integer',
@@ -51,11 +46,6 @@ class EventSeries extends Model
         'parent_event_series_id' => 'integer',
     ];
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'slug',
@@ -83,7 +73,7 @@ class EventSeries extends Model
 
     public function scopeEvent(Builder $query, int|string $eventId): Builder
     {
-        return $this->scopeRelation($query, $eventId, 'events', fn (Builder $q) => $q->where('id', '=', $documentId));
+        return $this->scopeRelation($query, $eventId, 'events', fn (Builder $q) => $q->where('id', '=', $eventId));
     }
 
     public function scopeEventSeriesType(Builder $query, EventSeriesType|string $eventSeriesType): Builder
@@ -101,6 +91,9 @@ class EventSeries extends Model
         };
     }
 
+    /**
+     * @param array<string, mixed> $validatedData
+     */
     public function fillAndSave(array $validatedData): bool
     {
         $this->fill($validatedData);
@@ -126,6 +119,9 @@ class EventSeries extends Model
         return 'event-series/' . $this->id;
     }
 
+    /**
+     * @return array<int, AllowedFilter>
+     */
     public static function allowedFilters(): array
     {
         return [
@@ -145,6 +141,9 @@ class EventSeries extends Model
         ];
     }
 
+    /**
+     * @return array<string, string>
+     */
     public static function filterOptions(): array
     {
         return [

@@ -12,9 +12,9 @@ use Illuminate\Database\Eloquent\Collection;
 class AgeBasedGroupGenerationMethod extends GeneralGroupGenerationMethod
 {
     /**
-     * @param Collection<Booking> $bookings
+     * @param Collection<int, Booking> $bookings
      *
-     * @return Collection<Booking>
+     * @return Collection<int, Booking>
      */
     protected function sortBookings(Collection $bookings): Collection
     {

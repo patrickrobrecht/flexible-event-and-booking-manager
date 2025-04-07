@@ -50,9 +50,12 @@ class DashboardControllerTest extends TestCase
         $response = $this->get('/')
             ->assertOk()
             ->assertSee('fa-file-contract');
-        $events->each(fn ($event) => $response->assertSee($event->name));
+        $events->each(fn (Event $event) => $response->assertSee($event->name));
     }
 
+    /**
+     * @return Collection<int, Event>
+     */
     private function createEvents(User $bookedByUser, int $eventsCount): Collection
     {
         return Event::factory()

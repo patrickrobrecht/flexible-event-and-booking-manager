@@ -4,7 +4,10 @@ namespace App\Http\Requests;
 
 use App\Models\BookingOption;
 use App\Models\Event;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Stringable;
 use Illuminate\Validation\Rule;
 
 /**
@@ -13,6 +16,9 @@ use Illuminate\Validation\Rule;
  */
 class BookingPaymentRequest extends FormRequest
 {
+    /**
+     * @return array<string, array<int, Closure|string|Stringable|ValidationRule>>
+     */
     public function rules(): array
     {
         $bookingsNotPaidYet = $this->booking_option->bookings()
@@ -42,6 +48,10 @@ class BookingPaymentRequest extends FormRequest
         ];
     }
 
+    /**
+     * @param array<int, int> $selectedIds
+     * @param array<int, int> $allowedIds
+     */
     public function containsOnlyValidIds(array $selectedIds, array $allowedIds): bool
     {
         foreach ($selectedIds as $selectedId) {

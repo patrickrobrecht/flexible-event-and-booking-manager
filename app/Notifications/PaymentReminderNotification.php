@@ -5,6 +5,7 @@ namespace App\Notifications;
 use App\Models\Booking;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class PaymentReminderNotification extends Notification implements ShouldQueue
@@ -15,7 +16,7 @@ class PaymentReminderNotification extends Notification implements ShouldQueue
     {
     }
 
-    public function toMail($notifiable)
+    public function toMail(mixed $notifiable): MailMessage
     {
         return $this->booking->prepareMailMessage()
             ->subject(
@@ -35,7 +36,10 @@ class PaymentReminderNotification extends Notification implements ShouldQueue
             ->lines($this->booking->bookingOption->event->organization->bank_account_lines);
     }
 
-    public function via($notifiable)
+    /**
+     * @return array<int, string>
+     */
+    public function via(mixed $notifiable): array
     {
         return ['mail'];
     }

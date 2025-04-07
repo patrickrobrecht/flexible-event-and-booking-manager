@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Laravel\Sanctum\HasApiTokens;
 use Laravel\Sanctum\NewAccessToken;
 use Laravel\Sanctum\PersonalAccessToken as SanctumPersonalAccessToken;
 
@@ -15,12 +14,15 @@ use Laravel\Sanctum\PersonalAccessToken as SanctumPersonalAccessToken;
  * @property-read ?Carbon $last_used_at
  * @property-read ?Carbon $expires_at
  *
- * @property-read HasApiTokens|User $tokenable {@see SanctumPersonalAccessToken::tokenable()}
+ * @property-read User $tokenable {@see SanctumPersonalAccessToken::tokenable()}
  */
 class PersonalAccessToken extends SanctumPersonalAccessToken
 {
     use HasFactory;
 
+    /**
+     * @param array<string, mixed> $validatedData
+     */
     public function fillAndSave(array $validatedData): bool
     {
         $this->fill($validatedData);
@@ -28,6 +30,9 @@ class PersonalAccessToken extends SanctumPersonalAccessToken
         return $this->save();
     }
 
+    /**
+     * @param array<string, mixed> $validatedData
+     */
     public static function createTokenFromValidated(User $tokenable, array $validatedData): NewAccessToken
     {
         return $tokenable->createToken(

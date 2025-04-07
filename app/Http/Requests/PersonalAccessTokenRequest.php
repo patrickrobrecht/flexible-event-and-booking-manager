@@ -3,7 +3,9 @@
 namespace App\Http\Requests;
 
 use App\Enums\Ability;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Stringable;
 
 class PersonalAccessTokenRequest extends FormRequest
 {
@@ -15,9 +17,7 @@ class PersonalAccessTokenRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, mixed>
+     * @return array<string, array<string|Stringable|ValidationRule>>
      */
     public function rules(): array
     {

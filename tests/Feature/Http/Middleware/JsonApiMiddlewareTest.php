@@ -32,6 +32,9 @@ class JsonApiMiddlewareTest extends TestCase
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
     }
 
+    /**
+     * @return array<int, array<int, string>>
+     */
     public static function validAcceptHeaders(): array
     {
         return [
@@ -62,6 +65,9 @@ class JsonApiMiddlewareTest extends TestCase
         });
     }
 
+    /**
+     * @return array<int, array<int, string>>
+     */
     public static function invalidAcceptHeaders(): array
     {
         return [

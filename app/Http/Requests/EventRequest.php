@@ -7,9 +7,12 @@ use App\Http\Requests\Traits\ValidatesBelongsToOrganization;
 use App\Http\Requests\Traits\ValidatesResponsibleUsers;
 use App\Models\Event;
 use App\Models\EventSeries;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Stringable;
 
 /**
  * @property ?Event $event
@@ -28,9 +31,7 @@ class EventRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, mixed>
+     * @return array<string, array<int, Closure|string|Stringable|ValidationRule>>
      */
     public function rules(): array
     {
@@ -87,6 +88,7 @@ class EventRequest extends FormRequest
                         return;
                     }
 
+                    /** @var ?Event $parentEvent */
                     $parentEvent = Event::query()->find($value);
                     if (!isset($parentEvent) || $parentEvent->id === $this->event?->id || $parentEvent->parent_event_id !== null) {
                         $fail(__('validation.exists', [
@@ -95,7 +97,7 @@ class EventRequest extends FormRequest
                         return;
                     }
 
-                    if (isset($parentEvent, $organization) && $parentEvent->organization_id !== $organization->id) {
+                    if (isset($organization) && $parentEvent->organization_id !== $organization->id) {
                         $fail(__('validation.organization', [
                             'attribute' => __('validation.attributes.parent_event_id'),
                             'organization' => $organization->name,
@@ -110,6 +112,7 @@ class EventRequest extends FormRequest
                         return;
                     }
 
+                    /** @var ?EventSeries $eventSeries */
                     $eventSeries = EventSeries::query()->find($value);
                     if (!isset($eventSeries)) {
                         $fail(__('validation.exists', [
@@ -118,7 +121,7 @@ class EventRequest extends FormRequest
                         return;
                     }
 
-                    if (isset($eventSeries, $organization) && $eventSeries->organization_id !== $organization->id) {
+                    if (isset($organization) && $eventSeries->organization_id !== $organization->id) {
                         $fail(__('validation.organization', [
                             'attribute' => __('validation.attributes.event_series_id'),
                             'organization' => $organization->name,
@@ -130,6 +133,9 @@ class EventRequest extends FormRequest
         ];
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function attributes(): array
     {
         return $this->attributesForResponsibleUsers();

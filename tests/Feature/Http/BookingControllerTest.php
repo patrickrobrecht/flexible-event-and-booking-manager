@@ -22,6 +22,7 @@ use App\Models\FormFieldValue;
 use App\Models\User;
 use App\Notifications\BookingConfirmation;
 use App\Policies\BookingPolicy;
+use Carbon\Carbon;
 use Database\Factories\BookingFactory;
 use Database\Factories\FormFieldFactory;
 use Database\Factories\FormFieldValueFactory;
@@ -317,7 +318,7 @@ class BookingControllerTest extends TestCase
         $bookings = self::createBookings($bookingOption);
         /** @var Booking $booking */
         $booking = $bookings->first();
-        $booking->paid_at = $this->faker->dateTime();
+        $booking->paid_at = Carbon::create($this->faker->dateTime());
         $booking->save();
 
         $route = "/events/{$bookingOption->event->slug}/{$bookingOption->slug}/payments";
@@ -352,6 +353,9 @@ class BookingControllerTest extends TestCase
             });
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function generateRandomBookingData(BookingOption $bookingOption): array
     {
         if ($bookingOption->formFields->isEmpty()) {

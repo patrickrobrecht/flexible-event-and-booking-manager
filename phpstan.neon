@@ -1,0 +1,16 @@
+includes:
+    - ./vendor/larastan/larastan/extension.neon
+
+parameters:
+    checkUnionTypes: true
+    ignoreErrors:
+         - '#Class App\\Models\\.* uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types: TFactory#'
+         - '#Method App\\Models\\.*::\w+\(\) return type with generic class Illuminate\\Database\\Eloquent\\Casts\\Attribute does not specify its types: TGet, TSet#'
+         - '#Method App\\Models\\.*::\w+\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\\w+ does not specify its types: \w+#'
+         - '#Method App\\Models\\.*::scope\w+\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types#'
+         - '#Method App\\Models\\.*::scope\w+\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types: TModel#'
+    level: 6
+    paths:
+        - app
+        - routes
+        - tests

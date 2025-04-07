@@ -24,6 +24,7 @@ class SendPaymentRemindersCommandTest extends TestCase
 
     public function testCommandRunsWithNoOverdueBookings(): void
     {
+        /** @phpstan-ignore method.nonObject */
         $this->artisan('app:send-payment-reminders')
             ->expectsOutput('There are no booking options with unpaid bookings to check.')
             ->assertSuccessful();
@@ -36,6 +37,7 @@ class SendPaymentRemindersCommandTest extends TestCase
 
         $booking = $this->fakeUnpaidBooking();
 
+        /** @phpstan-ignore method.nonObject */
         $this->artisan('app:send-payment-reminders')
             ->expectsOutputToContain("Sent reminder to {$booking->email} for booking {$booking->id}.")
             ->assertSuccessful();
@@ -52,6 +54,7 @@ class SendPaymentRemindersCommandTest extends TestCase
 
         $booking = $this->fakeUnpaidBooking();
 
+        /** @phpstan-ignore method.nonObject */
         $this->artisan('app:send-payment-reminders --dry-run')
             ->expectsOutputToContain("Reminder to {$booking->email} for booking {$booking->id} not sent because it's a dry run.")
             ->assertSuccessful();
@@ -67,6 +70,7 @@ class SendPaymentRemindersCommandTest extends TestCase
         return self::createBooking($bookingOption, [
             'paid_at' => null,
             'deleted_at' => null,
+            /** @phpstan-ignore-next-line method.nonObject */
             'booked_at' => Carbon::today()->subWeekDays(11),
         ]);
     }

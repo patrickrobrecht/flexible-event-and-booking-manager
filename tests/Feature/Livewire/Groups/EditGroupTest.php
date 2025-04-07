@@ -84,7 +84,7 @@ class EditGroupTest extends TestCase
         $event->groups()->create([
             'name' => 'Test Group 1',
         ]);
-        /** @var Group $group */
+        /** @phpstan-ignore return.type */
         return $event->groups()->create([
             'name' => 'Test Group 2',
         ]);

@@ -7,6 +7,7 @@ use App\Models\Event;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Stringable;
 
 /**
  * @property Event $event
@@ -35,9 +36,7 @@ class GenerateGroupsRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array|string>
+     * @return array<string, array<int, string|Stringable|ValidationRule>>
      */
     public function rules(): array
     {

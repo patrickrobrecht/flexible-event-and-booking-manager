@@ -58,7 +58,7 @@ enum AbilityGroup
         };
     }
 
-    public function getIcon(): array|string
+    public function getIcon(): string
     {
         return match ($this) {
             self::Events => 'fa-calendar-days',

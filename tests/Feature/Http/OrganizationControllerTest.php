@@ -107,6 +107,7 @@ class OrganizationControllerTest extends TestCase
         Closure $dataProvider,
         bool $ok
     ): void {
+        /** @var Organization $organization */
         $organization = $organizationProvider()
             ->for(self::createLocation())
             ->create();
@@ -126,6 +127,9 @@ class OrganizationControllerTest extends TestCase
             ]);
     }
 
+    /**
+     * @return array<int, array<int, mixed>>
+     */
     public static function updateBankAccountCases(): array
     {
         return [

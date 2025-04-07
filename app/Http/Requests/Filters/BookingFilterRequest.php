@@ -10,7 +10,10 @@ use App\Models\Booking;
 use App\Models\BookingOption;
 use App\Models\Event;
 use App\Models\Group;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Stringable;
 use Illuminate\Validation\Rule;
 
 /**
@@ -24,7 +27,7 @@ class BookingFilterRequest extends FormRequest
     use FiltersList;
 
     /**
-     * Get the validation rules that apply to the request.
+     * @return array<string, array<int, Closure|ValidationRule|string|Stringable>>
      */
     public function rules(): array
     {

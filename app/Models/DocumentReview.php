@@ -43,6 +43,9 @@ class DocumentReview extends Model
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * @param array<string, mixed> $validatedData
+     */
     public function fillAndSave(array $validatedData): bool
     {
         return $this->fill($validatedData)->save();

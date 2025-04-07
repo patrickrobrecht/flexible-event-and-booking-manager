@@ -55,6 +55,9 @@ class AuthenticationTest extends TestCase
         $this->assertGuest();
     }
 
+    /**
+     * @return array<int, array{ActiveStatus}>
+     */
     public static function notActiveStatuses(): array
     {
         return [

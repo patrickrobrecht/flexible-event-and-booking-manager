@@ -56,26 +56,6 @@ class Event extends Model
     use HasResponsibleUsers;
     use HasSlugForRouting;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'name',
-        'slug',
-        'description',
-        'visibility',
-        'started_at',
-        'finished_at',
-        'website_url',
-    ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'groups_count' => 'integer',
         'visibility' => Visibility::class,
@@ -84,6 +64,16 @@ class Event extends Model
         'parent_event_id' => 'integer',
         'event_series_id' => 'integer',
         'organization_id' => 'integer',
+    ];
+
+    protected $fillable = [
+        'name',
+        'slug',
+        'description',
+        'visibility',
+        'started_at',
+        'finished_at',
+        'website_url',
     ];
 
     public function bookingOptions(): HasMany
@@ -161,6 +151,9 @@ class Event extends Model
         };
     }
 
+    /**
+     * @param array<string, mixed> $validatedData
+     */
     public function fillAndSave(array $validatedData): bool
     {
         $this->fill($validatedData);
@@ -175,6 +168,7 @@ class Event extends Model
 
     public function findOrCreateGroup(int|string $groupIndex): Group
     {
+        /** @phpstan-ignore-next-line */
         return $this->groups()
             ->firstOrCreate([
                 'name' => __('Group') . ' ' . $groupIndex,
@@ -187,7 +181,7 @@ class Event extends Model
     }
 
     /**
-     * @return Collection<BookingOption>
+     * @return Collection<int, BookingOption>
      */
     public function getBookingOptions(): Collection
     {
@@ -205,7 +199,7 @@ class Event extends Model
     }
 
     /**
-     * @return Collection<Booking>
+     * @return Collection<int, Booking>
      */
     public function getBookings(): Collection
     {
@@ -231,6 +225,9 @@ class Event extends Model
         return 'events/' . $this->id;
     }
 
+    /**
+     * @return array<int, AllowedFilter>
+     */
     public static function allowedFilters(): array
     {
         return [
@@ -257,6 +254,9 @@ class Event extends Model
         ];
     }
 
+    /**
+     * @return array<string, string>
+     */
     public static function filterOptions(): array
     {
         return [

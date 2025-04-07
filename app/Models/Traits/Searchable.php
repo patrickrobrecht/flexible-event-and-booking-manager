@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 trait Searchable
 {
-    protected function scopeExclude(Builder $query, string $column, bool $like, int|string ...$searchTerms): Builder
+    protected function scopeExclude(Builder $query, string $column, bool $like, string ...$searchTerms): Builder
     {
         if (count($searchTerms) === 0) {
             return $query;
@@ -29,11 +29,14 @@ trait Searchable
         return $query->whereNotIn($column, $searchTerms);
     }
 
+    /**
+     * @param array<int, string> $columns
+     */
     protected function scopeIncludeColumns(
         Builder $query,
         array $columns,
         bool $like,
-        int|string ...$searchTerms
+        string ...$searchTerms
     ): Builder {
         return $query->where(function (Builder $subQuery) use ($columns, $like, $searchTerms) {
             foreach ($columns as $column) {
@@ -42,7 +45,7 @@ trait Searchable
         });
     }
 
-    protected function scopeInclude(Builder $query, string $column, bool $like, int|string ...$searchTerms): Builder
+    protected function scopeInclude(Builder $query, string $column, bool $like, string ...$searchTerms): Builder
     {
         if (count($searchTerms) === 0) {
             return $query;

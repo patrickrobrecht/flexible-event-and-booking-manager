@@ -41,6 +41,10 @@ trait NamedOption
         return self::tryFrom($value) !== null;
     }
 
+    /**
+     * @param self[]|null $array
+     * @return array<int, int|string>
+     */
     public static function values(?array $array = null): array
     {
         return array_map(
@@ -49,6 +53,9 @@ trait NamedOption
         );
     }
 
+    /**
+     * @param self[]|null $array
+     */
     public static function rule(?array $array = null): In
     {
         return Rule::in(self::values($array));

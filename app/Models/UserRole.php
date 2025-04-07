@@ -49,6 +49,9 @@ class UserRole extends Model
         return $this->scopeRelation($query, $userId, 'users', fn (Builder $q) => $q->where('user_id', '=', $userId));
     }
 
+    /**
+     * @param array<string, mixed> $validatedData
+     */
     public function fillAndSave(array $validatedData): bool
     {
         return $this->fill($validatedData)->save();
@@ -59,6 +62,9 @@ class UserRole extends Model
         return in_array($ability->value, $this->abilities, true);
     }
 
+    /**
+     * @return array<int, AllowedFilter>
+     */
     public static function allowedFilters(): array
     {
         return [
@@ -69,6 +75,9 @@ class UserRole extends Model
         ];
     }
 
+    /**
+     * @return array<string, string>
+     */
     public static function filterOptions(): array
     {
         return [

@@ -6,10 +6,13 @@ use App\Enums\ApprovalStatus;
 use App\Enums\FileType;
 use App\Http\Requests\Traits\ValidatesFiles;
 use App\Models\Document;
-use App\Models\Traits\HasDocuments;
+use App\Models\Event;
+use App\Models\EventSeries;
+use App\Models\Organization;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Stringable;
 use Illuminate\Validation\Rule;
 
 /**
@@ -20,9 +23,7 @@ class DocumentRequest extends FormRequest
     use ValidatesFiles;
 
     /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array|string>
+     * @return array<string, array<int, string|Stringable|ValidationRule>>
      */
     public function rules(): array
     {
@@ -33,7 +34,7 @@ class DocumentRequest extends FormRequest
             'application/x-empty',
         ];
 
-        /** @var HasDocuments $reference */
+        /** @var Event|EventSeries|Organization $reference */
         $reference = $this->getReference();
 
         return [

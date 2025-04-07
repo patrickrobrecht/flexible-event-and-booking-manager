@@ -15,12 +15,7 @@ class BookingConfirmation extends Notification
     {
     }
 
-    /**
-     * Get the mail representation of the notification.
-     *
-     * @return MailMessage
-     */
-    public function toMail($notifiable)
+    public function toMail(mixed $notifiable): MailMessage
     {
         $mail = $this->booking->prepareMailMessage()
             ->subject(
@@ -55,7 +50,10 @@ class BookingConfirmation extends Notification
         return $mail;
     }
 
-    public function via($notifiable)
+    /**
+     * @return array<int, string>
+     */
+    public function via(mixed $notifiable): array
     {
         return ['mail'];
     }

@@ -6,11 +6,13 @@ use App\Enums\FormElementType;
 use App\Http\Requests\Traits\ValidatesAddressFields;
 use App\Models\Booking;
 use App\Models\BookingOption;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Stringable;
 use Illuminate\Validation\Rule;
 
 /**
- * @property-read BookingOption $booking_option
+ * @property BookingOption $booking_option
  * @property-read ?Booking $booking
  */
 class BookingRequest extends FormRequest
@@ -26,9 +28,7 @@ class BookingRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, mixed>
+     * @return array<string, array<int, string|Stringable|ValidationRule>>
      */
     public function rules(): array
     {
@@ -116,7 +116,10 @@ class BookingRequest extends FormRequest
         return array_replace($rules, $commonRules);
     }
 
-    public function attributes()
+    /**
+     * @return array<string, string>
+     */
+    public function attributes(): array
     {
         $attributes = parent::attributes();
 

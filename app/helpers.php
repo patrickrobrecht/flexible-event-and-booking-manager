@@ -7,7 +7,7 @@ function formatDecimal(float $decimal, int $decimals = 2): string
     return number_format($decimal, $decimals, ',', '.');
 }
 
-function formatInt(int $int): string
+function formatInt(float|int $int): string
 {
     return number_format($int, 0, ',', '.');
 }
@@ -27,6 +27,9 @@ function formatTime(Carbon $date): string
     return $date->format('H:i');
 }
 
+/**
+ * @param array<string, string> $replace
+ */
 function formatTransChoice(string $key, float|int $count, array $replace = [], ?string $locale = null): string
 {
     return trans_choice(
@@ -37,6 +40,9 @@ function formatTransChoice(string $key, float|int $count, array $replace = [], ?
     );
 }
 
+/**
+ * @param array<string, string> $replace
+ */
 function formatTransChoiceDecimal(string $key, float|int $count, int $decimals = 2, array $replace = [], ?string $locale = null): string
 {
     return trans_choice(

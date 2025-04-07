@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Traits;
 
+use Closure;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -81,11 +82,12 @@ trait SupportsIncludesInSnakeCase
     protected function loadIncludesForModel(Model $model): void
     {
         $include = Request::query('include');
-        if (!isset($include)) {
+        if (!isset($include) || is_array($include)) {
             return;
         }
 
         $includeStrings = explode(',', $include);
+        /** @phpstan-ignore-next-line */ // TODO
         if (count($includeStrings) === 0) {
             return;
         }

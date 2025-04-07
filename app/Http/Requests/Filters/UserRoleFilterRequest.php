@@ -6,6 +6,8 @@ use App\Enums\FilterValue;
 use App\Http\Requests\Traits\FiltersList;
 use App\Models\User;
 use App\Models\UserRole;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
@@ -16,7 +18,7 @@ class UserRoleFilterRequest extends FormRequest
     use FiltersList;
 
     /**
-     * Get the validation rules that apply to the request.
+     * @return array<string, array<int, Closure|ValidationRule|string>>
      */
     public function rules(): array
     {

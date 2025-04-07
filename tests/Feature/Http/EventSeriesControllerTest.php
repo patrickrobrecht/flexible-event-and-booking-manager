@@ -90,6 +90,9 @@ class EventSeriesControllerTest extends TestCase
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function generateRandomEventSeriesData(): array
     {
         $eventData = Event::factory()->makeOne();

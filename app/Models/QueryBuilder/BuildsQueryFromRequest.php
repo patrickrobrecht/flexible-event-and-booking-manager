@@ -16,6 +16,12 @@ trait BuildsQueryFromRequest
     use Filterable;
     use Sortable;
 
+    /**
+     * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
+     * @template TDeclaringModel of \Illuminate\Database\Eloquent\Model
+     *
+     * @param Builder<self>|Relation<TRelatedModel, TDeclaringModel, self>|string|null $subject
+     */
     public static function buildQueryFromRequest(Builder|Relation|string|null $subject = null): QueryBuilder
     {
         $defaultSorts = self::defaultSorts();
@@ -29,6 +35,9 @@ trait BuildsQueryFromRequest
             ->defaultSorts($defaultSorts);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function defaultValuesForQuery(): array
     {
         $defaultSort = self::firstDefaultSort() ?? self::firstAllowedSort();

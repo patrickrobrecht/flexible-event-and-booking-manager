@@ -10,7 +10,10 @@ use App\Models\Document;
 use App\Models\Event;
 use App\Models\EventSeries;
 use App\Models\Organization;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Stringable;
 
 /**
  * Filter for {@see EventSeries}s
@@ -20,7 +23,7 @@ class EventSeriesFilterRequest extends FormRequest
     use FiltersList;
 
     /**
-     * Get the validation rules that apply to the request.
+     * @return array<string, array<int, Closure|ValidationRule|string|Stringable>>
      */
     public function rules(): array
     {

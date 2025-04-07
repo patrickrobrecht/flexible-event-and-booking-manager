@@ -61,6 +61,7 @@ class SearchUsers extends Component
     {
         $user = User::find($userId);
         if (isset($user)) {
+            /** @phpstan-ignore-next-line */
             $this->selectedUsers[$userId] = $user;
         }
     }

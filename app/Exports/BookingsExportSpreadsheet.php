@@ -14,7 +14,7 @@ class BookingsExportSpreadsheet extends Spreadsheet
     use ExportsToExcel;
 
     /**
-     * @param Collection<Booking> $bookings
+     * @param Collection<int, Booking> $bookings
      */
     public function __construct(
         private readonly Event $event,
@@ -86,7 +86,7 @@ class BookingsExportSpreadsheet extends Spreadsheet
             $booking->paid_at
                 ? $booking->paid_at->format('d.m.Y H:i')
                 : '',
-            $booking->getGroup($this->event)?->name ?? __('none'),
+            $booking->getGroup($this->event)->name ?? __('none'),
         ];
 
         if ($this->bookingOption->formFields->isEmpty()) {

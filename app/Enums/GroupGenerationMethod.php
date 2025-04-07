@@ -20,7 +20,6 @@ enum GroupGenerationMethod: string
 
     /**
      * @param  Collection<Booking> $bookings
-     * @return Collection
      */
     public function generateGroups(int $groupsCount, Collection $bookings): array
     {
@@ -29,7 +28,9 @@ enum GroupGenerationMethod: string
     }
 
     /**
-     * @return class-string
+     * @template TModel of GeneratesGroups
+     *
+     * @return class-string<TModel>
      */
     private function getClass(): string
     {

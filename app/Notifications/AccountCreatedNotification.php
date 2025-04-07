@@ -35,7 +35,10 @@ class AccountCreatedNotification extends Notification
         return $mailMessage;
     }
 
-    public function via($notifiable)
+    /**
+     * @return array<int, string>
+     */
+    public function via(mixed $notifiable): array
     {
         return ['mail'];
     }

@@ -62,6 +62,9 @@ class AccountControllerTest extends TestCase
             ]);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function getRandomUserData(): array
     {
         return array_intersect_key(

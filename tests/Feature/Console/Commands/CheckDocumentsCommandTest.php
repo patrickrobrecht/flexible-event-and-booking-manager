@@ -25,6 +25,7 @@ class CheckDocumentsCommandTest extends TestCase
         Storage::shouldReceive('exists')
             ->andReturn(true);
 
+        /** @phpstan-ignore method.nonObject */
         $this->artisan('app:check-documents')
             ->expectsOutput('All documents ok.')
             ->assertSuccessful();
@@ -46,6 +47,7 @@ class CheckDocumentsCommandTest extends TestCase
                 ->andReturn(false);
         }
 
+        /** @phpstan-ignore method.nonObject */
         $command = $this->artisan('app:check-documents')
             ->expectsOutput(sprintf('%d documents are missing.', count($missingDocuments)));
         foreach ($missingDocuments as $document) {

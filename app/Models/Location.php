@@ -23,8 +23,8 @@ use Spatie\QueryBuilder\AllowedFilter;
  * @property-read string[] $fullAddressBlock {@see Location::fullAddressBlock()}
  * @property-read string $nameOrAddress {@see Location::nameOrAddress()}
  *
- * @property-read Collection|Event $events {@see Location::events()}
- * @property-read Collection|Organization $organizations {@see Location::organizations()}
+ * @property-read Collection|Event[] $events {@see Location::events()}
+ * @property-read Collection|Organization[] $organizations {@see Location::organizations()}
  */
 class Location extends Model
 {
@@ -34,11 +34,6 @@ class Location extends Model
     use HasFactory;
     use HasIdForRouting;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'street',
@@ -83,11 +78,17 @@ class Location extends Model
         return $this->scopeRelation($query, $eventId, 'organizations', fn (Builder $q) => $q->where('organization_id', '=', $eventId));
     }
 
+    /**
+     * @param array<string, mixed> $validatedData
+     */
     public function fillAndSave(array $validatedData): bool
     {
         return $this->fill($validatedData)->save();
     }
 
+    /**
+     * @return array<int, AllowedFilter>
+     */
     public static function allowedFilters(): array
     {
         return [

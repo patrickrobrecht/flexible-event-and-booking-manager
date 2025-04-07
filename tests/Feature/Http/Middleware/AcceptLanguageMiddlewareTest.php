@@ -21,6 +21,9 @@ class AcceptLanguageMiddlewareTest extends TestCase
         $this->assertEquals($preferredLocale, App::getLocale());
     }
 
+    /**
+     * @return array<int, array<int, string>>
+     */
     public static function acceptLanguageHeaders(): array
     {
         return [

@@ -63,6 +63,9 @@ class DocumentControllerTest extends TestCase
         }
     }
 
+    /**
+     * @return array<int, array{Closure, Ability, Ability}>
+     */
     public static function referenceClassesWithViewAbility(): array
     {
         return [
@@ -77,7 +80,9 @@ class DocumentControllerTest extends TestCase
     #[DataProvider('referenceClassesWithViewAndCreateAbility')]
     public function testUserCanAddDocumentWithCorrectAbility(Closure $referenceProvider, Ability $viewReferenceAbility, Ability $addDocumentsAbility): void
     {
+        /** @var Event|EventSeries|Organization $reference */
         $reference = $referenceProvider();
+        /** @phpstan-ignore match.unhandled */
         $storeUri = match ($reference::class) {
             Event::class => "events/{$reference->slug}/documents",
             EventSeries::class => "event-series/{$reference->slug}/documents",
@@ -94,6 +99,9 @@ class DocumentControllerTest extends TestCase
         $this->assertUserCanPostWithAbility($storeUri, $data, [$viewReferenceAbility, $addDocumentsAbility], $reference->getRoute());
     }
 
+    /**
+     * @return array<int, array{Closure, Ability, Ability}>
+     */
     public static function referenceClassesWithViewAndCreateAbility(): array
     {
         return [
@@ -131,6 +139,9 @@ class DocumentControllerTest extends TestCase
         );
     }
 
+    /**
+     * @return array<int, array{Closure, Ability, Ability}>
+     */
     public static function referenceClassesWithViewAndEditAbility(): array
     {
         return [
@@ -150,6 +161,9 @@ class DocumentControllerTest extends TestCase
         $this->assertUserCanDeleteOnlyWithAbility("/documents/{$document->id}", [$viewReferenceAbility, $deleteDocumentsAbility], $document->reference->getRoute());
     }
 
+    /**
+     * @return array<int, array{Closure, Ability, Ability}>
+     */
     public static function referenceClassesWithViewAndDeleteAbility(): array
     {
         return [

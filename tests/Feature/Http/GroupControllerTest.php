@@ -17,6 +17,7 @@ use App\Models\Booking;
 use App\Models\Event;
 use App\Models\Group;
 use App\Policies\GroupPolicy;
+use Closure;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -95,13 +96,16 @@ class GroupControllerTest extends TestCase
         $event->bookings->each(fn (Booking $booking) => $this->assertNotNull($booking->getGroup($event)));
     }
 
+    /**
+     * @return array<int, array<int, mixed>>
+     */
     public static function groupGenerationMethods(): array
     {
         return array_map(static fn (GroupGenerationMethod $method) => [$method], GroupGenerationMethod::cases());
     }
 
     #[DataProvider('deleteGroupTestCases')]
-    public function testUserCanDeleteGroupsWithCorrectAbility(\Closure $dataProvider, int $countAfterRequest): void
+    public function testUserCanDeleteGroupsWithCorrectAbility(Closure $dataProvider, int $countAfterRequest): void
     {
         $event = self::createEventWithBookingOptions(Visibility::Private);
         self::createGroups($event, 3);
@@ -114,6 +118,9 @@ class GroupControllerTest extends TestCase
         $this->assertCount($countAfterRequest, $event->groups);
     }
 
+    /**
+     * @return array<int, array{Closure(Event): array<string, mixed>, int}>
+     */
     public static function deleteGroupTestCases(): array
     {
         return [

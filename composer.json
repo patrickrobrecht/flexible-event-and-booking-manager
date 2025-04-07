@@ -22,8 +22,10 @@
         "barryvdh/laravel-debugbar": "^3.14",
         "fakerphp/faker": "^1.24",
         "kkomelin/laravel-translatable-string-exporter": "^1.23",
+        "larastan/larastan": "^3.3",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
+        "phpstan/phpstan": "^2.1",
         "phpunit/phpunit": "^11.5",
         "portavice/laravel-pint-config": "^2.0",
         "spatie/laravel-ignition": "^2.9"
@@ -73,6 +75,9 @@
         ],
         "production": [
             "@composer install --optimize-autoloader --no-dev"
+        ],
+        "stan": [
+            "phpstan analyse --memory-limit=1G"
         ],
         "test": [
             "phpunit"

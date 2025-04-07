@@ -13,6 +13,9 @@ class OrganizationResource extends JsonResource
 {
     use BuildsResource;
 
+    /**
+     * @return array<string, mixed>
+     */
     public function relationsToArray(): array
     {
         return [

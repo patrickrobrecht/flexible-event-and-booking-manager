@@ -7,7 +7,10 @@ use App\Http\Requests\Traits\FiltersList;
 use App\Models\Event;
 use App\Models\Location;
 use App\Models\Organization;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Stringable;
 
 /**
  * Filter for {@see Location}s
@@ -17,7 +20,7 @@ class LocationFilterRequest extends FormRequest
     use FiltersList;
 
     /**
-     * Get the validation rules that apply to the request.
+     * @return array<string, array<int, Closure|ValidationRule|string|Stringable>>
      */
     public function rules(): array
     {

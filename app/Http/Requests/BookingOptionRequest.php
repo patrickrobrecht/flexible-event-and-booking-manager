@@ -5,8 +5,10 @@ namespace App\Http\Requests;
 use App\Enums\BookingRestriction;
 use App\Models\BookingOption;
 use App\Models\Event;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
+use Illuminate\Support\Stringable;
 use Illuminate\Validation\Rule;
 
 /**
@@ -25,9 +27,7 @@ class BookingOptionRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, mixed>
+     * @return array<string, array<int, string|Stringable|ValidationRule>>
      */
     public function rules(): array
     {

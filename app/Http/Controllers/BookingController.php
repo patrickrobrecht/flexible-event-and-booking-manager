@@ -36,7 +36,9 @@ class BookingController extends Controller
     {
         ValueHelper::setDefaults(Booking::defaultValuesForQuery());
 
+        /** @var \Illuminate\Database\Eloquent\Builder<Booking> $bookingsQuery */
         $bookingsQuery = Booking::buildQueryFromRequest($bookingOption->bookings())
+            /** @phpstan-ignore-next-line argument.type */
             ->with([
                 'bookedByUser',
                 'groups' => fn (BelongsToMany $groups) => $groups->where('event_id', '=', $event->id),

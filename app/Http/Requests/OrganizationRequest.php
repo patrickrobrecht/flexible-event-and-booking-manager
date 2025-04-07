@@ -5,11 +5,13 @@ namespace App\Http\Requests;
 use App\Enums\ActiveStatus;
 use App\Http\Requests\Traits\ValidatesResponsibleUsers;
 use App\Models\Organization;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Intervention\Validation\Rules\Iban;
+use Stringable;
 
 /**
  * @property ?Organization $organization
@@ -27,9 +29,7 @@ class OrganizationRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, mixed>
+     * @return array<string, array<int, string|Stringable|ValidationRule>>
      */
     public function rules(): array
     {
@@ -102,6 +102,9 @@ class OrganizationRequest extends FormRequest
         ];
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function attributes(): array
     {
         return $this->attributesForResponsibleUsers();

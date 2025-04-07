@@ -5,7 +5,9 @@ namespace App\Http\Requests;
 use App\Enums\ApprovalStatus;
 use App\Models\Document;
 use App\Models\DocumentReview;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Stringable;
 
 /**
  * For create requests:
@@ -16,6 +18,9 @@ use Illuminate\Foundation\Http\FormRequest;
  */
 class DocumentReviewRequest extends FormRequest
 {
+    /**
+     * @return array<string, array<int, string|Stringable|ValidationRule>>
+     */
     public function rules(): array
     {
         return [

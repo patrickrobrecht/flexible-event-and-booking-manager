@@ -22,7 +22,10 @@ class AcceptLanguageMiddleware
 
     private function parseAcceptLanguage(Request $request): ?string
     {
-        $acceptedLanguages = explode(',', $request->server('HTTP_ACCEPT_LANGUAGE'));
+        /** @var string $header */
+        $header = $request->server('HTTP_ACCEPT_LANGUAGE') ?? '';
+        $acceptedLanguages = explode(',', $header);
+        /** @phpstan-ignore-next-line */ // TODO
         if (count($acceptedLanguages) === 0) {
             return null;
         }
@@ -45,6 +48,9 @@ class AcceptLanguageMiddleware
             ->first(static fn ($locale) => in_array($locale, self::allowedLocales(), true));
     }
 
+    /**
+     * @return array<int, string>
+     */
     private static function allowedLocales(): array
     {
         return [

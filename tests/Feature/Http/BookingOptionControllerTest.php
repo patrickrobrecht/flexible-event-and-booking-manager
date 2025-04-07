@@ -74,6 +74,9 @@ class BookingOptionControllerTest extends TestCase
             ->assertSeeText($errorMessageProvider($bookingOption));
     }
 
+    /**
+     * @return array<int, array{Closure(BookingOptionFactory): BookingOptionFactory, Closure(BookingOption): array<int, string>}>
+     */
     public static function casesForBookingOptions(): array
     {
         return [
@@ -107,7 +110,9 @@ class BookingOptionControllerTest extends TestCase
             ->create();
 
         if (isset($userFactory)) {
-            $this->actingAs($userFactory->create());
+            /** @var User $user */
+            $user = $userFactory->create();
+            $this->actingAs($user);
         }
 
         $this->get("events/{$bookingOption->event->slug}/booking-options/{$bookingOption->slug}")
@@ -115,6 +120,9 @@ class BookingOptionControllerTest extends TestCase
             ->assertSeeText($errorMessageProvider($bookingOption));
     }
 
+    /**
+     * @return array<int, array{BookingRestriction, ?UserFactory, Closure(): string}>
+     */
     public static function bookingRestrictions(): array
     {
         return [
@@ -165,6 +173,9 @@ class BookingOptionControllerTest extends TestCase
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function generateRandomBookingOptionData(): array
     {
         $bookingOption = BookingOption::factory()->makeOne();

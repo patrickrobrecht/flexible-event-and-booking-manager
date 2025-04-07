@@ -99,4 +99,9 @@ class UserPolicy
     {
         return $this->response(config('app.features.registration'));
     }
+
+    public function viewSystemInformation(User $user): Response
+    {
+        return $this->requireAbility($user, Ability::ViewSystemInformation);
+    }
 }

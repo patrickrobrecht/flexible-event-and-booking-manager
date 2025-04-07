@@ -13,6 +13,7 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\PersonalAccessTokenController;
+use App\Http\Controllers\SystemInfoController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserRoleController;
 use App\Models\Booking;
@@ -132,6 +133,10 @@ Route::middleware('auth')->group(static function () {
         ->name('api-docs.index');
     Route::get('api-docs/spec', [ApiDocumentationController::class, 'spec'])
         ->name('api-docs.spec');
+
+    // System Information
+    Route::get('/system-info', [SystemInfoController::class, 'index'])
+        ->name('system-info.index');
 });
 
 // Pages that can be public

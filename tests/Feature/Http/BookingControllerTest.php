@@ -22,9 +22,6 @@ use App\Models\FormFieldValue;
 use App\Models\User;
 use App\Notifications\BookingConfirmation;
 use App\Policies\BookingPolicy;
-use Database\Factories\BookingFactory;
-use Database\Factories\FormFieldFactory;
-use Database\Factories\FormFieldValueFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Notifications\AnonymousNotifiable;
 use Illuminate\Support\Collection;
@@ -38,7 +35,6 @@ use Tests\Traits\GeneratesTestData;
 #[CoversClass(BookingConfirmation::class)]
 #[CoversClass(BookingCompleted::class)]
 #[CoversClass(BookingController::class)]
-#[CoversClass(BookingFactory::class)]
 #[CoversClass(BookingFilterRequest::class)]
 #[CoversClass(BookingOption::class)]
 #[CoversClass(BookingPaymentRequest::class)]
@@ -49,9 +45,7 @@ use Tests\Traits\GeneratesTestData;
 #[CoversClass(FilterValue::class)]
 #[CoversClass(FormElementType::class)]
 #[CoversClass(FormField::class)]
-#[CoversClass(FormFieldFactory::class)]
 #[CoversClass(FormFieldValue::class)]
-#[CoversClass(FormFieldValueFactory::class)]
 #[CoversClass(PaymentStatus::class)]
 #[CoversClass(SendBookingConfirmation::class)]
 class BookingControllerTest extends TestCase

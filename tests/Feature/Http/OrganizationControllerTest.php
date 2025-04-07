@@ -26,7 +26,6 @@ use Tests\Traits\GeneratesTestData;
 #[CoversClass(FilterValue::class)]
 #[CoversClass(Organization::class)]
 #[CoversClass(OrganizationController::class)]
-#[CoversClass(OrganizationFactory::class)]
 #[CoversClass(OrganizationFilterRequest::class)]
 #[CoversClass(OrganizationPolicy::class)]
 #[CoversClass(OrganizationRequest::class)]

@@ -15,7 +15,6 @@ use App\Models\EventSeries;
 use App\Models\Organization;
 use App\Policies\DocumentPolicy;
 use Closure;
-use Database\Factories\DocumentFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -28,7 +27,6 @@ use Tests\Traits\GeneratesTestData;
 #[CoversClass(ApprovalStatus::class)]
 #[CoversClass(Document::class)]
 #[CoversClass(DocumentController::class)]
-#[CoversClass(DocumentFactory::class)]
 #[CoversClass(DocumentFilterRequest::class)]
 #[CoversClass(DocumentPolicy::class)]
 #[CoversClass(DocumentRequest::class)]

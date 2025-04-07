@@ -11,7 +11,6 @@ use App\Models\Event;
 use App\Models\Location;
 use App\Models\Organization;
 use App\Policies\LocationPolicy;
-use Database\Factories\LocationFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
@@ -21,7 +20,6 @@ use Tests\Traits\GeneratesTestData;
 #[CoversClass(FilterValue::class)]
 #[CoversClass(Location::class)]
 #[CoversClass(LocationController::class)]
-#[CoversClass(LocationFactory::class)]
 #[CoversClass(LocationFilterRequest::class)]
 #[CoversClass(LocationPolicy::class)]
 #[CoversClass(LocationRequest::class)]

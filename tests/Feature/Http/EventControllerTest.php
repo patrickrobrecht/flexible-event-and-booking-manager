@@ -13,7 +13,6 @@ use App\Models\Document;
 use App\Models\Event;
 use App\Models\EventSeries;
 use App\Policies\EventPolicy;
-use Database\Factories\EventFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
@@ -22,7 +21,6 @@ use Tests\Traits\GeneratesTestData;
 #[CoversClass(Document::class)]
 #[CoversClass(Event::class)]
 #[CoversClass(EventController::class)]
-#[CoversClass(EventFactory::class)]
 #[CoversClass(EventFilterRequest::class)]
 #[CoversClass(EventPolicy::class)]
 #[CoversClass(EventRequest::class)]

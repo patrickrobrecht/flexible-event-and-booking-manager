@@ -14,9 +14,19 @@ class UserRoleRequest extends FormRequest
 {
     protected function prepareForValidation(): void
     {
-        $this->merge([
-            'abilities' => $this->input('abilities', []), // Force array!
-        ]);
+        $abilities = $this->input('abilities', []);
+
+        foreach ($abilities as $value) {
+            $ability = Ability::tryFrom($value);
+            if ($ability) {
+                $dependentAbility = $ability->dependsOnAbility();
+                if ($dependentAbility && !in_array($dependentAbility->value, $abilities, true)) {
+                    $abilities[] = $dependentAbility->value;
+                }
+            }
+        }
+
+        $this->merge(['abilities' => $abilities]);
     }
 
     /**

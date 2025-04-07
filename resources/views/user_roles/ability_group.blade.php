@@ -7,10 +7,27 @@
 @endphp
 @foreach($abilityGroups as $abilityGroup)
     <div class="avoid-break">
-        <{{$headlineTag}}><i class="fa fa-fw {{ $abilityGroup->getIcon() }}"></i> {{ $abilityGroup->getTranslatedName() }}</{{$headlineTag}}>
+        <{{$headlineTag}}><i class="{{ $abilityGroup->getIcon() }}"></i> {{ $abilityGroup->getTranslatedName() }}</{{$headlineTag}}>
         @if($editable)
-            <x-bs::form.field name="abilities[]" type="switch"
-                              :options="\Portavice\Bladestrap\Support\Options::fromEnum($abilityGroup->getAbilities(), 'getTranslatedName')"
+            @php
+                $abilitiesOptions = \Portavice\Bladestrap\Support\Options::fromEnum(
+                    $abilityGroup->getAbilities(),
+                    'getTranslatedName',
+                    static function (\App\Enums\Ability $ability) {
+                        $dependency = $ability->dependsOnAbility();
+
+                        if ($dependency === null) {
+                            return [];
+                        }
+
+                        return [
+                            'data-depends-on-id' => 'abilities[]-' . $dependency->value,
+                        ];
+                    }
+                );
+            @endphp
+            <x-bs::form.field name="abilities[]" type="switch" :options="$abilitiesOptions"
+                              check-container-class="mb-3"
                               :value="$selectedAbilities ?? []"/>
         @else
             <ul class="list-unstyled">
@@ -27,11 +44,17 @@
                 @endforeach
             </ul>
         @endif
+        @include('user_roles.ability_group', [
+            'selectedAbilities' => $selectedAbilities,
+            'abilityGroups' => $abilityGroup->getChildren(),
+            'editable' => $editable,
+            'headlineLevel' => $childHeadlineLevel,
+        ])
     </div>
-    @include('user_roles.ability_group', [
-        'selectedAbilities' => $selectedAbilities,
-        'abilityGroups' => $abilityGroup->getChildren(),
-        'editable' => $editable,
-        'headlineLevel' => $childHeadlineLevel,
-    ])
 @endforeach
+
+@once
+    @push('scripts')
+        <script src="{{ mix('js/ability-dependencies.js') }}"></script>
+    @endpush
+@endonce

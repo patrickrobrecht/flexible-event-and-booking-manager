@@ -79,6 +79,63 @@ enum Ability: string
     case EditAccount = 'users.edit_account';
     case ManagePersonalAccessTokens = 'personal_access_tokens.manage_own';
 
+    public function dependsOnAbility(): ?self
+    {
+        return match ($this) {
+            self::CreateEvents,
+            self::EditEvents,
+            self::ViewPrivateEvents,
+            self::ViewResponsibilitiesOfEvents,
+            self::ManageBookingOptionsOfEvent => self::ViewEvents,
+
+            self::ExportBookingsOfEvent,
+            self::EditBookingsOfEvent,
+            self::DeleteAndRestoreBookingsOfEvent,
+            self::EditBookingComment,
+            self::ViewPaymentStatus => self::ViewBookingsOfEvent,
+            self::EditPaymentStatus => self::ViewPaymentStatus,
+
+            self::ExportGroupsOfEvent => self::ManageGroupsOfEvent,
+
+            self::CreateEventSeries,
+            self::EditEventSeries,
+            self::ViewPrivateEventSeries,
+            self::ViewResponsibilitiesOfEventSeries => self::ViewEventSeries,
+
+            self::CreateOrganizations,
+            self::EditOrganizations => self::ViewOrganizations,
+
+            self::CreateLocations,
+            self::EditLocations => self::ViewLocations,
+
+            // Documents
+            self::ViewCommentsOnDocuments,
+            self::ChangeApprovalStatusOfDocuments => self::ViewDocuments,
+            self::CommentOnDocuments => self::ViewCommentsOnDocuments,
+
+            self::AddDocumentsToEvents,
+            self::EditDocumentsOfEvents,
+            self::DeleteDocumentsOfEvents => self::ViewDocumentsOfEvents,
+
+            self::AddDocumentsToEventSeries,
+            self::EditDocumentsOfEventSeries,
+            self::DeleteDocumentsOfEventSeries => self::ViewDocumentsOfEventSeries,
+
+            self::AddDocumentsToOrganizations,
+            self::EditDocumentsOfOrganizations,
+            self::DeleteDocumentsOfOrganizations => self::ViewDocumentsOfOrganizations,
+
+            // Users and abilities
+            self::CreateUsers,
+            self::EditUsers => self::ViewUsers,
+            self::CreateUserRoles,
+            self::EditUserRoles => self::ViewUserRoles,
+            self::EditAccount => self::ViewAccount,
+
+            default => null,
+        };
+    }
+
     public function getAbilityGroup(): AbilityGroup
     {
         return match ($this) {

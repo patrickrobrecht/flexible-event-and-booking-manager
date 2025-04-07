@@ -58,9 +58,9 @@ enum AbilityGroup
         };
     }
 
-    public function getIcon(): array|string
+    public function getIcon(): string
     {
-        return match ($this) {
+        return 'fa fa-fw ' . match ($this) {
             self::Events => 'fa-calendar-days',
             self::Bookings => 'fa-file-contract',
             self::Groups => 'fa-people-group',

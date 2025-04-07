@@ -81,6 +81,9 @@ enum Ability: string
     case ViewApiDocumentation = 'api.docs.view';
     case ManagePersonalAccessTokens = 'personal_access_tokens.manage_own';
 
+    // System management
+    case ViewSystemInformation = 'system_info.view';
+
     public function dependsOnAbility(): ?self
     {
         return match ($this) {
@@ -207,6 +210,9 @@ enum Ability: string
             self::EditAccount => AbilityGroup::OwnAccount,
             self::ViewApiDocumentation,
             self::ManagePersonalAccessTokens => AbilityGroup::ApiAccess,
+
+            // System management
+            self::ViewSystemInformation => AbilityGroup::SystemManagement,
         };
     }
 
@@ -284,6 +290,8 @@ enum Ability: string
 
             self::ManagePersonalAccessTokens => __('Manage personal access tokens'),
             self::ViewApiDocumentation => __('View API documentation'),
+
+            self::ViewSystemInformation => __('View system information'),
         };
     }
 

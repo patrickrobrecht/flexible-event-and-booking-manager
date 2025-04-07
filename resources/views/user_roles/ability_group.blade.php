@@ -1,4 +1,6 @@
 @php
+    /** @var \App\Enums\Ability[] $selectableAbilities */
+    $selectableAbilities = $selectableAbilities ?? \App\Enums\Ability::cases();
     /** @var \App\Enums\Ability[] $selectedAbilities */
     /** @var \App\Enums\AbilityGroup[] $abilityGroups */
     /** @var int $headlineLevel */
@@ -6,12 +8,18 @@
     $childHeadlineLevel = $headlineLevel + 1;
 @endphp
 @foreach($abilityGroups as $abilityGroup)
+    @php
+        $abilitiesInGroup = $abilityGroup->filterAbilities($selectableAbilities);
+        if (count($abilitiesInGroup) === 0 && !$abilityGroup->hasChildrenWithAbilities($selectableAbilities)) {
+            continue;
+        }
+    @endphp
     <div class="avoid-break">
         <{{$headlineTag}}><i class="{{ $abilityGroup->getIcon() }}"></i> {{ $abilityGroup->getTranslatedName() }}</{{$headlineTag}}>
         @if($editable)
             @php
                 $abilitiesOptions = \Portavice\Bladestrap\Support\Options::fromEnum(
-                    $abilityGroup->getAbilities(),
+                    $abilitiesInGroup,
                     'getTranslatedName',
                     static function (\App\Enums\Ability $ability) {
                         $dependency = $ability->dependsOnAbility();
@@ -31,7 +39,7 @@
                               :value="$selectedAbilities ?? []"/>
         @else
             <ul class="list-unstyled">
-                @foreach($abilityGroup->getAbilities() as $ability)
+                @foreach($abilitiesInGroup as $ability)
                     @php
                         $hasAbility = in_array($ability->value, $selectedAbilities, true);
                     @endphp
@@ -45,6 +53,7 @@
             </ul>
         @endif
         @include('user_roles.ability_group', [
+            'selectableAbilities' => $selectableAbilities,
             'selectedAbilities' => $selectedAbilities,
             'abilityGroups' => $abilityGroup->getChildren(),
             'editable' => $editable,

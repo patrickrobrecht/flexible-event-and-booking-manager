@@ -102,6 +102,7 @@ enum Ability: string
             self::ViewPrivateEventSeries,
             self::ViewResponsibilitiesOfEventSeries => self::ViewEventSeries,
 
+            // Basic data
             self::CreateOrganizations,
             self::EditOrganizations => self::ViewOrganizations,
 

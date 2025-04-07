@@ -44,10 +44,15 @@
                 </x-bs::form.field>
             </div>
         </div>
-        <x-bs::form.field id="abilities" name="abilities[]" type="switch"
-                          :options="\Portavice\Bladestrap\Support\Options::fromEnum(\App\Enums\Ability::apiCases(), 'getTranslatedName')"
-                          :value="$token->abilities ?? []"
-                          check-container-class="cols-lg-2 cols-xl-3 cols-xxl-4"><i class="fa fa-fw fa-user-shield"></i> {{ __('Abilities') }}</x-bs::form.field>
+        <div class="cols-lg-2 cols-xxl-3 mb-3">
+            @include('user_roles.ability_group', [
+                'selectableAbilities' => \App\Enums\Ability::apiCases(),
+                'selectedAbilities' => $token->abilities ?? [],
+                'abilityGroups' => \App\Enums\AbilityGroup::casesAtRootLevel(),
+                'editable' => true,
+                'headlineLevel' => 3,
+            ])
+        </div>
 
         <x-bs::button.group>
             <x-button.save>

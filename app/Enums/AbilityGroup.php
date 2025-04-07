@@ -24,11 +24,12 @@ enum AbilityGroup
     case OwnAccount;
 
     /**
-     * @return Ability[]
+     * @param list<Ability> $abilities
+     * @return list<Ability>
      */
-    public function getAbilities(): array
+    public function filterAbilities(array $abilities): array
     {
-        return array_filter(Ability::cases(), fn (Ability $ability) => $ability->getAbilityGroup() === $this);
+        return array_filter($abilities, fn (Ability $ability) => $ability->getAbilityGroup() === $this);
     }
 
     /**
@@ -108,9 +109,24 @@ enum AbilityGroup
         };
     }
 
-    public function hasChildren(): bool
+    /**
+     * Checks whether one of the child groups contains at least one of the given abilities.
+     *
+     * @param Ability[] $abilities
+     */
+    public function hasChildrenWithAbilities(array $abilities): bool
     {
-        return count($this->getChildren()) > 0;
+        foreach ($this->getChildren() as $childGroup) {
+            if (count($childGroup->filterAbilities($abilities)) > 0) {
+                return true;
+            }
+
+            if ($childGroup->hasChildrenWithAbilities($abilities)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -118,6 +134,6 @@ enum AbilityGroup
      */
     public static function casesAtRootLevel(): array
     {
-        return array_filter(self::cases(), fn (self $abilityGroup) => $abilityGroup->getParent() === null);
+        return array_filter(self::cases(), static fn (self $abilityGroup) => $abilityGroup->getParent() === null);
     }
 }

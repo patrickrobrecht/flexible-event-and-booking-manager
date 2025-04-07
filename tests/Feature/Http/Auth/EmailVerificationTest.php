@@ -7,7 +7,6 @@ use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Models\User;
 use App\Notifications\VerifyEmailNotification;
-use Database\Factories\UserFactory;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
@@ -19,7 +18,6 @@ use Tests\TestCase;
 #[CoversClass(EmailVerificationNotificationController::class)]
 #[CoversClass(EmailVerificationPromptController::class)]
 #[CoversClass(User::class)]
-#[CoversClass(UserFactory::class)]
 #[CoversClass(VerifyEmailController::class)]
 #[CoversClass(VerifyEmailNotification::class)]
 class EmailVerificationTest extends TestCase

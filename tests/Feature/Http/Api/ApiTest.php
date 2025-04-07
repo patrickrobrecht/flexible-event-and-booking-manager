@@ -6,6 +6,7 @@ use App\Enums\Ability;
 use App\Exceptions\Handler;
 use App\Http\Controllers\AccountController;
 use App\Http\Middleware\AcceptLanguageMiddleware;
+use App\Http\Middleware\JsonApiMiddleware;
 use App\Http\Middleware\ThrottleRequestsMiddleware;
 use App\Models\PersonalAccessToken;
 use App\Models\User;
@@ -15,14 +16,13 @@ use Illuminate\Support\Facades\Config;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\Response;
-use Tests\Feature\Http\Middleware\JsonApiMiddlewareTest;
 use Tests\TestCase;
 use Tests\Traits\ActsWithToken;
 
 #[CoversClass(AcceptLanguageMiddleware::class)]
 #[CoversClass(AccountController::class)]
 #[CoversClass(Handler::class)]
-#[CoversClass(JsonApiMiddlewareTest::class)]
+#[CoversClass(JsonApiMiddleware::class)]
 #[CoversClass(PersonalAccessToken::class)]
 #[CoversClass(ThrottleRequestsMiddleware::class)]
 #[CoversClass(User::class)]

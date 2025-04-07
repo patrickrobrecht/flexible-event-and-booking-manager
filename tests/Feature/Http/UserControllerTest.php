@@ -12,7 +12,6 @@ use App\Models\User;
 use App\Models\UserRole;
 use App\Notifications\AccountCreatedNotification;
 use App\Policies\UserPolicy;
-use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -23,7 +22,6 @@ use Tests\TestCase;
 #[CoversClass(FilterValue::class)]
 #[CoversClass(User::class)]
 #[CoversClass(UserController::class)]
-#[CoversClass(UserFactory::class)]
 #[CoversClass(UserFilterRequest::class)]
 #[CoversClass(UserPolicy::class)]
 #[CoversClass(UserRequest::class)]

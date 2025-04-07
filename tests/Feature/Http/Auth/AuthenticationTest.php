@@ -6,7 +6,6 @@ use App\Enums\ActiveStatus;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
-use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\RateLimiter;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -17,7 +16,6 @@ use Tests\TestCase;
 #[CoversClass(AuthenticatedSessionController::class)]
 #[CoversClass(LoginRequest::class)]
 #[CoversClass(User::class)]
-#[CoversClass(UserFactory::class)]
 class AuthenticationTest extends TestCase
 {
     use RefreshDatabase;

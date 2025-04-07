@@ -46,7 +46,7 @@ To get started, you need to install the following software:
 - [Bladestrap](https://github.com/portavice/bladestrap), Blade components for Bootstrap
 - [Bootstrap](https://getbootstrap.com/), a front-end toolkit
 - [Font Awesome](https://github.com/FortAwesome/Font-Awesome) for [icons](https://fontawesome.com/icons?d=gallery&m=free)
-- [Laravel](https://laravel.com/docs/11.x) framework
+- [Laravel](https://laravel.com/docs/12.x) framework
 - [Laravel Dompdf](https://github.com/barryvdh/laravel-dompdf) for PDF export
 - [Laravel Livewire](https://livewire.laravel.com/docs/) for dynamic UI without leading PHP
 - [Laravel Sluggable](https://github.com/spatie/laravel-sluggable) to autogenerate slugs
@@ -59,13 +59,15 @@ To setup/update your development environment:
 - Run `composer install` to setup autoloading and install the development dependencies for PHP.
 - Create/update the `.env` configuration if necessary (see [Configuration](#configuration) below).
 - Run `php artisan migrate` to migrate the database to the latest version.
+- Run `composer test` to execute all the Unit tests.
 
 For development, we use
 - [ESlint](https://eslint.org/) for the JavaScript code style check
 - [Laravel Debugbar](https://github.com/barryvdh/laravel-debugbar) for debugging utility
 - [Laravel Mix](https://laravel-mix.com/docs/) for compiling assets
-- [Laravel Pint](https://laravel.com/docs/10.x/pint) for the PHP code style check.
+- [Laravel Pint](https://laravel.com/docs/12.x/pint) for the PHP code style check
 - [Laravel Translatable String Exporter](https://github.com/kkomelin/laravel-translatable-string-exporter)
+- [PHPUnit](https://docs.phpunit.de/en/12.1/) for unit tests
 - [Stylelint](https://stylelint.io/) for the SASS code style check
 
 ### Code Style

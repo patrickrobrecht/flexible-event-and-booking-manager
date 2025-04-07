@@ -11,7 +11,6 @@ use App\Http\Requests\UserRoleRequest;
 use App\Models\User;
 use App\Models\UserRole;
 use App\Policies\UserRolePolicy;
-use Database\Factories\UserRoleFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
@@ -22,7 +21,6 @@ use Tests\TestCase;
 #[CoversClass(User::class)]
 #[CoversClass(UserRole::class)]
 #[CoversClass(UserRoleController::class)]
-#[CoversClass(UserRoleFactory::class)]
 #[CoversClass(UserRoleFilterRequest::class)]
 #[CoversClass(UserRolePolicy::class)]
 #[CoversClass(UserRoleRequest::class)]

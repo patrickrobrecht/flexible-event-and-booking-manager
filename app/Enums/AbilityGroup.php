@@ -22,13 +22,15 @@ enum AbilityGroup
     case Users;
     case UserRoles;
     case OwnAccount;
+    case ApiAccess;
 
     /**
-     * @return Ability[]
+     * @param list<Ability> $abilities
+     * @return list<Ability>
      */
-    public function getAbilities(): array
+    public function filterAbilities(array $abilities): array
     {
-        return array_filter(Ability::cases(), fn (Ability $ability) => $ability->getAbilityGroup() === $this);
+        return array_filter($abilities, fn (Ability $ability) => $ability->getAbilityGroup() === $this);
     }
 
     /**
@@ -52,15 +54,16 @@ enum AbilityGroup
 
             self::Users,
             self::UserRoles,
-            self::OwnAccount => self::UsersAndAbilities,
+            self::OwnAccount,
+            self::ApiAccess => self::UsersAndAbilities,
 
             default => null,
         };
     }
 
-    public function getIcon(): array|string
+    public function getIcon(): string
     {
-        return match ($this) {
+        return 'fa fa-fw ' . match ($this) {
             self::Events => 'fa-calendar-days',
             self::Bookings => 'fa-file-contract',
             self::Groups => 'fa-people-group',
@@ -80,6 +83,7 @@ enum AbilityGroup
             self::Users => 'fa-users',
             self::UserRoles => 'fa-user-group',
             self::OwnAccount => 'fa-user-circle',
+            self::ApiAccess => 'fa-file-code',
         };
     }
 
@@ -105,12 +109,28 @@ enum AbilityGroup
             self::Users => __('Users'),
             self::UserRoles => __('User roles'),
             self::OwnAccount => __('Own account'),
+            self::ApiAccess => __('Access to the REST API'),
         };
     }
 
-    public function hasChildren(): bool
+    /**
+     * Checks whether one of the child groups contains at least one of the given abilities.
+     *
+     * @param Ability[] $abilities
+     */
+    public function hasChildrenWithAbilities(array $abilities): bool
     {
-        return count($this->getChildren()) > 0;
+        foreach ($this->getChildren() as $childGroup) {
+            if (count($childGroup->filterAbilities($abilities)) > 0) {
+                return true;
+            }
+
+            if ($childGroup->hasChildrenWithAbilities($abilities)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -118,6 +138,6 @@ enum AbilityGroup
      */
     public static function casesAtRootLevel(): array
     {
-        return array_filter(self::cases(), fn (self $abilityGroup) => $abilityGroup->getParent() === null);
+        return array_filter(self::cases(), static fn (self $abilityGroup) => $abilityGroup->getParent() === null);
     }
 }

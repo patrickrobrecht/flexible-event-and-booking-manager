@@ -104,6 +104,11 @@
                                         <i class="fa fa-fw fa-id-card-clip"></i> {{ __('Personal access tokens') }}
                                     </x-bs::dropdown.item>
                                 @endcan
+                                @can('viewDocumentation', \App\Models\PersonalAccessToken::class)
+                                    <x-bs::dropdown.item href="{{ route('api-docs.index') }}">
+                                        <i class="fa fa-fw fa-file-code"></i> {{ __('API documentation') }}
+                                    </x-bs::dropdown.item>
+                                @endcan
                                 <li>
                                     <x-bs::form id="logout-form" action="{{ route('logout') }}" method="POST">
                                         <button type="submit" class="dropdown-item"><i class="fa fa-fw fa-sign-out-alt"></i> {{ __('Logout') }}</button>

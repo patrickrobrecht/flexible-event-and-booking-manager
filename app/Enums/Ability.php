@@ -77,7 +77,71 @@ enum Ability: string
     case ViewAccount = 'users.view_account';
     case ViewAbilities = 'users.view_account.abilities';
     case EditAccount = 'users.edit_account';
+
+    case ViewApiDocumentation = 'api.docs.view';
     case ManagePersonalAccessTokens = 'personal_access_tokens.manage_own';
+
+    public function dependsOnAbility(): ?self
+    {
+        return match ($this) {
+            self::CreateEvents,
+            self::EditEvents,
+            self::ViewPrivateEvents,
+            self::ViewResponsibilitiesOfEvents,
+            self::ManageBookingOptionsOfEvent => self::ViewEvents,
+
+            self::ExportBookingsOfEvent,
+            self::EditBookingsOfEvent,
+            self::DeleteAndRestoreBookingsOfEvent,
+            self::EditBookingComment,
+            self::ViewPaymentStatus => self::ViewBookingsOfEvent,
+            self::EditPaymentStatus => self::ViewPaymentStatus,
+
+            self::ExportGroupsOfEvent => self::ManageGroupsOfEvent,
+
+            self::CreateEventSeries,
+            self::EditEventSeries,
+            self::ViewPrivateEventSeries,
+            self::ViewResponsibilitiesOfEventSeries => self::ViewEventSeries,
+
+            // Basic data
+            self::CreateOrganizations,
+            self::EditOrganizations => self::ViewOrganizations,
+
+            self::CreateLocations,
+            self::EditLocations => self::ViewLocations,
+
+            // Documents
+            self::ViewCommentsOnDocuments,
+            self::ChangeApprovalStatusOfDocuments => self::ViewDocuments,
+            self::CommentOnDocuments => self::ViewCommentsOnDocuments,
+
+            self::AddDocumentsToEvents,
+            self::EditDocumentsOfEvents,
+            self::DeleteDocumentsOfEvents => self::ViewDocumentsOfEvents,
+
+            self::AddDocumentsToEventSeries,
+            self::EditDocumentsOfEventSeries,
+            self::DeleteDocumentsOfEventSeries => self::ViewDocumentsOfEventSeries,
+
+            self::AddDocumentsToOrganizations,
+            self::EditDocumentsOfOrganizations,
+            self::DeleteDocumentsOfOrganizations => self::ViewDocumentsOfOrganizations,
+
+            // Users and abilities
+            self::CreateUsers,
+            self::EditUsers => self::ViewUsers,
+
+            self::CreateUserRoles,
+            self::EditUserRoles => self::ViewUserRoles,
+
+            self::EditAccount => self::ViewAccount,
+
+            self::ManagePersonalAccessTokens => self::ViewApiDocumentation,
+
+            default => null,
+        };
+    }
 
     public function getAbilityGroup(): AbilityGroup
     {
@@ -140,8 +204,9 @@ enum Ability: string
             self::EditUserRoles => AbilityGroup::UserRoles,
             self::ViewAccount,
             self::ViewAbilities,
-            self::EditAccount,
-            self::ManagePersonalAccessTokens => AbilityGroup::OwnAccount,
+            self::EditAccount => AbilityGroup::OwnAccount,
+            self::ViewApiDocumentation,
+            self::ManagePersonalAccessTokens => AbilityGroup::ApiAccess,
         };
     }
 
@@ -216,7 +281,9 @@ enum Ability: string
             self::ViewAccount => __('View own account'),
             self::ViewAbilities => __('View abilities'),
             self::EditAccount => __('Edit own account'),
+
             self::ManagePersonalAccessTokens => __('Manage personal access tokens'),
+            self::ViewApiDocumentation => __('View API documentation'),
         };
     }
 

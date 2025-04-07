@@ -18,6 +18,7 @@
     "A new verification link has been sent to the e-mail address you provided during registration.": "Ein neuer Verifikationslink wurde an die bei der Registrierung hinterlegte E-Mail-Adresse gesendet.",
     "Abilities": "Berechtigungen",
     "Access limited to %d request(s) per %d minute(s).": "Zugriff beschränkt auf %d Anfrage(n) pro %d Minute(n).",
+    "Access to the REST API": "Zugriff auf die REST API",
     "Account created for you": "Konto für dich erstellt",
     "Account holder": "Kontoinhaber",
     "account required": "Konto erforderlich",

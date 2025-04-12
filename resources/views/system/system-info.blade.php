@@ -54,13 +54,13 @@
             <div class="card mb-3">
                 <div class="card-header">{{ __('API') }}</div>
                 <x-bs::list>
-                    @can('viewApiDocumentation', \App\Models\User::class)
+                    @can('viewDocumentation', \App\Models\PersonalAccessToken::class)
                         <x-bs::list.item>
                             <a href="{{ route('api-docs.index') }}">{{ __('API documentation') }}</a>
                         </x-bs::list.item>
                     @endcan
                     <x-bs::list.item>
-                        <span class="me-3">{{ __('Throttling') }}</span>
+                        <span class="me-3">{{ __('Request limit') }}</span>
                         <x-slot:end>
                             <span class="text-end">{{ formatTransChoice(':count requests', config('api.throttle.max_attempts')) }} / {{ config('api.throttle.decay_minutes') }}&nbsp;min</span>
                         </x-slot:end>
@@ -86,7 +86,7 @@
                         </x-slot:end>
                     </x-bs::list.item>
                     <x-bs::list.item>
-                         <span class="me-3">{{ __('PHP version') }}</span>
+                        <span class="me-3">{{ __('PHP version') }}</span>
                         <x-slot:end>
                             <span class="text-end">{{ phpversion() }} ({{ PHP_INT_SIZE === 8 ? '64' : '32' }}bit), {{ php_sapi_name() }}</span>
                         </x-slot:end>
@@ -110,9 +110,27 @@
                         </x-slot:end>
                     </x-bs::list.item>
                     <x-bs::list.item>
+                        <span class="me-3">{{ __('Time for processing the input data in seconds') }} (<code>max_input_time</code>)</span>
+                        <x-slot:end>
+                            <span class="text-end">{{ ini_get('max_input_time') }}</span>
+                        </x-slot:end>
+                    </x-bs::list.item>
+                    <x-bs::list.item>
+                        <span class="me-3">{{ __('Maximum input variables') }} (<code>max_input_vars</code>)</span>
+                        <x-slot:end>
+                            <span class="text-end">{{ ini_get('max_input_vars') }}</span>
+                        </x-slot:end>
+                    </x-bs::list.item>
+                    <x-bs::list.item>
                         <span class="me-3">{{ __('PHP memory limit') }} (<code>memory_limit</code>)</span>
                         <x-slot:end>
                             <span class="text-end">{{ ini_get('memory_limit') }}</span>
+                        </x-slot:end>
+                    </x-bs::list.item>
+                    <x-bs::list.item>
+                        <span class="me-3">{{ __('Maximum size of PHP post data') }} (<code>post_max_size</code>)</span>
+                        <x-slot:end>
+                            <span class="text-end">{{ ini_get('post_max_size') }}</span>
                         </x-slot:end>
                     </x-bs::list.item>
                     <x-bs::list.item>
@@ -122,21 +140,15 @@
                         </x-slot:end>
                     </x-bs::list.item>
                     <x-bs::list.item>
-                        <span class="me-3">{{ __('Maximum size of PHP post data') }} (<code>post_max_size</code>)</span>
+                        <span class="me-3">{{ __('File uploads enabled') }} (<code>file_uploads</code>)</span>
                         <x-slot:end>
-                            <span class="text-end">{{ ini_get('post_max_size') }}</span>
+                            <span class="text-end">{{ ini_get('file_uploads') ? __('Yes') : __('No') }}</span>
                         </x-slot:end>
                     </x-bs::list.item>
                     <x-bs::list.item class="flex-wrap">
                         <span class="me-3">cURL-Version</span>
                         <x-slot:end>
                             <span class="text-end">{{ function_exists('curl_version') ? curl_version()['version'] . ' ' . curl_version()['ssl_version'] : __('not available') }}</span>
-                        </x-slot:end>
-                    </x-bs::list.item>
-                    <x-bs::list.item class="flex-wrap">
-                        <span class="me-3">{{ __('Current server time') }}</span>
-                        <x-slot:end>
-                            <span class="text-end">{{ date('d.m.Y H:i:s P') }} ({{ date_default_timezone_get() }})</span>
                         </x-slot:end>
                     </x-bs::list.item>
                 </x-bs::list>
@@ -147,25 +159,25 @@
                 <div class="card-header">{{ __('Database') }}</div>
                 <x-bs::list>
                     <x-bs::list.item class="flex-wrap">
-                         <span class="me-3">{{ __('Database name') }}</span>
+                        <span class="me-3">{{ __('Database name') }}</span>
                         <x-slot:end>
                             <span class="text-end">{{ DB::getDatabaseName() }}</span>
                         </x-slot:end>
                     </x-bs::list.item>
                     <x-bs::list.item class="flex-wrap">
-                         <span class="me-3">{{ __('Database host') }}</span>
+                        <span class="me-3">{{ __('Database host') }}</span>
                         <x-slot:end>
                             <span class="text-end">{{ DB::getConfig('host') }}:{{ DB::getConfig('port') }}</span>
                         </x-slot:end>
                     </x-bs::list.item>
                     <x-bs::list.item class="flex-wrap">
-                         <span class="me-3">{{ __('Character set') }}</span>
+                        <span class="me-3">{{ __('Character set') }}</span>
                         <x-slot:end>
                             <span class="text-end">{{ DB::getConfig('collation') ?? DB::getConfig('charset') }}</span>
                         </x-slot:end>
                     </x-bs::list.item>
                     <x-bs::list.item class="flex-wrap">
-                         <span class="me-3">{{ __('Database server type and version') }}</span>
+                        <span class="me-3">{{ __('Database server type and version') }}</span>
                         <x-slot:end>
                             <span class="text-end">{{ DB::getDriverTitle() }} {{ DB::getServerVersion() }}</span>
                         </x-slot:end>

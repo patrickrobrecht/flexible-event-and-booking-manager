@@ -36,10 +36,11 @@
 
                             $canViewUsers = $loggedInUser->can('viewAny', App\Models\User::class);
                             $canViewUserRoles = $loggedInUser->can('viewAny', App\Models\UserRole::class);
+                            $canViewSystemInformation = $loggedInUser->can('viewSystemInformation', \App\Models\User::class);
 
                             $canAdmin = $canViewEvents || $canViewEventSeries
                                 || $canViewOrganizations || $canViewLocations
-                                || $canViewUsers || $canViewUserRoles;
+                                || $canViewUsers || $canViewUserRoles || $canViewSystemInformation;
                         @endphp
                         @if($canAdmin)
                             <x-bs::nav.item id="navbarAdminDropdown">
@@ -82,6 +83,12 @@
                                     @if($canViewUserRoles)
                                         <x-bs::dropdown.item href="{{ route('user-roles.index') }}">
                                             <i class="fa fa-fw fa-user-group"></i> {{ __('User roles') }}
+                                        </x-bs::dropdown.item>
+                                    @endif
+                                    @if($canViewSystemInformation)
+                                        <li class="dropdown-divider"></li>
+                                        <x-bs::dropdown.item href="{{ route('system-info.index') }}">
+                                            <i class="fa fa-fw fa-cog"></i> {{ __('System information') }}
                                         </x-bs::dropdown.item>
                                     @endif
                                 </x-slot:dropdown>

@@ -69,10 +69,12 @@ enum Ability: string
     case ViewUsers = 'users.view';
     case CreateUsers = 'users.create';
     case EditUsers = 'users.edit';
+    case DestroyUsers = 'users.destroy';
 
     case ViewUserRoles = 'user_roles.view';
     case CreateUserRoles = 'user_roles.create';
     case EditUserRoles = 'user_roles.edit';
+    case DestroyUserRoles = 'user_roles.destroy';
 
     case ViewAccount = 'users.view_account';
     case ViewAbilities = 'users.view_account.abilities';
@@ -133,10 +135,12 @@ enum Ability: string
 
             // Users and abilities
             self::CreateUsers,
-            self::EditUsers => self::ViewUsers,
+            self::EditUsers,
+            self::DestroyUsers => self::ViewUsers,
 
             self::CreateUserRoles,
-            self::EditUserRoles => self::ViewUserRoles,
+            self::EditUserRoles,
+            self::DestroyUserRoles => self::ViewUserRoles,
 
             self::EditAccount => self::ViewAccount,
 
@@ -201,10 +205,12 @@ enum Ability: string
             // Users and abilities
             self::ViewUsers,
             self::CreateUsers,
-            self::EditUsers => AbilityGroup::Users,
+            self::EditUsers,
+            self::DestroyUsers => AbilityGroup::Users,
             self::ViewUserRoles,
             self::CreateUserRoles,
-            self::EditUserRoles => AbilityGroup::UserRoles,
+            self::EditUserRoles,
+            self::DestroyUserRoles => AbilityGroup::UserRoles,
             self::ViewAccount,
             self::ViewAbilities,
             self::EditAccount => AbilityGroup::OwnAccount,
@@ -279,10 +285,12 @@ enum Ability: string
             self::ViewUsers => __('View users'),
             self::CreateUsers => __('Create users'),
             self::EditUsers => __('Edit users'),
+            self::DestroyUsers => __('Delete users permanently'),
 
             self::ViewUserRoles => __('View user roles'),
             self::CreateUserRoles => __('Create user roles'),
             self::EditUserRoles => __('Edit user roles'),
+            self::DestroyUserRoles => __('Delete user roles permanently'),
 
             self::ViewAccount => __('View own account'),
             self::ViewAbilities => __('View abilities'),

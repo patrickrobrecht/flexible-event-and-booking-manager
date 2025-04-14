@@ -17,6 +17,7 @@ use App\Models\Group;
 use App\Models\Location;
 use App\Models\Organization;
 use App\Models\User;
+use App\Models\UserRole;
 use Closure;
 use Database\Factories\BookingFactory;
 use Database\Factories\BookingOptionFactory;
@@ -27,6 +28,7 @@ use Database\Factories\FormFieldValueFactory;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -271,5 +273,28 @@ trait GeneratesTestData
             ->count(fake()->numberBetween(2, 5))
             ->create()
             ->each(fn ($user) => self::createBookingsForUser($bookingOption, $user));
+    }
+
+    public static function createUserWithUserRole(UserRole $userRole): User
+    {
+        return User::factory()
+            ->hasAttached($userRole)
+            ->create();
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public static function makeData(Factory $factory): array
+    {
+        return $factory->makeOne()->toArray();
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public static function makeDataWithout(Factory $factory, array $without = []): array
+    {
+        return Arr::except(self::makeData($factory), $without);
     }
 }

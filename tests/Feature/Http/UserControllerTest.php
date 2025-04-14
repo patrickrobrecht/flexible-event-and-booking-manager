@@ -45,7 +45,7 @@ class UserControllerTest extends TestCase
         $this->assertUserCanGetOnlyWithAbility('/users/create', Ability::CreateUsers);
     }
 
-    public function testUserCanStoreUserWithCorrectAbility(): void
+    public function testUserCanStoreUserOnlyWithCorrectAbility(): void
     {
         $this->actingAsUserWithAbility(Ability::CreateUsers);
 
@@ -103,16 +103,26 @@ class UserControllerTest extends TestCase
     public function testUserCanUpdateUserOnlyWithCorrectAbility(): void
     {
         $user = $this->createRandomUser();
-        $data = User::factory()->makeOne()->toArray();
+        $data = self::makeData(User::factory());
 
         $editRoute = "/users/{$user->id}/edit";
         $this->assertUserCanPutOnlyWithAbility("/users/{$user->id}", $data, Ability::EditUsers, $editRoute, $editRoute);
     }
 
+    public function testUserCanDeleteUsersOnlyWithCorrectAbility(): void
+    {
+        $userRole = UserRole::factory()->create();
+        $user = self::createUserWithUserRole($userRole);
+
+        $this->assertDatabaseHas('users', ['id' => $user->id]);
+        $this->assertDatabaseHas('user_user_role', ['user_role_id' => $user->id,'user_id' => $user->id]);
+        $this->assertUserCanDeleteOnlyWithAbility("/users/{$user->id}", Ability::DestroyUsers, '/users');
+        $this->assertDatabaseMissing('user_user_role', ['user_role_id' => $userRole->id,'user_id' => $user->id]);
+        $this->assertDatabaseMissing('users', ['id' => $user->id]);
+    }
+
     private function createRandomUser(): User
     {
-        return User::factory()
-            ->has(UserRole::factory()->count(2))
-            ->create();
+        return User::factory()->create();
     }
 }

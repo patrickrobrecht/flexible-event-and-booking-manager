@@ -184,6 +184,14 @@ trait ActsAsUser
             ->assertRedirect($redirectRoute);
     }
 
+    protected function assertUserCannotDeleteDespiteAbility(string $route, Ability|array $ability, ?string $message): void
+    {
+        $this->actingAsUserWithAbility($ability);
+        $this->delete($route)
+            ->assertForbidden()
+            ->assertSee($message);
+    }
+
     protected function createUserRoleWithAbility(Ability|array $ability): UserRole
     {
         if (is_array($ability)) {

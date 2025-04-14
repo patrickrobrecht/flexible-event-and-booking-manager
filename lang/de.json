@@ -16,7 +16,7 @@
     ":name cannot be deleted because (s)he is responsible for :count events.": "{1} :name kann nicht gelöscht werden, weil er\/sie für :count Veranstaltung verantwortlich ist. |[2,*] :name kann nicht gelöscht werden, weil er\/sie für :count Veranstaltungen verantwortlich ist.",
     ":name cannot be deleted because (s)he is responsible for :count organizations.": "{1} :name kann nicht gelöscht werden, weil er\/sie für :count Organisation verantwortlich ist. |[2,*] :name kann nicht gelöscht werden, weil er\/sie für :count Organisationen verantwortlich ist.",
     ":name cannot be deleted because (s)he uploaded :count documents.": "{1} :name kann nicht gelöscht werden, weil er\/sie :count Dokument hochgeladen hat. |[2,*] :name kann nicht gelöscht werden, weil er\/sie :count Dokumente hochgeladen hat.",
-    ":name cannot be deleted because it is your own account.": ":name kann nicht gelöscht werden, da es sich um das eigene Konto handelt",
+    ":name cannot be deleted because it is your own account.": ":name kann nicht gelöscht werden, da es sich um das eigene Konto handelt.",
     ":name commented at :created_at.": ":name kommentierte am :created_at.",
     ":name created successfully.": ":name erfolgreich erstellt.",
     ":name deleted successfully.": ":name erfolgreich gelöscht.",

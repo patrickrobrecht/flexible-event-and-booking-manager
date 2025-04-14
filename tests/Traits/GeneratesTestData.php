@@ -267,6 +267,17 @@ trait GeneratesTestData
             ->create();
     }
 
+    public static function createUserResponsibleFor(Event|EventSeries|Organization $responsibleFor): User
+    {
+        return User::factory()
+            ->hasAttached($responsibleFor, ['publicly_visible' => true], match ($responsibleFor::class) {
+                Event::class => 'responsibleForEvents',
+                EventSeries::class => 'responsibleForEventSeries',
+                Organization::class => 'responsibleForOrganizations',
+            })
+            ->create();
+    }
+
     protected static function createUsersWithBookings(BookingOption $bookingOption): Collection
     {
         return User::factory()

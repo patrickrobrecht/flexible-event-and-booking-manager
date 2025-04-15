@@ -140,7 +140,8 @@ class UserControllerTest extends TestCase
     {
         $user = $userProvider();
 
-        $this->assertUserCannotDeleteDespiteAbility("/users/{$user->id}", [Ability::ViewUsers, Ability::DestroyUsers], $message);
+        $this->assertUserCannotDeleteDespiteAbility("/users/{$user->id}", [Ability::ViewUsers, Ability::DestroyUsers], null)
+            ->assertSee($message);
     }
 
     /**

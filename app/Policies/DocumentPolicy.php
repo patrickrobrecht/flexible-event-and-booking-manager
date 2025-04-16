@@ -139,9 +139,9 @@ class DocumentPolicy
         }
 
         return match ($document->reference::class) {
-            Event::class => $this->requireAbility($user, Ability::DeleteDocumentsOfEvents),
-            EventSeries::class => $this->requireAbility($user, Ability::DeleteDocumentsOfEventSeries),
-            Organization::class => $this->requireAbility($user, Ability::DeleteDocumentsOfOrganizations),
+            Event::class => $this->requireAbility($user, Ability::DestroyDocumentsOfEvents),
+            EventSeries::class => $this->requireAbility($user, Ability::DestroyDocumentsOfEventSeries),
+            Organization::class => $this->requireAbility($user, Ability::DestroyDocumentsOfOrganizations),
             default => $this->deny(),
         };
     }

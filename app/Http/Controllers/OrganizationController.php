@@ -46,7 +46,7 @@ class OrganizationController extends Controller
 
         $organization = new Organization();
         if ($organization->fillAndSave($request->validated())) {
-            Session::flash('success', __('Created successfully.'));
+            Session::flash('success', __(':name created successfully.', ['name' => $organization->name]));
             return redirect(route('organizations.edit', $organization));
         }
 
@@ -79,11 +79,23 @@ class OrganizationController extends Controller
         $this->authorize('update', $organization);
 
         if ($organization->fillAndSave($request->validated())) {
-            Session::flash('success', __('Saved successfully.'));
+            Session::flash('success', __(':name saved successfully.', ['name' => $organization->name]));
         }
 
         // Slug may have changed, so we need to generate the URL here!
         return redirect(route('organizations.edit', $organization));
+    }
+
+    public function destroy(Organization $organization): RedirectResponse
+    {
+        $this->authorize('forceDelete', $organization);
+
+        if ($organization->delete()) {
+            Session::flash('success', __(':name deleted successfully.', ['name' => $organization->name]));
+            return redirect(route('organizations.index'));
+        }
+
+        return back();
     }
 
     private function formValues(array $values = []): array

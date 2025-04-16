@@ -82,6 +82,24 @@ class OrganizationPolicy
      */
     public function forceDelete(User $user, Organization $organization): Response
     {
-        return $this->deny();
+        $eventsCount = $organization->events_count ?? $organization->events()->count();
+        if ($eventsCount >= 1) {
+            return $this->deny(
+                formatTransChoice(':name cannot be deleted because the organization is referenced by :count events.', $eventsCount, [
+                    'name' => $organization->name,
+                ])
+            );
+        }
+
+        $eventsSeriesCount = $organization->events_series_count ?? $organization->eventSeries()->count();
+        if ($eventsSeriesCount >= 1) {
+            return $this->deny(
+                formatTransChoice(':name cannot be deleted because the organization is referenced by :count event series.', $eventsSeriesCount, [
+                    'name' => $organization->name,
+                ])
+            );
+        }
+
+        return $this->requireAbility($user, Ability::DestroyOrganizations);
     }
 }

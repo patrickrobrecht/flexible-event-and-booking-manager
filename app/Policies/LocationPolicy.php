@@ -65,6 +65,24 @@ class LocationPolicy
      */
     public function forceDelete(User $user, Location $location): Response
     {
-        return $this->deny();
+        $eventsCount = $location->events_count ?? $location->events()->count();
+        if ($eventsCount >= 1) {
+            return $this->deny(
+                formatTransChoice(':name cannot be deleted because the location is referenced by :count events.', $eventsCount, [
+                    'name' => $location->name,
+                ])
+            );
+        }
+
+        $organizationsCount = $location->organizations_count ?? $location->organizations()->count();
+        if ($organizationsCount >= 1) {
+            return $this->deny(
+                formatTransChoice(':name cannot be deleted because the location is referenced by :count organizations.', $organizationsCount, [
+                    'name' => $location->name,
+                ])
+            );
+        }
+
+        return $this->requireAbility($user, Ability::DestroyLocations);
     }
 }

@@ -151,11 +151,11 @@ class DocumentControllerTest extends TestCase
     public static function referenceClassesWithViewAndDeleteAbility(): array
     {
         return [
-            [fn () => self::createEvent(Visibility::Public), Ability::ViewEvents, Ability::DeleteDocumentsOfEvents],
-            [fn () => self::createEvent(Visibility::Private), Ability::ViewPrivateEvents, Ability::DeleteDocumentsOfEvents],
-            [fn () => self::createEventSeries(Visibility::Public), Ability::ViewEventSeries, Ability::DeleteDocumentsOfEventSeries],
-            [fn () => self::createEventSeries(Visibility::Private), Ability::ViewPrivateEventSeries, Ability::DeleteDocumentsOfEventSeries],
-            [fn () => self::createOrganization(), Ability::ViewOrganizations, Ability::DeleteDocumentsOfOrganizations],
+            [fn () => self::createEvent(Visibility::Public), Ability::ViewEvents, Ability::DestroyDocumentsOfEvents],
+            [fn () => self::createEvent(Visibility::Private), Ability::ViewPrivateEvents, Ability::DestroyDocumentsOfEvents],
+            [fn () => self::createEventSeries(Visibility::Public), Ability::ViewEventSeries, Ability::DestroyDocumentsOfEventSeries],
+            [fn () => self::createEventSeries(Visibility::Private), Ability::ViewPrivateEventSeries, Ability::DestroyDocumentsOfEventSeries],
+            [fn () => self::createOrganization(), Ability::ViewOrganizations, Ability::DestroyDocumentsOfOrganizations],
         ];
     }
 }

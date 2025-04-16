@@ -160,6 +160,11 @@
                                     {{ __('Create event series') }}
                                 </x-button.create>
                             @endcan
+                            @can('forceDelete', $eventSeriesItem)
+                                <x-form.delete-modal :id="$eventSeriesItem->id"
+                                                     :name="$eventSeriesItem->name"
+                                                     :route="route('event-series.destroy', $eventSeriesItem)"/>
+                            @endcan
                         </div>
                     @endcanany
                     <div class="card-footer">

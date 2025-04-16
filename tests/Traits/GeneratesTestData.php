@@ -189,16 +189,24 @@ trait GeneratesTestData
             ->create();
     }
 
-    protected static function createEvent(?Visibility $visibility = null): Event
+    protected static function createEvent(?Visibility $visibility = null, int $subEventsCount = 0): Event
     {
+        $organization = self::createOrganization();
         return Event::factory()
             ->visibility($visibility)
             ->for(self::createLocation())
-            ->for(self::createOrganization())
+            ->for($organization)
+            ->has(
+                Event::factory()
+                    ->for(self::createLocation())
+                    ->for($organization)
+                    ->count($subEventsCount),
+                'subEvents'
+            )
             ->create();
     }
 
-    protected static function createEventWithBookingOptions(?Visibility $visibility = null): Event
+    protected static function createEventWithBookingOptions(?Visibility $visibility = null, ?int $bookingOptionCount = null): Event
     {
         $event = Event::factory()
             ->visibility($visibility)
@@ -206,7 +214,7 @@ trait GeneratesTestData
             ->for(self::createOrganization())
             ->has(
                 BookingOption::factory()
-                    ->count(fake()->numberBetween(3, 5))
+                    ->count($bookingOptionCount ?? fake()->numberBetween(3, 5))
             )
             ->create();
 
@@ -226,7 +234,7 @@ trait GeneratesTestData
         return $event;
     }
 
-    protected static function createEventSeries(?Visibility $visibility = null): EventSeries
+    protected static function createEventSeries(?Visibility $visibility = null, ?int $eventsCount = null, int $subEventSeriesCount = 0): EventSeries
     {
         $organization = self::createOrganization();
         return EventSeries::factory()
@@ -235,7 +243,13 @@ trait GeneratesTestData
                 Event::factory()
                     ->for(self::createLocation())
                     ->for($organization)
-                    ->count(fake()->numberBetween(1, 5))
+                    ->count($eventsCount ?? fake()->numberBetween(1, 5))
+            )
+            ->has(
+                EventSeries::factory()
+                    ->for($organization)
+                    ->count($subEventSeriesCount),
+                'subEventSeries'
             )
             ->visibility($visibility)
             ->create();

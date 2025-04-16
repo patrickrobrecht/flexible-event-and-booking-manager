@@ -25,10 +25,12 @@ class UserController extends Controller
                 ])
                 ->withCount([
                     'bookings',
+                    'bookingsTrashed',
                     'documents',
                     'responsibleForEvents',
                     'responsibleForEventSeries',
                     'responsibleForOrganizations',
+                    'tokens',
                 ])
                 ->paginate(12),
         ]));
@@ -47,7 +49,7 @@ class UserController extends Controller
 
         $user = new User();
         if ($user->fillAndSave($request->validated())) {
-            Session::flash('success', __('Created successfully.'));
+            Session::flash('success', __(':name created successfully.', ['name' => $user->name]));
             if ($request->validated('send_notification')) {
                 $user->sendAccountCreatedNotification();
             }
@@ -80,7 +82,19 @@ class UserController extends Controller
         $this->authorize('update', $user);
 
         if ($user->fillAndSave($request->validated())) {
-            Session::flash('success', __('Saved successfully.'));
+            Session::flash('success', __(':name saved successfully.', ['name' => $user->name]));
+        }
+
+        return back();
+    }
+
+    public function destroy(User $user): RedirectResponse
+    {
+        $this->authorize('forceDelete', $user);
+
+        if ($user->deleteWithRelations()) {
+            Session::flash('success', __(':name deleted successfully.', ['name' => $user->name]));
+            return redirect(route('users.index'));
         }
 
         return back();

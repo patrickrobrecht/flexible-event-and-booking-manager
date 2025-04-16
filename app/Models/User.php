@@ -46,6 +46,8 @@ use Spatie\QueryBuilder\Enums\SortDirection;
  * @property ?Carbon $last_login_at
  *
  * @property-read Collection|Booking[] $bookings {@see self::bookings()}
+ * @property-read Collection|Booking[] $bookingsTrashed {@see self::bookingsTrashed()}
+ * @property-read Collection|Document[] $documents {@see self::documents()}
  * @property-read Collection|Event[] $responsibleForEvents {@see self::responsibleForEvents()}
  * @property-read Collection|EventSeries[] $responsibleForEventSeries {@see self::responsibleForEventSeries()}
  * @property-read Collection|Organization[] $responsibleForOrganizations {@see self::responsibleForOrganizations()}
@@ -103,6 +105,14 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
         'status' => ActiveStatus::class,
         'last_login_at' => 'datetime',
+        // counts
+        'bookings_count' => 'integer',
+        'bookings_trashed_count' => 'integer',
+        'documents_count' => 'integer',
+        'responsible_for_events_count' => 'integer',
+        'responsible_for_event_series_count' => 'integer',
+        'responsible_for_organizations_count' => 'integer',
+        'tokens_count' => 'integer',
     ];
 
     public function bookings(): HasMany
@@ -110,6 +120,12 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Booking::class, 'booked_by_user_id')
             ->orderByDesc('booked_at')
             ->orderByDesc('created_at');
+    }
+
+    public function bookingsTrashed(): HasMany
+    {
+        return $this->bookings()
+            ->onlyTrashed();
     }
 
     public function documents(): HasMany
@@ -170,6 +186,13 @@ class User extends Authenticatable implements MustVerifyEmail
     public function scopeUserRole(Builder $query, $userRoleId): Builder
     {
         return $this->scopeRelation($query, $userRoleId, 'userRoles', fn (Builder $q) => $q->where('user_role_id', '=', $userRoleId));
+    }
+
+    public function deleteWithRelations(): bool
+    {
+        $this->userRoles()->detach();
+        $this->tokens()->delete();
+        return $this->delete();
     }
 
     public function fillAndSave(array $validatedData): bool

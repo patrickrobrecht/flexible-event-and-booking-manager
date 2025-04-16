@@ -11,8 +11,10 @@ use App\Models\Event;
 use App\Models\Location;
 use App\Models\Organization;
 use App\Policies\LocationPolicy;
+use Closure;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 use Tests\Traits\GeneratesTestData;
 
@@ -58,6 +60,38 @@ class LocationControllerTest extends TestCase
 
         $editRoute = "/locations/{$location->id}/edit";
         $this->assertUserCanPutOnlyWithAbility("/locations/{$location->id}", $data, Ability::EditLocations, $editRoute, $editRoute);
+    }
+
+    public function testUserCanDeleteLocationsOnlyWithCorrectAbility(): void
+    {
+        $location = self::createLocation();
+
+        $this->assertDatabaseHas('locations', ['id' => $location->id]);
+        $this->assertUserCanDeleteOnlyWithAbility("/locations/{$location->id}", Ability::DestroyLocations, '/locations');
+        $this->assertDatabaseMissing('locations', ['id' => $location->id]);
+    }
+
+    /**
+     * @param Closure(): Location $locationProvider
+     */
+    #[DataProvider('locationsWithReferences')]
+    public function testUserCannotDeleteLocationBecauseOfReferences(Closure $locationProvider, string $message): void
+    {
+        $location = $locationProvider();
+
+        $this->assertUserCannotDeleteDespiteAbility("/locations/{$location->id}", [Ability::ViewOrganizations, Ability::DestroyLocations], null)
+            ->assertSee($message);
+    }
+
+    /**
+     * @return array<int, array{Closure(): Location, string}>
+     */
+    public static function locationsWithReferences(): array
+    {
+        return [
+            [fn () => self::createEvent()->location, 'kann nicht gelöscht werden, weil der Standort von 1 Veranstaltung referenziert wird.'],
+            [fn () => self::createOrganization()->location, 'kann nicht gelöscht werden, weil der Standort von 1 Veranstaltung referenziert wird.'],
+        ];
     }
 
     private function createRandomLocation(): Location

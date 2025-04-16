@@ -12,9 +12,11 @@ use App\Models\User;
 use App\Models\UserRole;
 use App\Notifications\AccountCreatedNotification;
 use App\Policies\UserPolicy;
+use Closure;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 #[CoversClass(AccountCreatedNotification::class)]
@@ -45,7 +47,7 @@ class UserControllerTest extends TestCase
         $this->assertUserCanGetOnlyWithAbility('/users/create', Ability::CreateUsers);
     }
 
-    public function testUserCanStoreUserWithCorrectAbility(): void
+    public function testUserCanStoreUserOnlyWithCorrectAbility(): void
     {
         $this->actingAsUserWithAbility(Ability::CreateUsers);
 
@@ -103,16 +105,61 @@ class UserControllerTest extends TestCase
     public function testUserCanUpdateUserOnlyWithCorrectAbility(): void
     {
         $user = $this->createRandomUser();
-        $data = User::factory()->makeOne()->toArray();
+        $data = self::makeData(User::factory());
 
         $editRoute = "/users/{$user->id}/edit";
         $this->assertUserCanPutOnlyWithAbility("/users/{$user->id}", $data, Ability::EditUsers, $editRoute, $editRoute);
     }
 
+    public function testUserCanDeleteUsersOnlyWithCorrectAbility(): void
+    {
+        $userRole = UserRole::factory()->create();
+        $user = self::createUserWithUserRole($userRole);
+
+        $this->assertDatabaseHas('users', ['id' => $user->id]);
+        $this->assertDatabaseHas('user_user_role', ['user_role_id' => $user->id,'user_id' => $user->id]);
+        $this->assertUserCanDeleteOnlyWithAbility("/users/{$user->id}", Ability::DestroyUsers, '/users');
+        $this->assertDatabaseMissing('user_user_role', ['user_role_id' => $userRole->id,'user_id' => $user->id]);
+        $this->assertDatabaseMissing('users', ['id' => $user->id]);
+    }
+
+    public function testUserCannotDeleteHimself(): void
+    {
+        $user = $this->actingAsUserWithAbility(Ability::DestroyUsers);
+
+        $this->delete("/users/{$user->id}")
+            ->assertForbidden()
+            ->assertSee('kann nicht gelöscht werden, da es sich um das eigene Konto handelt.');
+    }
+
+    /**
+     * @param Closure(): User $userProvider
+     */
+    #[DataProvider('usersWithReferences')]
+    public function testUserCannotBeDeletedBecauseOfReferences(Closure $userProvider, string $message): void
+    {
+        $user = $userProvider();
+
+        $this->assertUserCannotDeleteDespiteAbility("/users/{$user->id}", [Ability::ViewUsers, Ability::DestroyUsers], null)
+            ->assertSee($message);
+    }
+
+    /**
+     * @return array<int, array{Closure(): User, string}>
+     */
+    public static function usersWithReferences(): array
+    {
+        return [
+            [fn () => self::createBooking()->bookedByUser, 'kann nicht gelöscht werden, weil er/sie 1 Anmeldung hat.'],
+            [fn () => self::createDocument(static fn () => self::createEvent())->uploadedByUser, 'kann nicht gelöscht werden, weil er/sie 1 Dokument hochgeladen hat.'],
+            [fn () => self::createUserResponsibleFor(self::createEvent()), 'kann nicht gelöscht werden, weil er/sie für 1 Veranstaltung verantwortlich ist.'],
+            [fn () => self::createUserResponsibleFor(self::createEventSeries()), 'kann nicht gelöscht werden, weil er/sie für 1 Veranstaltungsreihe verantwortlich ist.'],
+            [fn () => self::createUserResponsibleFor(self::createOrganization()), 'kann nicht gelöscht werden, weil er/sie für 1 Organisation verantwortlich ist.  '],
+        ];
+    }
+
     private function createRandomUser(): User
     {
-        return User::factory()
-            ->has(UserRole::factory()->count(2))
-            ->create();
+        return User::factory()->create();
     }
 }

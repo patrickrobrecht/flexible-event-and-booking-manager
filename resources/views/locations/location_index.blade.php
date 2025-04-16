@@ -101,11 +101,18 @@
                             </x-slot:end>
                         </x-bs::list.item>
                     </x-bs::list>
-                    @can('update', $location)
+                    @canany(['update', 'forceDelete'], $location)
                         <div class="card-body">
-                            <x-button.edit href="{{ route('locations.edit', $location) }}"/>
+                            @can('update', $location)
+                                <x-button.edit href="{{ route('locations.edit', $location) }}"/>
+                            @endcan
+                            @can('forceDelete', $location)
+                                <x-form.delete-modal :id="$location->id"
+                                                 :name="$location->name"
+                                                 :route="route('locations.destroy', $location)"/>
+                            @endcan
                         </div>
-                    @endcan
+                    @endcanany
                     <div class="card-footer">
                         <x-text.updated-human-diff :model="$location"/>
                     </div>

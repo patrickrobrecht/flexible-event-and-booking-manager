@@ -92,7 +92,7 @@ class EventController extends Controller
 
         $event = new Event();
         if ($event->fillAndSave($request->validated())) {
-            Session::flash('success', __('Created successfully.'));
+            Session::flash('success', __(':name created successfully.', ['name' => $event->name]));
             return redirect(route('events.edit', $event));
         }
 
@@ -113,11 +113,23 @@ class EventController extends Controller
         $this->authorize('update', $event);
 
         if ($event->fillAndSave($request->validated())) {
-            Session::flash('success', __('Saved successfully.'));
+            Session::flash('success', __(':name saved successfully.', ['name' => $event->name]));
         }
 
         // Slug may have changed, so we need to generate the URL here!
         return redirect(route('events.edit', $event));
+    }
+
+    public function destroy(Event $event): RedirectResponse
+    {
+        $this->authorize('forceDelete', $event);
+
+        if ($event->deleteWithGroups()) {
+            Session::flash('success', __(':name deleted successfully.', ['name' => $event->name]));
+            return redirect(route('events.index'));
+        }
+
+        return back();
     }
 
     private function formValues(array $values = []): array

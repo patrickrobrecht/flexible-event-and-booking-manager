@@ -90,7 +90,7 @@ class EventSeriesController extends Controller
 
         $eventSeries = new EventSeries();
         if ($eventSeries->fillAndSave($request->validated())) {
-            Session::flash('success', __('Created successfully.'));
+            Session::flash('success', __(':name created successfully.', ['name' => $eventSeries->name]));
             return redirect(route('event-series.edit', $eventSeries));
         }
 
@@ -117,11 +117,23 @@ class EventSeriesController extends Controller
         $this->authorize('update', $eventSeries);
 
         if ($eventSeries->fillAndSave($request->validated())) {
-            Session::flash('success', __('Saved successfully.'));
+            Session::flash('success', __(':name saved successfully.', ['name' => $eventSeries->name]));
         }
 
         // Slug may have changed, so we need to generate the URL here!
         return redirect(route('event-series.edit', $eventSeries));
+    }
+
+    public function destroy(EventSeries $eventSeries): RedirectResponse
+    {
+        $this->authorize('forceDelete', $eventSeries);
+
+        if ($eventSeries->delete()) {
+            Session::flash('success', __(':name deleted successfully.', ['name' => $eventSeries->name]));
+            return redirect(route('event-series.index'));
+        }
+
+        return back();
     }
 
     private function formValues(): array

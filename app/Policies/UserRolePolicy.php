@@ -65,6 +65,6 @@ class UserRolePolicy
      */
     public function forceDelete(User $user, UserRole $userRole): Response
     {
-        return $this->deny();
+        return $this->requireAbility($user, Ability::DestroyUserRoles);
     }
 }

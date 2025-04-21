@@ -134,7 +134,12 @@
                         <x-bs::list.item>
                             <span class="text-nowrap"><i class="fa fa-fw fa-file-contract"></i> <a href="{{ $showRouteUrl }}#bookings">{{ __('Bookings') }}</a></span>
                             <x-slot:end>
-                                <x-bs::badge>{{ formatInt($user->bookings_count) }}</x-bs::badge>
+                                <span>
+                                    <x-bs::badge>{{ formatInt($user->bookings_count) }}</x-bs::badge>
+                                    @if($user->bookings_trashed_count > 0)
+                                        <x-bs::badge variant="danger">+&nbsp;{{ formatInt($user->bookings_trashed_count) }} {{ __('trashed') }}</x-bs::badge>
+                                    @endif
+                                </span>
                             </x-slot:end>
                         </x-bs::list.item>
                         <x-bs::list.item>
@@ -154,11 +159,27 @@
                             </x-slot:end>
                         </x-bs::list.item>
                     </x-bs::list>
-                    @can('update', $user)
+                    @canany(['update', 'forceDelete'], $user)
                         <div class="card-body">
-                            <x-button.edit href="{{ route('users.edit', $user) }}"/>
+                            @can('update', $user)
+                                <x-button.edit href="{{ route('users.edit', $user) }}"/>
+                            @endcan
+                            @can('forceDelete', $user)
+                                @php
+                                    $hint = null;
+                                    if ($user->tokens_count) {
+                                        $hint = formatTransChoice(':name has :count personal access tokens which will be deleted with the account.', $user->tokens_count, [
+                                            'name' => $user->name,
+                                        ]);
+                                    }
+                                @endphp
+                                <x-form.delete-modal :id="$user->id"
+                                                     :name="$user->name"
+                                                     :hint="$hint"
+                                                     :route="route('users.destroy', $user)"/>
+                            @endcan
                         </div>
-                    @endcan
+                    @endcanany
                     <div class="card-footer">
                         <x-text.updated-human-diff :model="$user"/>
                     </div>

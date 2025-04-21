@@ -161,6 +161,12 @@ class Event extends Model
         };
     }
 
+    public function deleteWithGroups(): bool
+    {
+        $this->groups()->delete();
+        return $this->delete();
+    }
+
     public function fillAndSave(array $validatedData): bool
     {
         $this->fill($validatedData);

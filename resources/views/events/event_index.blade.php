@@ -209,6 +209,11 @@
                                 {{ __('Create event') }}
                             </x-button.create>
                         @endcan
+                        @can('forceDelete', $event)
+                            <x-form.delete-modal :id="$event->id"
+                                                 :name="$event->name"
+                                                 :route="route('events.destroy', $event)"/>
+                        @endcan
                     </div>
                     <div class="card-footer">
                         <x-text.updated-human-diff :model="$event"/>

@@ -62,7 +62,7 @@ Route::middleware('auth')->group(static function () {
 
     Route::model('event', Event::class);
     Route::resource('events', EventController::class)
-        ->only(['index', 'create', 'store', 'edit', 'update']);
+        ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
     Route::prefix('events/{event:slug}')->group(function () {
         Route::resource('{booking_option:slug}/bookings', BookingController::class)
             ->only(['index']);
@@ -88,7 +88,7 @@ Route::middleware('auth')->group(static function () {
 
     Route::model('event_series', EventSeries::class);
     Route::resource('event-series', EventSeriesController::class)
-        ->only(['index', 'create', 'store', 'edit', 'update']);
+        ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
     Route::prefix('event-series/{event_series:slug}')->group(function () {
         Route::post('documents', [DocumentController::class, 'storeForEventSeries'])
             ->name('event-series.documents.store');
@@ -96,11 +96,11 @@ Route::middleware('auth')->group(static function () {
 
     Route::model('location', Location::class);
     Route::resource('locations', LocationController::class)
-        ->only(['index', 'create', 'store', 'edit', 'update']);
+        ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
 
     Route::model('organization', Organization::class);
     Route::resource('organizations', OrganizationController::class)
-        ->only(['index', 'create', 'store', 'show', 'edit', 'update']);
+        ->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
     Route::prefix('organizations/{organization:slug}')->group(function () {
         Route::post('documents', [DocumentController::class, 'storeForOrganization'])
             ->name('organizations.documents.store');
@@ -112,11 +112,11 @@ Route::middleware('auth')->group(static function () {
 
     Route::model('user', User::class);
     Route::resource('users', UserController::class)
-        ->only(['index', 'create', 'store', 'show', 'edit', 'update']);
+        ->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
 
     Route::model('user_role', UserRole::class);
     Route::resource('user-roles', UserRoleController::class)
-        ->only(['index', 'create', 'store', 'show', 'edit', 'update']);
+        ->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
 
     // My Account
     Route::get('account', [AccountController::class, 'show'])

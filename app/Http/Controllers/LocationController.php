@@ -44,7 +44,7 @@ class LocationController extends Controller
 
         $location = new Location();
         if ($location->fillAndSave($request->validated())) {
-            Session::flash('success', __('Created successfully.'));
+            Session::flash('success', __(':name created successfully.', ['name' => $location->name]));
             return redirect(route('locations.edit', $location));
         }
 
@@ -65,7 +65,19 @@ class LocationController extends Controller
         $this->authorize('update', $location);
 
         if ($location->fillAndSave($request->validated())) {
-            Session::flash('success', __('Saved successfully.'));
+            Session::flash('success', __(':name saved successfully.', ['name' => $location->name]));
+        }
+
+        return back();
+    }
+
+    public function destroy(Location $location): RedirectResponse
+    {
+        $this->authorize('forceDelete', $location);
+
+        if ($location->delete()) {
+            Session::flash('success', __(':name deleted successfully.', ['name' => $location->name]));
+            return redirect(route('locations.index'));
         }
 
         return back();

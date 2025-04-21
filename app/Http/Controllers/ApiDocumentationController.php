@@ -13,14 +13,14 @@ class ApiDocumentationController extends Controller
 {
     public function index(): View
     {
-        $this->authorize('create', PersonalAccessToken::class);
+        $this->authorize('viewDocumentation', PersonalAccessToken::class);
 
         return view('docs.docs');
     }
 
     public function spec(): Response
     {
-        $this->authorize('create', PersonalAccessToken::class);
+        $this->authorize('viewDocumentation', PersonalAccessToken::class);
 
         return response()->make(self::getYamlFileContents(), SymfonyResponse::HTTP_OK, [
             'Content-Type: text/yaml',

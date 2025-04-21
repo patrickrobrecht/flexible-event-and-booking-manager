@@ -22,7 +22,6 @@ use Tests\Traits\GeneratesTestData;
 
 #[CoversClass(BookingOption::class)]
 #[CoversClass(BookingOptionController::class)]
-#[CoversClass(BookingOptionFactory::class)]
 #[CoversClass(BookingOptionPolicy::class)]
 #[CoversClass(BookingOptionRequest::class)]
 #[CoversClass(BookingRestriction::class)]

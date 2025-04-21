@@ -151,6 +151,12 @@ class Event extends Model
         };
     }
 
+    public function deleteWithGroups(): bool
+    {
+        $this->groups()->delete();
+        return $this->delete();
+    }
+
     /**
      * @param array<string, mixed> $validatedData
      */

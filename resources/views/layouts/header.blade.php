@@ -36,10 +36,11 @@
 
                             $canViewUsers = $loggedInUser->can('viewAny', App\Models\User::class);
                             $canViewUserRoles = $loggedInUser->can('viewAny', App\Models\UserRole::class);
+                            $canViewSystemInformation = $loggedInUser->can('viewSystemInformation', \App\Models\User::class);
 
                             $canAdmin = $canViewEvents || $canViewEventSeries
                                 || $canViewOrganizations || $canViewLocations
-                                || $canViewUsers || $canViewUserRoles;
+                                || $canViewUsers || $canViewUserRoles || $canViewSystemInformation;
                         @endphp
                         @if($canAdmin)
                             <x-bs::nav.item id="navbarAdminDropdown">
@@ -84,6 +85,12 @@
                                             <i class="fa fa-fw fa-user-group"></i> {{ __('User roles') }}
                                         </x-bs::dropdown.item>
                                     @endif
+                                    @if($canViewSystemInformation)
+                                        <li class="dropdown-divider"></li>
+                                        <x-bs::dropdown.item href="{{ route('system-info.index') }}">
+                                            <i class="fa fa-fw fa-cog"></i> {{ __('System information') }}
+                                        </x-bs::dropdown.item>
+                                    @endif
                                 </x-slot:dropdown>
                             </x-bs::nav.item>
                         @endif
@@ -102,6 +109,11 @@
                                 @can('viewOwn', \App\Models\PersonalAccessToken::class)
                                     <x-bs::dropdown.item href="{{ route('personal-access-tokens.index') }}">
                                         <i class="fa fa-fw fa-id-card-clip"></i> {{ __('Personal access tokens') }}
+                                    </x-bs::dropdown.item>
+                                @endcan
+                                @can('viewDocumentation', \App\Models\PersonalAccessToken::class)
+                                    <x-bs::dropdown.item href="{{ route('api-docs.index') }}">
+                                        <i class="fa fa-fw fa-file-code"></i> {{ __('API documentation') }}
                                     </x-bs::dropdown.item>
                                 @endcan
                                 <li>

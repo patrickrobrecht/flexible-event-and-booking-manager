@@ -12,6 +12,7 @@ use Illuminate\Foundation\Testing\Concerns\InteractsWithDatabase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -107,10 +108,7 @@ trait ActsAsUser
         self::assertTrue($user->cannot($ability, $arguments), "Failed to assert user cannot {$ability}");
     }
 
-    /**
-     * @param Ability|Ability[] $ability
-     */
-    protected function assertUserCanDeleteOnlyWithAbility(string $route, Ability|array $ability, ?string $redirectRoute): void
+    protected function assertUserCanDeleteOnlyWithAbility(string $route, Ability|array $ability, ?string $redirectRoute): TestResponse
     {
         // Cannot delete with all abilities except the required ones.
         $this->actingAsUserWithFullAbilitiesExcept($ability);
@@ -119,105 +117,109 @@ trait ActsAsUser
 
         // Can delete with correct ability.
         $this->actingAsUserWithAbility($ability);
-        $this->delete($route)
+        return $this->delete($route)
             ->assertRedirect($redirectRoute);
     }
 
-    /**
-     * @param Ability|Ability[] $ability
-     */
-    protected function assertUserCanGetOnlyWithAbility(string $route, Ability|array $ability, bool $guestRedirectedToLogin = true): void
+    protected function assertUserCannotDeleteDespiteAbility(string $route, Ability|array $ability, ?string $fromRoute): TestResponse
+    {
+        $from = isset($fromRoute) ? $this->from($fromRoute) : $this;
+
+        $this->actingAsUserWithAbility($ability);
+        return $from->delete($route)
+            ->assertForbidden();
+    }
+
+    protected function assertUserCanGetOnlyWithAbility(string $route, Ability|array $ability, bool $guestRedirectedToLogin = true): TestResponse
     {
         $this->assertGuestCannotGet($route, $guestRedirectedToLogin);
         $this->assertUserCannotGetWithoutAbility($route, $ability);
 
-        $this->assertUserCanGetWithAbility($route, $ability);
+        return $this->assertUserCanGetWithAbility($route, $ability);
     }
 
-    /**
-     * @param Ability|Ability[] $ability
-     */
-    protected function assertUserCanGetWithAbility(string $route, Ability|array $ability): void
+    protected function assertUserCanGetWithAbility(string $route, Ability|array $ability): TestResponse
     {
         $this->actingAsUserWithAbility($ability);
-        $this->get($route)->assertOk();
+        return $this->get($route)->assertOk();
     }
 
-    /**
-     * @param Ability|Ability[] $ability
-     */
-    protected function assertUserCannotGetDespiteAbility(string $route, Ability|array $ability): void
+    protected function assertUserCannotGetDespiteAbility(string $route, Ability $ability): TestResponse
     {
         $this->actingAsUserWithAbility($ability);
-        $this->get($route)->assertForbidden();
+        return $this->get($route)->assertForbidden();
     }
 
-    /**
-     * @param Ability|Ability[] $ability
-     */
-    protected function assertUserCannotGetWithoutAbility(string $route, Ability|array $ability): void
+    protected function assertUserCannotGetWithoutAbility(string $route, Ability|array $ability): TestResponse
     {
         $this->actingAsUserWithFullAbilitiesExcept($ability);
-        $this->get($route)->assertForbidden();
+        return $this->get($route)->assertForbidden();
     }
 
-    /**
-     * @param array<string, mixed> $data
-     * @param Ability|Ability[] $ability
-     */
-    protected function assertUserCanPostOnlyWithAbility(string $route, array $data, Ability|array $ability, ?string $redirectRoute): void
+    protected function assertUserCanPostOnlyWithAbility(string $route, array $data, Ability|array $ability, ?string $redirectRoute): TestResponse
     {
         // Cannot submit POST request with all abilities except the required ones.
         $this->actingAsUserWithFullAbilitiesExcept($ability);
         $this->post($route, $data)
             ->assertForbidden();
 
-        $this->assertUserCanPostWithAbility($route, $data, $ability, $redirectRoute);
+        return $this->assertUserCanPostWithAbility($route, $data, $ability, $redirectRoute);
     }
 
-    /**
-     * @param array<string, mixed> $data
-     * @param Ability|Ability[] $ability
-     */
-    protected function assertUserCanPostWithAbility(string $route, array $data, Ability|array $ability, ?string $redirectRoute): void
+    protected function assertUserCanPostWithAbility(string $route, array $data, Ability|array $ability, ?string $redirectRoute): TestResponse
     {
         $this->actingAsUserWithAbility($ability);
         /** @noinspection PhpUnhandledExceptionInspection */
-        $this->post($route, $data)
+        return $this->post($route, $data)
             ->assertSessionHasNoErrors()
             ->assertRedirect($redirectRoute);
     }
 
-    /**
-     * @param array<string, mixed> $data
-     * @param Ability|Ability[] $ability
-     */
-    protected function assertUserCanPutOnlyWithAbility(string $route, array $data, Ability|array $ability, ?string $fromRoute, ?string $redirectRoute): void
+    protected function assertUserCannotPostDespiteAbility(string $route, array $data, Ability|array $ability, ?string $fromRoute, ?string $redirectRoute): TestResponse
     {
-        $from = isset($fromRoute)
-            ? $this->from($fromRoute)
-            : $this;
+        $from = isset($fromRoute) ? $this->from($fromRoute) : $this;
+
+        $this->actingAsUserWithAbility($ability);
+        return $from->post($route, $data)
+            ->assertRedirect($redirectRoute);
+    }
+
+    protected function assertUserCanPutOnlyWithAbility(string $route, array $data, Ability|array $ability, ?string $fromRoute, ?string $redirectRoute, bool $requestCatchesProhibitedData = false): TestResponse
+    {
+        $from = isset($fromRoute) ? $this->from($fromRoute) : $this;
 
         // Cannot submit PUT request with all abilities except the required ones.
         $this->actingAsUserWithFullAbilitiesExcept($ability);
-        $from->put($route, $data)
-            ->assertForbidden();
 
-        $this->assertUserCanPutWithAbility($route, $data, $ability, $fromRoute, $redirectRoute);
+        // In case the request catches prohibited data the PUT request will be redirected to the edit view.
+        if ($requestCatchesProhibitedData) {
+            $from->put($route, $data)
+                ->assertRedirect();
+        }
+        // In case the request does not catch prohibited data the PUT request will be forbidden.
+        else {
+            $from->put($route, $data)
+                ->assertForbidden();
+        }
+
+        return $this->assertUserCanPutWithAbility($route, $data, $ability, $fromRoute, $redirectRoute);
     }
 
-    /**
-     * @param array<string, mixed> $data
-     * @param Ability|Ability[] $ability
-     */
-    protected function assertUserCanPutWithAbility(string $route, array $data, Ability|array $ability, ?string $fromRoute, ?string $redirectRoute): void
+    protected function assertUserCanPutWithAbility(string $route, array $data, Ability|array $ability, ?string $fromRoute, ?string $redirectRoute): TestResponse
     {
-        $from = isset($fromRoute)
-            ? $this->from($fromRoute)
-            : $this;
+        $from = isset($fromRoute) ? $this->from($fromRoute) : $this;
 
         $this->actingAsUserWithAbility($ability);
-        $from->put($route, $data)
+        return $from->put($route, $data)
+            ->assertRedirect($redirectRoute);
+    }
+
+    protected function assertUserCannotPutDespiteAbility(string $route, array $data, Ability|array $ability, ?string $fromRoute, ?string $redirectRoute): TestResponse
+    {
+        $from = isset($fromRoute) ? $this->from($fromRoute) : $this;
+
+        $this->actingAsUserWithAbility($ability);
+        return $from->put($route, $data)
             ->assertRedirect($redirectRoute);
     }
 
@@ -227,7 +229,7 @@ trait ActsAsUser
     protected function createUserRoleWithAbility(Ability|array $ability): UserRole
     {
         if (is_array($ability)) {
-            $abilities = $ability; #
+            $abilities = $ability;
             $userRoleName = 'With ' . implode(', ', Ability::values($ability));
         } else {
             $abilities = [$ability];

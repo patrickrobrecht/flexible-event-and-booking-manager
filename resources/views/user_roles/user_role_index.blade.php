@@ -74,11 +74,19 @@
                             </x-slot:end>
                         </x-bs::list.item>
                     </x-bs::list>
-                    @can('update', $userRole)
+                    @canany(['update', 'forceDelete'], $userRole)
                         <div class="card-body">
-                            <x-button.edit href="{{ route('user-roles.edit', $userRole) }}"/>
+                            @can('update', $userRole)
+                                <x-button.edit href="{{ route('user-roles.edit', $userRole) }}"/>
+                            @endcan
+                            @can('forceDelete', $userRole)
+                                <x-form.delete-modal :id="$userRole->id"
+                                                     :name="$userRole->name"
+                                                     :route="route('user-roles.destroy', $userRole)"
+                                                     :hint="__('By deleting the user role, the users with this role lose the abilities granted by this role.')"/>
+                            @endcan
                         </div>
-                    @endcan
+                    @endcanany
                     <div class="card-footer">
                         <x-text.updated-human-diff :model="$userRole"/>
                     </div>

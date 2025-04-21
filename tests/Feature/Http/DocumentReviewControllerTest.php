@@ -11,7 +11,6 @@ use App\Models\Document;
 use App\Models\DocumentReview;
 use App\Policies\DocumentReviewPolicy;
 use Closure;
-use Database\Factories\DocumentReviewFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -22,7 +21,6 @@ use Tests\Traits\GeneratesTestData;
 #[CoversClass(Document::class)]
 #[CoversClass(DocumentReview::class)]
 #[CoversClass(DocumentReviewController::class)]
-#[CoversClass(DocumentReviewFactory::class)]
 #[CoversClass(DocumentReviewPolicy::class)]
 #[CoversClass(DocumentReviewRequest::class)]
 class DocumentReviewControllerTest extends TestCase

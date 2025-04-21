@@ -3,21 +3,26 @@
 namespace App\Http\Requests;
 
 use App\Enums\Ability;
-use Illuminate\Contracts\Validation\ValidationRule;
+use App\Http\Requests\Traits\ValidatesAbilities;
+use App\Models\PersonalAccessToken;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Stringable;
+use Illuminate\Validation\Rule;
+use Stringable;
 
+/**
+ * @property-read ?PersonalAccessToken $personal_access_token
+ */
 class PersonalAccessTokenRequest extends FormRequest
 {
-    protected function prepareForValidation(): void
+    use ValidatesAbilities;
+
+    protected function getSelectableAbilities(): array
     {
-        $this->merge([
-            'abilities' => $this->input('abilities', []), // Force array!
-        ]);
+        return Ability::apiCases();
     }
 
     /**
-     * @return array<string, array<string|Stringable|ValidationRule>>
+     * @return array<string, array<int, string|Stringable>>
      */
     public function rules(): array
     {
@@ -26,18 +31,15 @@ class PersonalAccessTokenRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
+                Rule::unique('personal_access_tokens', 'name')
+                    ->where('tokenable_id', $this->user()->id)
+                    ->ignore($this->personal_access_token->id ?? null),
             ],
             'expires_at' => [
                 'nullable',
                 'date_format:Y-m-d\TH:i',
             ],
-            'abilities' => [
-                'sometimes',
-                'array',
-            ],
-            'abilities.*' => [
-                Ability::rule(),
-            ],
+            ...$this->rulesForAbilities(),
         ];
     }
 }

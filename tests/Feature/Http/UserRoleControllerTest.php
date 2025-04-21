@@ -11,7 +11,6 @@ use App\Http\Requests\UserRoleRequest;
 use App\Models\User;
 use App\Models\UserRole;
 use App\Policies\UserRolePolicy;
-use Database\Factories\UserRoleFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
@@ -22,7 +21,6 @@ use Tests\TestCase;
 #[CoversClass(User::class)]
 #[CoversClass(UserRole::class)]
 #[CoversClass(UserRoleController::class)]
-#[CoversClass(UserRoleFactory::class)]
 #[CoversClass(UserRoleFilterRequest::class)]
 #[CoversClass(UserRolePolicy::class)]
 #[CoversClass(UserRoleRequest::class)]
@@ -47,9 +45,9 @@ class UserRoleControllerTest extends TestCase
 
     public function testUserCanStoreUserRoleOnlyWithCorrectAbility(): void
     {
-        $data = UserRole::factory()->makeOne()->toArray();
+        $data = self::makeData(UserRole::factory());
 
-        $this->assertUserCanPostOnlyWithAbility('user-roles', $data, Ability::CreateUserRoles, null);
+        $this->assertUserCanPostOnlyWithAbility('/user-roles', $data, Ability::CreateUserRoles, null);
     }
 
     public function testUserCanOpenEditUserRoleFormOnlyWithCorrectAbility(): void
@@ -60,10 +58,22 @@ class UserRoleControllerTest extends TestCase
     public function testUserCanUpdateUserRoleOnlyWithCorrectAbility(): void
     {
         $userRole = $this->createRandomUserRole();
-        $data = UserRole::factory()->makeOne()->toArray();
+        $data = self::makeData(UserRole::factory());
 
         $editRoute = "/user-roles/{$userRole->id}/edit";
         $this->assertUserCanPutOnlyWithAbility("/user-roles/{$userRole->id}", $data, Ability::EditUserRoles, $editRoute, $editRoute);
+    }
+
+    public function testUserCanDeleteUserRoleOnlyWithCorrectAbility(): void
+    {
+        $userRole = $this->createRandomUserRole();
+        $user = self::createUserWithUserRole($userRole);
+
+        $this->assertDatabaseHas('user_roles', ['id' => $userRole->id]);
+        $this->assertDatabaseHas('user_user_role', ['user_id' => $user->id, 'user_role_id' => $userRole->id]);
+        $this->assertUserCanDeleteOnlyWithAbility("/user-roles/{$userRole->id}", Ability::DestroyUserRoles, '/user-roles');
+        $this->assertDatabaseMissing('user_roles', ['id' => $userRole->id]);
+        $this->assertDatabaseMissing('user_user_role', ['user_id' => $user->id, 'user_role_id' => $userRole->id]);
     }
 
     private function createRandomUserRole(): UserRole

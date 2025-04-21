@@ -165,11 +165,18 @@
                             </x-slot:end>
                         </x-bs::list.item>
                     </x-bs::list>
-                    @can('update', $organization)
+                    @canany(['update', 'forceDelete'], $organization)
                         <div class="card-body">
-                            <x-button.edit href="{{ route('organizations.edit', $organization) }}"/>
+                            @can('update', $organization)
+                                <x-button.edit href="{{ route('organizations.edit', $organization) }}"/>
+                            @endcan
+                            @can('forceDelete', $organization)
+                                <x-form.delete-modal :id="$organization->id"
+                                                     :name="$organization->name"
+                                                     :route="route('organizations.destroy', $organization)"/>
+                            @endcan
                         </div>
-                    @endcan
+                    @endcanany
                     <div class="card-footer">
                         <x-text.updated-human-diff :model="$organization"/>
                     </div>

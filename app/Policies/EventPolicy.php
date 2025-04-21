@@ -114,7 +114,25 @@ class EventPolicy
      */
     public function forceDelete(User $user, Event $event): Response
     {
-        return $this->deny();
+        $subEventsCount = $event->sub_events_count ?? $event->subEvents()->count();
+        if ($subEventsCount >= 1) {
+            return $this->deny(
+                formatTransChoice(':name cannot be deleted because the event has :count sub events.', $subEventsCount, [
+                    'name' => $event->name,
+                ])
+            );
+        }
+
+        $bookingOptionsCount = $event->booking_options_count ?? $event->bookingOptions()->count();
+        if ($bookingOptionsCount >= 1) {
+            return $this->deny(
+                formatTransChoice(':name cannot be deleted because the event has :count booking options.', $bookingOptionsCount, [
+                    'name' => $event->name,
+                ])
+            );
+        }
+
+        return $this->requireAbility($user, Ability::DestroyEvents);
     }
 
     public function exportGroups(User $user): Response

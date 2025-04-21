@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Enums\Ability;
+use App\Http\Requests\Traits\ValidatesAbilities;
 use App\Models\UserRole;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -14,15 +15,15 @@ use Stringable;
  */
 class UserRoleRequest extends FormRequest
 {
-    protected function prepareForValidation(): void
+    use ValidatesAbilities;
+
+    protected function getSelectableAbilities(): array
     {
-        $this->merge([
-            'abilities' => $this->input('abilities', []), // Force array!
-        ]);
+        return Ability::cases();
     }
 
     /**
-     * @return array<string, array<int, string|Stringable|ValidationRule>>
+     * @return array<string, array<int, string|Stringable>>
      */
     public function rules(): array
     {
@@ -34,13 +35,7 @@ class UserRoleRequest extends FormRequest
                 Rule::unique('user_roles', 'name')
                     ->ignore($this->user_role->id ?? null),
             ],
-            'abilities' => [
-                'sometimes',
-                'array',
-            ],
-            'abilities.*' => [
-                Ability::rule(),
-            ],
+            ...$this->rulesForAbilities(),
         ];
     }
 }

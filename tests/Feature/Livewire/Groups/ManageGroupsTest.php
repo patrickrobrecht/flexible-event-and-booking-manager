@@ -10,7 +10,6 @@ use App\Models\BookingOption;
 use App\Models\Event;
 use App\Models\Group;
 use App\Policies\BookingPolicy;
-use Database\Factories\GroupFactory;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Support\Facades\Session;
 use Livewire\Livewire;
@@ -21,7 +20,6 @@ use Tests\Traits\GeneratesTestData;
 
 #[CoversClass(BookingPolicy::class)]
 #[CoversClass(Group::class)]
-#[CoversClass(GroupFactory::class)]
 #[CoversClass(GroupForm::class)]
 #[CoversClass(ManageGroups::class)]
 class ManageGroupsTest extends TestCase

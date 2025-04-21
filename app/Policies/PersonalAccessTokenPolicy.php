@@ -37,6 +37,11 @@ class PersonalAccessTokenPolicy
         return $this->update($user, $personalAccessToken);
     }
 
+    public function viewDocumentation(User $user): Response
+    {
+        return $this->requireAbility($user, Ability::ViewApiDocumentation);
+    }
+
     /**
      * Determine whether the user can create models.
      */

@@ -26,7 +26,6 @@ use Tests\Traits\GeneratesTestData;
 #[CoversClass(FilterValue::class)]
 #[CoversClass(Organization::class)]
 #[CoversClass(OrganizationController::class)]
-#[CoversClass(OrganizationFactory::class)]
 #[CoversClass(OrganizationFilterRequest::class)]
 #[CoversClass(OrganizationPolicy::class)]
 #[CoversClass(OrganizationRequest::class)]
@@ -170,6 +169,39 @@ class OrganizationControllerTest extends TestCase
                 fn () => Organization::factory(),
                 false,
             ],
+        ];
+    }
+
+    public function testUserCanDeleteOrganizationsOnlyWithCorrectAbility(): void
+    {
+        $organization = self::createOrganization();
+
+        $this->assertDatabaseHas('organizations', ['id' => $organization->id]);
+        $this->assertUserCanDeleteOnlyWithAbility("/organizations/{$organization->slug}", Ability::DestroyOrganizations, '/organizations');
+        $this->assertDatabaseMissing('organizations', ['id' => $organization->id]);
+    }
+
+    /**
+     * @param Closure(): Organization $organizationProvider
+     */
+    #[DataProvider('organizationsWithReferences')]
+    public function testUserCannotDeleteOrganizationBecauseOfReferences(Closure $organizationProvider, string $message): void
+    {
+        $organization = $organizationProvider();
+
+        $this->assertUserCannotDeleteDespiteAbility("/organizations/{$organization->slug}", [Ability::ViewOrganizations, Ability::DestroyOrganizations], null)
+            ->assertSee($message);
+    }
+
+    /**
+     * @return array<int, array{Closure(): Organization, string}>
+     */
+    public static function organizationsWithReferences(): array
+    {
+        return [
+            [fn () => self::createEvent()->organization, 'kann nicht gelöscht werden, weil die Organisation von 1 Veranstaltung referenziert wird.'],
+            [fn () => self::createEventSeries(eventsCount: 3)->organization, 'kann nicht gelöscht werden, weil die Organisation von 3 Veranstaltungen referenziert wird.'],
+            [fn () => self::createEventSeries(eventsCount: 0)->organization, 'kann nicht gelöscht werden, weil die Organisation von 1 Veranstaltungsreihe referenziert wird'],
         ];
     }
 

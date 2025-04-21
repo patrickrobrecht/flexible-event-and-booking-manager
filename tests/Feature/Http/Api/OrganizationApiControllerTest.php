@@ -1,6 +1,6 @@
 <?php
 
-namespace Feature\Http\Api;
+namespace Tests\Feature\Http\Api;
 
 use App\Enums\Ability;
 use App\Exceptions\Handler;

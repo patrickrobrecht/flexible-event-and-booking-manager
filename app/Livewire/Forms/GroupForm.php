@@ -22,10 +22,16 @@ class GroupForm extends Form
 
     public function update(): bool
     {
+        if (!isset($this->group)) {
+            return false;
+        }
         $validated = $this->validateGroupForEvent($this->group->event);
         return $this->group->fill($validated)->save();
     }
 
+    /**
+     * @return array<string, array<int, string>>
+     */
     public function validateGroupForEvent(Event $event): array
     {
         $uniqueRule = Rule::unique('groups', 'name')

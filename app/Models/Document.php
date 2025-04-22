@@ -79,6 +79,9 @@ class Document extends Model
         return $this->belongsTo(User::class, 'uploaded_by_user_id');
     }
 
+    /**
+     * @param array<string, mixed> $validatedData
+     */
     public function fillAndSave(array $validatedData): bool
     {
         $this->fill($validatedData);
@@ -87,7 +90,7 @@ class Document extends Model
             $this->approval_status = ApprovalStatus::WaitingForApproval;
         }
 
-        /** @var UploadedFile $file */
+        /** @var ?UploadedFile $file */
         $file = $validatedData['file'] ?? null;
         if ($file) {
             $this->file_type = FileType::tryFromExtension($file->getClientOriginalExtension()) ?? FileType::Text;
@@ -95,9 +98,11 @@ class Document extends Model
 
             $targetDirectory = $this->reference->getDocumentStoragePath();
             if ($this->exists) {
+                /** @phpstan-ignore-next-line */
                 $this->path = $file->storeAs($targetDirectory, $this->id . '-' . $file->getClientOriginalName());
             } else {
                 $tempFileName = 'tmp-' . Carbon::now()->format('Ymd-His') . '-' . $file->getClientOriginalName();
+                /** @phpstan-ignore-next-line */
                 $this->path = $file->storeAs($targetDirectory, $tempFileName);
                 $this->save();
 
@@ -125,6 +130,9 @@ class Document extends Model
         return $this->scopeIncludeColumns($query, ['title', 'description'], true, ...$searchTerms);
     }
 
+    /**
+     * @return array<int, AllowedFilter>
+     */
     public static function allowedFilters(): array
     {
         return [
@@ -137,6 +145,9 @@ class Document extends Model
         ];
     }
 
+    /**
+     * @return array<string, string>
+     */
     public static function filterOptions(): array
     {
         return [

@@ -14,7 +14,7 @@ class BookingsExportSpreadsheet extends Spreadsheet
     use ExportsToExcel;
 
     /**
-     * @param Collection<Booking> $bookings
+     * @param Collection<int, Booking> $bookings
      */
     public function __construct(
         private readonly Event $event,
@@ -32,6 +32,9 @@ class BookingsExportSpreadsheet extends Spreadsheet
         );
     }
 
+    /**
+     * @return array<int, string>
+     */
     private function getHeaderColumns(): array
     {
         $columns = [
@@ -70,6 +73,9 @@ class BookingsExportSpreadsheet extends Spreadsheet
         return $columns;
     }
 
+    /**
+     * @return array<int, float|int|string|null>
+     */
     private function getColumnsForRow(Booking $booking): array
     {
         $columns = [
@@ -81,16 +87,17 @@ class BookingsExportSpreadsheet extends Spreadsheet
                 : '',
             isset($booking->bookedByUser)
                 ? sprintf('%s %s', $booking->bookedByUser->first_name, $booking->bookedByUser->last_name)
-                : __('Guest'),
+                : (string) __('Guest'),
             $booking->price ?? 0.00,
             $booking->paid_at
                 ? $booking->paid_at->format('d.m.Y H:i')
                 : '',
-            $booking->getGroup($this->event)?->name ?? __('none'),
+            $booking->getGroup($this->event)->name ?? (string) __('none'),
         ];
 
         if ($this->bookingOption->formFields->isEmpty()) {
-            return array_merge($columns, [
+            return [
+                ...$columns,
                 $booking->first_name,
                 $booking->last_name,
                 $booking->phone ?? null,
@@ -100,7 +107,7 @@ class BookingsExportSpreadsheet extends Spreadsheet
                 $booking->postal_code,
                 $booking->city,
                 $booking->country,
-            ]);
+            ];
         }
 
         foreach ($this->bookingOption->formFields as $field) {

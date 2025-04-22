@@ -22,9 +22,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property ?Carbon $available_from
  * @property ?Carbon $available_until
  * @property ?float $price
- * @property array $price_conditions
+ * @property array<int, mixed> $price_conditions
  * @property ?int $payment_due_days
- * @property array $restrictions
+ * @property array<int, string> $restrictions
  * @property string $confirmation_text
  *
  * @property-read Collection|Booking[] $bookings {@see self::bookings()}
@@ -38,11 +38,16 @@ class BookingOption extends Model
     use HasNameAndDescription;
     use HasSlugForRouting;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+    protected $casts = [
+        'maximum_bookings' => 'integer',
+        'available_from' => 'datetime',
+        'available_until' => 'datetime',
+        'price' => 'float',
+        'price_conditions' => 'json',
+        'payment_due_days' => 'integer',
+        'restrictions' => 'json', /* @see BookingRestriction */
+    ];
+
     protected $fillable = [
         'name',
         'slug',
@@ -55,21 +60,6 @@ class BookingOption extends Model
         'payment_due_days',
         'restrictions',
         'confirmation_text',
-    ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'maximum_bookings' => 'integer',
-        'available_from' => 'datetime',
-        'available_until' => 'datetime',
-        'price' => 'float',
-        'price_conditions' => 'json',
-        'payment_due_days' => 'integer',
-        'restrictions' => 'json', /* @see BookingRestriction */
     ];
 
     public function bookings(): HasMany
@@ -94,6 +84,9 @@ class BookingOption extends Model
             ->where('type', '=', FormElementType::File);
     }
 
+    /**
+     * @param array<string, mixed> $validatedData
+     */
     public function fillAndSave(array $validatedData): bool
     {
         return $this->fill($validatedData)->save();
@@ -112,7 +105,7 @@ class BookingOption extends Model
     {
         return ($bookedAt ?? Carbon::now())
             ->endOfDay()
-            ->addWeekdays($this->payment_due_days);
+            ->addWeekdays($this->payment_due_days ?? 0);
     }
 
     public function isRestrictedBy(BookingRestriction $restriction): bool

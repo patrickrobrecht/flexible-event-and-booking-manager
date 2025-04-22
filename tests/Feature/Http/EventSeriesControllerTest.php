@@ -79,6 +79,7 @@ class EventSeriesControllerTest extends TestCase
     public function testUserCanUpdateEventSeriesOnlyWithCorrectAbility(): void
     {
         $eventSeries = self::createEventSeries();
+        /** @var array{slug: string} $data */
         $data = $this->generateRandomEventSeriesData();
 
         $this->assertUserCanPutOnlyWithAbility(
@@ -122,6 +123,9 @@ class EventSeriesControllerTest extends TestCase
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function generateRandomEventSeriesData(): array
     {
         $eventData = Event::factory()->makeOne();

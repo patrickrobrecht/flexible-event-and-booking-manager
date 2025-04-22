@@ -79,6 +79,7 @@ class EventControllerTest extends TestCase
     public function testUserCanUpdateEventOnlyWithCorrectAbility(): void
     {
         $event = self::createEvent();
+        /** @var array{slug: string} $data */
         $data = $this->generateRandomEventData();
 
         $this->assertUserCanPutOnlyWithAbility(
@@ -125,12 +126,18 @@ class EventControllerTest extends TestCase
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function generateRandomEventData(): array
     {
+        /** @var Event $eventData */
         $eventData = Event::factory()->makeOne();
         return [
             ...$eventData->toArray(),
+            /** @phpstan-ignore method.nonObject */
             'started_at' => $eventData->started_at->format('Y-m-d\TH:i'),
+            /** @phpstan-ignore method.nonObject */
             'finished_at' => $eventData->finished_at->format('Y-m-d\TH:i'),
             'location_id' => self::createLocation()->id,
             'organization_id' => self::createOrganization()->id,

@@ -5,10 +5,12 @@ namespace App\Http\Requests;
 use App\Enums\ActiveStatus;
 use App\Http\Requests\Traits\ValidatesAddressFields;
 use App\Models\User;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
+use Stringable;
 
 /**
  * @property-read ?User $user
@@ -25,7 +27,7 @@ class UserRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * @return array<string, array<int, string|Password|Stringable|ValidationRule>>
      */
     public function rules(): array
     {
@@ -67,7 +69,7 @@ class UserRequest extends FormRequest
             'password' => [
                 'nullable',
                 'confirmed',
-                Password::defaults(),
+                Password::default(),
             ],
             'send_notification' => [
                 $this->routeIs('users.store') ? 'nullable' : 'prohibited',

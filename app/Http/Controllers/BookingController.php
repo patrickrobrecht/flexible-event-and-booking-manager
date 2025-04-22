@@ -36,7 +36,9 @@ class BookingController extends Controller
     {
         ValueHelper::setDefaults(Booking::defaultValuesForQuery());
 
+        /** @var \Illuminate\Database\Eloquent\Builder<Booking> $bookingsQuery */
         $bookingsQuery = Booking::buildQueryFromRequest($bookingOption->bookings())
+            /** @phpstan-ignore-next-line argument.type */
             ->with([
                 'bookedByUser',
                 'groups' => fn (BelongsToMany $groups) => $groups->where('event_id', '=', $event->id),
@@ -55,7 +57,7 @@ class BookingController extends Controller
         $this->authorize('viewBookings', $bookingOption);
 
         if ($output === 'pdf') {
-            /** @var Collection<Booking> $bookings */
+            /** @var Collection<int, Booking> $bookings */
             $bookings = $bookingsQuery->get();
             $files = [];
 
@@ -70,7 +72,7 @@ class BookingController extends Controller
             /** @var FormField $formField */
             $formField = FormField::query()->find((int) $output);
 
-            /** @var Collection<FormFieldValue> $formFieldValues */
+            /** @var Collection<int, FormFieldValue> $formFieldValues */
             $formFieldValues = $formField->formFieldValues()
                 ->whereIn('booking_id', $bookingsQuery->toBase()->select('id'))
                 ->with([

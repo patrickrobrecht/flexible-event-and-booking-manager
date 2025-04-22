@@ -32,6 +32,7 @@ class ManageGroupsTest extends TestCase
         $event = self::createEventWithBookingOptions();
         $this->actingAsUserWithAbility(Ability::ManageGroupsOfEvent);
 
+        /** @phpstan-ignore method.notFound */
         $testComponent = Livewire::test(ManageGroups::class, ['event' => $event])
             ->assertOk()
             ->assertSet('sort', 'name')
@@ -44,6 +45,7 @@ class ManageGroupsTest extends TestCase
         $event->bookings->each(
             fn (Booking $booking) => $testComponent
                 ->assertSeeHtml($booking->first_name . ' <strong>' . $booking->last_name)
+                /** @phpstan-ignore argument.type */
                 ->assertSeeText(formatDate($booking->booked_at))
         );
     }
@@ -59,6 +61,7 @@ class ManageGroupsTest extends TestCase
         Session::put('groups-settings-' . $event->id . '-bookingOptionIds', $selectedBookingOptionIds);
         Session::put('groups-settings-' . $event->id . '-showBookingData', ['comment', 'email']);
 
+        /** @phpstan-ignore method.notFound */
         $testComponent = Livewire::test(ManageGroups::class, ['event' => $event])
             ->assertOk()
             ->assertSet('sort', 'date_of_birth')
@@ -75,6 +78,7 @@ class ManageGroupsTest extends TestCase
             $bookingOption->bookings->each(
                 fn (Booking $booking) => $testComponent
                     ->assertSeeHtml($booking->first_name . ' <strong>' . $booking->last_name)
+                    /** @phpstan-ignore argument.type */
                     ->assertDontSeeText(formatDate($booking->booked_at))
                     ->assertSeeText($booking->comment)
                     ->assertSeeText($booking->email)
@@ -163,13 +167,13 @@ class ManageGroupsTest extends TestCase
         $booking->groups()->attach($group);
         $this->assertEquals($group->id, $booking->getGroup($event)?->id);
 
-        $newGroup = $event->groups->except($group->id)->random();
+        $newGroup = $event->groups->except([$group->id])->random();
 
         $this->actingAsUserWithAbility(Ability::ManageGroupsOfEvent);
         Livewire::test(ManageGroups::class, ['event' => $event])
             ->call('moveBooking', $booking->id, $newGroup->id);
 
         $booking->refresh();
-        $this->assertEquals($newGroup->id, $booking->getGroup($event)->id);
+        $this->assertEquals($newGroup->id, $booking->getGroup($event)?->id);
     }
 }

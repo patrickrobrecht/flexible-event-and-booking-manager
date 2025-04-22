@@ -81,7 +81,7 @@ class EmailVerificationTest extends TestCase
             ->assertRedirect('/');
 
         Event::assertDispatched(Verified::class);
-        $this->assertTrue($user->fresh()->hasVerifiedEmail());
+        $this->assertTrue($user->fresh()?->hasVerifiedEmail());
     }
 
     public function testUserCannotVerifyEmailWithInvalidHash(): void
@@ -96,7 +96,7 @@ class EmailVerificationTest extends TestCase
 
         $this->actingAs($user)->get($verificationUrl);
 
-        $this->assertFalse($user->fresh()->hasVerifiedEmail());
+        $this->assertFalse($user->fresh()?->hasVerifiedEmail());
     }
 
     private function createUnverifiedUser(): User

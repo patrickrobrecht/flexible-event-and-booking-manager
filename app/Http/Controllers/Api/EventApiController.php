@@ -17,6 +17,9 @@ class EventApiController extends Controller
 {
     use SupportsIncludesInSnakeCase;
 
+    /**
+     * @return array<int, string>
+     */
     protected function allowedIncludeCounts(): array
     {
         return [
@@ -24,6 +27,9 @@ class EventApiController extends Controller
         ];
     }
 
+    /**
+     * @return array<int, string>
+     */
     protected function allowedIncludeRelations(): array
     {
         return [
@@ -44,7 +50,7 @@ class EventApiController extends Controller
 
     public function show(Event $event, FormRequest $request): JsonResource
     {
-        if ($event->visibility === Visibility::Private && $request->user()->tokenCant(Ability::ViewPrivateEvents->value)) {
+        if ($event->visibility === Visibility::Private && $request->user()?->tokenCant(Ability::ViewPrivateEvents->value)) {
             throw new MissingAbilityException(Ability::ViewPrivateEvents->value);
         }
 

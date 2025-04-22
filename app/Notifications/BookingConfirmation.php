@@ -15,15 +15,11 @@ class BookingConfirmation extends Notification
     {
     }
 
-    /**
-     * Get the mail representation of the notification.
-     *
-     * @return MailMessage
-     */
-    public function toMail($notifiable)
+    public function toMail(mixed $notifiable): MailMessage
     {
         $mail = $this->booking->prepareMailMessage()
             ->subject(
+                /** @phpstan-ignore-next-line binaryOp.invalid */
                 config('app.name')
                 . ': '
                 . __('Booking no. :id', [
@@ -43,6 +39,7 @@ class BookingConfirmation extends Notification
         if (isset($this->booking->price) && $this->booking->price > 0) {
             $mail->line(__('Please transfer :price to the following bank account by :date:', [
                 'price' => formatDecimal($this->booking->price) . ' €',
+                /** @phpstan-ignore-next-line argument.type */
                 'date' => formatDate($this->booking->payment_deadline),
             ]));
             $mail->lines($this->booking->bookingOption->event->organization->bank_account_lines);
@@ -55,7 +52,10 @@ class BookingConfirmation extends Notification
         return $mail;
     }
 
-    public function via($notifiable)
+    /**
+     * @return array<int, string>
+     */
+    public function via(mixed $notifiable): array
     {
         return ['mail'];
     }

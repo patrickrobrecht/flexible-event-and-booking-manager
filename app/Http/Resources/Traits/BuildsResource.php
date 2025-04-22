@@ -18,6 +18,7 @@ trait BuildsResource
      * Transform the resource into an array.
      *
      * @param Request $request
+     * @return array<string, mixed>
      */
     public function toArray($request): array
     {
@@ -29,6 +30,9 @@ trait BuildsResource
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function attributesToArray(): array
     {
         return Arr::map(
@@ -43,11 +47,18 @@ trait BuildsResource
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function relationsToArray(): array
     {
         return [];
     }
 
+    /**
+     * @param array<string, mixed> $array
+     * @return array<string, mixed>
+     */
     protected function cleanup(array $array): array
     {
         return Arr::where(

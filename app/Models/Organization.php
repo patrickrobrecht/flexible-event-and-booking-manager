@@ -28,11 +28,12 @@ use Spatie\QueryBuilder\AllowedFilter;
  * @property ?string $phone
  * @property ?string $email
  * @property ?string $website_url
+ * @property-read int $location_id
  * @property ?string $bank_account_holder
  * @property ?string $iban
  * @property ?string $bank_name
  *
- * @property-read array $bank_account_lines {@see self::bankAccountLines()}
+ * @property-read array<int, string> $bank_account_lines {@see self::bankAccountLines()}
  *
  * @property Collection|Event[] $events {@see Organization::events()}
  * @property Collection|EventSeries[] $eventSeries {@see self::eventSeries()}
@@ -46,11 +47,6 @@ class Organization extends Model
     use HasResponsibleUsers;
     use HasSlugForRouting;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'slug',
@@ -64,11 +60,6 @@ class Organization extends Model
         'bank_name',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'status' => ActiveStatus::class,
     ];
@@ -97,14 +88,21 @@ class Organization extends Model
         return $this->scopeRelation($query, $eventId, 'events', fn (Builder $q) => $q->where('event_id', '=', $eventId));
     }
 
+    /**
+     * @param array{location_id: int} $validatedData
+     */
     public function fillAndSave(array $validatedData): bool
     {
         $this->fill($validatedData);
 
         $this->location()->associate($validatedData['location_id']);
 
-        return $this->save()
-            && $this->saveResponsibleUsers($validatedData);
+        if (!$this->save()) {
+            return false;
+        }
+
+        $this->saveResponsibleUsers($validatedData);
+        return true;
     }
 
     public function getAbilityToViewResponsibilities(): Ability
@@ -122,6 +120,9 @@ class Organization extends Model
         return 'organizations/' . $this->id;
     }
 
+    /**
+     * @return array<int, AllowedFilter>
+     */
     public static function allowedFilters(): array
     {
         return [
@@ -138,6 +139,9 @@ class Organization extends Model
         ];
     }
 
+    /**
+     * @return array<string, string>
+     */
     public static function filterOptions(): array
     {
         return [

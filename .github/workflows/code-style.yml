@@ -32,5 +32,8 @@ jobs:
       - name: Check code style for PHP
         run: composer csPHP
 
+      - name: Run static analysis for PHP
+        run: composer stan
+
       - name: Check code style for CSS and JavaScript
         run: npm run cs

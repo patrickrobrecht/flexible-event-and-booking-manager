@@ -18,7 +18,8 @@ class OrganizationController extends Controller
         $this->authorize('viewAny', Organization::class);
         ValueHelper::setDefaults(Organization::defaultValuesForQuery());
 
-        return view('organizations.organization_index', $this->formValues([
+        return view('organizations.organization_index', [
+            ...$this->formValues(),
             'organizations' => Organization::buildQueryFromRequest()
                 ->with([
                     'location',
@@ -30,7 +31,7 @@ class OrganizationController extends Controller
                     'eventSeries',
                 ])
                 ->paginate(10),
-        ]));
+        ]);
     }
 
     public function create(): View
@@ -45,6 +46,7 @@ class OrganizationController extends Controller
         $this->authorize('create', Organization::class);
 
         $organization = new Organization();
+        /** @phpstan-ignore argument.type */
         if ($organization->fillAndSave($request->validated())) {
             Session::flash('success', __(':name created successfully.', ['name' => $organization->name]));
             return redirect(route('organizations.edit', $organization));
@@ -69,15 +71,17 @@ class OrganizationController extends Controller
     {
         $this->authorize('update', $organization);
 
-        return view('organizations.organization_form', $this->formValues([
+        return view('organizations.organization_form', [
+            ...$this->formValues(),
             'organization' => $organization,
-        ]));
+        ]);
     }
 
     public function update(Organization $organization, OrganizationRequest $request): RedirectResponse
     {
         $this->authorize('update', $organization);
 
+        /** @phpstan-ignore argument.type */
         if ($organization->fillAndSave($request->validated())) {
             Session::flash('success', __(':name saved successfully.', ['name' => $organization->name]));
         }
@@ -98,12 +102,15 @@ class OrganizationController extends Controller
         return back();
     }
 
-    private function formValues(array $values = []): array
+    /**
+     * @return array<string, mixed>
+     */
+    private function formValues(): array
     {
-        return array_replace([
+        return [
             'locations' => Location::query()
                 ->orderBy('name')
                 ->get(),
-        ], $values);
+        ];
     }
 }

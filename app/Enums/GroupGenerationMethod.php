@@ -19,8 +19,8 @@ enum GroupGenerationMethod: string
     case AgeBased = 'age_based';
 
     /**
-     * @param  Collection<Booking> $bookings
-     * @return Collection
+     * @param  Collection<int, Booking> $bookings
+     * @return array<int, Collection<int, Booking>>
      */
     public function generateGroups(int $groupsCount, Collection $bookings): array
     {
@@ -46,6 +46,7 @@ enum GroupGenerationMethod: string
     private function getInstance(): GeneratesGroups
     {
         $className = $this->getClass();
+        /** @phpstan-ignore return.type */
         return new $className();
     }
 

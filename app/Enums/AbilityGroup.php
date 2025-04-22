@@ -27,8 +27,8 @@ enum AbilityGroup
     case SystemManagement;
 
     /**
-     * @param list<Ability> $abilities
-     * @return list<Ability>
+     * @param array<int, Ability> $abilities
+     * @return array<int, Ability>
      */
     public function filterAbilities(array $abilities): array
     {

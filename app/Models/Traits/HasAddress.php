@@ -21,6 +21,9 @@ trait HasAddress
 {
     use Searchable;
 
+    /**
+     * @var array<int, string>
+     */
     public static array $addressFields = [
         'street',
         'house_number',
@@ -53,7 +56,7 @@ trait HasAddress
         return new Attribute(fn () => sprintf('%s %s', $this->street, $this->house_number));
     }
 
-    public function scopeAddressFields(Builder $query, ...$searchTerms): Builder
+    public function scopeAddressFields(Builder $query, string ...$searchTerms): Builder
     {
         return $this->scopeIncludeColumns($query, self::$addressFields, true, ...$searchTerms);
     }

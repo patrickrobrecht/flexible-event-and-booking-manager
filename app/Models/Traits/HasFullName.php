@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
  * @property string $first_name
  * @property string $last_name
  *
- * @property-read string greeting {@see self::greeting()}
+ * @property-read string $greeting {@see self::greeting()}
  * @property-read string $name {@see self::name()}
  */
 trait HasFullName

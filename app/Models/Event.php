@@ -56,26 +56,6 @@ class Event extends Model
     use HasResponsibleUsers;
     use HasSlugForRouting;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'name',
-        'slug',
-        'description',
-        'visibility',
-        'started_at',
-        'finished_at',
-        'website_url',
-    ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'groups_count' => 'integer',
         'visibility' => Visibility::class,
@@ -84,6 +64,16 @@ class Event extends Model
         'parent_event_id' => 'integer',
         'event_series_id' => 'integer',
         'organization_id' => 'integer',
+    ];
+
+    protected $fillable = [
+        'name',
+        'slug',
+        'description',
+        'visibility',
+        'started_at',
+        'finished_at',
+        'website_url',
     ];
 
     public function bookingOptions(): HasMany
@@ -161,26 +151,34 @@ class Event extends Model
         };
     }
 
-    public function deleteWithGroups(): bool
+    public function deleteWithGroups(): bool|null
     {
         $this->groups()->delete();
         return $this->delete();
     }
 
+    /**
+     * @param array{location_id: int, event_series_id?: int, parent_event_id?: int, organization_id: int} $validatedData
+     */
     public function fillAndSave(array $validatedData): bool
     {
         $this->fill($validatedData);
-        $this->location()->associate($validatedData['location_id'] ?? null);
+        $this->location()->associate($validatedData['location_id']);
         $this->eventSeries()->associate($validatedData['event_series_id'] ?? null);
         $this->parentEvent()->associate($validatedData['parent_event_id'] ?? null);
-        $this->organization()->associate($validatedData['organization_id'] ?? null);
+        $this->organization()->associate($validatedData['organization_id']);
 
-        return $this->save()
-            && $this->saveResponsibleUsers($validatedData);
+        if (!$this->save()) {
+            return false;
+        }
+
+        $this->saveResponsibleUsers($validatedData);
+        return true;
     }
 
     public function findOrCreateGroup(int|string $groupIndex): Group
     {
+        /** @phpstan-ignore-next-line */
         return $this->groups()
             ->firstOrCreate([
                 'name' => __('Group') . ' ' . $groupIndex,
@@ -193,7 +191,7 @@ class Event extends Model
     }
 
     /**
-     * @return Collection<BookingOption>
+     * @return Collection<int, BookingOption>
      */
     public function getBookingOptions(): Collection
     {
@@ -211,7 +209,7 @@ class Event extends Model
     }
 
     /**
-     * @return Collection<Booking>
+     * @return Collection<int, Booking>
      */
     public function getBookings(): Collection
     {
@@ -237,6 +235,9 @@ class Event extends Model
         return 'events/' . $this->id;
     }
 
+    /**
+     * @return array<int, AllowedFilter>
+     */
     public static function allowedFilters(): array
     {
         return [
@@ -263,6 +264,9 @@ class Event extends Model
         ];
     }
 
+    /**
+     * @return array<string, string>
+     */
     public static function filterOptions(): array
     {
         return [

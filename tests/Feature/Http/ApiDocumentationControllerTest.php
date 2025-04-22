@@ -44,6 +44,9 @@ class ApiDocumentationControllerTest extends TestCase
         $this->assertEquals(!$isDebugEnabled, Cache::has('open-api-spec'));
     }
 
+    /**
+     * @return array<int, array{bool}>
+     */
     public static function booleanProvider(): array
     {
         return [

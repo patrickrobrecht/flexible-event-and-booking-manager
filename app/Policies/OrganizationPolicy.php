@@ -30,6 +30,9 @@ class OrganizationPolicy
 
     public function viewResponsibilities(?User $user, Organization $organization): Response
     {
+        if (!isset($user)) {
+            return $this->deny();
+        }
         $viewResponse = $this->view($user, $organization);
         if ($viewResponse->denied()) {
             return $viewResponse;
@@ -40,7 +43,7 @@ class OrganizationPolicy
             Ability::ViewResponsibilitiesOfOrganizations,
             fn () => $this->response(
                 $organization->hasPubliclyVisibleResponsibleUsers()
-                || (isset($user) && $user->isResponsibleFor($organization))
+                || $user->isResponsibleFor($organization)
             )
         );
     }

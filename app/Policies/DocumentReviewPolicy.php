@@ -62,8 +62,11 @@ class DocumentReviewPolicy
              * - they are responsible for the event, event series or organization the document was uploaded to.
              * - they uploaded the document.
              */
-            $user->is($document->uploadedByUser)
-            || $user->isResponsibleFor($document->reference)
+            isset($document)
+            && (
+                $user->is($document->uploadedByUser)
+                || $user->isResponsibleFor($document->reference)
+            )
         ) {
             return $this->allow();
         }

@@ -5,6 +5,7 @@ namespace Tests\Traits;
 use App\Enums\Ability;
 use App\Models\PersonalAccessToken;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Testing\TestResponse;
 use Laravel\Sanctum\NewAccessToken;
@@ -23,6 +24,7 @@ trait ActsWithToken
 
     /**
      * @param  Ability|Ability[]  $ability
+     * @return TestResponse<JsonResponse>
      */
     protected function assertTokenCanGetWithAbility(string $route, Ability|array $ability): TestResponse
     {
@@ -33,6 +35,7 @@ trait ActsWithToken
 
     /**
      * @param  Ability|Ability[]  $ability
+     * @return TestResponse<JsonResponse>
      */
     protected function assertTokenCannotGetDespiteAbility(string $route, Ability|array $ability, int $statusCode = Response::HTTP_FORBIDDEN): TestResponse
     {
@@ -43,6 +46,7 @@ trait ActsWithToken
 
     /**
      * @param  Ability|Ability[]  $ability
+     * @return TestResponse<JsonResponse>
      */
     protected function assertTokenCannotGetWithoutAbility(string $route, Ability|array $ability): TestResponse
     {

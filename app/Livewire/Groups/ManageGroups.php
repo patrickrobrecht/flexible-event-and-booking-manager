@@ -21,7 +21,10 @@ class ManageGroups extends Component
 {
     use LoadsPropertiesFromSession;
 
-    private $propertiesSavedInSession = [
+    /**
+     * @var array<string, string>
+     */
+    private array $propertiesSavedInSession = [
         'sort' => 'string',
         'bookingOptionIds' => 'int[]',
         'showBookingData' => 'string[]',
@@ -31,19 +34,25 @@ class ManageGroups extends Component
     #[Locked]
     public Event $event;
 
-    /** @var Collection<Group> */
+    /** @var Collection<int, Group> */
     #[Locked]
     public Collection $groups;
 
-    /** @var Collection<Booking> */
+    /** @var Collection<int, Booking> */
     #[Locked]
     public Collection $bookingsWithoutGroup;
 
     public string $sort = 'name';
+
+    /** @var array<int, int> */
     public array $bookingOptionIds;
+
+    /** @var array<int, string> */
     public array $showBookingData = [
         'booked_at',
     ];
+
+    /** @var array<int, int> */
     public array $showFields = [];
 
     public GroupForm $form;
@@ -52,6 +61,7 @@ class ManageGroups extends Component
     {
         $this->event = $event;
         $this->loadData();
+        /** @phpstan-ignore-next-line assign.propertyType */
         $this->bookingOptionIds = $this->event->getBookingOptions()->pluck('id')->toArray();
 
         $this->loadSettingsFromSession();
@@ -79,7 +89,7 @@ class ManageGroups extends Component
     {
         $this->authorize('create', Group::class);
 
-        $validated = $this->form->validateGroupForEvent($this->event, null);
+        $validated = $this->form->validateGroupForEvent($this->event);
 
         $group = new Group();
         $group->event()->associate($this->event);
@@ -112,7 +122,7 @@ class ManageGroups extends Component
         ]));
     }
 
-    public function deleteGroup($groupId): void
+    public function deleteGroup(int $groupId): void
     {
         $group = $this->getGroupById($groupId);
         if ($group) {
@@ -126,16 +136,16 @@ class ManageGroups extends Component
         }
     }
 
-    private function getGroupById($groupId): ?Group
+    private function getGroupById(int $groupId): ?Group
     {
         return $this->groups[$groupId] ?? null;
     }
 
-    public function moveBooking($bookingId, $groupId): void
+    public function moveBooking(int $bookingId, int $groupId): void
     {
         $groupId = (int) $groupId;
 
-        /** @var Booking $booking */
+        /** @var ?Booking $booking */
         $booking = Booking::query()->find((int) $bookingId);
         if (isset($booking) && $booking->bookingOption->event->is($this->event->parentEvent ?? $this->event)) {
             $this->authorize('manageGroup', $booking);
@@ -214,6 +224,7 @@ class ManageGroups extends Component
     {
         $bookings = $this->event->getBookings();
         if (count($this->showFields) > 0) {
+            /** @phpstan-ignore-next-line argument.type */
             $bookings->load([
                 'formFieldValues' => fn (HasMany $formFieldValues) => $formFieldValues
                     ->whereIn('form_field_id', $this->showFields),
@@ -222,9 +233,8 @@ class ManageGroups extends Component
         $this->groups = $this->groups
             ->map(function (Group $group) use ($bookings) {
                 $group['bookings'] = $this->sortBookingsInGroup(
-                    $bookings->filter(
-                        fn (Booking $booking) => $booking->getGroup($this->event)?->is($group)
-                    )
+                    /** @phpstan-ignore-next-line argument.type */
+                    $bookings->filter(fn (Booking $booking) => $booking->getGroup($this->event)?->is($group))
                 );
 
                 return $group;
@@ -234,8 +244,8 @@ class ManageGroups extends Component
     }
 
     /**
-     * @param Collection<Booking> $bookings
-     * @return Collection<Booking>
+     * @param Collection<int, Booking> $bookings
+     * @return Collection<int, Booking>
      */
     private function sortBookingsInGroup(Collection $bookings): Collection
     {

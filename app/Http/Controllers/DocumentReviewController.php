@@ -19,6 +19,7 @@ class DocumentReviewController extends Controller
         $validated = $request->validated();
 
         // Change approval status of the document if requested.
+        /** @phpstan-ignore-next-line argument.type */
         $approvalStatus = ApprovalStatus::tryFrom($request->validated('approval_status'));
         if ($approvalStatus) {
             if ($document->approval_status === $approvalStatus) {

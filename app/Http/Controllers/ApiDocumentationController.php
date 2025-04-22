@@ -33,6 +33,7 @@ class ApiDocumentationController extends Controller
             return CacheOpenApiDocListener::cacheConfigurationFile();
         }
 
+        /** @phpstan-ignore-next-line return.type */
         return Cache::rememberForever(
             'open-api-spec',
             static fn () => CacheOpenApiDocListener::cacheConfigurationFile()

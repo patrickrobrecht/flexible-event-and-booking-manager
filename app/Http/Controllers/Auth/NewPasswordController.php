@@ -43,6 +43,7 @@ class NewPasswordController extends Controller
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user) use ($request) {
                 $user->forceFill([
+                    /** @phpstan-ignore-next-line argument.type */
                     'password' => Hash::make($request->password),
                     'remember_token' => Str::random(60),
                 ])->save();
@@ -56,7 +57,9 @@ class NewPasswordController extends Controller
         // redirect them back to where they came from with their error message.
         return $status === Password::PASSWORD_RESET
                     ? redirect()->route('login')->with('status', __($status))
-                    : back()->withInput($request->only('email'))
-                            ->withErrors(['email' => __($status)]);
+                    : back()
+                        ->withInput($request->only('email'))
+                        /** @phpstan-ignore-next-line argument.type */
+                        ->withErrors(['email' => __($status)]);
     }
 }

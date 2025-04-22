@@ -7,7 +7,6 @@ use App\Enums\ActiveStatus;
 use App\Models\User;
 use App\Models\UserRole;
 use Database\Factories\UserFactory;
-use Database\Seeders\UserRoleSeeder;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithDatabase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -29,12 +28,8 @@ trait ActsAsUser
     use RefreshDatabase;
     use WithFaker;
 
+    /** @var UserRole[] */
     protected $userRoles = [];
-
-    protected function actingAsAdmin(): User
-    {
-        return $this->actingAsUserWithRoleName('Administrator');
-    }
 
     protected function actingAsAnyUser(): User
     {
@@ -44,11 +39,17 @@ trait ActsAsUser
         return $user;
     }
 
+    /**
+     * @param Ability|Ability[] $ability
+     */
     protected function actingAsUserWithAbility(Ability|array $ability): User
     {
         return $this->actingAsUserWithRole($this->createUserRoleWithAbility($ability));
     }
 
+    /**
+     * @param Ability|Ability[] $ability
+     */
     protected function actingAsUserWithFullAbilitiesExcept(Ability|array $ability): User
     {
         return $this->actingAsUserWithRole($this->createUserRoleWithoutAbility($ability));
@@ -59,20 +60,9 @@ trait ActsAsUser
         $userWithRole = User::factory()
             ->hasAttached($userRole)
             ->create();
-        $this->assertNotNull($userWithRole);
 
         $this->actingAs($userWithRole);
         return $userWithRole;
-    }
-
-    protected function actingAsUserWithRoleName(string $roleName): User
-    {
-        $this->seed(UserRoleSeeder::class);
-        $adminRole = UserRole::query()
-            ->where('name', '=', $roleName)
-            ->first();
-
-        return $this->actingAsUserWithRole($adminRole);
     }
 
     protected function assertGuestCanGet(string $route): void
@@ -102,6 +92,9 @@ trait ActsAsUser
         self::assertTrue($user->cannot($ability, $arguments), "Failed to assert user cannot {$ability}");
     }
 
+    /**
+     * @param Ability|Ability[] $ability
+     */
     protected function assertUserCanDeleteOnlyWithAbility(string $route, Ability|array $ability, ?string $redirectRoute): TestResponse
     {
         // Cannot delete with all abilities except the required ones.
@@ -115,6 +108,9 @@ trait ActsAsUser
             ->assertRedirect($redirectRoute);
     }
 
+    /**
+     * @param Ability|Ability[] $ability
+     */
     protected function assertUserCannotDeleteDespiteAbility(string $route, Ability|array $ability, ?string $fromRoute): TestResponse
     {
         $from = isset($fromRoute) ? $this->from($fromRoute) : $this;
@@ -124,6 +120,9 @@ trait ActsAsUser
             ->assertForbidden();
     }
 
+    /**
+     * @param Ability|Ability[] $ability
+     */
     protected function assertUserCanGetOnlyWithAbility(string $route, Ability|array $ability, bool $guestRedirectedToLogin = true): TestResponse
     {
         $this->assertGuestCannotGet($route, $guestRedirectedToLogin);
@@ -132,6 +131,9 @@ trait ActsAsUser
         return $this->assertUserCanGetWithAbility($route, $ability);
     }
 
+    /**
+     * @param Ability|Ability[] $ability
+     */
     protected function assertUserCanGetWithAbility(string $route, Ability|array $ability): TestResponse
     {
         $this->actingAsUserWithAbility($ability);
@@ -144,12 +146,19 @@ trait ActsAsUser
         return $this->get($route)->assertForbidden();
     }
 
+    /**
+     * @param Ability|Ability[] $ability
+     */
     protected function assertUserCannotGetWithoutAbility(string $route, Ability|array $ability): TestResponse
     {
         $this->actingAsUserWithFullAbilitiesExcept($ability);
         return $this->get($route)->assertForbidden();
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * @param Ability|Ability[] $ability
+     */
     protected function assertUserCanPostOnlyWithAbility(string $route, array $data, Ability|array $ability, ?string $redirectRoute): TestResponse
     {
         // Cannot submit POST request with all abilities except the required ones.
@@ -160,6 +169,10 @@ trait ActsAsUser
         return $this->assertUserCanPostWithAbility($route, $data, $ability, $redirectRoute);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * @param Ability|Ability[] $ability
+     */
     protected function assertUserCanPostWithAbility(string $route, array $data, Ability|array $ability, ?string $redirectRoute): TestResponse
     {
         $this->actingAsUserWithAbility($ability);
@@ -169,6 +182,10 @@ trait ActsAsUser
             ->assertRedirect($redirectRoute);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * @param Ability|Ability[] $ability
+     */
     protected function assertUserCannotPostDespiteAbility(string $route, array $data, Ability|array $ability, ?string $fromRoute, ?string $redirectRoute): TestResponse
     {
         $from = isset($fromRoute) ? $this->from($fromRoute) : $this;
@@ -178,6 +195,10 @@ trait ActsAsUser
             ->assertRedirect($redirectRoute);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * @param Ability|Ability[] $ability
+     */
     protected function assertUserCanPutOnlyWithAbility(string $route, array $data, Ability|array $ability, ?string $fromRoute, ?string $redirectRoute, bool $requestCatchesProhibitedData = false): TestResponse
     {
         $from = isset($fromRoute) ? $this->from($fromRoute) : $this;
@@ -199,6 +220,10 @@ trait ActsAsUser
         return $this->assertUserCanPutWithAbility($route, $data, $ability, $fromRoute, $redirectRoute);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * @param Ability|Ability[] $ability
+     */
     protected function assertUserCanPutWithAbility(string $route, array $data, Ability|array $ability, ?string $fromRoute, ?string $redirectRoute): TestResponse
     {
         $from = isset($fromRoute) ? $this->from($fromRoute) : $this;
@@ -208,6 +233,10 @@ trait ActsAsUser
             ->assertRedirect($redirectRoute);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * @param Ability|Ability[] $ability
+     */
     protected function assertUserCannotPutDespiteAbility(string $route, array $data, Ability|array $ability, ?string $fromRoute, ?string $redirectRoute): TestResponse
     {
         $from = isset($fromRoute) ? $this->from($fromRoute) : $this;
@@ -217,6 +246,9 @@ trait ActsAsUser
             ->assertRedirect($redirectRoute);
     }
 
+    /**
+     * @param Ability|Ability[] $ability
+     */
     protected function createUserRoleWithAbility(Ability|array $ability): UserRole
     {
         if (is_array($ability)) {
@@ -238,6 +270,9 @@ trait ActsAsUser
         return $this->userRoles[$userRoleName];
     }
 
+    /**
+     * @param Ability|Ability[] $ability
+     */
     protected function createUserRoleWithoutAbility(Ability|array $ability): UserRole
     {
         $userRoleName = 'Without ' . (

@@ -16,6 +16,7 @@ class VerifyEmailNotification extends VerifyEmail
     protected function buildMailMessage($url): MailMessage
     {
         return (new MailMessage())
+            /** @phpstan-ignore-next-line binaryOp.invalid */
             ->subject(config('app.name') . ': ' . __('Verify e-mail address'))
             ->greeting($this->user->greeting . ',')
             ->line(__('Please click the button below to verify your e-mail address.'))

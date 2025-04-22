@@ -22,6 +22,7 @@ use App\Models\FormFieldValue;
 use App\Models\User;
 use App\Notifications\BookingConfirmation;
 use App\Policies\BookingPolicy;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Notifications\AnonymousNotifiable;
 use Illuminate\Support\Collection;
@@ -131,6 +132,7 @@ class BookingControllerTest extends TestCase
         $this->assertUserCanGetOnlyWithAbility("bookings/{$booking->id}", Ability::ViewBookingsOfEvent);
         $this->assertUserCanGetOnlyWithAbility("bookings/{$booking->id}/pdf", Ability::ViewBookingsOfEvent);
         foreach ($bookingOption->formFieldsForFiles as $formFieldForFile) {
+            /** @var FormFieldValue $formFieldValue */
             $formFieldValue = $booking->formFieldValues->firstWhere('form_field_id', $formFieldForFile->id);
             $this->assertUserCanGetOnlyWithAbility("bookings/{$booking->id}/file/{$formFieldValue->id}", Ability::ViewBookingsOfEvent);
         }
@@ -187,7 +189,9 @@ class BookingControllerTest extends TestCase
                 $mailContent = $notification->toMail(new AnonymousNotifiable())->render();
                 return $notifiable->routes['mail'] === $booking->email
                     && str_contains($mailContent, $booking->first_name)
+                    /** @phpstan-ignore argument.type */
                     && str_contains($mailContent, formatDecimal($bookingOption->price) . ' €')
+                    /** @phpstan-ignore argument.type */
                     && str_contains($mailContent, $bookingOption->event->organization->iban);
             }
         );
@@ -311,7 +315,7 @@ class BookingControllerTest extends TestCase
         $bookings = self::createBookings($bookingOption);
         /** @var Booking $booking */
         $booking = $bookings->first();
-        $booking->paid_at = $this->faker->dateTime();
+        $booking->paid_at = Carbon::create($this->faker->dateTime());
         $booking->save();
 
         $route = "/events/{$bookingOption->event->slug}/{$bookingOption->slug}/payments";
@@ -346,6 +350,9 @@ class BookingControllerTest extends TestCase
             });
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function generateRandomBookingData(BookingOption $bookingOption): array
     {
         if ($bookingOption->formFields->isEmpty()) {

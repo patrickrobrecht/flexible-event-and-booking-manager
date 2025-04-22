@@ -11,7 +11,10 @@ use App\Models\Event;
 use App\Models\EventSeries;
 use App\Models\Location;
 use App\Models\Organization;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Stringable;
 
 /**
  * Filter for {@see Event}s
@@ -21,7 +24,7 @@ class EventFilterRequest extends FormRequest
     use FiltersList;
 
     /**
-     * Get the validation rules that apply to the request.
+     * @return array<string, array<int, Closure|ValidationRule|string|Stringable>>
      */
     public function rules(): array
     {

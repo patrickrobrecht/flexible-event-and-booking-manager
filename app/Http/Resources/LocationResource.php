@@ -13,6 +13,9 @@ class LocationResource extends JsonResource
 {
     use BuildsResource;
 
+    /**
+     * @return array<string, mixed>
+     */
     public function relationsToArray(): array
     {
         return [

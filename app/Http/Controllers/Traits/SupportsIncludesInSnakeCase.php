@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Traits;
 
+use Closure;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -21,11 +22,17 @@ trait SupportsIncludesInSnakeCase
         return [];
     }
 
+    /**
+     * @return array<int, string>
+     */
     protected function allowedIncludeCounts(): array
     {
         return [];
     }
 
+    /**
+     * @return array<int, Collection<int, AllowedInclude>>
+     */
     protected function allowedIncludeCountsToSnake(): array
     {
         return array_map(
@@ -39,22 +46,31 @@ trait SupportsIncludesInSnakeCase
         );
     }
 
+    /**
+     * @return array<int, string>
+     */
     protected function allowedIncludeRelations(): array
     {
         return [];
     }
 
+    /**
+     * @return array<int, Collection<int, AllowedInclude>>
+     */
     protected function allowedIncludeRelationsToSnake(): array
     {
         return array_map(
             static function (string $relationName) {
+                /** @var Collection<int, AllowedInclude> $includesForRelation */
                 $includesForRelation = AllowedInclude::relationship(
                     Str::snake($relationName),
                     $relationName
                 );
                 return $includesForRelation
                     ->filter(
+                        /** @phpstan-ignore argument.type */
                         fn (AllowedInclude $allowedInclude) => !str_ends_with($allowedInclude->getName(), config('query-builder.count_suffix'))
+                            /** @phpstan-ignore argument.type */
                             && !str_ends_with($allowedInclude->getName(), config('query-builder.exists_suffix'))
                     );
             },
@@ -62,6 +78,9 @@ trait SupportsIncludesInSnakeCase
         );
     }
 
+    /**
+     * @return array<int, Collection<int, AllowedInclude>>
+     */
     protected function allowedIncludesToSnake(): array
     {
         return array_merge(
@@ -70,6 +89,9 @@ trait SupportsIncludesInSnakeCase
         );
     }
 
+    /**
+     * @return LengthAwarePaginator<int, Model>
+     */
     protected function loadPaginatedListWithIncludes(FormRequest $request, QueryBuilder $query): LengthAwarePaginator
     {
         return $query
@@ -81,15 +103,11 @@ trait SupportsIncludesInSnakeCase
     protected function loadIncludesForModel(Model $model): void
     {
         $include = Request::query('include');
-        if (!isset($include)) {
+        if (!isset($include) || is_array($include)) {
             return;
         }
 
         $includeStrings = explode(',', $include);
-        if (count($includeStrings) === 0) {
-            return;
-        }
-
         $allowedCustomIncludes = Collection::make($this->allowedCustomIncludes());
         $customIncludes = $allowedCustomIncludes->filter(
             static fn ($value, $key) => in_array($key, $includeStrings, true)

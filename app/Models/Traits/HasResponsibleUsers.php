@@ -32,6 +32,9 @@ trait HasResponsibleUsers
 
     abstract public function getAbilityToViewResponsibilities(): Ability;
 
+    /**
+     * @return Collection<int, User>
+     */
     public function getResponsibleUsersVisibleForCurrentUser(): Collection
     {
         $currentUser = Auth::user();
@@ -48,7 +51,7 @@ trait HasResponsibleUsers
     }
 
     /**
-     * @return Collection<User>
+     * @return Collection<int, User>
      */
     public function getPubliclyVisibleResponsibleUsers(): Collection
     {
@@ -60,6 +63,10 @@ trait HasResponsibleUsers
         return $this->responsibleUsers->first(fn (User $responsibleUser) => self::isPubliclyVisible($responsibleUser)) !== null;
     }
 
+    /**
+     * @param array{responsible_user_id?: int[]|null, responsible_user_data?: array<int, array<string|bool>>} $validatedData
+     * @return array{attached: array<int, int>, detached: array<int, int>, updated: array<int, int>}
+     */
     public function saveResponsibleUsers(array $validatedData): array
     {
         $responsibleUsers = [];

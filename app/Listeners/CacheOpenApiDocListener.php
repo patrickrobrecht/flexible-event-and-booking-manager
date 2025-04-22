@@ -23,6 +23,7 @@ class CacheOpenApiDocListener
 
     public static function cacheConfigurationFile(): string
     {
+        /** @phpstan-var array<string, string> $replacements */
         $replacements = [
             '{{APP_NAME}}' => config('app.name'),
             '{{API_ROOT_URL}}' => url('api'),
@@ -38,6 +39,7 @@ class CacheOpenApiDocListener
         return str_replace(
             array_keys($replacements),
             array_values($replacements),
+            /** @phpstan-ignore-next-line argument.type */
             file_get_contents(base_path('open-api.yaml'))
         );
     }

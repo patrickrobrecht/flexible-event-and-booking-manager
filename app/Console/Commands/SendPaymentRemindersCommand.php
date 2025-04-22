@@ -23,7 +23,7 @@ class SendPaymentRemindersCommand extends Command
 
     public function handle(): int
     {
-        /** @var Collection<BookingOption> $bookingOptions */
+        /** @var Collection<int, BookingOption> $bookingOptions */
         $bookingOptions = BookingOption::query()
             ->whereNotNull('payment_due_days')
             ->whereHas(
@@ -64,9 +64,9 @@ class SendPaymentRemindersCommand extends Command
     private function processBookingsForOption(BookingOption $bookingOption): bool
     {
         // Calculate which bookings have reached the due date already.
-        $bookedBefore = Carbon::today()->endOfDay()->subWeekdays($bookingOption->payment_due_days);
+        $bookedBefore = Carbon::today()->endOfDay()->subWeekdays($bookingOption->payment_due_days ?? 0);
 
-        /** @var Collection<Booking> $bookingsReadyForReminder */
+        /** @var Collection<int, Booking> $bookingsReadyForReminder */
         $bookingsReadyForReminder = $bookingOption->bookings()
             ->whereNotNull('price')
             ->whereNull('paid_at')

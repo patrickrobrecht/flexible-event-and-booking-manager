@@ -2,13 +2,19 @@
 
 namespace App\Http\Requests\Traits;
 
+use Closure;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
+use Stringable;
 
 trait FiltersList
 {
     abstract public function rules(): array;
 
+    /**
+     * @return array<string, string>
+     */
     public function attributes(): array
     {
         $attributes = [];
@@ -38,6 +44,9 @@ trait FiltersList
         return __('validation.attributes.' . $validationKey);
     }
 
+    /**
+     * @return array<int, string>
+     */
     public function ruleForDate(?string $afterOrEqual = null): array
     {
         $rules = [
@@ -52,6 +61,12 @@ trait FiltersList
         return $rules;
     }
 
+    /**
+     * @template TModel of Model
+     * @param Builder<TModel> $query
+     * @param array<int, int|string> $allowedValues
+     * @return array<int, string|Closure>
+     */
     public function ruleForAllowedOrExistsInDatabase(Builder $query, array $allowedValues): array
     {
         return [
@@ -68,6 +83,8 @@ trait FiltersList
 
     /**
      * @param class-string $enumClass
+     * @param array<int, int|string> $allowedValues
+     * @return array<int, string|Closure>
      */
     public function ruleForAllowedOrExistsInEnum(string $enumClass, array $allowedValues): array
     {
@@ -83,6 +100,9 @@ trait FiltersList
         ];
     }
 
+    /**
+     * @return array<int, string|Stringable>
+     */
     public function ruleForForeignId(string $table): array
     {
         return [
@@ -91,6 +111,9 @@ trait FiltersList
         ];
     }
 
+    /**
+     * @return array<int, string>
+     */
     public function ruleForText(int $maxLength = 255): array
     {
         return [

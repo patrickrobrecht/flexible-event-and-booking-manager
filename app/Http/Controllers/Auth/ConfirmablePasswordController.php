@@ -23,6 +23,7 @@ class ConfirmablePasswordController extends Controller
     {
         if (
             !Auth::guard('web')->validate([
+                /** @phpstan-ignore-next-line property.nonObject */
                 'email' => $request->user()->email,
                 'password' => $request->password,
             ])

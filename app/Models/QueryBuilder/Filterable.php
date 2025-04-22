@@ -11,15 +11,19 @@ use Spatie\QueryBuilder\AllowedFilter;
 trait Filterable
 {
     /**
-     * @return AllowedFilter[]
+     * @return array<int, AllowedFilter>
      */
     public static function allowedFilters(): array
     {
         return [];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function defaultValuesForFilters(): array
     {
+        /** @phpstan-ignore-next-line binaryOp.invalid */
         $filterSuffix = config('query-builder.parameters.filter') . '.';
 
         $defaults = [];

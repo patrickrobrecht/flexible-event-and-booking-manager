@@ -71,6 +71,9 @@ class ApiTest extends TestCase
             ->assertOk();
     }
 
+    /**
+     * @return array<int, array{string}>
+     */
     public static function acceptHeaders(): array
     {
         return [
@@ -96,6 +99,9 @@ class ApiTest extends TestCase
             ]);
     }
 
+    /**
+     * @return array<int, array{string, string, int, string}>
+     */
     public static function acceptLanguageHeaders(): array
     {
         return [

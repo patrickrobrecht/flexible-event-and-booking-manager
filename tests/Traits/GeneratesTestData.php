@@ -28,6 +28,7 @@ use Database\Factories\FormFieldValueFactory;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -50,18 +51,31 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(Visibility::class)]
 trait GeneratesTestData
 {
+    /**
+     * @template TModel of Model
+     *
+     * @param Factory<TModel> $factory
+     * @return Collection<int, TModel>
+     */
     public function createCollection(Factory $factory, ?int $count = null): Collection
     {
+        /** @phpstan-ignore return.type */
         return $factory
             ->count($count ?? $this->faker->numberBetween(5, 10))
             ->create();
     }
 
+    /**
+     * @return array<int, array<int, mixed>>
+     */
     public static function visibilityProvider(): array
     {
-        return array_map(static fn (Visibility $method) => [$method], Visibility::cases());
+        return array_map(static fn (Visibility $visibility) => [$visibility], Visibility::cases());
     }
 
+    /**
+     * @param array<string, mixed> $attributes
+     */
     protected static function createBooking(?BookingOption $bookingOption = null, array $attributes = []): Booking
     {
         $booking = Booking::factory()
@@ -75,7 +89,7 @@ trait GeneratesTestData
         if (isset($bookingOption) && $bookingOption->formFields->isNotEmpty()) {
             foreach ($bookingOption->formFields as $formField) {
                 if ($formField->type === FormElementType::File) {
-                    $filePath = $bookingOption->getFilePath() . '/' . fake()->uuid(). '.txt';
+                    $filePath = $bookingOption->getFilePath() . '/' . fake()->uuid() . '.txt';
                     Storage::disk('local')->put($filePath, 'Test File Contents');
                     $value = $filePath;
                 } else {
@@ -92,6 +106,9 @@ trait GeneratesTestData
         return $booking;
     }
 
+    /**
+     * @return Collection<int, Booking>
+     */
     protected static function createBookings(BookingOption $bookingOption): Collection
     {
         return Booking::factory()
@@ -103,6 +120,9 @@ trait GeneratesTestData
             ]);
     }
 
+    /**
+     * @return Collection<int, Booking>
+     */
     protected static function createBookingsForUser(BookingOption $bookingOption, User $user): Collection
     {
         return Booking::factory()
@@ -114,6 +134,9 @@ trait GeneratesTestData
             ]);
     }
 
+    /**
+     * @param array<string, mixed> $attributes
+     */
     protected static function createBookingOptionForEvent(?Visibility $visibility = null, array $attributes = []): BookingOption
     {
         return BookingOption::factory()
@@ -121,6 +144,9 @@ trait GeneratesTestData
             ->create($attributes);
     }
 
+    /**
+     * @param FormElementType[]|null $formElementTypes
+     */
     protected static function createBookingOptionForEventWithCustomFormFields(?Visibility $visibility = null, ?array $formElementTypes = null): BookingOption
     {
         $bookingOptionFactory = BookingOption::factory()
@@ -163,9 +189,13 @@ trait GeneratesTestData
             ->create();
     }
 
+    /**
+     * @return Collection<int, Document>
+     */
     protected static function createDocuments(): Collection
     {
         return Document::factory()
+            /** @phpstan-ignore-next-line argument.type */
             ->for(fake()->randomElement([
                 self::createEvent(Visibility::Public),
                 self::createEventSeries(Visibility::Private),
@@ -284,6 +314,7 @@ trait GeneratesTestData
     public static function createUserResponsibleFor(Event|EventSeries|Organization $responsibleFor): User
     {
         return User::factory()
+            /** @phpstan-ignore-next-line match.unhandled */
             ->hasAttached($responsibleFor, ['publicly_visible' => true], match ($responsibleFor::class) {
                 Event::class => 'responsibleForEvents',
                 EventSeries::class => 'responsibleForEventSeries',
@@ -292,6 +323,9 @@ trait GeneratesTestData
             ->create();
     }
 
+    /**
+     * @return Collection<int, User>
+     */
     protected static function createUsersWithBookings(BookingOption $bookingOption): Collection
     {
         return User::factory()
@@ -309,6 +343,7 @@ trait GeneratesTestData
 
     /**
      * @return array<string, mixed>
+     * @phpstan-ignore missingType.generics
      */
     public static function makeData(Factory $factory): array
     {
@@ -316,7 +351,9 @@ trait GeneratesTestData
     }
 
     /**
+     * @param array<int, string> $without
      * @return array<string, mixed>
+     * @phpstan-ignore missingType.generics
      */
     public static function makeDataWithout(Factory $factory, array $without = []): array
     {

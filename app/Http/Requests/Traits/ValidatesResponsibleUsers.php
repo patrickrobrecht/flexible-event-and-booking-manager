@@ -3,9 +3,13 @@
 namespace App\Http\Requests\Traits;
 
 use Illuminate\Validation\Rule;
+use Stringable;
 
 trait ValidatesResponsibleUsers
 {
+    /**
+     * @return array<string, array<int, string|Stringable>>
+     */
     protected function rulesForResponsibleUsers(): array
     {
         return [
@@ -35,6 +39,9 @@ trait ValidatesResponsibleUsers
         ];
     }
 
+    /**
+     * @return array<string, string>
+     */
     protected function attributesForResponsibleUsers(): array
     {
         return [

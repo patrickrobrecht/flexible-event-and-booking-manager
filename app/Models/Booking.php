@@ -66,11 +66,15 @@ class Booking extends Model
     use HasPhone;
     use SoftDeletes;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+    protected $casts = [
+        'booking_option_id' => 'integer',
+        'date_of_birth' => 'date',
+        'booked_at' => 'datetime',
+        'price' => 'float',
+        'paid_at' => 'datetime',
+        'deleted_at' => 'datetime',
+    ];
+
     protected $fillable = [
         'first_name',
         'last_name',
@@ -85,20 +89,6 @@ class Booking extends Model
         'booked_at',
         'paid_at',
         'comment',
-    ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'booking_option_id' => 'integer',
-        'date_of_birth' => 'date',
-        'booked_at' => 'datetime',
-        'price' => 'float',
-        'paid_at' => 'datetime',
-        'deleted_at' => 'datetime',
     ];
 
     protected function age(): Attribute
@@ -177,6 +167,9 @@ class Booking extends Model
         return $this->scopeIncludeColumns($query, ['first_name', 'last_name'], true, ...$searchTerms);
     }
 
+    /**
+     * @param array<string, mixed> $validatedData
+     */
     public function fillAndSave(array $validatedData): bool
     {
         if (!$this->fill($validatedData)->save()) {
@@ -270,6 +263,7 @@ class Booking extends Model
         }
 
         $formFieldValue->forceCast();
+        /** @phpstan-ignore-next-line assign.propertyType */
         $formFieldValue->value = $value;
         return $formFieldValue->save();
     }
@@ -303,12 +297,15 @@ class Booking extends Model
             }
 
             $value = match ($formField->type) {
+                /** @phpstan-ignore-next-line argument.type */
                 FormElementType::Date => formatDate($value),
+                /** @phpstan-ignore-next-line argument.type */
                 FormElementType::DateTime => formatDateTime($value),
                 default => $value,
             };
         }
 
+        /** @phpstan-ignore-next-line return.type */
         return $value;
     }
 
@@ -323,6 +320,7 @@ class Booking extends Model
                 'bookingOption.formFields',
             ]),
         ])
+            /** @phpstan-ignore-next-line argument.type */
             ->addInfo([
                 'Author' => config('app.owner'),
                 'Title' => implode(' ', [
@@ -336,6 +334,9 @@ class Booking extends Model
         return $filePath;
     }
 
+    /**
+     * @return array<int, AllowedFilter>
+     */
     public static function allowedFilters(): array
     {
         return [
@@ -353,8 +354,8 @@ class Booking extends Model
     }
 
     /**
-     * @param Collection<self> $bookings
-     * @return Collection<self>
+     * @param Collection<int, self> $bookings
+     * @return Collection<int, self>
      */
     public static function sort(Collection $bookings, string $sort): Collection
     {

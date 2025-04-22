@@ -11,6 +11,7 @@ class EmailVerificationPromptController extends Controller
 {
     public function __invoke(Request $request): RedirectResponse|View
     {
+        /** @phpstan-ignore-next-line property.nonObject */
         return $request->user()->hasVerifiedEmail()
             ? redirect()->intended(route('dashboard'))
             : view('auth.verify-email');

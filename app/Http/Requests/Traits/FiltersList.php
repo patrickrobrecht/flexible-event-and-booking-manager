@@ -5,8 +5,8 @@ namespace App\Http\Requests\Traits;
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Stringable;
 use Illuminate\Validation\Rule;
+use Stringable;
 
 trait FiltersList
 {

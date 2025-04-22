@@ -8,8 +8,8 @@ use App\Models\Booking;
 use App\Models\BookingOption;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Stringable;
 use Illuminate\Validation\Rule;
+use Stringable;
 
 /**
  * @property BookingOption $booking_option

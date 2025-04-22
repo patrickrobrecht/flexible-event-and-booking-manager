@@ -7,8 +7,8 @@ use App\Models\Event;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Stringable;
 use Illuminate\Validation\Rule;
+use Stringable;
 
 /**
  * @property-read Event $event

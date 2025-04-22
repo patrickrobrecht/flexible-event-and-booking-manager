@@ -108,11 +108,6 @@ trait SupportsIncludesInSnakeCase
         }
 
         $includeStrings = explode(',', $include);
-        /** @phpstan-ignore-next-line */ // TODO
-        if (count($includeStrings) === 0) {
-            return;
-        }
-
         $allowedCustomIncludes = Collection::make($this->allowedCustomIncludes());
         $customIncludes = $allowedCustomIncludes->filter(
             static fn ($value, $key) => in_array($key, $includeStrings, true)

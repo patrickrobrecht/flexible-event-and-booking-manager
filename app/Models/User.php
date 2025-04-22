@@ -66,6 +66,21 @@ class User extends Authenticatable implements MustVerifyEmail
     use Notifiable;
     use Searchable;
 
+    protected $casts = [
+        'date_of_birth' => 'date',
+        'email_verified_at' => 'datetime',
+        'status' => ActiveStatus::class,
+        'last_login_at' => 'datetime',
+        // counts
+        'bookings_count' => 'integer',
+        'bookings_trashed_count' => 'integer',
+        'documents_count' => 'integer',
+        'responsible_for_events_count' => 'integer',
+        'responsible_for_event_series_count' => 'integer',
+        'responsible_for_organizations_count' => 'integer',
+        'tokens_count' => 'integer',
+    ];
+
     protected $fillable = [
         'first_name',
         'last_name',
@@ -83,21 +98,6 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $hidden = [
         'password',
         'remember_token',
-    ];
-
-    protected $casts = [
-        'date_of_birth' => 'date',
-        'email_verified_at' => 'datetime',
-        'status' => ActiveStatus::class,
-        'last_login_at' => 'datetime',
-        // counts
-        'bookings_count' => 'integer',
-        'bookings_trashed_count' => 'integer',
-        'documents_count' => 'integer',
-        'responsible_for_events_count' => 'integer',
-        'responsible_for_event_series_count' => 'integer',
-        'responsible_for_organizations_count' => 'integer',
-        'tokens_count' => 'integer',
     ];
 
     public function bookings(): HasMany

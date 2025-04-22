@@ -8,8 +8,8 @@ use App\Models\Event;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
-use Illuminate\Support\Stringable;
 use Illuminate\Validation\Rule;
+use Stringable;
 
 /**
  * @property Event $event

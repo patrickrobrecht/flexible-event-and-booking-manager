@@ -25,10 +25,6 @@ class AcceptLanguageMiddleware
         /** @var string $header */
         $header = $request->server('HTTP_ACCEPT_LANGUAGE') ?? '';
         $acceptedLanguages = explode(',', $header);
-        /** @phpstan-ignore-next-line */ // TODO
-        if (count($acceptedLanguages) === 0) {
-            return null;
-        }
 
         return Collection::make($acceptedLanguages)
             ->map(static function ($acceptedLanguage) {

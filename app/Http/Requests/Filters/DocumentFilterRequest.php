@@ -10,7 +10,7 @@ use App\Models\Document;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Stringable;
+use Stringable;
 
 /**
  * Filter for {@see Document}s

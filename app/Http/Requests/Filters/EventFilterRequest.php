@@ -14,7 +14,7 @@ use App\Models\Organization;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Stringable;
+use Stringable;
 
 /**
  * Filter for {@see Event}s

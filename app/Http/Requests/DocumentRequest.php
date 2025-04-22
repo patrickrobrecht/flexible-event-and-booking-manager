@@ -12,8 +12,8 @@ use App\Models\Organization;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Stringable;
 use Illuminate\Validation\Rule;
+use Stringable;
 
 /**
  * @property ?Document $document

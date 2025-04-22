@@ -13,10 +13,12 @@ class EmailVerificationNotificationController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        /** @phpstan-ignore-next-line property.nonObject */
         if ($request->user()->hasVerifiedEmail()) {
             return redirect()->intended(route('dashboard'));
         }
 
+        /** @phpstan-ignore-next-line property.nonObject */
         $request->user()->sendEmailVerificationNotification();
 
         return back()

@@ -15,6 +15,7 @@ use Stringable;
 
 /**
  * @property ?Organization $organization
+ * @property-read ?string $slug
  */
 class OrganizationRequest extends FormRequest
 {

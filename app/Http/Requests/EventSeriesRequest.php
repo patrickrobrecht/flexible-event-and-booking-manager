@@ -14,6 +14,7 @@ use Stringable;
 
 /**
  * @property ?EventSeries $event_series
+ * @property-read ?string $slug
  */
 class EventSeriesRequest extends FormRequest
 {

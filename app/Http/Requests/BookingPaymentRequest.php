@@ -21,6 +21,7 @@ class BookingPaymentRequest extends FormRequest
      */
     public function rules(): array
     {
+        /** @var int[] $bookingsNotPaidYet */
         $bookingsNotPaidYet = $this->booking_option->bookings()
             ->whereNull('paid_at')
             ->pluck('id')
@@ -31,6 +32,7 @@ class BookingPaymentRequest extends FormRequest
                 'required',
                 'array',
                 function ($attribute, $value, $fail) use ($bookingsNotPaidYet) {
+                    /** @var int[] $bookingIds */
                     $bookingIds = array_map('intval', $value ?? []);
                     if (!$this->containsOnlyValidIds($bookingIds, $bookingsNotPaidYet)) {
                         $fail(__('validation.not_in', ['attribute' => __('validation.attributes.booking_id')]));

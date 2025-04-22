@@ -14,6 +14,7 @@ use Illuminate\Validation\Rule;
 /**
  * @property Event $event
  * @property ?BookingOption $booking_option
+ * @property-read ?string $slug
  */
 class BookingOptionRequest extends FormRequest
 {

@@ -49,7 +49,7 @@ class UserRole extends Model
         return $this->scopeRelation($query, $userId, 'users', fn (Builder $q) => $q->where('user_id', '=', $userId));
     }
 
-    public function deleteAfterDetachingUsers(): bool
+    public function deleteAfterDetachingUsers(): bool|null
     {
         $this->users()->detach();
         return $this->delete();

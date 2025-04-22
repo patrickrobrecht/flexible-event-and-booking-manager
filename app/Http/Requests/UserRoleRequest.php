@@ -5,7 +5,6 @@ namespace App\Http\Requests;
 use App\Enums\Ability;
 use App\Http\Requests\Traits\ValidatesAbilities;
 use App\Models\UserRole;
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Stringable;

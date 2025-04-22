@@ -150,7 +150,11 @@ class UserControllerTest extends TestCase
     public static function usersWithReferences(): array
     {
         return [
-            [fn () => self::createBooking()->bookedByUser, 'kann nicht gelöscht werden, weil er/sie 1 Anmeldung hat.'],
+            [function () {
+                /** @var User $user */
+                $user = self::createBooking()->bookedByUser;
+                return $user;
+            }, 'kann nicht gelöscht werden, weil er/sie 1 Anmeldung hat.'],
             [fn () => self::createDocument(static fn () => self::createEvent())->uploadedByUser, 'kann nicht gelöscht werden, weil er/sie 1 Dokument hochgeladen hat.'],
             [fn () => self::createUserResponsibleFor(self::createEvent()), 'kann nicht gelöscht werden, weil er/sie für 1 Veranstaltung verantwortlich ist.'],
             [fn () => self::createUserResponsibleFor(self::createEventSeries()), 'kann nicht gelöscht werden, weil er/sie für 1 Veranstaltungsreihe verantwortlich ist.'],

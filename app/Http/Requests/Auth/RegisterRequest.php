@@ -33,7 +33,7 @@ class RegisterRequest extends FormRequest
             'password' => [
                 'required',
                 'confirmed',
-                Password::defaults(),
+                Password::default(),
             ],
             'terms_and_conditions' => [
                 config('app.urls.terms_and_conditions') ? 'accepted' : 'nullable',

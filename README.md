@@ -59,6 +59,7 @@ To setup/update your development environment:
 - Run `composer install` to setup autoloading and install the development dependencies for PHP.
 - Create/update the `.env` configuration if necessary (see [Configuration](#configuration) below).
 - Run `php artisan migrate` to migrate the database to the latest version.
+- Run `composer stan` to run static analysis with PHPStan.
 - Run `composer test` to execute all the Unit tests.
 
 For development, we use
@@ -67,16 +68,16 @@ For development, we use
 - [Laravel Mix](https://laravel-mix.com/docs/) for compiling assets
 - [Laravel Pint](https://laravel.com/docs/12.x/pint) for the PHP code style check
 - [Laravel Translatable String Exporter](https://github.com/kkomelin/laravel-translatable-string-exporter)
+- [PHPStan](https://phpstan.org/) for static analysis
 - [PHPUnit](https://docs.phpunit.de/en/12.1/) for unit tests
 - [Stylelint](https://stylelint.io/) for the SASS code style check
 
 ### Code Style
 Run `composer cs` to check compliance with the code style
 and `composer csfix` to fix code style violations before every commit
-(see composer.json` and `package.json` for commands to run the code style check/fix for just one language).
+(see `composer.json` and `package.json` for commands to run the code style check/fix for just one language).
 - PHP code MUST follow the [Pint configuration](./pint.json), including [PSR-12 specification](https://www.php-fig.org/psr/psr-12/).
-- Laravel code SHOULD follow the best practices from the list
-  [by Alexey Mezenin](https://github.com/alexeymezenin/laravel-best-practices).
+- Laravel code SHOULD follow the best practices from the list [by Alexey Mezenin](https://github.com/alexeymezenin/laravel-best-practices).
 - JavaScript code MUST follow [the default ESLint rules](https://eslint.org/docs/rules/).
 - CSS code MUST follow [the standard stylelint rules](https://stylelint.io/user-guide/rules).
 

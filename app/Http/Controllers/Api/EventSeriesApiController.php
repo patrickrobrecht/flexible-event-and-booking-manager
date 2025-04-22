@@ -17,6 +17,9 @@ class EventSeriesApiController extends Controller
 {
     use SupportsIncludesInSnakeCase;
 
+    /**
+     * @return array<int, string>
+     */
     protected function allowedIncludeCounts(): array
     {
         return [
@@ -25,6 +28,9 @@ class EventSeriesApiController extends Controller
         ];
     }
 
+    /**
+     * @return array<int, string>
+     */
     protected function allowedIncludeRelations(): array
     {
         return [
@@ -43,7 +49,7 @@ class EventSeriesApiController extends Controller
 
     public function show(EventSeries $eventSeries, FormRequest $request): JsonResource
     {
-        if ($eventSeries->visibility === Visibility::Private && $request->user()->tokenCant(Ability::ViewPrivateEventSeries->value)) {
+        if ($eventSeries->visibility === Visibility::Private && $request->user()?->tokenCant(Ability::ViewPrivateEventSeries->value)) {
             throw new MissingAbilityException(Ability::ViewPrivateEventSeries->value);
         }
 

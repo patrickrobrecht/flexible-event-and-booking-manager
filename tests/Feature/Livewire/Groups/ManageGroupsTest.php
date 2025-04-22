@@ -45,6 +45,7 @@ class ManageGroupsTest extends TestCase
         $event->bookings->each(
             fn (Booking $booking) => $testComponent
                 ->assertSeeHtml($booking->first_name . ' <strong>' . $booking->last_name)
+                /** @phpstan-ignore argument.type */
                 ->assertSeeText(formatDate($booking->booked_at))
         );
     }
@@ -77,6 +78,7 @@ class ManageGroupsTest extends TestCase
             $bookingOption->bookings->each(
                 fn (Booking $booking) => $testComponent
                     ->assertSeeHtml($booking->first_name . ' <strong>' . $booking->last_name)
+                    /** @phpstan-ignore argument.type */
                     ->assertDontSeeText(formatDate($booking->booked_at))
                     ->assertSeeText($booking->comment)
                     ->assertSeeText($booking->email)
@@ -172,6 +174,6 @@ class ManageGroupsTest extends TestCase
             ->call('moveBooking', $booking->id, $newGroup->id);
 
         $booking->refresh();
-        $this->assertEquals($newGroup->id, $booking->getGroup($event)->id);
+        $this->assertEquals($newGroup->id, $booking->getGroup($event)?->id);
     }
 }

@@ -50,9 +50,9 @@ abstract class GeneralGroupGenerationMethod implements GeneratesGroups
     }
 
     /**
-     * @param Collection<Booking> $bookings
+     * @param Collection<int, Booking> $bookings
      *
-     * @return Collection<Booking>
+     * @return Collection<int, Booking>
      */
     abstract protected function sortBookings(Collection $bookings): Collection;
 }

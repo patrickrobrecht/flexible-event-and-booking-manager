@@ -105,7 +105,7 @@ class BookingOption extends Model
     {
         return ($bookedAt ?? Carbon::now())
             ->endOfDay()
-            ->addWeekdays($this->payment_due_days);
+            ->addWeekdays($this->payment_due_days ?? 0);
     }
 
     public function isRestrictedBy(BookingRestriction $restriction): bool

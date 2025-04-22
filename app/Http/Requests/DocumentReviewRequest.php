@@ -29,7 +29,7 @@ class DocumentReviewRequest extends FormRequest
                 'string',
             ],
             'approval_status' => [
-                $this->routeIs('reviews.store') && $this->user()->can('approve', $this->document)
+                $this->routeIs('reviews.store') && $this->user()?->can('approve', $this->document)
                     ? 'nullable'
                     : 'prohibited',
                 ApprovalStatus::rule(),

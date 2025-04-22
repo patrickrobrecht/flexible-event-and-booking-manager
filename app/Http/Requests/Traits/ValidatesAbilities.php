@@ -12,7 +12,7 @@ use Stringable;
 trait ValidatesAbilities
 {
     /**
-     * @return list<Ability>
+     * @return array<int, Ability>
      */
     abstract protected function getSelectableAbilities(): array;
 
@@ -23,6 +23,7 @@ trait ValidatesAbilities
 
     protected function prepareAbilitiesForValidation(): void
     {
+        /** @var string[] $abilities */
         $abilities = $this->input('abilities', []);
 
         foreach ($abilities as $value) {

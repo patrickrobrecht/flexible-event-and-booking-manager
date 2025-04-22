@@ -23,6 +23,7 @@ trait Filterable
      */
     public static function defaultValuesForFilters(): array
     {
+        /** @phpstan-ignore-next-line binaryOp.invalid */
         $filterSuffix = config('query-builder.parameters.filter') . '.';
 
         $defaults = [];

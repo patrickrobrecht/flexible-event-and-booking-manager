@@ -28,6 +28,7 @@ class PersonalAccessTokenController extends Controller
     {
         $this->authorize('create', PersonalAccessToken::class);
 
+        /** @phpstan-ignore-next-line argument.type */
         $newAccessToken = PersonalAccessToken::createTokenFromValidated($request->user(), $request->validated());
         Session::flash('success', __('Your personal access token is :token. Please make a note of it (e.g. in your password safe) - you will not be able to view it again.', [
             'token' => $newAccessToken->plainTextToken,

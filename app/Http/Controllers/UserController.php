@@ -18,7 +18,8 @@ class UserController extends Controller
         $this->authorize('viewAny', User::class);
         ValueHelper::setDefaults(User::defaultValuesForQuery());
 
-        return view('users.user_index', $this->formValues([
+        return view('users.user_index', [
+            ...$this->formValues(),
             'users' => User::buildQueryFromRequest()
                 ->with([
                     'userRoles',
@@ -33,7 +34,7 @@ class UserController extends Controller
                     'tokens',
                 ])
                 ->paginate(12),
-        ]));
+        ]);
     }
 
     public function create(): View
@@ -72,9 +73,10 @@ class UserController extends Controller
     {
         $this->authorize('update', $user);
 
-        return view('users.user_form', $this->formValues([
+        return view('users.user_form', [
+            ... $this->formValues(),
             'editedUser' => $user,
-        ]));
+        ]);
     }
 
     public function update(User $user, UserRequest $request): RedirectResponse
@@ -100,12 +102,15 @@ class UserController extends Controller
         return back();
     }
 
-    private function formValues(array $values = []): array
+    /**
+     * @return array<string, mixed>
+     */
+    private function formValues(): array
     {
-        return array_replace([
+        return [
             'userRoles' => UserRole::query()
                 ->orderBy('name')
                 ->get(),
-        ], $values);
+        ];
     }
 }

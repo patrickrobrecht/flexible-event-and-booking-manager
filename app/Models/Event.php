@@ -151,25 +151,29 @@ class Event extends Model
         };
     }
 
-    public function deleteWithGroups(): bool
+    public function deleteWithGroups(): bool|null
     {
         $this->groups()->delete();
         return $this->delete();
     }
 
     /**
-     * @param array<string, mixed> $validatedData
+     * @param array{location_id: int, event_series_id?: int, parent_event_id?: int, organization_id: int} $validatedData
      */
     public function fillAndSave(array $validatedData): bool
     {
         $this->fill($validatedData);
-        $this->location()->associate($validatedData['location_id'] ?? null);
+        $this->location()->associate($validatedData['location_id']);
         $this->eventSeries()->associate($validatedData['event_series_id'] ?? null);
         $this->parentEvent()->associate($validatedData['parent_event_id'] ?? null);
-        $this->organization()->associate($validatedData['organization_id'] ?? null);
+        $this->organization()->associate($validatedData['organization_id']);
 
-        return $this->save()
-            && $this->saveResponsibleUsers($validatedData);
+        if (!$this->save()) {
+            return false;
+        }
+
+        $this->saveResponsibleUsers($validatedData);
+        return true;
     }
 
     public function findOrCreateGroup(int|string $groupIndex): Group

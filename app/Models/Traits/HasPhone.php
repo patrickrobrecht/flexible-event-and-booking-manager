@@ -5,6 +5,7 @@ namespace App\Models\Traits;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
 /**
+ * @property ?string $phone
  * @property-read ?string $phone_link {@see self::phoneLink()}
  */
 trait HasPhone
@@ -16,6 +17,7 @@ trait HasPhone
                 return null;
             }
 
+            /** @var string $phone */
             $phone = preg_replace('/[^\d\+]/', '', $this->phone);
             if (!str_starts_with($phone, '+')) {
                 $phone = '+49' . substr($phone, str_starts_with($phone, '0') ? 1 : 0);

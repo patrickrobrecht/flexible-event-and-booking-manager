@@ -64,11 +64,9 @@ class OrganizationControllerTest extends TestCase
 
     public function testUserCanStoreOrganizationOnlyWithCorrectAbility(): void
     {
-        $locations = Location::factory()->count(5)->create();
-        $organization = Organization::factory()->makeOne();
         $data = [
-            ...$organization->toArray(),
-            'location_id' => $this->faker->randomElement($locations)->id,
+            ...self::makeData(Organization::factory()),
+            'location_id' => Location::factory()->create()->id,
         ];
 
         $this->assertUserCanPostOnlyWithAbility('organizations', $data, Ability::CreateOrganizations, null);
@@ -82,9 +80,10 @@ class OrganizationControllerTest extends TestCase
     public function testUserCanUpdateOrganizationOnlyWithCorrectAbility(): void
     {
         $organization = $this->createRandomOrganization();
+        /** @var array{slug: string} $data */
         $data = [
-            ...Organization::factory()->makeOne()->toArray(),
-            'location_id' => $this->faker->randomElement(Location::factory()->count(5)->create())->id,
+            ...self::makeData(Organization::factory()),
+            'location_id' => Location::factory()->create()->id,
         ];
 
         $this->assertUserCanPutOnlyWithAbility(

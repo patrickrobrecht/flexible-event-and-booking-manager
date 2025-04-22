@@ -20,6 +20,7 @@ class PaymentReminderNotification extends Notification implements ShouldQueue
     {
         return $this->booking->prepareMailMessage()
             ->subject(
+                /** @phpstan-ignore-next-line binaryOp.invalid */
                 config('app.name')
                 . ': '
                 . __('Pending payment for booking no. :id', [
@@ -28,9 +29,11 @@ class PaymentReminderNotification extends Notification implements ShouldQueue
             )
             ->line(__('we have received your booking for :name dated :date, but have not yet been able to confirm receipt of payment.', [
                 'name' => $this->booking->name,
+                /** @phpstan-ignore-next-line argument.type */
                 'date' => formatDate($this->booking->booked_at),
             ]))
             ->line(__('Please transfer :price to the following bank account as soon as possible:', [
+                /** @phpstan-ignore-next-line argument.type */
                 'price' => formatDecimal($this->booking->price) . ' €',
             ]))
             ->lines($this->booking->bookingOption->event->organization->bank_account_lines);

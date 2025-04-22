@@ -2,7 +2,8 @@
 
 namespace App\Exports\Traits;
 
-use Illuminate\Database\Eloquent\Collection;
+use Closure;
+use Illuminate\Support\Collection;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
@@ -14,16 +15,23 @@ trait ExportsToExcel
     public function setMetaData(string $title): void
     {
         $this->getProperties()
+            /** @phpstan-ignore-next-line binaryOp.invalid */
             ->setCreator(config('app.name') . ' - ' . config('app.owner'))
             ->setTitle($title);
     }
 
+    /**
+     * @template TValue
+     * @param Collection<int, TValue> $collection
+     * @param array<int, string> $headerColumns
+     * @param Closure(TValue): array<int|string, mixed> $rowProvider
+     */
     public static function fillSheetFromCollection(
         Worksheet $worksheet,
         string $title,
         Collection $collection,
         array $headerColumns,
-        \Closure $rowProvider
+        Closure $rowProvider
     ): Worksheet {
         $worksheet->setTitle(substr(str_replace(['*', ':', '/', '\\', '?', '[', ']'], '', $title), 0, 31));
         $worksheet->fromArray([

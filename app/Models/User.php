@@ -109,6 +109,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function bookingsTrashed(): HasMany
     {
+        /** @phpstan-ignore-next-line method.notFound */
         return $this->bookings()
             ->onlyTrashed();
     }
@@ -173,7 +174,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->scopeRelation($query, $userRoleId, 'userRoles', fn (Builder $q) => $q->where('user_role_id', '=', $userRoleId));
     }
 
-    public function deleteWithRelations(): bool
+    public function deleteWithRelations(): bool|null
     {
         $this->userRoles()->detach();
         $this->tokens()->delete();
@@ -185,6 +186,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function fillAndSave(array $validatedData): bool
     {
+        /** @phpstan-var array{password: ?string, user_role_id: int[]|null} $validatedData */
         $this->fill($validatedData);
 
         if (isset($validatedData['password'])) {
@@ -215,6 +217,7 @@ class User extends Authenticatable implements MustVerifyEmail
             $abilities->add($userRole->abilities);
         }
 
+        /** @phpstan-ignore-next-line return.type */
         return $abilities->flatten()
             ->unique();
     }

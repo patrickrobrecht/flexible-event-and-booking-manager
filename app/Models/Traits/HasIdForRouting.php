@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 trait HasIdForRouting
 {
+    /**
+     * @param int|string $value
+     */
     public function resolveRouteBinding($value, $field = null): ?static
     {
         try {

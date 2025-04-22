@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Livewire\Groups;
 
+use App\Enums\Ability;
 use App\Livewire\Forms\GroupForm;
 use App\Livewire\Groups\EditGroup;
 use App\Models\Event;
@@ -32,7 +33,7 @@ class EditGroupTest extends TestCase
         $group = $this->fakeGroupWithEventAndSiblingGroup();
         $this->assertNull($group->description);
 
-        $this->actingAsAdmin();
+        $this->actingAsUserWithAbility(Ability::ManageGroupsOfEvent);
 
         Livewire::test(EditGroup::class, ['group' => $group])
             ->set('form.description', 'Test Description');
@@ -52,7 +53,7 @@ class EditGroupTest extends TestCase
     {
         $group = $this->fakeGroupWithEventAndSiblingGroup();
 
-        $this->actingAsAdmin();
+        $this->actingAsUserWithAbility(Ability::ManageGroupsOfEvent);
 
         Livewire::test(EditGroup::class, ['group' => $group])
             ->set('form.name')

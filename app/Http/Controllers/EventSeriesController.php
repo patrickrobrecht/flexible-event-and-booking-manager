@@ -89,6 +89,7 @@ class EventSeriesController extends Controller
         $this->authorize('create', EventSeries::class);
 
         $eventSeries = new EventSeries();
+        /** @phpstan-ignore argument.type */
         if ($eventSeries->fillAndSave($request->validated())) {
             Session::flash('success', __(':name created successfully.', ['name' => $eventSeries->name]));
             return redirect(route('event-series.edit', $eventSeries));
@@ -116,6 +117,7 @@ class EventSeriesController extends Controller
     {
         $this->authorize('update', $eventSeries);
 
+        /** @phpstan-ignore argument.type */
         if ($eventSeries->fillAndSave($request->validated())) {
             Session::flash('success', __(':name saved successfully.', ['name' => $eventSeries->name]));
         }
@@ -136,6 +138,9 @@ class EventSeriesController extends Controller
         return back();
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function formValues(): array
     {
         return [

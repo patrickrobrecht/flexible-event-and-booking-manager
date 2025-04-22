@@ -89,7 +89,7 @@ class Organization extends Model
     }
 
     /**
-     * @param array<string, mixed> $validatedData
+     * @param array{location_id: int} $validatedData
      */
     public function fillAndSave(array $validatedData): bool
     {
@@ -97,8 +97,12 @@ class Organization extends Model
 
         $this->location()->associate($validatedData['location_id']);
 
-        return $this->save()
-            && $this->saveResponsibleUsers($validatedData);
+        if (!$this->save()) {
+            return false;
+        }
+
+        $this->saveResponsibleUsers($validatedData);
+        return true;
     }
 
     public function getAbilityToViewResponsibilities(): Ability

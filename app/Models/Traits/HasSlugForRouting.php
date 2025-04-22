@@ -19,6 +19,9 @@ trait HasSlugForRouting
         return 'slug';
     }
 
+    /**
+     * @param int|string $value
+     */
     public function resolveRouteBinding($value, $field = null): ?static
     {
         try {

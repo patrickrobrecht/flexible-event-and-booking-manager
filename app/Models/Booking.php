@@ -263,6 +263,7 @@ class Booking extends Model
         }
 
         $formFieldValue->forceCast();
+        /** @phpstan-ignore-next-line assign.propertyType */
         $formFieldValue->value = $value;
         return $formFieldValue->save();
     }
@@ -296,12 +297,15 @@ class Booking extends Model
             }
 
             $value = match ($formField->type) {
+                /** @phpstan-ignore-next-line argument.type */
                 FormElementType::Date => formatDate($value),
+                /** @phpstan-ignore-next-line argument.type */
                 FormElementType::DateTime => formatDateTime($value),
                 default => $value,
             };
         }
 
+        /** @phpstan-ignore-next-line return.type */
         return $value;
     }
 
@@ -316,6 +320,7 @@ class Booking extends Model
                 'bookingOption.formFields',
             ]),
         ])
+            /** @phpstan-ignore-next-line argument.type */
             ->addInfo([
                 'Author' => config('app.owner'),
                 'Title' => implode(' ', [

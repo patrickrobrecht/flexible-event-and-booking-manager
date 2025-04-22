@@ -11,17 +11,20 @@ use Livewire\Component;
 
 class SearchUsers extends Component
 {
-    public $searchTerm = '';
+    public string $searchTerm = '';
 
     #[Locked]
-    public $fieldName = 'user_id';
+    public string $fieldName = 'user_id';
 
     /**
-     * @var Collection<User>
+     * @var Collection<int, User>
      */
     #[Locked]
     public $selectedUsers;
 
+    /**
+     * @param Collection<int, User> $selectedUsers
+     */
     public function mount($selectedUsers): void
     {
         // Key selected users by their ID.
@@ -42,6 +45,10 @@ class SearchUsers extends Component
         ]);
     }
 
+    /**
+     * @param array<int, string> $searchTerms
+     * @return Builder<User>
+     */
     private function userQuery(array $searchTerms): Builder
     {
         return User::query()
@@ -57,16 +64,15 @@ class SearchUsers extends Component
             ->orderBy('first_name');
     }
 
-    public function addUser($userId): void
+    public function addUser(int $userId): void
     {
         $user = User::find($userId);
         if (isset($user)) {
-            /** @phpstan-ignore-next-line */
             $this->selectedUsers[$userId] = $user;
         }
     }
 
-    public function removeUser($userId): void
+    public function removeUser(int $userId): void
     {
         unset($this->selectedUsers[$userId]);
     }

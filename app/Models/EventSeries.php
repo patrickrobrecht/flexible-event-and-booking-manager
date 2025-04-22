@@ -92,7 +92,7 @@ class EventSeries extends Model
     }
 
     /**
-     * @param array<string, mixed> $validatedData
+     * @param array{organization_id: int, parent_event_series_id?: int} $validatedData
      */
     public function fillAndSave(array $validatedData): bool
     {
@@ -100,8 +100,12 @@ class EventSeries extends Model
         $this->organization()->associate($validatedData['organization_id']);
         $this->parentEventSeries()->associate($validatedData['parent_event_series_id'] ?? null);
 
-        return $this->save()
-            && $this->saveResponsibleUsers($validatedData);
+        if (!$this->save()) {
+            return false;
+        }
+
+        $this->saveResponsibleUsers($validatedData);
+        return true;
     }
 
     public function getAbilityToViewResponsibilities(): Ability

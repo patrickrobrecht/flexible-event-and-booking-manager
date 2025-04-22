@@ -79,6 +79,7 @@ class EventSeriesControllerTest extends TestCase
     public function testUserCanUpdateEventSeriesOnlyWithCorrectAbility(): void
     {
         $eventSeries = self::createEventSeries();
+        /** @var array{slug: string} $data */
         $data = $this->generateRandomEventSeriesData();
 
         $this->assertUserCanPutOnlyWithAbility(

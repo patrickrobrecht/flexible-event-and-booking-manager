@@ -50,7 +50,7 @@ class GroupControllerTest extends TestCase
 
         // Verify content of the page.
         $response = $this->get($route)->assertOk();
-        $event->bookings->each(fn (Booking $booking) => $response->assertSeeText($booking->bookedByUser?->name));
+        $event->bookings->each(fn (Booking $booking) => $response->assertSeeText($booking->bookedByUser->name ?? ''));
     }
 
     public function testUserCanExportGroupsOnlyWithCorrectAbility(): void

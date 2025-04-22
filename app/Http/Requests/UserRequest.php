@@ -69,7 +69,7 @@ class UserRequest extends FormRequest
             'password' => [
                 'nullable',
                 'confirmed',
-                Password::defaults(),
+                Password::default(),
             ],
             'send_notification' => [
                 $this->routeIs('users.store') ? 'nullable' : 'prohibited',

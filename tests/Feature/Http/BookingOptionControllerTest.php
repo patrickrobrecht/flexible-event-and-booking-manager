@@ -83,12 +83,14 @@ class BookingOptionControllerTest extends TestCase
                 fn (BookingOptionFactory $factory) => $factory->availabilityStartingInFuture(),
                 fn (BookingOption $bookingOption) => [
                     __('Bookings are not possible yet.'),
+                    /** @phpstan-ignore-next-line argument.type */
                     __('The booking period starts at :date.', ['date' => formatDateTime($bookingOption->available_from)]),
                 ],
             ],
             [
                 fn (BookingOptionFactory $factory) => $factory->availabilityEndedInPast(),
                 fn (BookingOption $bookingOption) => [
+                    /** @phpstan-ignore-next-line argument.type */
                     __('The booking period ended at :date.', ['date' => formatDateTime($bookingOption->available_until)]),
                     __('Bookings are not possible anymore.'),
                 ],
@@ -161,6 +163,7 @@ class BookingOptionControllerTest extends TestCase
     public function testUserCanUpdateBookingOptionOnlyWithCorrectAbility(): void
     {
         $bookingOption = self::createBookingOptionForEvent();
+        /** @var array{slug: string} $data */
         $data = $this->generateRandomBookingOptionData();
 
         $this->assertUserCanPutOnlyWithAbility(
@@ -180,7 +183,9 @@ class BookingOptionControllerTest extends TestCase
         $bookingOption = BookingOption::factory()->makeOne();
         return [
             ...$bookingOption->toArray(),
+            /** @phpstan-ignore method.nonObject */
             'available_from' => $bookingOption->available_from->format('Y-m-d\TH:i'),
+            /** @phpstan-ignore method.nonObject */
             'available_until' => $bookingOption->available_until->format('Y-m-d\TH:i'),
         ];
     }

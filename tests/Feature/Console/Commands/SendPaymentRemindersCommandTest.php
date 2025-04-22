@@ -42,6 +42,7 @@ class SendPaymentRemindersCommandTest extends TestCase
             ->expectsOutputToContain("Sent reminder to {$booking->email} for booking {$booking->id}.")
             ->assertSuccessful();
         Notification::assertSentTo(new AnonymousNotifiable(), PaymentReminderNotification::class, static function ($notification) use ($booking) {
+            /** @phpstan-ignore-next-line argument.type */
             return str_contains($notification->toMail($booking->bookedByUser)->render(), $booking->bookedByUser->greeting);
         });
         Notification::assertCount(1);

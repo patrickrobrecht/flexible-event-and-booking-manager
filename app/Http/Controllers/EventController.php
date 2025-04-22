@@ -21,7 +21,8 @@ class EventController extends Controller
         $this->authorize('viewAny', Event::class);
         ValueHelper::setDefaults(Event::defaultValuesForQuery());
 
-        return view('events.event_index', $this->formValuesForFilter([
+        return view('events.event_index', [
+            ...$this->formValuesForFilter(),
             'events' => Event::buildQueryFromRequest()
                 /** @phpstan-ignore-next-line argument.type */
                 ->with([
@@ -40,7 +41,7 @@ class EventController extends Controller
                     'subEvents',
                 ])
                 ->paginate(12),
-        ]));
+        ]);
     }
 
     public function show(Event $event): View
@@ -92,6 +93,7 @@ class EventController extends Controller
         $this->authorize('create', Event::class);
 
         $event = new Event();
+        /** @phpstan-ignore argument.type */
         if ($event->fillAndSave($request->validated())) {
             Session::flash('success', __(':name created successfully.', ['name' => $event->name]));
             return redirect(route('events.edit', $event));
@@ -104,15 +106,17 @@ class EventController extends Controller
     {
         $this->authorize('update', $event);
 
-        return view('events.event_form', $this->formValues([
+        return view('events.event_form', [
             'event' => $event,
-        ]));
+            ...$this->formValues(),
+        ]);
     }
 
     public function update(Event $event, EventRequest $request): RedirectResponse
     {
         $this->authorize('update', $event);
 
+        /** @phpstan-ignore argument.type */
         if ($event->fillAndSave($request->validated())) {
             Session::flash('success', __(':name saved successfully.', ['name' => $event->name]));
         }
@@ -133,21 +137,28 @@ class EventController extends Controller
         return back();
     }
 
-    private function formValues(array $values = []): array
+    /**
+     * @return array<string, mixed>
+     */
+    private function formValues(): array
     {
-        return array_replace([
+        return [
+            ...$this->formValuesForFilter(),
             'events' => Event::query()
                 ->whereNull('parent_event_id')
                 ->orderBy('started_at')
                 ->orderBy('finished_at')
                 ->orderBy('name')
                 ->get(),
-        ], $this->formValuesForFilter($values));
+        ];
     }
 
-    private function formValuesForFilter(array $values = []): array
+    /**
+     * @return array<string, mixed>
+     */
+    private function formValuesForFilter(): array
     {
-        return array_replace([
+        return [
             'eventSeries' => EventSeries::query()
                 ->orderBy('name')
                 ->get(),
@@ -157,6 +168,6 @@ class EventController extends Controller
             'organizations' => Organization::query()
                 ->orderBy('name')
                 ->get(),
-        ], $values);
+        ];
     }
 }

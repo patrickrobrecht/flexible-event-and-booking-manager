@@ -64,7 +64,7 @@ trait HasResponsibleUsers
     }
 
     /**
-     * @param array<string, mixed> $validatedData
+     * @param array{responsible_user_id?: int[]|null, responsible_user_data?: array<int, array<string|bool>>} $validatedData
      * @return array{attached: array<int, int>, detached: array<int, int>, updated: array<int, int>}
      */
     public function saveResponsibleUsers(array $validatedData): array

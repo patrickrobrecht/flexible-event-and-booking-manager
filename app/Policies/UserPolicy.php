@@ -149,6 +149,7 @@ class UserPolicy
      */
     public function register(?User $user): Response
     {
+        /** @phpstan-ignore-next-line argument.type */
         return $this->response(config('app.features.registration'));
     }
 

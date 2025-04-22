@@ -113,6 +113,7 @@ class BookingRequest extends FormRequest
             $rules[$field->input_name] = array_merge($rulesForField, $field->validation_rules ?? []);
         }
 
+        /** @phpstan-ignore return.type */
         return array_replace($rules, $commonRules);
     }
 

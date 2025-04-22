@@ -69,7 +69,7 @@ class LocationPolicy
         if ($eventsCount >= 1) {
             return $this->deny(
                 formatTransChoice(':name cannot be deleted because the location is referenced by :count events.', $eventsCount, [
-                    'name' => $location->name,
+                    'name' => $location->nameOrAddress,
                 ])
             );
         }
@@ -78,7 +78,7 @@ class LocationPolicy
         if ($organizationsCount >= 1) {
             return $this->deny(
                 formatTransChoice(':name cannot be deleted because the location is referenced by :count organizations.', $organizationsCount, [
-                    'name' => $location->name,
+                    'name' => $location->nameOrAddress,
                 ])
             );
         }

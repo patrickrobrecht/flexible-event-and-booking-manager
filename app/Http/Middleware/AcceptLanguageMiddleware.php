@@ -53,6 +53,7 @@ class AcceptLanguageMiddleware
      */
     private static function allowedLocales(): array
     {
+        /** @phpstan-ignore return.type */
         return [
             config('app.locale'),
             config('app.fallback_locale'),

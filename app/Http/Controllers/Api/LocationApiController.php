@@ -13,6 +13,9 @@ class LocationApiController extends Controller
 {
     use SupportsIncludesInSnakeCase;
 
+    /**
+     * @return array<int, string>
+     */
     protected function allowedIncludeCounts(): array
     {
         return [
@@ -21,6 +24,9 @@ class LocationApiController extends Controller
         ];
     }
 
+    /**
+     * @return array<int, string>
+     */
     protected function allowedIncludeRelations(): array
     {
         return [

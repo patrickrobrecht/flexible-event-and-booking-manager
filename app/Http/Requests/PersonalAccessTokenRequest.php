@@ -32,7 +32,7 @@ class PersonalAccessTokenRequest extends FormRequest
                 'string',
                 'max:255',
                 Rule::unique('personal_access_tokens', 'name')
-                    ->where('tokenable_id', $this->user()->id)
+                    ->where('tokenable_id', $this->user()?->id)
                     ->ignore($this->personal_access_token->id ?? null),
             ],
             'expires_at' => [

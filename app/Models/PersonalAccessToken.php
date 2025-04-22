@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Ability;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Laravel\Sanctum\NewAccessToken;
@@ -31,7 +32,7 @@ class PersonalAccessToken extends SanctumPersonalAccessToken
     }
 
     /**
-     * @param array<string, mixed> $validatedData
+     * @param array{name: string, abilities: Ability[]|string[]|null, expires_at?: ?string} $validatedData
      */
     public static function createTokenFromValidated(User $tokenable, array $validatedData): NewAccessToken
     {

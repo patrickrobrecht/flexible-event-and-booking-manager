@@ -17,6 +17,9 @@ use Illuminate\Validation\Rule;
 
 /**
  * @property ?Document $document
+ * @property-read ?Event $event
+ * @property-read ?EventSeries $event_series
+ * @property-read ?Organization $organization
  */
 class DocumentRequest extends FormRequest
 {
@@ -62,10 +65,10 @@ class DocumentRequest extends FormRequest
             'approval_status' => [
                 (
                     $this->routeIs('*.documents.store')
-                    && $this->user()->can('approve', Document::class)
+                    && $this->user()?->can('approve', Document::class)
                 ) || (
                     $this->routeIs('documents.update')
-                    && $this->user()->can('approve', $this->document)
+                    && $this->user()?->can('approve', $this->document)
                 )
                     ? 'required'
                     : 'prohibited',
@@ -77,21 +80,25 @@ class DocumentRequest extends FormRequest
     private function getReference(): Model
     {
         if ($this->routeIs('documents.update')) {
+            /** @phpstan-ignore-next-line property.nonObject */
             return $this->document->reference;
         }
 
         if ($this->routeIs('events.documents.store')) {
+            /** @phpstan-ignore-next-line return.type */
             return $this->event;
         }
 
         if ($this->routeIs('event-series.documents.store')) {
+            /** @phpstan-ignore-next-line return.type */
             return $this->event_series;
         }
 
         if ($this->routeIs('organizations.documents.store')) {
+            /** @phpstan-ignore-next-line return.type */
             return $this->organization;
         }
 
-        throw new \InvalidArgumentException("{$this->route()->getName()} not supported");
+        throw new \InvalidArgumentException("{$this->route()?->getName()} not supported");
     }
 }

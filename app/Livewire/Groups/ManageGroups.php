@@ -21,7 +21,10 @@ class ManageGroups extends Component
 {
     use LoadsPropertiesFromSession;
 
-    private $propertiesSavedInSession = [
+    /**
+     * @var array<string, string>
+     */
+    private array $propertiesSavedInSession = [
         'sort' => 'string',
         'bookingOptionIds' => 'int[]',
         'showBookingData' => 'string[]',
@@ -40,10 +43,16 @@ class ManageGroups extends Component
     public Collection $bookingsWithoutGroup;
 
     public string $sort = 'name';
+
+    /** @var array<int, int> */
     public array $bookingOptionIds;
+
+    /** @var array<int, string> */
     public array $showBookingData = [
         'booked_at',
     ];
+
+    /** @var array<int, int> */
     public array $showFields = [];
 
     public GroupForm $form;
@@ -52,6 +61,7 @@ class ManageGroups extends Component
     {
         $this->event = $event;
         $this->loadData();
+        /** @phpstan-ignore-next-line assign.propertyType */
         $this->bookingOptionIds = $this->event->getBookingOptions()->pluck('id')->toArray();
 
         $this->loadSettingsFromSession();
@@ -112,7 +122,7 @@ class ManageGroups extends Component
         ]));
     }
 
-    public function deleteGroup($groupId): void
+    public function deleteGroup(int $groupId): void
     {
         $group = $this->getGroupById($groupId);
         if ($group) {
@@ -126,12 +136,12 @@ class ManageGroups extends Component
         }
     }
 
-    private function getGroupById($groupId): ?Group
+    private function getGroupById(int $groupId): ?Group
     {
         return $this->groups[$groupId] ?? null;
     }
 
-    public function moveBooking($bookingId, $groupId): void
+    public function moveBooking(int $bookingId, int $groupId): void
     {
         $groupId = (int) $groupId;
 

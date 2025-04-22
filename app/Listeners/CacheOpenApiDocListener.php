@@ -23,6 +23,7 @@ class CacheOpenApiDocListener
 
     public static function cacheConfigurationFile(): string
     {
+        /** @phpstan-var array<string, string> $replacements */
         $replacements = [
             '{{APP_NAME}}' => config('app.name'),
             '{{API_ROOT_URL}}' => url('api'),

@@ -15,7 +15,9 @@ use App\Models\FormField;
 use App\Models\FormFieldValue;
 use App\Models\Group;
 use App\Models\Location;
+use App\Models\Material;
 use App\Models\Organization;
+use App\Models\StorageLocation;
 use App\Models\User;
 use App\Models\UserRole;
 use Closure;
@@ -303,12 +305,24 @@ trait GeneratesTestData
         return Location::factory()->create();
     }
 
+    protected static function createMaterial(): Material
+    {
+        return Material::factory()
+            ->forOrganization(self::createOrganization())
+            ->create();
+    }
+
     protected static function createOrganization(): Organization
     {
         return Organization::factory()
             ->for(self::createLocation())
             ->withBankAccount()
             ->create();
+    }
+
+    protected static function createStorageLocation(): StorageLocation
+    {
+        return StorageLocation::factory()->create();
     }
 
     public static function createUserResponsibleFor(Event|EventSeries|Organization $responsibleFor): User

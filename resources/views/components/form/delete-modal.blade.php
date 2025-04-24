@@ -21,7 +21,7 @@
         @endonce
     @endif
     <x-slot:title class="fs-5">{{ __('Delete :name', ['name' => $name]) }}</x-slot:title>
-    <p>{!! __('Are you sure you want to delete :name?', ['name' => '<strong>' . $name . '</strong>']) !!}</p>
+    <p class="text-start">{!! __('Are you sure you want to delete :name?', ['name' => '<strong>' . $name . '</strong>']) !!}</p>
     <x-slot:footer>
         <x-bs::button variant="secondary" type="button" data-bs-dismiss="modal">
             <i class="fa fa-fw fa-window-close"></i> {{ __('Close') }}

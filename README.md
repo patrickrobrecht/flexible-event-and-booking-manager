@@ -24,7 +24,8 @@ This application allows to manage events, their booking forms and bookings via a
   - Sub events have the bookings from parent event.
   - Generate groups (randomized or age-based)
 - Manage responsibilities (responsible users with their position) for events, event series and organizations
-- Add, update, delete documents for events, event series, and organizations
+- Manage documents for events, event series, and organizations
+- Manage materials and storage locations
 - Login and logout, reset password, verify e-mail address, edit own account
 - Manage users and flexible roles
   - Notify users if an account was created for them (optional)

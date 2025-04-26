@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Arr;
 use Spatie\QueryBuilder\AllowedFilter;
 
 /**
@@ -52,7 +53,8 @@ class StorageLocation extends Model
 
     public function childStorageLocations(): HasMany
     {
-        return $this->hasMany(__CLASS__, 'parent_storage_location_id');
+        return $this->hasMany(__CLASS__, 'parent_storage_location_id')
+            ->orderBy('name');
     }
 
     public function materials(): BelongsToMany
@@ -69,11 +71,38 @@ class StorageLocation extends Model
     }
 
     /**
-     * @param array<string, mixed> $validatedData
+     * @param array{parent_storage_location_id: ?int} $validatedData
      */
     public function fillAndSave(array $validatedData): bool
     {
+        $this->parentStorageLocation()->associate($validatedData['parent_storage_location_id']);
         return $this->fill($validatedData)->save();
+    }
+
+    /**
+     * @return array<int, self>
+     */
+    public function getAncestors(): array
+    {
+        $storageLocation = $this->parentStorageLocation ?? null;
+        $path = [];
+        while ($storageLocation) {
+            $path[] = $storageLocation;
+            $storageLocation = $storageLocation->parentStorageLocation ?? null;
+        }
+
+        return array_reverse($path);
+    }
+
+    /**
+     * @return non-empty-array<int, self>
+     */
+    public function getAncestorsAndSelf(): array
+    {
+        return [
+            ...$this->getAncestors(),
+            $this,
+        ];
     }
 
     public function getChildStorageLocationsCount(): int
@@ -87,6 +116,32 @@ class StorageLocation extends Model
         }
 
         return $this->child_storage_locations_count;
+    }
+
+    /**
+     * @return array<int, self>
+     */
+    public function getDescendants(): array
+    {
+        $descendants = [
+            $this->childStorageLocations,
+        ];
+        foreach ($this->childStorageLocations as $childStorageLocation) {
+            $descendants[] = $childStorageLocation->getDescendants();
+        }
+
+        return Arr::flatten($descendants);
+    }
+
+    /**
+     * @return non-empty-array<int, self>
+     */
+    public function getDescendantsAndSelf(): array
+    {
+        return [
+            ...$this->getDescendants(),
+            $this,
+        ];
     }
 
     public function getMaterialsCount(): int

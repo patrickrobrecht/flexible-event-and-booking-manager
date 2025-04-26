@@ -46,6 +46,7 @@ class StorageLocationController extends Controller
         $this->authorize('create', StorageLocation::class);
 
         $storageLocation = new StorageLocation();
+        /** @phpstan-ignore argument.type */
         if ($storageLocation->fillAndSave($request->validated())) {
             Session::flash('success', __(':name created successfully.', ['name' => $storageLocation->name]));
             return redirect(route('storage-locations.edit', $storageLocation));
@@ -76,6 +77,7 @@ class StorageLocationController extends Controller
     {
         $this->authorize('update', $storageLocation);
 
+        /** @phpstan-ignore argument.type */
         if ($storageLocation->fillAndSave($request->validated())) {
             Session::flash('success', __(':name saved successfully.', ['name' => $storageLocation->name]));
         }

@@ -6,6 +6,9 @@
 
 @section('breadcrumbs')
     <x-bs::breadcrumb.item href="{{ route('storage-locations.index') }}">{{ __('Storage locations') }}</x-bs::breadcrumb.item>
+    @foreach($storageLocation->getAncestors() as $parentStorageLocation)
+        <x-bs::breadcrumb.item href="{{ route('storage-locations.show', $parentStorageLocation) }}">{{ $parentStorageLocation->name }}</x-bs::breadcrumb.item>
+    @endforeach
     <x-bs::breadcrumb.item>@yield('title')</x-bs::breadcrumb.item>
 @endsection
 

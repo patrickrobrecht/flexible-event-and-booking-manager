@@ -67,12 +67,20 @@ class StorageLocationPolicy
     {
         $childStorageLocationsCount = $storageLocation->getChildStorageLocationsCount();
         if ($childStorageLocationsCount >= 1) {
-            return $this->deny();
+            return $this->deny(
+                formatTransChoice(':name cannot be deleted because the storage location has :count child storage locations.', $childStorageLocationsCount, [
+                    'name' => $storageLocation->name,
+                ])
+            );
         }
 
         $materialsCount = $storageLocation->getMaterialsCount();
         if ($materialsCount >= 1) {
-            return $this->deny();
+            return $this->deny(
+                formatTransChoice(':name cannot be deleted because the storage location contains :count materials.', $materialsCount, [
+                    'name' => $storageLocation->name,
+                ])
+            );
         }
 
         return $this->requireAbility($user, Ability::DestroyStorageLocations);

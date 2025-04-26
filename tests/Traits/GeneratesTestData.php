@@ -4,6 +4,7 @@ namespace Tests\Traits;
 
 use App\Enums\FileType;
 use App\Enums\FormElementType;
+use App\Enums\MaterialStatus;
 use App\Enums\Visibility;
 use App\Models\Booking;
 use App\Models\BookingOption;
@@ -320,9 +321,23 @@ trait GeneratesTestData
             ->create();
     }
 
-    protected static function createStorageLocation(): StorageLocation
-    {
-        return StorageLocation::factory()->create();
+    protected static function createStorageLocation(
+        ?StorageLocation $parentStorageLocation = null,
+        int $childStorageLocationsCount = 0,
+        int $materialsCount = 0,
+    ): StorageLocation {
+        return StorageLocation::factory()
+            ->has(
+                StorageLocation::factory()->count($childStorageLocationsCount),
+                'childStorageLocations'
+            )
+            ->hasAttached(
+                Material::factory()->forOrganization()->count($materialsCount),
+                ['material_status' => MaterialStatus::Checked],
+                'materials'
+            )
+            ->forParentStorageLocation($parentStorageLocation)
+            ->create();
     }
 
     public static function createUserResponsibleFor(Event|EventSeries|Organization $responsibleFor): User

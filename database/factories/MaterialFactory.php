@@ -19,8 +19,8 @@ class MaterialFactory extends Factory
         ];
     }
 
-    public function forOrganization(Organization $organization): static
+    public function forOrganization(?Organization $organization = null): static
     {
-        return $this->for($organization);
+        return $this->for($organization ?? Organization::factory()->forLocation()->create());
     }
 }

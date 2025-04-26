@@ -15,7 +15,9 @@
 @section('breadcrumbs')
     <x-bs::breadcrumb.item href="{{ route('storage-locations.index') }}">{{ __('Storage locations') }}</x-bs::breadcrumb.item>
     @isset($storageLocation)
-        <x-bs::breadcrumb.item href="{{ route('storage-locations.show', $storageLocation) }}">{{ $storageLocation->name }}</x-bs::breadcrumb.item>
+        @foreach($storageLocation->getAncestorsAndSelf() as $parentStorageLocation)
+            <x-bs::breadcrumb.item href="{{ route('storage-locations.show', $parentStorageLocation) }}">{{ $parentStorageLocation->name }}</x-bs::breadcrumb.item>
+        @endforeach
     @endisset
 @endsection
 
@@ -38,14 +40,25 @@
                                   :value="$storageLocation->name ?? null">{{ __('Name') }}</x-bs::form.field>
                 <x-bs::form.field name="description" type="textarea"
                                   :value="$storageLocation->description ?? null">{{ __('Description') }}</x-bs::form.field>
+            </div>
+            <div class="col-12 col-md-6">
                 <x-bs::form.field name="packaging_instructions" type="textarea"
                                   :value="$storageLocation->packaging_instructions ?? null">{{ __('Packaging instructions') }}</x-bs::form.field>
             </div>
         </div>
 
+        @livewire('storage-locations.select-storage-location', [
+            'storageLocation' => $storageLocation ?? null,
+            'selectedStorageLocation' => $storageLocation->parentStorageLocation ?? null,
+        ])
+
         <x-bs::button.group>
             <x-button.save>
-                @isset($storageLocation){{ __( 'Save' ) }} @else{{ __('Create') }}@endisset
+                @isset($storageLocation)
+                    {{ __( 'Save' ) }}
+                @else
+                    {{ __('Create') }}
+                @endisset
             </x-button.save>
             <x-button.cancel href="{{ route('storage-locations.index') }}"/>
         </x-bs::button.group>

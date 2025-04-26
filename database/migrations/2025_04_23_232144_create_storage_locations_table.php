@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('storage_locations', static function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->unique();
             $table->text('description')->nullable();
             $table->text('packaging_instructions')->nullable();
             $table->foreignId('parent_storage_location_id')->nullable()->constrained('storage_locations');

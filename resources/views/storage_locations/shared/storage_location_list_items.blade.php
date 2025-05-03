@@ -12,13 +12,18 @@
 @foreach($storageLocations as $storageLocation)
     <x-bs::list.item>
         <div class="ms-large-{{$marginLevel}} d-flex justify-content-between align-items-start">
-            <{{$headlineTag}}>
-                @can('view', $storageLocation)
-                    <a href="{{ route('storage-locations.show', $storageLocation) }}">{{ $storageLocation->name }}</a>
-                @else
-                    {{ $storageLocation->name }}
-                @endcan
-            </{{$headlineTag}}>
+            <div>
+                <{{$headlineTag}}>
+                    @can('view', $storageLocation)
+                        <a href="{{ $storageLocation->getRoute() }}">{{ $storageLocation->name }}</a>
+                    @else
+                        {{ $storageLocation->name }}
+                    @endcan
+                </{{$headlineTag}}>
+                @isset($storageLocation->description)
+                    <div class="small mb-1">{{ $storageLocation->description }}</div>
+                @endisset
+            </div>
             @canany(['update', 'forceDelete'], $storageLocation)
                 <div class="text-end">
                     @can('update', $storageLocation)
@@ -43,9 +48,6 @@
             </div>
             <x-text.updated-human-diff :model="$storageLocation"/>
         </div>
-        @isset($storageLocation->description)
-            <div class="small">{{ $storageLocation->description }}</div>
-        @endisset
     </x-bs::list.item>
     @include('storage_locations.shared.storage_location_list_items', [
         'storageLocations' => $storageLocation->childStorageLocations,

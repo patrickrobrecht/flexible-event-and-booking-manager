@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Enums\FilterValue;
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\Traits\BelongsToOrganization;
+use App\Models\Traits\FiltersByRelationExistence;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -24,12 +26,26 @@ class Material extends Model
 {
     use BelongsToOrganization;
     use BuildsQueryFromRequest;
+    use FiltersByRelationExistence;
     use HasFactory;
 
     protected $fillable = [
         'name',
         'description',
     ];
+
+    public function storageLocations(): BelongsToMany
+    {
+        return $this->belongsToMany(StorageLocation::class)
+            ->withPivot(MaterialStorageLocation::PIVOT_COLUMNS)
+            ->using(MaterialStorageLocation::class)
+            ->withTimestamps();
+    }
+
+    public function scopeStorageLocation(Builder $query, int|string $storageLocationId): Builder
+    {
+        return $this->scopeRelation($query, $storageLocationId, 'storageLocations', fn (Builder $q) => $q->where('storage_location_id', '=', $storageLocationId));
+    }
 
     public function deleteAfterDetachingStorageLocations(): ?bool
     {
@@ -46,12 +62,9 @@ class Material extends Model
         return $this->fill($validatedData)->save();
     }
 
-    public function storageLocations(): BelongsToMany
+    public function getRoute(): string
     {
-        return $this->belongsToMany(StorageLocation::class)
-            ->withPivot(MaterialStorageLocation::PIVOT_COLUMNS)
-            ->using(MaterialStorageLocation::class)
-            ->withTimestamps();
+        return route('materials.show', $this);
     }
 
     /**
@@ -64,6 +77,19 @@ class Material extends Model
             AllowedFilter::partial('description'),
             AllowedFilter::exact('organization_id')
                 ->ignore(FilterValue::All->value),
+            /** @see self::scopeStorageLocation() */
+            AllowedFilter::scope('storage_location_id', 'storageLocation')
+                ->default(FilterValue::All->value),
+        ];
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public static function defaultSorts(): array
+    {
+        return [
+            'name',
         ];
     }
 }

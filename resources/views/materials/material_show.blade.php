@@ -47,11 +47,14 @@
         <x-bs::list>
             @foreach($material->storageLocations as $storageLocation)
                 <x-bs::list.item>
-                    @can('view', $storageLocation)
-                        <a href="{{ route('storage-locations.show', $storageLocation) }}" class="fw-bold">{{ $storageLocation->name }}</a>
-                    @else
-                        <strong>{{ $storageLocation->name }}</strong>
-                    @endcan
+                    <span>
+                        <i class="fa fa-fw fa-warehouse"></i>
+                        @can('view', $storageLocation)
+                            <a href="{{ $storageLocation->getRoute() }}" class="fw-bold">{{ $storageLocation->name }}</a>
+                        @else
+                            <strong>{{ $storageLocation->name }}</strong>
+                        @endcan
+                    </span>
                     <div class="small">
                         <x-badge.enum :case="$storageLocation->pivot->material_status"/>
                         <span class="ms-2">{{ __('Stock') }}: {{ isset($storageLocation->pivot->stock) ? formatInt($storageLocation->pivot->stock) : __('unknown') }}</span>

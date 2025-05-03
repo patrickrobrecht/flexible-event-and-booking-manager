@@ -29,7 +29,7 @@
     <x-bs::form method="{{ isset($material) ? 'PUT' : 'POST' }}"
                 action="{{ isset($material) ? route('materials.update', $material) : route('materials.store') }}">
         <div class="row">
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-lg-6">
                 <x-bs::form.field name="name" type="text" :required="true"
                                   :value="$material->name ?? null">{{ __('Name') }}</x-bs::form.field>
                 <x-bs::form.field name="description" type="textarea"

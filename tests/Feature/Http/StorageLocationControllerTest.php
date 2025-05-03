@@ -85,7 +85,7 @@ class StorageLocationControllerTest extends TestCase
     public static function storageLocationsWithReferences(): array
     {
         return [
-            [fn () => self::createStorageLocation(childStorageLocationsCount: 1), 'kann nicht gelöscht werden, weil der Lagerplatz einen untergeordneten Lagerplätze besitzt.'],
+            [fn () => self::createStorageLocation(childStorageLocationsCount: 1), 'kann nicht gelöscht werden, weil der Lagerplatz einen untergeordneten Lagerplatz besitzt.'],
             [fn () => self::createStorageLocation(childStorageLocationsCount: 3), 'kann nicht gelöscht werden, weil der Lagerplatz 3 untergeordnete Lagerplätze besitzt.'],
             [fn () => self::createStorageLocation(materialsCount: 1), 'kann nicht gelöscht werden, weil der Lagerplatz 1 Material enthält.'],
             [fn () => self::createStorageLocation(materialsCount: 3), 'kann nicht gelöscht werden, weil der Lagerplatz 3 Materialien enthält.'],

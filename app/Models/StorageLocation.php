@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\FilterValue;
 use App\Enums\MaterialStatus;
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -62,7 +63,8 @@ class StorageLocation extends Model
         return $this->belongsToMany(Material::class)
             ->withPivot(MaterialStorageLocation::PIVOT_COLUMNS)
             ->using(MaterialStorageLocation::class)
-            ->withTimestamps();
+            ->withTimestamps()
+            ->orderBy('name');
     }
 
     public function parentStorageLocation(): BelongsTo
@@ -157,6 +159,11 @@ class StorageLocation extends Model
         return $this->materials_count;
     }
 
+    public function getRoute(): string
+    {
+        return route('storage-locations.show', $this);
+    }
+
     /**
      * @return array<int, AllowedFilter>
      */
@@ -165,6 +172,33 @@ class StorageLocation extends Model
         return [
             AllowedFilter::partial('name'),
             AllowedFilter::partial('description'),
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public static function filterOptions(): array
+    {
+        return [
+            FilterValue::All->value => __('all'),
+            FilterValue::With->value => __('with at least one storage location'),
+            FilterValue::Without->value => __('without storage locations'),
+        ];
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public static function relationsForChildStorageLocationsAndMaterial(): array
+    {
+        return [
+            'childStorageLocations.childStorageLocations.childStorageLocations.childStorageLocations.childStorageLocations.materials',
+            'childStorageLocations.childStorageLocations.childStorageLocations.childStorageLocations.materials',
+            'childStorageLocations.childStorageLocations.childStorageLocations.materials',
+            'childStorageLocations.childStorageLocations.materials',
+            'childStorageLocations.materials',
+            'materials',
         ];
     }
 }

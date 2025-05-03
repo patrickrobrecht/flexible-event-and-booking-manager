@@ -3,6 +3,7 @@
 @php
     use App\Models\Material;
     use App\Models\Organization;
+    use App\Models\StorageLocation;
     use Illuminate\Database\Eloquent\Collection;
     use Illuminate\Pagination\LengthAwarePaginator;
     use Portavice\Bladestrap\Support\Options;
@@ -30,17 +31,22 @@
 
     <x-form.filter>
         <div class="row">
-            <div class="col-12 col-sm-6 col-xl-4">
+            <div class="col-12 col-sm-6 col-xl-3">
                 <x-bs::form.field id="name" name="filter[name]" type="text"
                                   :from-query="true">{{ __('Name') }}</x-bs::form.field>
             </div>
-            <div class="col-12 col-sm-6 col-xl-4">
+            <div class="col-12 col-sm-6 col-xl-3">
                 <x-bs::form.field id="description" name="filter[description]" type="text"
                                   :from-query="true">{{ __('Description') }}</x-bs::form.field>
             </div>
-            <div class="col-12 col-sm-6 col-xl-4">
+            <div class="col-12 col-sm-6 col-xl-3">
                 <x-bs::form.field name="organization_id" type="select" :options="Options::fromModels($organizations, 'name')->prepend(__('all'), \App\Enums\FilterValue::All->value)"
                                   :from-query="true"><i class="fa fa-fw fa-sitemap"></i> {{ __('Organization') }}</x-bs::form.field>
+            </div>
+            <div class="col-12 col-md-6 col-xl-3">
+                <x-bs::form.field id="storage_location_id" name="filter[storage_location_id]" type="select"
+                                  :options="Options::fromArray(StorageLocation::filterOptions())"
+                                  :from-query="true"><i class="fa fa-fw fa-warehouse"></i> {{ __('Storage locations') }}</x-bs::form.field>
             </div>
         </div>
     </x-form.filter>
@@ -54,7 +60,7 @@
                     <div class="card-header">
                         <h2 class="card-title">
                             @can('view', $material)
-                                <a href="{{ route('materials.show', $material) }}">{{ $material->name }}</a>
+                                <a href="{{ $material->getRoute() }}">{{ $material->name }}</a>
                             @else
                                 {{ $material->name }}
                             @endcan
@@ -76,14 +82,29 @@
                                 </div>
                             </x-slot:end>
                         </x-bs::list.item>
-                        @foreach($material->storageLocations as $storageLocation)
+                        @if($material->storageLocations->isEmpty())
                             <x-bs::list.item>
-                                <span class="nowrap"><i class="fa fa-fw fa-warehouse"></i> {{ $storageLocation->name }}</span>
-                                <x-slot:end>
-                                    <x-badge.enum :case="$storageLocation->pivot->material_status"/>
-                                </x-slot:end>
+                                <i class="fa fa-fw fa-warehouse"></i>
+                                <span class="text-danger">{{ __('No storage location has been defined for the material.') }}</span>
                             </x-bs::list.item>
-                        @endforeach
+                        @else
+                            @foreach($material->storageLocations as $storageLocation)
+                                <x-bs::list.item>
+                                    <span class="nowrap">
+                                        <i class="fa fa-fw fa-warehouse"></i>
+                                        @can('view', $storageLocation)
+                                            <a href="{{ $storageLocation->getRoute() }}">{{ $storageLocation->name }}</a>
+                                        @else
+                                            {{ $storageLocation->name }}
+                                        @endif
+
+                                    </span>
+                                    <x-slot:end>
+                                        <x-badge.enum :case="$storageLocation->pivot->material_status"/>
+                                    </x-slot:end>
+                                </x-bs::list.item>
+                            @endforeach
+                        @endif
                     </x-bs::list>
                     @canany(['update', 'forceDelete'], $material)
                         <div class="card-body">

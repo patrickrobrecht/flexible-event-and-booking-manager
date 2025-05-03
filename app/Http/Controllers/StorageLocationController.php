@@ -19,14 +19,7 @@ class StorageLocationController extends Controller
         return view('storage_locations.storage_location_index', [
             'storageLocations' => StorageLocation::buildQueryFromRequest()
                 ->whereNull('parent_storage_location_id')
-                ->with([
-                    'childStorageLocations.childStorageLocations.childStorageLocations.childStorageLocations.childStorageLocations.materials',
-                    'childStorageLocations.childStorageLocations.childStorageLocations.childStorageLocations.materials',
-                    'childStorageLocations.childStorageLocations.childStorageLocations.materials',
-                    'childStorageLocations.childStorageLocations.materials',
-                    'childStorageLocations.materials',
-                    'materials',
-                ])
+                ->with(StorageLocation::relationsForChildStorageLocationsAndMaterial())
                 ->withCount([
                     'materials',
                 ])
@@ -60,7 +53,7 @@ class StorageLocationController extends Controller
         $this->authorize('view', $storageLocation);
 
         return view('storage_locations.storage_location_show', [
-            'storageLocation' => $storageLocation,
+            'storageLocation' => $storageLocation->load(StorageLocation::relationsForChildStorageLocationsAndMaterial()),
         ]);
     }
 

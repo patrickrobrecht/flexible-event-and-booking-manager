@@ -37,6 +37,70 @@
                 <x-bs::form.field name="organization_id" type="radio" :options="Options::fromModels($organizations, 'name')" :required="true"
                                   :value="$material->organization_id ?? null"><i class="fa fa-fw fa-sitemap"></i> {{ __('Organization') }}</x-bs::form.field>
             </div>
+            <div class="col-12 col-md-6">
+                <h2>{{ __('Storage locations') }}</h2>
+                <x-bs::list>
+                    @isset($material)
+                        @foreach($material->storageLocations as $storageLocation)
+                            <x-bs::list.item>
+                                @livewire('storage-locations.select-storage-location', [
+                                    'id' => 'storage-location-' . $storageLocation->pivot->id,
+                                    'name' => 'storage_locations[' . $storageLocation->pivot->id . '][storage_location_id]',
+                                    'selectedStorageLocation' => $storageLocation,
+                                ], key('storage-location-' . $storageLocation->pivot->id))
+                                <x-bs::form.field name="storage_locations[{{ $storageLocation->pivot->id }}][remove]"
+                                                  type="checkbox" :options="Options::one(__('Remove storage location'))"/>
+                                <div class="row mt-3">
+                                    <div class="col-12 col-xxl-6">
+                                        <x-bs::form.field name="storage_locations[{{ $storageLocation->pivot->id }}][material_status]"
+                                                          type="select" :options="\App\Enums\MaterialStatus::toOptions()"
+                                                          :required="true"
+                                                          :value="$storageLocation->pivot->material_status">
+                                            {{ __('Status') }}
+                                        </x-bs::form.field>
+                                    </div>
+                                    <div class="col-12 col-xxl-6">
+                                        <x-bs::form.field name="storage_locations[{{ $storageLocation->pivot->id }}][stock]"
+                                                          type="number" min="1" step="1"
+                                                          :value="$storageLocation->pivot->stock">
+                                            {{ __('Stock') }}
+                                        </x-bs::form.field>
+                                    </div>
+                                </div>
+                                <x-bs::form.field name="storage_locations[{{ $storageLocation->pivot->id }}][remarks]" type="textarea"
+                                                  :value="$storageLocation->pivot->remarks">
+                                    {{ __('Remarks') }}
+                                </x-bs::form.field>
+                            </x-bs::list.item>
+                        @endforeach
+                        <x-bs::list.item>
+                            <div class="small mb-1">{{ __('To add another storage location, select one.') }}</div>
+                            @livewire('storage-locations.select-storage-location', [
+                                'id' => 'storage-location-new',
+                                'name' => 'storage_locations[new][storage_location_id]',
+                                'selectedStorageLocation' => null,
+                            ], key('storage-location-new'))
+                            <div class="row mt-3">
+                                <div class="col-12 col-xxl-6">
+                                    <x-bs::form.field name="storage_locations[new][material_status]"
+                                                      type="select" :options="\App\Enums\MaterialStatus::toOptions()->prepend(__('select status'), '')">
+                                        {{ __('Status') }}
+                                    </x-bs::form.field>
+                                </div>
+                                <div class="col-12 col-xxl-6">
+                                    <x-bs::form.field name="storage_locations[new][stock]"
+                                                      type="number" min="1" step="1">
+                                        {{ __('Stock') }}
+                                    </x-bs::form.field>
+                                </div>
+                            </div>
+                            <x-bs::form.field name="storage_locations[new][remarks]" type="textarea">
+                                {{ __('Remarks') }}
+                            </x-bs::form.field>
+                        </x-bs::list.item>
+                    @endisset
+                </x-bs::list>
+            </div>
         </div>
 
         <x-bs::button.group>

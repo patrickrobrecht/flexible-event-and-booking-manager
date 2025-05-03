@@ -6,7 +6,9 @@ use App\Http\Requests\Filters\MaterialFilterRequest;
 use App\Http\Requests\MaterialRequest;
 use App\Models\Material;
 use App\Models\Organization;
+use App\Models\StorageLocation;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
 use Portavice\Bladestrap\Support\ValueHelper;
@@ -61,7 +63,11 @@ class MaterialController extends Controller
 
         return view('materials.material_form', [
             ...$this->formValues(),
-            'material' => $material,
+            'material' => $material->load(
+                Collection::make(range(1, StorageLocation::MAX_CHILD_LEVELS))
+                    ->map(fn ($i) => 'storageLocations' . str_repeat('.parentStorageLocation', $i) . '.childStorageLocations')
+                    ->all()
+            ),
         ]);
     }
 

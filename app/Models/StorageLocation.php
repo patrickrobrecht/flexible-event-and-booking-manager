@@ -36,6 +36,8 @@ class StorageLocation extends Model
     use BuildsQueryFromRequest;
     use HasFactory;
 
+    public const int MAX_CHILD_LEVELS = 5;
+
     protected $fillable = [
         'name',
         'description',
@@ -192,13 +194,8 @@ class StorageLocation extends Model
      */
     public static function relationsForChildStorageLocationsAndMaterial(): array
     {
-        return [
-            'childStorageLocations.childStorageLocations.childStorageLocations.childStorageLocations.childStorageLocations.materials',
-            'childStorageLocations.childStorageLocations.childStorageLocations.childStorageLocations.materials',
-            'childStorageLocations.childStorageLocations.childStorageLocations.materials',
-            'childStorageLocations.childStorageLocations.materials',
-            'childStorageLocations.materials',
-            'materials',
-        ];
+        return \Illuminate\Support\Collection::make(range(0, self::MAX_CHILD_LEVELS))
+            ->map(fn ($i) => str_repeat('childStorageLocations.', self::MAX_CHILD_LEVELS - $i) . 'materials')
+            ->all();
     }
 }

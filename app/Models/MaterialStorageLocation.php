@@ -15,6 +15,7 @@ class MaterialStorageLocation extends Pivot
 {
     /** @var array<int, string>  */
     public const array PIVOT_COLUMNS = [
+        'id',
         'material_status',
         'stock',
         'remarks',

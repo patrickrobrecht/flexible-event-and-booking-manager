@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('materials', static function (Blueprint $table) {
             $table->id();
             $table->foreignId('organization_id')->constrained('organizations');
-            $table->string('name');
+            $table->string('name')->unique();
             $table->text('description')->nullable();
             $table->datetimes();
         });

@@ -8,25 +8,20 @@ use Illuminate\View\View;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
 
-class SelectStorageLocation extends Component
+class SelectParentStorageLocation extends Component
 {
     use SelectsStorageLocation;
 
     #[Locked]
-    public ?string $id;
-
-    #[Locked]
-    public ?string $name;
+    public ?StorageLocation $storageLocation;
 
     /**
-     * @param string $id
-     * @param string $name
+     * @param StorageLocation $storageLocation
      * @param ?StorageLocation $selectedStorageLocation
      */
-    public function mount($id, $name, $selectedStorageLocation): void
+    public function mount($storageLocation, $selectedStorageLocation): void
     {
-        $this->id = $id;
-        $this->name = $name;
+        $this->storageLocation = $storageLocation;
 
         $this->selectedStorageLocation = $selectedStorageLocation;
         if (isset($selectedStorageLocation)) {
@@ -38,16 +33,11 @@ class SelectStorageLocation extends Component
 
     public function selectStorageLocation(int $index, ?string $storageLocationId): void
     {
-        if ($storageLocationId === null) {
-            // null is forbidden!
-            return;
-        }
-
-        $this->updateSelectedPathAndStorageLocation($index, $storageLocationId, true);
+        $this->updateSelectedPathAndStorageLocation($index, $storageLocationId, false);
     }
 
     public function render(): View
     {
-        return view('livewire.storage-locations.select-storage-location');
+        return view('livewire.storage-locations.select-parent-storage-location');
     }
 }

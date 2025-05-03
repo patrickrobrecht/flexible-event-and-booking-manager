@@ -47,7 +47,7 @@
             </div>
         </div>
 
-        @livewire('storage-locations.select-storage-location', [
+        @livewire('storage-locations.select-parent-storage-location', [
             'storageLocation' => $storageLocation ?? null,
             'selectedStorageLocation' => $storageLocation->parentStorageLocation ?? null,
         ])

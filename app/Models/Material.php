@@ -54,12 +54,41 @@ class Material extends Model
     }
 
     /**
-     * @param array{organization_id: int} $validatedData
+     * @param array{
+     *     organization_id: int,
+     *     storage_locations?: array<int, array{
+     *         remove?: bool,
+     *         storage_location_id: int,
+     *         material_status: string,
+     *         stock?: ?int,
+     *         remarks?: ?string
+     *     }>
+     * } $validatedData
      */
     public function fillAndSave(array $validatedData): bool
     {
         $this->organization()->associate($validatedData['organization_id']);
-        return $this->fill($validatedData)->save();
+        if (!$this->fill($validatedData)->save()) {
+            return false;
+        }
+
+        foreach ($validatedData['storage_locations'] ?? [] as $id => $data) {
+            $storageLocation = $this->storageLocations->firstWhere('pivot.id', $id);
+            if ($storageLocation) {
+                if (isset($data['remove']) && $data['remove'] === true) {
+                    $storageLocation->pivot->delete();
+                } elseif ($storageLocation->id !== (int) $data['storage_location_id']) {
+                    $storageLocation->pivot->delete();
+                    $this->storageLocations()->attach($data['storage_location_id'], $data);
+                } else {
+                    $storageLocation->pivot->fill($data)->save();
+                }
+            } else {
+                $this->storageLocations()->attach($data['storage_location_id'], $data);
+            }
+        }
+
+        return true;
     }
 
     public function getRoute(): string

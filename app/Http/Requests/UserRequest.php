@@ -95,6 +95,18 @@ class UserRequest extends FormRequest
             ]);
         }
 
+        if ($this->routeIs('account.update')) {
+            $rules = array_replace($rules, [
+                'current_password' => [
+                    'current_password',
+                    'required_with:password',
+                    Rule::requiredIf(function () {
+                        return $this->input('email') !== $this->user()?->email;
+                    }),
+                ],
+            ]);
+        }
+
         return $rules;
     }
 }

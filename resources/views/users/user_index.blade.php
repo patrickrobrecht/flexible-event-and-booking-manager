@@ -2,6 +2,7 @@
 
 @php
     use App\Enums\FilterValue;
+    use App\Enums\ActiveStatus;
     use Portavice\Bladestrap\Support\Options;
 
     /** @var \Illuminate\Pagination\LengthAwarePaginator|\App\Models\User[] $users */
@@ -17,13 +18,11 @@
 @endsection
 
 @section('content')
-    <x-bs::button.group>
-        @can('create', \App\Models\User::class)
-            <x-button.create href="{{ route('users.create') }}">
-                {{ __('Create user') }}
-            </x-button.create>
-        @endcan
-    </x-bs::button.group>
+    @can('create', \App\Models\User::class)
+        <x-button.create href="{{ route('users.create') }}">
+            {{ __('Create user') }}
+        </x-button.create>
+    @endcan
 
     <x-form.filter>
         <div class="row">
@@ -43,7 +42,7 @@
             </div>
             <div class="col-12 col-sm-6 col-xl-3">
                 <x-bs::form.field id="status" name="filter[status]" type="select"
-                                  :options="\App\Enums\ActiveStatus::toOptionsWithAll()"
+                                  :options="ActiveStatus::toOptionsWithAll()"
                                   :cast="FilterValue::castToIntIfNoValue()"
                                   :from-query="true"><i class="fa fa-fw fa-circle-question"></i> {{ __('Status') }}</x-bs::form.field>
             </div>

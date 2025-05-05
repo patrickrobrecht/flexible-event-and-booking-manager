@@ -69,6 +69,17 @@ enum Ability: string
     case EditDocumentsOfOrganizations = 'organizations.documents.edit';
     case DestroyDocumentsOfOrganizations = 'organizations.documents.destroy';
 
+    // Material
+    case ViewMaterials = 'materials.view';
+    case CreateMaterials = 'materials.create';
+    case EditMaterials = 'materials.edit';
+    case DestroyMaterials = 'materials.destroy';
+
+    case ViewStorageLocations = 'storage_locations.view';
+    case CreateStorageLocations = 'storage_locations.create';
+    case EditStorageLocations = 'storage_locations.edit';
+    case DestroyStorageLocations = 'storage_locations.destroy';
+
     // Users and abilities
     case ViewUsers = 'users.view';
     case CreateUsers = 'users.create';
@@ -140,6 +151,15 @@ enum Ability: string
             self::AddDocumentsToOrganizations,
             self::EditDocumentsOfOrganizations,
             self::DestroyDocumentsOfOrganizations => self::ViewDocumentsOfOrganizations,
+
+            // Materials
+            self::CreateMaterials,
+            self::EditMaterials,
+            self::DestroyMaterials => self::ViewMaterials,
+
+            self::CreateStorageLocations,
+            self::EditStorageLocations,
+            self::DestroyStorageLocations => self::ViewStorageLocations,
 
             // Users and abilities
             self::CreateUsers,
@@ -213,6 +233,17 @@ enum Ability: string
             self::AddDocumentsToOrganizations,
             self::EditDocumentsOfOrganizations,
             self::DestroyDocumentsOfOrganizations => AbilityGroup::DocumentsOfOrganizations,
+
+            // Materials
+            self::ViewMaterials,
+            self::CreateMaterials,
+            self::EditMaterials,
+            self::DestroyMaterials => AbilityGroup::Materials,
+
+            self::ViewStorageLocations,
+            self::CreateStorageLocations,
+            self::EditStorageLocations,
+            self::DestroyStorageLocations => AbilityGroup::StorageLocations,
 
             // Users and abilities
             self::ViewUsers,
@@ -296,6 +327,17 @@ enum Ability: string
             self::AddDocumentsToOrganizations => __('Add documents to organizations'),
             self::EditDocumentsOfOrganizations => __('Update documents of organizations'),
             self::DestroyDocumentsOfOrganizations => __('Delete documents of organizations'),
+
+            // Materials
+            self::ViewMaterials => __('View materials'),
+            self::CreateMaterials => __('Create materials'),
+            self::EditMaterials => __('Edit materials'),
+            self::DestroyMaterials => __('Delete materials permanently'),
+
+            self::ViewStorageLocations => __('View storage locations'),
+            self::CreateStorageLocations => __('Create storage locations'),
+            self::EditStorageLocations => __('Edit storage locations'),
+            self::DestroyStorageLocations => __('Delete storage locations permanently'),
 
             // Users and abilities
             self::ViewUsers => __('View users'),

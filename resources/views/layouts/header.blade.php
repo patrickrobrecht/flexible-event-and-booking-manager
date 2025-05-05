@@ -11,9 +11,37 @@
                 {{-- Left Side Of Navbar --}}
                 <ul class="navbar-nav me-md-auto">
                     <x-bs::nav.item href="{{ route('dashboard') }}">
-                        <i class="fa fa-fw fa-home"></i>
-                        {{ __('Dashboard') }}
+                        <i class="fa fa-fw fa-home"></i> {{ __('Dashboard') }}
                     </x-bs::nav.item>
+
+                    @php
+                        /** @var ?\App\Models\User $loggedInUser */
+                        $loggedInUser = \Illuminate\Support\Facades\Auth::user();
+
+                        $canViewMaterials = $loggedInUser?->can('viewAny', App\Models\Material::class);
+                        $canViewStorageLocations = $loggedInUser?->can('viewAny', App\Models\StorageLocation::class);
+                    @endphp
+                    @if($canViewStorageLocations)
+                        <x-bs::nav.item id="navbarAdminDropdown">
+                            <i class="{{ \App\Enums\AbilityGroup::Materials->getIcon() }}"></i> {{ __('Materials') }}
+                            <x-slot:dropdown>
+                                @if($canViewMaterials)
+                                    <x-bs::dropdown.item href="{{ route('materials.index') }}">
+                                        <i class="{{ \App\Enums\AbilityGroup::Materials->getIcon() }}"></i> {{ __('Materials') }}
+                                    </x-bs::dropdown.item>
+                                @endif
+                                @if($canViewStorageLocations)
+                                    <x-bs::dropdown.item href="{{ route('storage-locations.index') }}">
+                                        <i class="{{ \App\Enums\AbilityGroup::StorageLocations->getIcon() }}"></i> {{ __('Storage locations') }}
+                                    </x-bs::dropdown.item>
+                                @endif
+                            </x-slot:dropdown>
+                        </x-bs::nav.item>
+                    @elseif($canViewMaterials)
+                        <x-bs::nav.item href="{{ route('materials.index') }}">
+                            <i class="{{ \App\Enums\AbilityGroup::Materials->getIcon() }}"></i> {{ __('Materials') }}
+                        </x-bs::nav.item>
+                    @endif
                 </ul>
 
                 {{-- Right Side Of Navbar --}}
@@ -25,9 +53,6 @@
                         </x-bs::nav.item>
                     @elseauth
                         @php
-                            /** @var \App\Models\User $loggedInUser */
-                            $loggedInUser = \Illuminate\Support\Facades\Auth::user();
-
                             $canViewEvents = $loggedInUser->can('viewAny', App\Models\Event::class);
                             $canViewEventSeries = $loggedInUser->can('viewAny', App\Models\EventSeries::class);
                             $canViewOrganizations = $loggedInUser->can('viewAny', App\Models\Organization::class);

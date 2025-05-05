@@ -19,7 +19,7 @@ trait Sortable
     }
 
     /**
-     * @return AllowedSort[]
+     * @return array<int, AllowedSort|string>
      */
     public static function defaultSorts(): array
     {
@@ -41,6 +41,7 @@ trait Sortable
     {
         $defaultSorts = self::defaultSorts();
         $defaultSort = reset($defaultSorts);
+        /** @phpstan-ignore instanceof.alwaysFalse */
         if ($defaultSort instanceof AllowedSort) {
             return $defaultSort;
         }

@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Enums\ActiveStatus;
+use App\Models\Location;
 use App\Models\Organization;
 use Database\Factories\Traits\BelongsToLocation;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -27,6 +28,11 @@ class OrganizationFactory extends Factory
             'email' => sprintf('%s@%s', Str::slug($name), $this->faker->unique()->domainName()),
             'website_url' => $this->faker->optional()->url(),
         ];
+    }
+
+    public function forLocation(?Location $location = null): static
+    {
+        return $this->for($location ?? Location::factory()->create());
     }
 
     public function withBankAccount(): static

@@ -1,6 +1,7 @@
 includes:
     - ./vendor/larastan/larastan/extension.neon
     - ./vendor/nesbot/carbon/extension.neon
+    - ./vendor/phpstan/phpstan-strict-rules/rules.neon
 
 parameters:
     checkUnionTypes: true
@@ -17,3 +18,7 @@ parameters:
         - app
         - routes
         - tests
+    reportWrongPhpDocTypeInVarTag: false
+    strictRules:
+        booleansInConditions: false
+        dynamicCallOnStaticMethod: false

@@ -33,6 +33,7 @@ trait LoadsPropertiesFromSession
         foreach ($this->propertiesSavedInSession ?? [] as $propertyName => $expectedType) {
             $value = $this->getValidatedValue($propertyName, $expectedType);
             if (isset($value)) {
+                /** @phpstan-ignore property.dynamicName */
                 $this->$propertyName = $value;
             }
         }
@@ -41,6 +42,7 @@ trait LoadsPropertiesFromSession
     public function storeSettingsInSession(): void
     {
         foreach (array_keys($this->propertiesSavedInSession ?? []) as $propertyName) {
+            /** @phpstan-ignore property.dynamicName */
             Session::put($this->getSessionKey($propertyName), $this->{$propertyName});
         }
     }

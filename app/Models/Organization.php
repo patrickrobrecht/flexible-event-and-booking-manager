@@ -33,9 +33,9 @@ use Spatie\QueryBuilder\AllowedFilter;
  * @property ?string $iban
  * @property ?string $bank_name
  *
- * @property-read array<int, string> $bank_account_lines {@see self::bankAccountLines()}
+ * @property-read string[] $bank_account_lines {@see self::bankAccountLines()}
  *
- * @property Collection|Event[] $events {@see Organization::events()}
+ * @property Collection|Event[] $events {@see self::events()}
  * @property Collection|EventSeries[] $eventSeries {@see self::eventSeries()}
  */
 class Organization extends Model
@@ -121,7 +121,7 @@ class Organization extends Model
     }
 
     /**
-     * @return array<int, AllowedFilter>
+     * @return AllowedFilter[]
      */
     public static function allowedFilters(): array
     {

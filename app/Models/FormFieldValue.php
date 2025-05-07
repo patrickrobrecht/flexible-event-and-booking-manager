@@ -16,8 +16,8 @@ use Illuminate\Support\Str;
  * @property-read string $file_extension {@see self::fileExtension()}
  * @property-read string $file_name_for_download {@see self::fileNameForDownload()}
  *
- * @property Booking $booking {@see FormFieldValue::booking()}
- * @property FormField $formField {@see FormFieldValue::formField()}
+ * @property Booking $booking {@see self::booking()}
+ * @property FormField $formField {@see self::formField()}
  */
 class FormFieldValue extends Model
 {

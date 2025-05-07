@@ -11,7 +11,7 @@ use Spatie\QueryBuilder\AllowedFilter;
 trait Filterable
 {
     /**
-     * @return array<int, AllowedFilter>
+     * @return AllowedFilter[]
      */
     public static function allowedFilters(): array
     {

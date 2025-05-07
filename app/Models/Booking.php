@@ -271,6 +271,7 @@ class Booking extends Model
     public function getFieldValue(FormField $formField): mixed
     {
         if (isset($formField->column)) {
+            /** @phpstan-ignore property.dynamicName */
             return $this->{$formField->column} ?? null;
         }
 
@@ -335,7 +336,7 @@ class Booking extends Model
     }
 
     /**
-     * @return array<int, AllowedFilter>
+     * @return AllowedFilter[]
      */
     public static function allowedFilters(): array
     {

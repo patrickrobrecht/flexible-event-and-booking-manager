@@ -45,7 +45,7 @@ class AcceptLanguageMiddleware
     }
 
     /**
-     * @return array<int, string>
+     * @return string[]
      */
     private static function allowedLocales(): array
     {

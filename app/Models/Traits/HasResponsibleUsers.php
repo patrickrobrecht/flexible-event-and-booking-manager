@@ -65,7 +65,7 @@ trait HasResponsibleUsers
 
     /**
      * @param array{responsible_user_id?: int[]|null, responsible_user_data?: array<int, array<string|bool>>} $validatedData
-     * @return array{attached: array<int, int>, detached: array<int, int>, updated: array<int, int>}
+     * @return array{attached: int[], detached: int[], updated: int[]}
      */
     public function saveResponsibleUsers(array $validatedData): array
     {
@@ -81,6 +81,7 @@ trait HasResponsibleUsers
 
     private static function isPubliclyVisible(User $responsibleUser): bool
     {
+        /** @phpstan-ignore property.notFound */
         return isset($responsibleUser->pivot->publicly_visible)
             && $responsibleUser->pivot->publicly_visible;
     }

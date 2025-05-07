@@ -40,7 +40,7 @@ class PaymentReminderNotification extends Notification implements ShouldQueue
     }
 
     /**
-     * @return array<int, string>
+     * @return string[]
      */
     public function via(mixed $notifiable): array
     {

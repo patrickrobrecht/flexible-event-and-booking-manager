@@ -94,6 +94,7 @@ class OrganizationPolicy
             );
         }
 
+        /** @phpstan-ignore property.notFound */
         $eventsSeriesCount = $organization->events_series_count ?? $organization->eventSeries()->count();
         if ($eventsSeriesCount >= 1) {
             return $this->deny(

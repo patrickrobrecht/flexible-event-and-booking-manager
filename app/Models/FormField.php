@@ -19,8 +19,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property ?string $column
  * @property FormElementType $type
  * @property bool $required
- * @property array<int, string>|null $validation_rules
- * @property array<int, string>|null $allowed_values
+ * @property string[]|null $validation_rules
+ * @property string[]|null $allowed_values
  * @property bool $editable_after_submission
  *
  * @property string $input_name {@see self::inputName()}

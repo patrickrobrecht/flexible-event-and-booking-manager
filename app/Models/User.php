@@ -40,7 +40,7 @@ use Spatie\QueryBuilder\Enums\SortDirection;
  * @property ?Carbon $date_of_birth
  * @property ?string $phone
  * @property string $email
- * @property-read ?Carbon $email_verified_at
+ * @property ?Carbon $email_verified_at
  * @property ?string $password
  * @property ActiveStatus $status
  * @property ?Carbon $last_login_at
@@ -52,7 +52,7 @@ use Spatie\QueryBuilder\Enums\SortDirection;
  * @property-read Collection|EventSeries[] $responsibleForEventSeries {@see self::responsibleForEventSeries()}
  * @property-read Collection|Organization[] $responsibleForOrganizations {@see self::responsibleForOrganizations()}
  * @property-read Collection|PersonalAccessToken[] $tokens {@see HasApiTokens::tokens()}
- * @property-read Collection|UserRole[] $userRoles {@see User::userRoles()}
+ * @property-read Collection|UserRole[] $userRoles {@see self::userRoles()}
  */
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -189,6 +189,11 @@ class User extends Authenticatable implements MustVerifyEmail
         /** @phpstan-var array{password: ?string, user_role_id: int[]|null} $validatedData */
         $this->fill($validatedData);
 
+        if ($this->isDirty('email')) {
+            // If the email address is changed, reset verification.
+            $this->email_verified_at = null;
+        }
+
         if (isset($validatedData['password'])) {
             $this->password = Hash::make($validatedData['password']);
         }
@@ -246,7 +251,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return false;
     }
 
-    public function isResponsibleFor(Model $model): bool
+    public function isResponsibleFor(Event|EventSeries|Organization $model): bool
     {
         return ($model->responsibleUsers ?? Collection::empty())
             ->pluck('id')
@@ -309,7 +314,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * @return array<int, AllowedFilter>
+     * @return AllowedFilter[]
      */
     public static function allowedFilters(): array
     {

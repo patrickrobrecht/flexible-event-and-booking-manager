@@ -22,6 +22,7 @@ trait HasSlugForRouting
     /**
      * @param int|string $value
      */
+    /** @phpstan-ignore method.childParameterType */
     public function resolveRouteBinding($value, $field = null): ?static
     {
         try {
@@ -30,6 +31,7 @@ trait HasSlugForRouting
                  ->firstOrFail();
         } catch (ModelNotFoundException $exception) {
             // Set $value as model IDs for proper exception handling.
+            /** @phpstan-ignore argument.type */
             throw $exception->setModel($exception->getModel(), [$value]);
         }
     }

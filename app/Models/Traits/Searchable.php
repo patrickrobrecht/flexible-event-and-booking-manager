@@ -30,7 +30,7 @@ trait Searchable
     }
 
     /**
-     * @param array<int, string> $columns
+     * @param string[] $columns
      */
     protected function scopeIncludeColumns(
         Builder $query,

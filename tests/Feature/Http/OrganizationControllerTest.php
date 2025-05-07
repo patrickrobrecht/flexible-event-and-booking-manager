@@ -121,7 +121,7 @@ class OrganizationControllerTest extends TestCase
     }
 
     /**
-     * @return array<int, array<int, mixed>>
+     * @return array<int, mixed[]>
      */
     public static function updateBankAccountCases(): array
     {

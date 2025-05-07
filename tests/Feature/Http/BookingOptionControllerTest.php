@@ -69,7 +69,7 @@ class BookingOptionControllerTest extends TestCase
     }
 
     /**
-     * @return array<int, array{Closure(BookingOptionFactory): BookingOptionFactory, Closure(BookingOption): array<int, string>}>
+     * @return array<int, array{Closure(BookingOptionFactory): BookingOptionFactory, Closure(BookingOption): string[]}>
      */
     public static function casesForBookingOptions(): array
     {

@@ -12,7 +12,7 @@ use Stringable;
 trait ValidatesAbilities
 {
     /**
-     * @return array<int, Ability>
+     * @return Ability[]
      */
     abstract protected function getSelectableAbilities(): array;
 

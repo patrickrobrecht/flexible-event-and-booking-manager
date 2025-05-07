@@ -23,7 +23,7 @@ trait SupportsIncludesInSnakeCase
     }
 
     /**
-     * @return array<int, string>
+     * @return string[]
      */
     protected function allowedIncludeCounts(): array
     {
@@ -47,7 +47,7 @@ trait SupportsIncludesInSnakeCase
     }
 
     /**
-     * @return array<int, string>
+     * @return string[]
      */
     protected function allowedIncludeRelations(): array
     {
@@ -128,6 +128,7 @@ trait SupportsIncludesInSnakeCase
 
         // Load custom includes.
         foreach ($customIncludes as $key => $customInclude) {
+            /** @phpstan-ignore property.dynamicName */
             $model->{$key} = $customInclude($model);
         }
 

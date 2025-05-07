@@ -11,11 +11,9 @@ use App\Models\Document;
 use App\Models\DocumentReview;
 use App\Policies\DocumentReviewPolicy;
 use Closure;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
-use Tests\Traits\GeneratesTestData;
 
 #[CoversClass(ApprovalStatus::class)]
 #[CoversClass(Document::class)]
@@ -25,9 +23,6 @@ use Tests\Traits\GeneratesTestData;
 #[CoversClass(DocumentReviewRequest::class)]
 class DocumentReviewControllerTest extends TestCase
 {
-    use GeneratesTestData;
-    use RefreshDatabase;
-
     #[DataProvider('referenceClasses')]
     public function testUserCanAddDocumentReviewOnlyWithCorrectAbility(Closure $referenceProvider): void
     {

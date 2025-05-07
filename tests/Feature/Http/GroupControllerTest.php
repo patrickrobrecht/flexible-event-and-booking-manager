@@ -18,11 +18,9 @@ use App\Models\Event;
 use App\Models\Group;
 use App\Policies\GroupPolicy;
 use Closure;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
-use Tests\Traits\GeneratesTestData;
 
 #[CoversClass(AgeBasedGroupGenerationMethod::class)]
 #[CoversClass(Event::class)]
@@ -38,9 +36,6 @@ use Tests\Traits\GeneratesTestData;
 #[CoversClass(RandomizedGroupGenerationMethod::class)]
 class GroupControllerTest extends TestCase
 {
-    use GeneratesTestData;
-    use RefreshDatabase;
-
     public function testUserCanViewGroupsOnlyWithCorrectAbility(): void
     {
         $event = self::createEventWithBookingOptions(Visibility::Private);

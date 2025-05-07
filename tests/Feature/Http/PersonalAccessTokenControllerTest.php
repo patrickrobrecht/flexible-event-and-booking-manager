@@ -9,7 +9,6 @@ use App\Models\PersonalAccessToken;
 use App\Models\User;
 use App\Policies\PersonalAccessTokenPolicy;
 use App\Providers\AppServiceProvider;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 
@@ -21,8 +20,6 @@ use Tests\TestCase;
 #[CoversClass(PersonalAccessTokenRequest::class)]
 class PersonalAccessTokenControllerTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testUserCanViewOwnPersonalAccessTokensOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('/personal-access-tokens', Ability::ManagePersonalAccessTokens);

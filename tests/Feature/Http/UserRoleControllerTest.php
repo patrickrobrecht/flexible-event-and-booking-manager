@@ -11,7 +11,6 @@ use App\Http\Requests\UserRoleRequest;
 use App\Models\User;
 use App\Models\UserRole;
 use App\Policies\UserRolePolicy;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 
@@ -26,8 +25,6 @@ use Tests\TestCase;
 #[CoversClass(UserRoleRequest::class)]
 class UserRoleControllerTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testUserCanViewUserRolesOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('/user-roles', Ability::ViewUserRoles);

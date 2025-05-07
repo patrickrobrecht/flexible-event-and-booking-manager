@@ -15,11 +15,9 @@ use App\Models\Organization;
 use App\Policies\OrganizationPolicy;
 use Closure;
 use Database\Factories\OrganizationFactory;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
-use Tests\Traits\GeneratesTestData;
 
 #[CoversClass(Document::class)]
 #[CoversClass(Event::class)]
@@ -31,9 +29,6 @@ use Tests\Traits\GeneratesTestData;
 #[CoversClass(OrganizationRequest::class)]
 class OrganizationControllerTest extends TestCase
 {
-    use GeneratesTestData;
-    use RefreshDatabase;
-
     public function testUserCanViewOrganizationsOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('/organizations', Ability::ViewOrganizations);

@@ -13,7 +13,6 @@ use App\Models\UserRole;
 use App\Notifications\AccountCreatedNotification;
 use App\Policies\UserPolicy;
 use Closure;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -30,8 +29,6 @@ use Tests\TestCase;
 #[CoversClass(UserRole::class)]
 class UserControllerTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testUserCanViewUsersOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('/users', Ability::ViewUsers);

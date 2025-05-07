@@ -15,14 +15,12 @@ use App\Models\EventSeries;
 use App\Models\Organization;
 use App\Policies\DocumentPolicy;
 use Closure;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Tests\TestCase;
-use Tests\Traits\GeneratesTestData;
 
 #[CoversClass(ApprovalStatus::class)]
 #[CoversClass(Document::class)]
@@ -33,9 +31,6 @@ use Tests\Traits\GeneratesTestData;
 #[CoversClass(FileType::class)]
 class DocumentControllerTest extends TestCase
 {
-    use GeneratesTestData;
-    use RefreshDatabase;
-
     public function testUserCanViewAllDocumentsWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('/documents', Ability::ViewDocuments);

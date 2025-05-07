@@ -7,7 +7,6 @@ use App\Http\Controllers\AccountController;
 use App\Http\Requests\UserRequest;
 use App\Models\User;
 use App\Policies\UserPolicy;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 
@@ -17,8 +16,6 @@ use Tests\TestCase;
 #[CoversClass(UserRequest::class)]
 class AccountControllerTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testUserCanViewAccountOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('/account', [Ability::ViewAccount, Ability::ViewAbilities]);

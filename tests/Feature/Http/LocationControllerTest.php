@@ -12,11 +12,9 @@ use App\Models\Location;
 use App\Models\Organization;
 use App\Policies\LocationPolicy;
 use Closure;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
-use Tests\Traits\GeneratesTestData;
 
 #[CoversClass(Event::class)]
 #[CoversClass(FilterValue::class)]
@@ -28,9 +26,6 @@ use Tests\Traits\GeneratesTestData;
 #[CoversClass(Organization::class)]
 class LocationControllerTest extends TestCase
 {
-    use GeneratesTestData;
-    use RefreshDatabase;
-
     public function testUserCanViewLocationsOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('/locations', Ability::ViewLocations);

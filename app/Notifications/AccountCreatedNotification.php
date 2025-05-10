@@ -21,7 +21,7 @@ class AccountCreatedNotification extends Notification
         $mailMessage = (new MailMessage())
             /** @phpstan-ignore-next-line binaryOp.invalid */
             ->subject(config('app.name') . ': ' . __('Account created for you'))
-            ->greeting(__($this->user->greeting . ','))
+            ->greeting($this->user->greeting . ',')
             /** @phpstan-ignore-next-line argument.type */
             ->line(__(':admin_name has created an account for :app_name for you.', [
                 'admin_name' => $adminUser->name ?? __('someone'),

@@ -40,7 +40,7 @@ use Spatie\QueryBuilder\Enums\SortDirection;
  * @property ?Carbon $date_of_birth
  * @property ?string $phone
  * @property string $email
- * @property-read ?Carbon $email_verified_at
+ * @property ?Carbon $email_verified_at
  * @property ?string $password
  * @property ActiveStatus $status
  * @property ?Carbon $last_login_at
@@ -188,6 +188,11 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         /** @phpstan-var array{password: ?string, user_role_id: int[]|null} $validatedData */
         $this->fill($validatedData);
+
+        if ($this->isDirty('email')) {
+            // If the email address is changed, reset verification.
+            $this->email_verified_at = null;
+        }
 
         if (isset($validatedData['password'])) {
             $this->password = Hash::make($validatedData['password']);

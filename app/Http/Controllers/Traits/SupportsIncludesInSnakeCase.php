@@ -128,6 +128,7 @@ trait SupportsIncludesInSnakeCase
 
         // Load custom includes.
         foreach ($customIncludes as $key => $customInclude) {
+            /** @phpstan-ignore property.dynamicName */
             $model->{$key} = $customInclude($model);
         }
 

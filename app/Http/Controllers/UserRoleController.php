@@ -40,7 +40,7 @@ class UserRoleController extends Controller
         $userRole = new UserRole();
         if ($userRole->fillAndSave($request->validated())) {
             Session::flash('success', __(':name created successfully.', ['name' => $userRole->name]));
-            return redirect(route('user-roles.edit', $userRole));
+            return $this->actionAwareRedirect($request, route('user-roles.index'), route('user-roles.create'));
         }
 
         return back();
@@ -70,6 +70,7 @@ class UserRoleController extends Controller
 
         if ($userRole->fillAndSave($request->validated())) {
             Session::flash('success', __(':name saved successfully.', ['name' => $userRole->name]));
+            return redirect(route('user-roles.index'));
         }
 
         return back();

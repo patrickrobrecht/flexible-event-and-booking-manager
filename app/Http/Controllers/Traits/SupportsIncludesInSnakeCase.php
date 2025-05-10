@@ -23,7 +23,7 @@ trait SupportsIncludesInSnakeCase
     }
 
     /**
-     * @return array<int, string>
+     * @return string[]
      */
     protected function allowedIncludeCounts(): array
     {
@@ -47,7 +47,7 @@ trait SupportsIncludesInSnakeCase
     }
 
     /**
-     * @return array<int, string>
+     * @return string[]
      */
     protected function allowedIncludeRelations(): array
     {

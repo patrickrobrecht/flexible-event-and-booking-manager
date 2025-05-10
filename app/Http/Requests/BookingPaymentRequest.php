@@ -51,8 +51,8 @@ class BookingPaymentRequest extends FormRequest
     }
 
     /**
-     * @param array<int, int> $selectedIds
-     * @param array<int, int> $allowedIds
+     * @param int[] $selectedIds
+     * @param int[] $allowedIds
      */
     public function containsOnlyValidIds(array $selectedIds, array $allowedIds): bool
     {

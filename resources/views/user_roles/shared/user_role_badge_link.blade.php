@@ -1,4 +1,4 @@
-<x-bs::badge variant="primary">
+<x-bs::badge>
     @can('view', $userRole)
         <a href="{{ route('user-roles.show', $userRole) }}" class="text-white">{{ $userRole->name }}</a>
     @else

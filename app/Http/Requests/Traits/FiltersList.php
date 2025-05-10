@@ -45,7 +45,7 @@ trait FiltersList
     }
 
     /**
-     * @return array<int, string>
+     * @return string[]
      */
     public function ruleForDate(?string $afterOrEqual = null): array
     {
@@ -112,7 +112,7 @@ trait FiltersList
     }
 
     /**
-     * @return array<int, string>
+     * @return string[]
      */
     public function ruleForText(int $maxLength = 255): array
     {

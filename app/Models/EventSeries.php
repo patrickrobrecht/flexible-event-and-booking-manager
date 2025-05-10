@@ -26,9 +26,9 @@ use Spatie\QueryBuilder\AllowedFilter;
  * @property string $slug
  * @property Visibility $visibility
  *
- * @property-read Collection|Event[] $events {@see EventSeries::events()}
- * @property-read ?EventSeries $parentEventSeries {@see EventSeries::parentEventSeries()}
- * @property-read Collection|EventSeries[] $subEventSeries {@see EventSeries::subEventSeries()}
+ * @property-read Collection|Event[] $events {@see self::events()}
+ * @property-read ?EventSeries $parentEventSeries {@see self::parentEventSeries()}
+ * @property-read Collection|EventSeries[] $subEventSeries {@see self::subEventSeries()}
  */
 class EventSeries extends Model
 {
@@ -124,7 +124,7 @@ class EventSeries extends Model
     }
 
     /**
-     * @return array<int, AllowedFilter>
+     * @return AllowedFilter[]
      */
     public static function allowedFilters(): array
     {

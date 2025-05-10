@@ -13,7 +13,6 @@ use App\Models\UserRole;
 use App\Notifications\AccountCreatedNotification;
 use App\Policies\UserPolicy;
 use Closure;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -30,8 +29,6 @@ use Tests\TestCase;
 #[CoversClass(UserRole::class)]
 class UserControllerTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testUserCanViewUsersOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('/users', Ability::ViewUsers);
@@ -108,7 +105,7 @@ class UserControllerTest extends TestCase
         $data = self::makeData(User::factory());
 
         $editRoute = "/users/{$user->id}/edit";
-        $this->assertUserCanPutOnlyWithAbility("/users/{$user->id}", $data, Ability::EditUsers, $editRoute, $editRoute);
+        $this->assertUserCanPutOnlyWithAbility("/users/{$user->id}", $data, Ability::EditUsers, $editRoute, '/users');
     }
 
     public function testUserCanDeleteUsersOnlyWithCorrectAbility(): void
@@ -117,9 +114,9 @@ class UserControllerTest extends TestCase
         $user = self::createUserWithUserRole($userRole);
 
         $this->assertDatabaseHas('users', ['id' => $user->id]);
-        $this->assertDatabaseHas('user_user_role', ['user_role_id' => $user->id,'user_id' => $user->id]);
+        $this->assertDatabaseHas('user_user_role', ['user_role_id' => $userRole->id, 'user_id' => $user->id]);
         $this->assertUserCanDeleteOnlyWithAbility("/users/{$user->id}", Ability::DestroyUsers, '/users');
-        $this->assertDatabaseMissing('user_user_role', ['user_role_id' => $userRole->id,'user_id' => $user->id]);
+        $this->assertDatabaseMissing('user_user_role', ['user_role_id' => $userRole->id, 'user_id' => $user->id]);
         $this->assertDatabaseMissing('users', ['id' => $user->id]);
     }
 

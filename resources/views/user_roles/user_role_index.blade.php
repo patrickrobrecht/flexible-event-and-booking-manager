@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @php
+    use App\Enums\FilterValue;
     use Portavice\Bladestrap\Support\Options;
 
     /** @var \Illuminate\Pagination\LengthAwarePaginator|\App\Models\UserRole[] $userRoles */
@@ -15,17 +16,15 @@
 @endsection
 
 @section('content')
-    <x-bs::button.group>
-        @can('create', \App\Models\UserRole::class)
-            <x-button.create href="{{ route('user-roles.create') }}">
-                {{ __('Create user role') }}
-            </x-button.create>
-        @endcan
-    </x-bs::button.group>
+    @can('create', \App\Models\UserRole::class)
+        <x-button.create href="{{ route('user-roles.create') }}">
+            {{ __('Create user role') }}
+        </x-button.create>
+    @endcan
 
     <x-form.filter>
         <div class="row">
-            <div class="col-12 col-xl-6">
+            <div class="col-12 col-sm-6 col-lg">
                 <x-bs::form.field id="name" name="filter[name]" type="text"
                                   :from-query="true">{{ __('Name') }}</x-bs::form.field>
             </div>
@@ -61,7 +60,11 @@
                         <x-bs::list.item>
                             <span>
                                 <i class="fa fa-fw fa-users"></i>
-                                <a href="{{ route('users.index', ['filter[user_role_id]' => $userRole->id]) }}" target="_blank">{{ __('Users') }}</a>
+                                @can('viewAny', \App\Models\User::class)
+                                    <a href="{{ route('users.index', ['filter[user_role_id]' => $userRole->id, 'filter[status]' => FilterValue::All]) }}" target="_blank">{{ __('Users') }}</a>
+                                @else
+                                    {{ __('Users') }}
+                                @endcan
                             </span>
                             <x-slot:end>
                                 <x-bs::badge>{{ formatInt($userRole->users_count) }}</x-bs::badge>

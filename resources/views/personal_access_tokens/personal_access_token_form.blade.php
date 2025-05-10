@@ -30,7 +30,7 @@
                 action="{{ isset($token) ? route('personal-access-tokens.update', $token) : route('personal-access-tokens.store') }}">
         <div class="row">
             <div class="col-12 col-md-6">
-                <x-bs::form.field name="name" type="text"
+                <x-bs::form.field name="name" type="text" maxlength="255" :required="true"
                                   :value="$token->name ?? null">{{ __('Name') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6">
@@ -55,10 +55,12 @@
         </div>
 
         <x-bs::button.group>
-            <x-button.save>
-                @isset($token){{ __( 'Save' ) }} @else{{ __('Create') }}@endisset
-            </x-button.save>
-            <x-button.cancel href="{{ route('personal-access-tokens.index') }}"/>
+            <x-bs::button>
+                <i class="fa fa-fw fa-save"></i> {{ __('Save') }}
+            </x-bs::button>
+            <x-bs::button.link variant="danger" href="{{ route('personal-access-tokens.index') }}">
+                <i class="fa fa-fw fa-window-close"></i> {{ __('Discard') }}
+            </x-bs::button.link>
         </x-bs::button.group>
     </x-bs::form>
 

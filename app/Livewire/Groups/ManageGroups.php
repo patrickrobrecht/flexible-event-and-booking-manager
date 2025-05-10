@@ -44,15 +44,15 @@ class ManageGroups extends Component
 
     public string $sort = 'name';
 
-    /** @var array<int, int> */
+    /** @var int[] */
     public array $bookingOptionIds;
 
-    /** @var array<int, string> */
+    /** @var string[] */
     public array $showBookingData = [
         'booked_at',
     ];
 
-    /** @var array<int, int> */
+    /** @var int[] */
     public array $showFields = [];
 
     public GroupForm $form;

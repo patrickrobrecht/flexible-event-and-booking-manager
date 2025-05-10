@@ -9,10 +9,8 @@ use App\Models\Event;
 use App\Models\Location;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
-use Tests\Traits\GeneratesTestData;
 
 #[CoversClass(Booking::class)]
 #[CoversClass(BookingOption::class)]
@@ -21,9 +19,6 @@ use Tests\Traits\GeneratesTestData;
 #[CoversClass(Location::class)]
 class DashboardControllerTest extends TestCase
 {
-    use GeneratesTestData;
-    use RefreshDatabase;
-
     public function testGuestCanViewTheDashboard(): void
     {
         $this->createEvents(User::factory()->create(), 5);

@@ -44,15 +44,15 @@ class ManageGroups extends Component
 
     public string $sort = 'name';
 
-    /** @var array<int, int> */
+    /** @var int[] */
     public array $bookingOptionIds;
 
-    /** @var array<int, string> */
+    /** @var string[] */
     public array $showBookingData = [
         'booked_at',
     ];
 
-    /** @var array<int, int> */
+    /** @var int[] */
     public array $showFields = [];
 
     public GroupForm $form;
@@ -143,10 +143,8 @@ class ManageGroups extends Component
 
     public function moveBooking(int $bookingId, int $groupId): void
     {
-        $groupId = (int) $groupId;
-
         /** @var ?Booking $booking */
-        $booking = Booking::query()->find((int) $bookingId);
+        $booking = Booking::query()->find($bookingId);
         if (isset($booking) && $booking->bookingOption->event->is($this->event->parentEvent ?? $this->event)) {
             $this->authorize('manageGroup', $booking);
 

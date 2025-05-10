@@ -14,11 +14,9 @@ use App\Models\Event;
 use App\Models\EventSeries;
 use App\Policies\EventSeriesPolicy;
 use Closure;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
-use Tests\Traits\GeneratesTestData;
 
 #[CoversClass(Document::class)]
 #[CoversClass(Event::class)]
@@ -32,9 +30,6 @@ use Tests\Traits\GeneratesTestData;
 #[CoversClass(Visibility::class)]
 class EventSeriesControllerTest extends TestCase
 {
-    use GeneratesTestData;
-    use RefreshDatabase;
-
     public function testUserCanViewEventSeriesOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('/event-series', Ability::ViewEventSeries);

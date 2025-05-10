@@ -21,7 +21,7 @@ use Spatie\QueryBuilder\Enums\SortDirection;
  * @property string $name
  * @property string[] $abilities
  *
- * @property-read Collection|User[] $users {@see UserRole::users()}
+ * @property-read Collection|User[] $users {@see self::users()}
  */
 class UserRole extends Model
 {
@@ -69,7 +69,7 @@ class UserRole extends Model
     }
 
     /**
-     * @return array<int, AllowedFilter>
+     * @return AllowedFilter[]
      */
     public static function allowedFilters(): array
     {

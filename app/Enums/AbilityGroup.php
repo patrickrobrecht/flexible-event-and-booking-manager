@@ -30,8 +30,8 @@ enum AbilityGroup
     case SystemManagement;
 
     /**
-     * @param array<int, Ability> $abilities
-     * @return array<int, Ability>
+     * @param Ability[] $abilities
+     * @return Ability[]
      */
     public function filterAbilities(array $abilities): array
     {
@@ -153,6 +153,6 @@ enum AbilityGroup
      */
     public static function casesAtRootLevel(): array
     {
-        return array_filter(self::cases(), static fn (self $abilityGroup) => $abilityGroup->getParent() === null);
+        return array_filter(self::cases(), fn (self $abilityGroup) => $abilityGroup->getParent() === null);
     }
 }

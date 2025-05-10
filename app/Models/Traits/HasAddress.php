@@ -22,7 +22,7 @@ trait HasAddress
     use Searchable;
 
     /**
-     * @var array<int, string>
+     * @var string[]
      */
     public static array $addressFields = [
         'street',

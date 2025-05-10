@@ -23,14 +23,12 @@ use App\Models\User;
 use App\Notifications\BookingConfirmation;
 use App\Policies\BookingPolicy;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Notifications\AnonymousNotifiable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
-use Tests\Traits\GeneratesTestData;
 
 #[CoversClass(Booking::class)]
 #[CoversClass(BookingConfirmation::class)]
@@ -51,9 +49,6 @@ use Tests\Traits\GeneratesTestData;
 #[CoversClass(SendBookingConfirmation::class)]
 class BookingControllerTest extends TestCase
 {
-    use GeneratesTestData;
-    use RefreshDatabase;
-
     public function testUserCanViewBookingsOfEventOnlyWithCorrectAbility(): void
     {
         $bookingOption = self::createBookingOptionForEvent();

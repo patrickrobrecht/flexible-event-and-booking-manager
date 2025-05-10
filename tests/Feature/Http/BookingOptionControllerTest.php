@@ -14,11 +14,9 @@ use App\Policies\BookingOptionPolicy;
 use Closure;
 use Database\Factories\BookingOptionFactory;
 use Database\Factories\UserFactory;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
-use Tests\Traits\GeneratesTestData;
 
 #[CoversClass(BookingOption::class)]
 #[CoversClass(BookingOptionController::class)]
@@ -27,9 +25,6 @@ use Tests\Traits\GeneratesTestData;
 #[CoversClass(BookingRestriction::class)]
 class BookingOptionControllerTest extends TestCase
 {
-    use GeneratesTestData;
-    use RefreshDatabase;
-
     public function testGuestCanViewBookingOptionOfPublicEvent(): void
     {
         $bookingOption = self::createBookingOptionForEvent(Visibility::Public);
@@ -74,7 +69,7 @@ class BookingOptionControllerTest extends TestCase
     }
 
     /**
-     * @return array<int, array{Closure(BookingOptionFactory): BookingOptionFactory, Closure(BookingOption): array<int, string>}>
+     * @return array<int, array{Closure(BookingOptionFactory): BookingOptionFactory, Closure(BookingOption): string[]}>
      */
     public static function casesForBookingOptions(): array
     {

@@ -33,7 +33,7 @@ class JsonApiMiddlewareTest extends TestCase
     }
 
     /**
-     * @return array<int, array<int, string>>
+     * @return array<int, string[]>
      */
     public static function validAcceptHeaders(): array
     {
@@ -66,7 +66,7 @@ class JsonApiMiddlewareTest extends TestCase
     }
 
     /**
-     * @return array<int, array<int, string>>
+     * @return array<int, string[]>
      */
     public static function invalidAcceptHeaders(): array
     {

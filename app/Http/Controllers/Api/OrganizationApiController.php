@@ -14,7 +14,7 @@ class OrganizationApiController extends Controller
     use SupportsIncludesInSnakeCase;
 
     /**
-     * @return array<int, string>
+     * @return string[]
      */
     protected function allowedIncludeCounts(): array
     {
@@ -25,7 +25,7 @@ class OrganizationApiController extends Controller
     }
 
     /**
-     * @return array<int, string>
+     * @return string[]
      */
     protected function allowedIncludeRelations(): array
     {

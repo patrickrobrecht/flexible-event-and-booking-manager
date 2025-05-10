@@ -22,9 +22,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property ?Carbon $available_from
  * @property ?Carbon $available_until
  * @property ?float $price
- * @property array<int, mixed> $price_conditions
+ * @property mixed[] $price_conditions
  * @property ?int $payment_due_days
- * @property array<int, string> $restrictions
+ * @property string[] $restrictions
  * @property string $confirmation_text
  *
  * @property-read Collection|Booking[] $bookings {@see self::bookings()}

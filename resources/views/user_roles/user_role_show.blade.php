@@ -9,7 +9,7 @@
 @endsection
 
 @section('breadcrumbs')
-    @can('viewAny', \App\Models\Organization::class)
+    @can('viewAny', \App\Models\UserRole::class)
         <x-bs::breadcrumb.item href="{{ route('user-roles.index') }}">{{ __('User roles') }}</x-bs::breadcrumb.item>
     @else
         <x-bs::breadcrumb.item>{{ __('User roles') }}</x-bs::breadcrumb.item>

@@ -69,7 +69,7 @@ trait GeneratesTestData
     }
 
     /**
-     * @return array<int, array<int, mixed>>
+     * @return array<int, mixed[]>
      */
     public static function visibilityProvider(): array
     {
@@ -380,7 +380,7 @@ trait GeneratesTestData
     }
 
     /**
-     * @param array<int, string> $without
+     * @param string[] $without
      * @return array<string, mixed>
      * @phpstan-ignore missingType.generics
      */

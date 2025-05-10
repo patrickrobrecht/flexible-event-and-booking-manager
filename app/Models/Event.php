@@ -37,12 +37,12 @@ use Spatie\QueryBuilder\Enums\SortDirection;
  * @property ?Carbon $finished_at
  * @property ?string $website_url
  *
- * @property-read Collection|BookingOption[] $bookingOptions {@see Event::bookingOptions()}
- * @property-read Collection|Booking[] $bookings {@see Event::bookings()}
- * @property-read ?EventSeries $eventSeries {@see Event::eventSeries()}
+ * @property-read Collection|BookingOption[] $bookingOptions {@see self::bookingOptions()}
+ * @property-read Collection|Booking[] $bookings {@see self::bookings()}
+ * @property-read ?EventSeries $eventSeries {@see self::eventSeries()}
  * @property-read Collection|Group[] $groups {@see self::groups()}
- * @property-read ?Event $parentEvent {@see Event::parentEvent()}
- * @property-read Collection|Event[] $subEvents {@see Event::subEvents()}
+ * @property-read ?Event $parentEvent {@see self::parentEvent()}
+ * @property-read Collection|Event[] $subEvents {@see self::subEvents()}
  */
 class Event extends Model
 {
@@ -236,7 +236,7 @@ class Event extends Model
     }
 
     /**
-     * @return array<int, AllowedFilter>
+     * @return AllowedFilter[]
      */
     public static function allowedFilters(): array
     {

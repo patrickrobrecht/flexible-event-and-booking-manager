@@ -20,11 +20,11 @@ use Spatie\QueryBuilder\AllowedFilter;
  * @property ?string $name
  * @property ?string $website_url
  *
- * @property-read string[] $fullAddressBlock {@see Location::fullAddressBlock()}
- * @property-read string $nameOrAddress {@see Location::nameOrAddress()}
+ * @property-read string[] $fullAddressBlock {@see self::fullAddressBlock()}
+ * @property-read string $nameOrAddress {@see self::nameOrAddress()}
  *
- * @property-read Collection|Event[] $events {@see Location::events()}
- * @property-read Collection|Organization[] $organizations {@see Location::organizations()}
+ * @property-read Collection|Event[] $events {@see self::events()}
+ * @property-read Collection|Organization[] $organizations {@see self::organizations()}
  */
 class Location extends Model
 {
@@ -87,7 +87,7 @@ class Location extends Model
     }
 
     /**
-     * @return array<int, AllowedFilter>
+     * @return AllowedFilter[]
      */
     public static function allowedFilters(): array
     {

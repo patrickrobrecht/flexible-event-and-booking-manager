@@ -271,6 +271,7 @@ class Booking extends Model
     public function getFieldValue(FormField $formField): mixed
     {
         if (isset($formField->column)) {
+            /** @phpstan-ignore property.dynamicName */
             return $this->{$formField->column} ?? null;
         }
 

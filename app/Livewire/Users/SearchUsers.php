@@ -33,6 +33,7 @@ class SearchUsers extends Component
 
     public function render(): View
     {
+        /** @phpstan-ignore arrayFilter.strict */
         $searchTerms = array_filter(array_map('trim', explode(',', $this->searchTerm)));
 
         [$users, $usersCount] = count($searchTerms) === 0

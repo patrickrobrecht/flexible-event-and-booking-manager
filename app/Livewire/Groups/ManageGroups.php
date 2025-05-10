@@ -143,10 +143,8 @@ class ManageGroups extends Component
 
     public function moveBooking(int $bookingId, int $groupId): void
     {
-        $groupId = (int) $groupId;
-
         /** @var ?Booking $booking */
-        $booking = Booking::query()->find((int) $bookingId);
+        $booking = Booking::query()->find($bookingId);
         if (isset($booking) && $booking->bookingOption->event->is($this->event->parentEvent ?? $this->event)) {
             $this->authorize('manageGroup', $booking);
 

@@ -50,7 +50,7 @@ To get started, you need to install the following software:
 - [Laravel Dompdf](https://github.com/barryvdh/laravel-dompdf) for PDF export
 - [Laravel Livewire](https://livewire.laravel.com/docs/) for dynamic UI without leading PHP
 - [Laravel Sluggable](https://github.com/spatie/laravel-sluggable) to autogenerate slugs
-- [Laravel Query Builder](https://spatie.be/docs/laravel-query-builder/v5/introduction) for custom filtering and sorting
+- [Laravel Query Builder](https://spatie.be/docs/laravel-query-builder/v6/introduction) for custom filtering and sorting
 - [Laravel Zipstream](https://github.com/stechstudio/laravel-zipstream) to create and stream zip files
 - [PhpSpreadsheet](https://phpspreadsheet.readthedocs.io/en/stable/) for Excel exports
 
@@ -68,8 +68,8 @@ For development, we use
 - [Laravel Mix](https://laravel-mix.com/docs/) for compiling assets
 - [Laravel Pint](https://laravel.com/docs/12.x/pint) for the PHP code style check
 - [Laravel Translatable String Exporter](https://github.com/kkomelin/laravel-translatable-string-exporter)
-- [PHPStan](https://phpstan.org/) for static analysis
-- [PHPUnit](https://docs.phpunit.de/en/12.1/) for unit tests
+- [PHPStan](https://phpstan.org/) with [Larastan](https://github.com/larastan/larastan) and [strict rules extension](https://github.com/phpstan/phpstan-strict-rules) for static analysis
+- [PHPUnit](https://docs.phpunit.de/) for Unit tests
 - [Stylelint](https://stylelint.io/) for the SASS code style check
 
 ### Code Style

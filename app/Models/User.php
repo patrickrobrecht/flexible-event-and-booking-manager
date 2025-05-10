@@ -246,7 +246,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return false;
     }
 
-    public function isResponsibleFor(Model $model): bool
+    public function isResponsibleFor(Event|EventSeries|Organization $model): bool
     {
         return ($model->responsibleUsers ?? Collection::empty())
             ->pluck('id')

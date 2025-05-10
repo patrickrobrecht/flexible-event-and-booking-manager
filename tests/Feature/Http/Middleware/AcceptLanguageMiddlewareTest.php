@@ -22,7 +22,7 @@ class AcceptLanguageMiddlewareTest extends TestCase
     }
 
     /**
-     * @return array<int, array<int, string>>
+     * @return array<int, string[]>
      */
     public static function acceptLanguageHeaders(): array
     {

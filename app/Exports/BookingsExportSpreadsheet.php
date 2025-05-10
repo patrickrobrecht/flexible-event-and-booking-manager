@@ -33,7 +33,7 @@ class BookingsExportSpreadsheet extends Spreadsheet
     }
 
     /**
-     * @return array<int, string>
+     * @return string[]
      */
     private function getHeaderColumns(): array
     {

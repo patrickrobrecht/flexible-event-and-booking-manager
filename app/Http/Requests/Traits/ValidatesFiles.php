@@ -33,8 +33,8 @@ trait ValidatesFiles
     }
 
     /**
-     * @param array<int, string> $extensions
-     * @return array<int, string>
+     * @param string[] $extensions
+     * @return string[]
      */
     public static function getMimeTypesFromExtensions(array $extensions): array
     {

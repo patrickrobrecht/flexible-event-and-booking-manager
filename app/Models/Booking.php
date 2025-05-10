@@ -336,7 +336,7 @@ class Booking extends Model
     }
 
     /**
-     * @return array<int, AllowedFilter>
+     * @return AllowedFilter[]
      */
     public static function allowedFilters(): array
     {

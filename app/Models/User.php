@@ -52,7 +52,7 @@ use Spatie\QueryBuilder\Enums\SortDirection;
  * @property-read Collection|EventSeries[] $responsibleForEventSeries {@see self::responsibleForEventSeries()}
  * @property-read Collection|Organization[] $responsibleForOrganizations {@see self::responsibleForOrganizations()}
  * @property-read Collection|PersonalAccessToken[] $tokens {@see HasApiTokens::tokens()}
- * @property-read Collection|UserRole[] $userRoles {@see User::userRoles()}
+ * @property-read Collection|UserRole[] $userRoles {@see self::userRoles()}
  */
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -309,7 +309,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * @return array<int, AllowedFilter>
+     * @return AllowedFilter[]
      */
     public static function allowedFilters(): array
     {

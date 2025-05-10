@@ -30,7 +30,7 @@ class GroupForm extends Form
     }
 
     /**
-     * @return array<string, array<int, string>>
+     * @return array<string, string[]>
      */
     public function validateGroupForEvent(Event $event): array
     {

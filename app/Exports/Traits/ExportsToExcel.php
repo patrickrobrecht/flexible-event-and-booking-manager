@@ -23,7 +23,7 @@ trait ExportsToExcel
     /**
      * @template TValue
      * @param Collection<int, TValue> $collection
-     * @param array<int, string> $headerColumns
+     * @param string[] $headerColumns
      * @param Closure(TValue): array<int|string, mixed> $rowProvider
      */
     public static function fillSheetFromCollection(

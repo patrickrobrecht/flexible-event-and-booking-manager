@@ -15,7 +15,7 @@ use Illuminate\Validation\ValidationException;
 class LoginRequest extends FormRequest
 {
     /**
-     * @return array<string, array<int, string>>
+     * @return array<string, string[]>
      */
     public function rules(): array
     {

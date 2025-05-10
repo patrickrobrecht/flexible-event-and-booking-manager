@@ -38,7 +38,7 @@ class AccountCreatedNotification extends Notification
     }
 
     /**
-     * @return array<int, string>
+     * @return string[]
      */
     public function via(mixed $notifiable): array
     {

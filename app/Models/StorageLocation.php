@@ -178,6 +178,16 @@ class StorageLocation extends Model
     }
 
     /**
+     * @return array<int, string>
+     */
+    public static function defaultSorts(): array
+    {
+        return [
+            'name',
+        ];
+    }
+
+    /**
      * @return array<string, string>
      */
     public static function filterOptions(): array

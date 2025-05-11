@@ -48,6 +48,12 @@
             </div>
         </x-bs::list.item>
     @endisset
+    @can('viewAny', \App\Models\Material::class)
+        <x-bs::list.item>
+            <span class="me-3"><i class="fa fa-fw fa-toolbox"></i></span>
+            <a href="{{ route('materials.index', ['filter[organization_id]' => $organization->id]) }}">{{ __('Materials') }}</a>
+        </x-bs::list.item>
+    @endcan
     @can('viewAny', \App\Models\Event::class)
         <x-bs::list.item>
             <span class="me-3"><i class="fa fa-fw fa-calendar-days"></i></span>

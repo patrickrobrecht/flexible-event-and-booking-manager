@@ -58,7 +58,7 @@ class Material extends Model
      *     organization_id: int,
      *     storage_locations?: array<int, array{
      *         remove?: bool,
-     *         storage_location_id: int,
+     *         storage_location_id: numeric-string,
      *         material_status: string,
      *         stock?: ?int,
      *         remarks?: ?string

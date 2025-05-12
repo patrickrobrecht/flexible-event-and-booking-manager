@@ -54,10 +54,6 @@ class MaterialRequest extends FormRequest
             ],
         ];
 
-        if (!isset($this->material)) {
-            return $rules;
-        }
-
         $rules['storage_locations'] = [
             'nullable',
             'array',
@@ -118,10 +114,6 @@ class MaterialRequest extends FormRequest
      */
     public function attributes(): array
     {
-        if (!isset($this->material)) {
-            return [];
-        }
-
         $attributes = [];
         foreach ($this->getStorageLocationIds() as $id) {
             $prefix = 'storage_locations.' . $id . '.';

@@ -33,7 +33,7 @@ class SelectParentStorageLocation extends Component
 
     public function selectStorageLocation(int $index, ?string $storageLocationId): void
     {
-        $this->updateSelectedPathAndStorageLocation($index, $storageLocationId, false);
+        $this->updateSelectedPathAndStorageLocation($index, $storageLocationId);
     }
 
     public function render(): View

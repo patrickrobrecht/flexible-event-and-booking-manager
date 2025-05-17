@@ -43,7 +43,7 @@ class SelectStorageLocation extends Component
             return;
         }
 
-        $this->updateSelectedPathAndStorageLocation($index, $storageLocationId, true);
+        $this->updateSelectedPathAndStorageLocation($index, $storageLocationId);
     }
 
     public function render(): View

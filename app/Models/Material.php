@@ -91,6 +91,15 @@ class Material extends Model
         return true;
     }
 
+    public function loadWithStorageLocations(): self
+    {
+        return $this->load(
+            \Illuminate\Support\Collection::make(range(1, StorageLocation::MAX_CHILD_LEVELS))
+                ->map(fn ($i) => 'storageLocations' . str_repeat('.parentStorageLocation', $i) . '.childStorageLocations')
+                ->all()
+        );
+    }
+
     public function getRoute(): string
     {
         return route('materials.show', $this);

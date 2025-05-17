@@ -62,7 +62,7 @@
                         <x-bs::form.field :nested-in-group="true"
                                           :name="$name . '_level' . $currentLevel"
                                           type="select"
-                                          :options="\Portavice\Bladestrap\Support\Options::fromModels($selectableStorageLocationsAtLevel ?? [], 'name')"
+                                          :options="\Portavice\Bladestrap\Support\Options::fromModels($selectableStorageLocationsAtLevel ?? [], 'name')->prepend(__('none'), '')"
                                           :value="$storageLocationAtCurrentLevel?->id"
                                           wire:change="selectStorageLocation({{ $currentLevel }}, $event.target.value)">
                         </x-bs::form.field>

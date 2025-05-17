@@ -28,7 +28,7 @@ trait SelectsStorageLocation
         /** @var Collection<int, StorageLocation> $rootLocationsFromCache */
         $rootLocationsFromCache = Cache::remember(
             'root_storage_locations',
-            Carbon::now()->addMinutes(2),
+            Carbon::now()->addSeconds(30),
             /** @return Collection<int, StorageLocation> */
             static fn () => StorageLocation::query()
                 ->whereNull('parent_storage_location_id')
@@ -39,7 +39,7 @@ trait SelectsStorageLocation
         $this->allowedRootStorageLocations = $rootLocationsFromCache;
     }
 
-    public function updateSelectedPathAndStorageLocation(int $index, ?string $storageLocationId, bool $forceLowestLevel): void
+    public function updateSelectedPathAndStorageLocation(int $index, ?string $storageLocationId): void
     {
         if ($storageLocationId) {
             $newStorageLocation = StorageLocation::query()->find((int) $storageLocationId);
@@ -47,15 +47,6 @@ trait SelectsStorageLocation
             if ($newStorageLocation) {
                 $this->selectedPath[$index] = $newStorageLocation;
                 array_splice($this->selectedPath, $index + 1);
-
-                if ($forceLowestLevel) {
-                    while ($newStorageLocation->childStorageLocations->isNotEmpty()) {
-                        $firstChildOfNewStorageLocation = $newStorageLocation->childStorageLocations->first();
-                        $this->selectedPath[$index + 1] = $firstChildOfNewStorageLocation;
-                        $index++;
-                        $newStorageLocation = $firstChildOfNewStorageLocation;
-                    }
-                }
             }
         } else {
             array_splice($this->selectedPath, $index);

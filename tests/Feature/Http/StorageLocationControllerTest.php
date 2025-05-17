@@ -37,6 +37,16 @@ class StorageLocationControllerTest extends TestCase
         $this->assertUserCanGetOnlyWithAbility('/storage-locations/create', Ability::CreateStorageLocations);
     }
 
+    public function testUserCanOpenCreateChildStorageLocationFormOnlyWithCorrectAbility(): void
+    {
+        $parentStorageLocation = self::createStorageLocation();
+        $storageLocation = self::createStorageLocation($parentStorageLocation);
+
+        $this->assertUserCanGetOnlyWithAbility("/storage-locations/create?parent_storage_location_id={$storageLocation->id}", Ability::CreateStorageLocations)
+            ->assertSee($storageLocation->name)
+            ->assertSeeHtml('<input type="hidden" name="parent_storage_location_id" value="' . $storageLocation->id . '">');
+    }
+
     public function testUserCanStoreStorageLocationOnlyWithCorrectAbility(): void
     {
         $data = self::makeStorageLocationData();

@@ -47,9 +47,18 @@
             </div>
         </div>
 
+        @php
+            $selectedStorageLocation = $storageLocation->parentStorageLocation ?? null;
+            if (!isset($selectedStorageLocation)) {
+                $parentStorageLocationIdFromQuery = \Portavice\Bladestrap\Support\ValueHelper::getFromQueryOrDefault('parent_storage_location_id');
+                if (isset($parentStorageLocationIdFromQuery)) {
+                    $selectedStorageLocation = \App\Models\StorageLocation::query()->find($parentStorageLocationIdFromQuery);
+                }
+            }
+        @endphp
         @livewire('storage-locations.select-parent-storage-location', [
             'storageLocation' => $storageLocation ?? null,
-            'selectedStorageLocation' => $storageLocation->parentStorageLocation ?? null,
+            'selectedStorageLocation' => $selectedStorageLocation,
         ])
 
         <x-bs::button.group>

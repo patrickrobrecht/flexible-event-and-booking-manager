@@ -76,10 +76,19 @@
                     @endisset
                     <x-bs::list.item>
                         <div class="small mb-1">{{ __('To add another storage location, select one.') }}</div>
+                        @php
+                            $selectedStorageLocation = null;
+                            if (!isset($selectedStorageLocation)) {
+                                $selectedStorageLocationIdFromQuery = \Portavice\Bladestrap\Support\ValueHelper::getFromQueryOrDefault('storage_location_id');
+                                if (isset($selectedStorageLocationIdFromQuery)) {
+                                    $selectedStorageLocation = \App\Models\StorageLocation::query()->find($selectedStorageLocationIdFromQuery);
+                                }
+                            }
+                        @endphp
                         @livewire('storage-locations.select-storage-location', [
                             'id' => 'storage-location-new',
                             'name' => 'storage_locations[new][storage_location_id]',
-                            'selectedStorageLocation' => null,
+                            'selectedStorageLocation' => $selectedStorageLocation,
                         ], key('storage-location-new'))
                         <div class="row mt-3">
                             <div class="col-12 col-xxl-6">

@@ -30,8 +30,15 @@
 
     @if($storageLocation->materials->isNotEmpty())
         <section>
-            <h2>{{ __('Materials') }}</h2>
-            <x-bs::list>
+            <div class="d-lg-flex justify-content-between">
+                <h2>{{ __('Materials') }}</h2>
+                <div class="align-content-end">
+                    <x-bs::button.link href="{{ route('materials.create', ['storage_location_id' => $storageLocation->id]) }}">
+                        <i class="fa fa-fw fa-plus"></i> {{ __('Create material') }}
+                    </x-bs::button.link>
+                </div>
+            </div>
+            <x-bs::list class="mt-3">
                 @foreach($storageLocation->materials as $material)
                     <x-bs::list.item>
                         <div class="d-flex justify-content-between">
@@ -67,13 +74,27 @@
             </x-bs::list>
         </section>
     @elseif($storageLocation->childStorageLocations->isEmpty())
-        <h2>{{ __('Materials') }}</h2>
-        <x-bs::alert variant="danger">{{ __('This storage location does not contain any materials yet.') }}</x-bs::alert>
+        <div class="d-lg-flex justify-content-between">
+            <h2>{{ __('Materials') }}</h2>
+            <div class="align-content-end">
+                <x-bs::button.link href="{{ route('materials.create', ['storage_location_id' => $storageLocation->id]) }}">
+                    <i class="fa fa-fw fa-plus"></i> {{ __('Create material') }}
+                </x-bs::button.link>
+            </div>
+        </div>
+        <x-bs::alert variant="danger" class="mt-3">{{ __('This storage location does not contain any materials yet.') }}</x-bs::alert>
     @endif
 
     @if($storageLocation->childStorageLocations->isNotEmpty())
-        <section>
-            <h2 class="mt-3">{{ __('Child storage locations') }}</h2>
+        <section class="mt-3">
+            <div class="d-lg-flex justify-content-between">
+                <h2>{{ __('Child storage locations') }}</h2>
+                <div class="align-content-end">
+                    <x-bs::button.link href="{{ route('storage-locations.create', ['parent_storage_location_id' => $storageLocation->id]) }}">
+                        <i class="fa fa-fw fa-plus"></i> {{ __('Create child storage location') }}
+                    </x-bs::button.link>
+                </div>
+            </div>
             <x-bs::list class="my-3">
                 @include('storage_locations.shared.storage_location_list_items', [
                     'marginLevel' => 0,

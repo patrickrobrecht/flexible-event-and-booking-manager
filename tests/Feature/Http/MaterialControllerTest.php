@@ -37,10 +37,16 @@ class MaterialControllerTest extends TestCase
         $this->assertUserCanGetOnlyWithAbility('/materials/create', Ability::CreateMaterials);
     }
 
+    public function testUserCanOpenCreateMaterialWithPreselectedStorageLocationFormOnlyWithCorrectAbility(): void
+    {
+        $storageLocation = self::createStorageLocation();
+        $this->assertUserCanGetOnlyWithAbility("/materials/create?storage_location_id={$storageLocation->id}", Ability::CreateMaterials)
+            ->assertSeeHtml("<strong>{$storageLocation->name}</strong>");
+    }
+
     public function testUserCanStoreMaterialOnlyWithCorrectAbility(): void
     {
         $data = self::makeMaterialData();
-
         $this->assertUserCanPostOnlyWithAbility('/materials', $data, Ability::CreateMaterials, null);
     }
 

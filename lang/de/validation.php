@@ -219,6 +219,7 @@ return [
         'parent_event_id' => 'Teil der Veranstaltung',
         'parent_event_series_id' => 'Teil der Veranstaltungsreihe',
         'parent_organization_id' => 'Übergeordnete Organisation',
+        'parent_storage_location_id' => 'Übergeordneter Lagerplatz',
         'password' => 'Passwort',
         'password_confirmation' => 'Passwort Bestätigung',
         'payment_due_days' => 'Zahlungsziel',

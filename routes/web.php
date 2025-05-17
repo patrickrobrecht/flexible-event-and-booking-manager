@@ -11,8 +11,10 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\EventSeriesController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\PersonalAccessTokenController;
+use App\Http\Controllers\StorageLocationController;
 use App\Http\Controllers\SystemInfoController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserRoleController;
@@ -24,8 +26,10 @@ use App\Models\Event;
 use App\Models\EventSeries;
 use App\Models\FormFieldValue;
 use App\Models\Location;
+use App\Models\Material;
 use App\Models\Organization;
 use App\Models\PersonalAccessToken;
+use App\Models\StorageLocation;
 use App\Models\User;
 use App\Models\UserRole;
 use Illuminate\Support\Facades\Route;
@@ -94,6 +98,10 @@ Route::middleware('auth')->group(static function () {
             ->name('event-series.documents.store');
     });
 
+    Route::model('material', Material::class);
+    Route::resource('materials', MaterialController::class)
+        ->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
+
     Route::model('location', Location::class);
     Route::resource('locations', LocationController::class)
         ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
@@ -109,6 +117,10 @@ Route::middleware('auth')->group(static function () {
     Route::model('personal_access_token', PersonalAccessToken::class);
     Route::resource('personal-access-tokens', PersonalAccessTokenController::class)
         ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+
+    Route::model('storage_location', StorageLocation::class);
+    Route::resource('storage-locations', StorageLocationController::class)
+        ->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
 
     Route::model('user', User::class);
     Route::resource('users', UserController::class)

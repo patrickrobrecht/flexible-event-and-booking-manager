@@ -18,6 +18,9 @@ enum AbilityGroup
     case DocumentsOfEventSeries;
     case DocumentsOfOrganizations;
 
+    case Materials;
+    case StorageLocations;
+
     case UsersAndAbilities;
     case Users;
     case UserRoles;
@@ -81,6 +84,9 @@ enum AbilityGroup
             self::DocumentsOfEventSeries,
             self::DocumentsOfOrganizations => 'fa-file',
 
+            self::Materials => 'fa-toolbox',
+            self::StorageLocations => 'fa-warehouse',
+
             self::UsersAndAbilities,
             self::Users => 'fa-users',
             self::UserRoles => 'fa-user-group',
@@ -108,6 +114,9 @@ enum AbilityGroup
             self::DocumentsOfEvents => __('Documents of events'),
             self::DocumentsOfEventSeries => __('Documents of event series'),
             self::DocumentsOfOrganizations => __('Documents of organizations'),
+
+            self::Materials => __('Materials'),
+            self::StorageLocations => __('Storage locations'),
 
             self::UsersAndAbilities => __('Users and abilities'),
             self::Users => __('Users'),

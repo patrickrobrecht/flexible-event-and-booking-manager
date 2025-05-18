@@ -136,6 +136,19 @@
                         </x-bs::list.item>
                         <x-bs::list.item>
                             <span>
+                                <i class="fa fa-fw fa-toolbox"></i>
+                                @can('viewAny', \App\Models\Material::class)
+                                    <a href="{{ route('materials.index', ['filter[organization_id]' => $organization->id]) }}" target="_blank">{{ __('Materials') }}</a>
+                                @else
+                                    {{ __('Materials') }}
+                                @endcan
+                            </span>
+                            <x-slot:end>
+                                <x-bs::badge>{{ formatInt($organization->materials_count) }}</x-bs::badge>
+                            </x-slot:end>
+                        </x-bs::list.item>
+                        <x-bs::list.item>
+                            <span>
                                 <i class="fa fa-fw fa-calendar-days"></i>
                                 @can('viewAny', \App\Models\Event::class)
                                     <a href="{{ route('events.index', [

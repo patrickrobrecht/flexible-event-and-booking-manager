@@ -37,6 +37,7 @@ use Spatie\QueryBuilder\AllowedFilter;
  *
  * @property Collection|Event[] $events {@see self::events()}
  * @property Collection|EventSeries[] $eventSeries {@see self::eventSeries()}
+ * @property Collection|Material[] $materials {@see self::materials()}
  */
 class Organization extends Model
 {
@@ -81,6 +82,11 @@ class Organization extends Model
     public function eventSeries(): HasMany
     {
         return $this->hasMany(EventSeries::class);
+    }
+
+    public function materials(): HasMany
+    {
+        return $this->hasMany(Material::class);
     }
 
     public function scopeEvent(Builder $query, int|string $eventId): Builder

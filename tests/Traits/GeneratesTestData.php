@@ -4,6 +4,7 @@ namespace Tests\Traits;
 
 use App\Enums\FileType;
 use App\Enums\FormElementType;
+use App\Enums\MaterialStatus;
 use App\Enums\Visibility;
 use App\Models\Booking;
 use App\Models\BookingOption;
@@ -15,7 +16,9 @@ use App\Models\FormField;
 use App\Models\FormFieldValue;
 use App\Models\Group;
 use App\Models\Location;
+use App\Models\Material;
 use App\Models\Organization;
+use App\Models\StorageLocation;
 use App\Models\User;
 use App\Models\UserRole;
 use Closure;
@@ -303,11 +306,38 @@ trait GeneratesTestData
         return Location::factory()->create();
     }
 
+    protected static function createMaterial(?int $storageLocationCount = null): Material
+    {
+        return Material::factory()
+            ->forOrganization(self::createOrganization())
+            ->hasStorageLocations($storageLocationCount)
+            ->create();
+    }
+
     protected static function createOrganization(): Organization
     {
         return Organization::factory()
             ->for(self::createLocation())
             ->withBankAccount()
+            ->create();
+    }
+
+    protected static function createStorageLocation(
+        ?StorageLocation $parentStorageLocation = null,
+        int $childStorageLocationsCount = 0,
+        int $materialsCount = 0,
+    ): StorageLocation {
+        return StorageLocation::factory()
+            ->has(
+                StorageLocation::factory()->count($childStorageLocationsCount),
+                'childStorageLocations'
+            )
+            ->hasAttached(
+                Material::factory()->forOrganization()->count($materialsCount),
+                ['material_status' => MaterialStatus::Checked],
+                'materials'
+            )
+            ->forParentStorageLocation($parentStorageLocation)
             ->create();
     }
 

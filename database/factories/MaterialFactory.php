@@ -2,8 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Enums\MaterialStatus;
 use App\Models\Material;
 use App\Models\Organization;
+use App\Models\StorageLocation;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -22,5 +24,18 @@ class MaterialFactory extends Factory
     public function forOrganization(?Organization $organization = null): static
     {
         return $this->for($organization ?? Organization::factory()->forLocation()->create());
+    }
+
+    public function hasStorageLocations(?int $count = null): static
+    {
+        return $this->hasAttached(
+            StorageLocation::factory()
+                ->count($count ?? $this->faker->numberBetween(0, 5)),
+            [
+                'material_status' => $this->faker->randomElement(MaterialStatus::cases())->value,
+                'stock' => $this->faker->optional()->numberBetween(1, 100),
+                'remarks' => $this->faker->optional()->text(),
+            ]
+        );
     }
 }

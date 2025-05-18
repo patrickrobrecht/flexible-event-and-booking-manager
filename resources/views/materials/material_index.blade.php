@@ -31,16 +31,16 @@
 
     <x-form.filter>
         <div class="row">
-            <div class="col-12 col-sm-6 col-xl-3">
+            <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="name" name="filter[name]" type="text"
                                   :from-query="true">{{ __('Name') }}</x-bs::form.field>
             </div>
-            <div class="col-12 col-sm-6 col-xl-3">
+            <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="description" name="filter[description]" type="text"
                                   :from-query="true">{{ __('Description') }}</x-bs::form.field>
             </div>
-            <div class="col-12 col-sm-6 col-xl-3">
-                <x-bs::form.field name="organization_id" type="select" :options="Options::fromModels($organizations, 'name')->prepend(__('all'), \App\Enums\FilterValue::All->value)"
+            <div class="col-12 col-md-6 col-xl-3">
+                <x-bs::form.field id="organization_id" name="filter[organization_id]" type="select" :options="Options::fromModels($organizations, 'name')->prepend(__('all'), \App\Enums\FilterValue::All->value)"
                                   :from-query="true"><i class="fa fa-fw fa-sitemap"></i> {{ __('Organization') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6 col-xl-3">
@@ -55,7 +55,7 @@
 
     <div class="row my-3">
         @foreach($materials as $material)
-            <div class="col-12 col-sm-6 col-md-4 mb-3">
+            <div class="col-12 col-md-6 col-xxl-4 mb-3">
                 <div class="card">
                     <div class="card-header">
                         <h2 class="card-title">

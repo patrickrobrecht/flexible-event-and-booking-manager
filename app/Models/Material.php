@@ -60,7 +60,7 @@ class Material extends Model
      *         remove?: bool,
      *         storage_location_id: numeric-string,
      *         material_status: string,
-     *         stock?: ?int,
+     *         stock?: ?numeric-string,
      *         remarks?: ?string
      *     }>
      * } $validatedData

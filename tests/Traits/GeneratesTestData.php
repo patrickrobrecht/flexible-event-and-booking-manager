@@ -306,10 +306,11 @@ trait GeneratesTestData
         return Location::factory()->create();
     }
 
-    protected static function createMaterial(): Material
+    protected static function createMaterial(?int $storageLocationCount = null): Material
     {
         return Material::factory()
             ->forOrganization(self::createOrganization())
+            ->hasStorageLocations($storageLocationCount)
             ->create();
     }
 

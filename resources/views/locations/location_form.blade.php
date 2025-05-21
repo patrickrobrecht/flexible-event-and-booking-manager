@@ -19,6 +19,16 @@
     @endisset
 @endsection
 
+@section('headline-buttons')
+    @isset($location)
+        @can('forceDelete', $location)
+            <x-form.delete-modal :id="$location->id"
+                                 :name="$location->name"
+                                 :route="route('locations.destroy', $location)"/>
+        @endcan
+    @endisset
+@endsection
+
 @section('content')
     <x-bs::form method="{{ isset($location) ? 'PUT' : 'POST' }}"
                 action="{{ isset($location) ? route('locations.update', $location) : route('locations.store') }}">

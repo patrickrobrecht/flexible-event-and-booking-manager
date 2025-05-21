@@ -30,6 +30,11 @@
             <x-bs::badge variant="danger">{{ formatInt($event->groups_count) }}</x-bs::badge>
         </x-bs::button.link>
     @endcan
+    @can('forceDelete', $event)
+        <x-form.delete-modal :id="$event->id"
+                             :name="$event->name"
+                             :route="route('events.destroy', $event)"/>
+    @endcan
 @endsection
 
 @section('content')

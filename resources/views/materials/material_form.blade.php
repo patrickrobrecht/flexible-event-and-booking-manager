@@ -25,6 +25,16 @@
     @endisset
 @endsection
 
+@section('headline-buttons')
+    @isset($material)
+        @can('forceDelete', $material)
+            <x-form.delete-modal :id="$material->id"
+                                 :name="$material->name"
+                                 :route="route('materials.destroy', $material)"/>
+        @endcan
+    @endisset
+@endsection
+
 @section('content')
     <x-bs::form method="{{ isset($material) ? 'PUT' : 'POST' }}"
                 action="{{ isset($material) ? route('materials.update', $material) : route('materials.store') }}">

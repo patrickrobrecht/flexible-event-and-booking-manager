@@ -27,6 +27,12 @@
     @endisset
 @endsection
 
+@section('headline-buttons')
+    @isset($userRole)
+        @include('user_roles.shared.user_role_delete_button')
+    @endisset
+@endsection
+
 @section('content')
     @isset($userRole)
         @include('user_roles.shared.user_role_badge_count')

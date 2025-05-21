@@ -16,6 +16,16 @@
     @include('organizations.shared.organization_breadcrumbs')
 @endsection
 
+@section('headline-buttons')
+    @isset($organization)
+        @can('forceDelete', $organization)
+            <x-form.delete-modal :id="$organization->id"
+                                 :name="$organization->name"
+                                 :route="route('organizations.destroy', $organization)"/>
+        @endcan
+    @endisset
+@endsection
+
 @section('content')
     <x-bs::form method="{{ isset($organization) ? 'PUT' : 'POST' }}"
                 action="{{ isset($organization) ? route('organizations.update', $organization) : route('organizations.store') }}">

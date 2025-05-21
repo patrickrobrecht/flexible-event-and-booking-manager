@@ -34,6 +34,14 @@
     @endisset
 @endsection
 
+@section('headline-buttons')
+    @isset($editedUser)
+        @include('users.shared.user_delete_button', [
+            'user' => $editedUser,
+        ])
+    @endisset
+@endsection
+
 @section('content')
     <x-bs::form method="{{ isset($editedUser) ? 'PUT' : 'POST' }}"
                 action="{{ isset($editedUser) ? route('users.update', $editedUser) : route('users.store') }}">

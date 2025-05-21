@@ -26,6 +26,16 @@
     @include('events.shared.event_breadcrumbs')
 @endsection
 
+@section('headline-buttons')
+    @isset($event)
+        @can('forceDelete', $event)
+            <x-form.delete-modal :id="$event->id"
+                                 :name="$event->name"
+                                 :route="route('events.destroy', $event)"/>
+        @endcan
+    @endisset
+@endsection
+
 @section('content')
     <x-bs::form method="{{ isset($event) ? 'PUT' : 'POST' }}"
                 action="{{ isset($event) ? route('events.update', $event) : route('events.store') }}">

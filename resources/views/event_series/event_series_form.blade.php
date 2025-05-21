@@ -25,6 +25,16 @@
     @include('event_series.shared.event_series_breadcrumbs')
 @endsection
 
+@section('headline-buttons')
+    @isset($eventSeries)
+        @can('forceDelete', $eventSeries)
+            <x-form.delete-modal :id="$eventSeries->id"
+                                 :name="$eventSeries->name"
+                                 :route="route('event-series.destroy', $eventSeries)"/>
+        @endcan
+    @endisset
+@endsection
+
 @section('content')
     <div class="row">
         <div class="col-12 col-md-6">

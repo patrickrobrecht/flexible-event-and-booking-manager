@@ -11,7 +11,7 @@
              :close-button="false" :static-backdrop="true">
     @if(isset($hint))
         <x-bs::form.field id="hint-checkbox-{{ $id }}" name="checkbox[{{ $id }}]"
-                          class="button-checkbox" check-container-class="mb-3 small"
+                          class="button-checkbox" check-container-class="mb-3 small text-wrap"
                           type="checkbox" :options="[$hint]"
                           data-target="delete-button-{{$id}}"/>
         @once

@@ -19,6 +19,16 @@
     @endisset
 @endsection
 
+@section('headline-buttons')
+    @isset($location)
+        @can('forceDelete', $location)
+            <x-form.delete-modal :id="$location->id"
+                                 :name="$location->name"
+                                 :route="route('locations.destroy', $location)"/>
+        @endcan
+    @endisset
+@endsection
+
 @section('content')
     <x-bs::form method="{{ isset($location) ? 'PUT' : 'POST' }}"
                 action="{{ isset($location) ? route('locations.update', $location) : route('locations.store') }}">
@@ -32,12 +42,8 @@
             </div>
         </div>
 
-        <x-bs::button.group>
-            <x-button.save>
-                @isset($location){{ __( 'Save' ) }} @else{{ __('Create') }}@endisset
-            </x-button.save>
-            <x-button.cancel href="{{ route('locations.index') }}"/>
-        </x-bs::button.group>
+        <x-button.group-save :show-create="!isset($location)"
+                             :index-route="route('locations.index')"/>
     </x-bs::form>
 
     <x-text.timestamp :model="$location ?? null"/>

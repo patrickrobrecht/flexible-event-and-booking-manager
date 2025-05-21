@@ -42,7 +42,11 @@ class StorageLocationController extends Controller
         /** @phpstan-ignore argument.type */
         if ($storageLocation->fillAndSave($request->validated())) {
             Session::flash('success', __(':name created successfully.', ['name' => $storageLocation->name]));
-            return redirect(route('storage-locations.edit', $storageLocation));
+            return $this->actionAwareRedirect(
+                $request,
+                route('storage-locations.show', $storageLocation),
+                createRoute: route('storage-locations.create')
+            );
         }
 
         return back();
@@ -75,7 +79,11 @@ class StorageLocationController extends Controller
             Session::flash('success', __(':name saved successfully.', ['name' => $storageLocation->name]));
         }
 
-        return back();
+        return $this->actionAwareRedirect(
+            $request,
+            route('storage-locations.show', $storageLocation),
+            editRoute: route('storage-locations.edit', $storageLocation)
+        );
     }
 
     public function destroy(StorageLocation $storageLocation): RedirectResponse

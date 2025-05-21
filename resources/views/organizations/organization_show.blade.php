@@ -21,6 +21,11 @@
     @can('update', $organization)
         <x-button.edit href="{{ route('organizations.edit', $organization) }}"/>
     @endcan
+    @can('forceDelete', $organization)
+        <x-form.delete-modal :id="$organization->id"
+                             :name="$organization->name"
+                             :route="route('organizations.destroy', $organization)"/>
+    @endcan
 @endsection
 
 @section('content')

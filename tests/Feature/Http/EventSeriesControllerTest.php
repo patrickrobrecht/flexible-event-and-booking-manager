@@ -82,7 +82,7 @@ class EventSeriesControllerTest extends TestCase
             $data,
             Ability::EditEventSeries,
             "/event-series/{$eventSeries->slug}/edit",
-            "/event-series/{$data['slug']}/edit"
+            "/event-series/{$data['slug']}"
         );
     }
 

@@ -24,6 +24,11 @@
     @can('update', $eventSeries)
         <x-button.edit href="{{ route('event-series.edit', $eventSeries) }}"/>
     @endcan
+    @can('forceDelete', $eventSeries)
+        <x-form.delete-modal :id="$eventSeries->id"
+                             :name="$eventSeries->name"
+                             :route="route('event-series.destroy', $eventSeries)"/>
+    @endcan
 @endsection
 
 @section('content')

@@ -16,6 +16,16 @@
     @include('organizations.shared.organization_breadcrumbs')
 @endsection
 
+@section('headline-buttons')
+    @isset($organization)
+        @can('forceDelete', $organization)
+            <x-form.delete-modal :id="$organization->id"
+                                 :name="$organization->name"
+                                 :route="route('organizations.destroy', $organization)"/>
+        @endcan
+    @endisset
+@endsection
+
 @section('content')
     <x-bs::form method="{{ isset($organization) ? 'PUT' : 'POST' }}"
                 action="{{ isset($organization) ? route('organizations.update', $organization) : route('organizations.store') }}">
@@ -67,16 +77,8 @@
             </div>
         </div>
 
-        <x-bs::button.group>
-            <x-button.save>
-                @isset($organization)
-                    {{ __( 'Save' ) }}
-                @else
-                    {{ __('Create') }}
-                @endisset
-            </x-button.save>
-            <x-button.cancel href="{{ route('organizations.index') }}"/>
-        </x-bs::button.group>
+        <x-button.group-save :show-create="!isset($organization)"
+                             :index-route="route('organizations.index')"/>
     </x-bs::form>
 
     <x-text.timestamp :model="$organization ?? null"/>

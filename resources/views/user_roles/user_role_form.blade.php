@@ -27,6 +27,12 @@
     @endisset
 @endsection
 
+@section('headline-buttons')
+    @isset($userRole)
+        @include('user_roles.shared.user_role_delete_button')
+    @endisset
+@endsection
+
 @section('content')
     @isset($userRole)
         @include('user_roles.shared.user_role_badge_count')
@@ -50,6 +56,7 @@
                 'headlineLevel' => 3,
             ])
         </div>
+
         <x-button.group-save :show-create="!isset($userRole)"
                              :index-route="route('user-roles.index')"/>
     </x-bs::form>

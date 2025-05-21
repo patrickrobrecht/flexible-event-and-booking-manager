@@ -82,12 +82,7 @@
                             @can('update', $userRole)
                                 <x-button.edit href="{{ route('user-roles.edit', $userRole) }}"/>
                             @endcan
-                            @can('forceDelete', $userRole)
-                                <x-form.delete-modal :id="$userRole->id"
-                                                     :name="$userRole->name"
-                                                     :route="route('user-roles.destroy', $userRole)"
-                                                     :hint="__('By deleting the user role, the users with this role lose the abilities granted by this role.')"/>
-                            @endcan
+                            @include('user_roles.shared.user_role_delete_button')
                         </div>
                     @endcanany
                     <div class="card-footer">

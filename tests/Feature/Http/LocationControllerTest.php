@@ -54,7 +54,13 @@ class LocationControllerTest extends TestCase
         $data = Location::factory()->makeOne()->toArray();
 
         $editRoute = "/locations/{$location->id}/edit";
-        $this->assertUserCanPutOnlyWithAbility("/locations/{$location->id}", $data, Ability::EditLocations, $editRoute, $editRoute);
+        $this->assertUserCanPutOnlyWithAbility(
+            "/locations/{$location->id}",
+            $data,
+            Ability::EditLocations,
+            $editRoute,
+            '/locations'
+        );
     }
 
     public function testUserCanDeleteLocationsOnlyWithCorrectAbility(): void

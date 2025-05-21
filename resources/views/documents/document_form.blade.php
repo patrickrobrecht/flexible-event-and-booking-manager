@@ -33,10 +33,8 @@
         @include('documents.shared.document_form_fields', [
             'document' => $document,
         ])
-        <x-bs::button.group>
-            <x-button.save>{{ __( 'Save' ) }}</x-button.save>
-            <x-button.cancel href="{{ route('events.show', $document->reference->getRoute()) }}"/>
-        </x-bs::button.group>
+
+        <x-button.group-save :index-route="$document->reference->getRoute()"/>
     </x-bs::form>
 
     <div class="my-5">

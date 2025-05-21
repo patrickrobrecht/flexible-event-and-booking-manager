@@ -38,10 +38,13 @@ class BookingOptionController extends Controller
         $bookingOption->event()->associate($event);
         if ($bookingOption->fillAndSave($request->validated())) {
             Session::flash('success', __('Created successfully.'));
-            return redirect(route('booking-options.edit', [$event, $bookingOption]));
         }
 
-        return back();
+        return $this->actionAwareRedirect(
+            $request,
+            route('events.show', $event),
+            createRoute: route('booking-options.create', $event),
+        );
     }
 
     public function edit(Event $event, BookingOption $bookingOption): View
@@ -63,6 +66,10 @@ class BookingOptionController extends Controller
         }
 
         // Slug may have changed, so we need to generate the URL here!
-        return redirect(route('booking-options.edit', [$event, $bookingOption]));
+        return $this->actionAwareRedirect(
+            $request,
+            route('events.show', $event),
+            editRoute: route('booking-options.edit', [$event, $bookingOption]),
+        );
     }
 }

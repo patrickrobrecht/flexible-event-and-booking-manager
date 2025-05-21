@@ -26,6 +26,16 @@
     @include('events.shared.event_breadcrumbs')
 @endsection
 
+@section('headline-buttons')
+    @isset($event)
+        @can('forceDelete', $event)
+            <x-form.delete-modal :id="$event->id"
+                                 :name="$event->name"
+                                 :route="route('events.destroy', $event)"/>
+        @endcan
+    @endisset
+@endsection
+
 @section('content')
     <x-bs::form method="{{ isset($event) ? 'PUT' : 'POST' }}"
                 action="{{ isset($event) ? route('events.update', $event) : route('events.store') }}">
@@ -55,16 +65,6 @@
                                   :value="isset($event->started_at) ? $event->started_at->format('Y-m-d\TH:i') : null"><i class="fa fa-fw fa-clock"></i> {{ __('Start date') }}</x-bs::form.field>
                 <x-bs::form.field name="finished_at" type="datetime-local"
                                   :value="isset($event->finished_at) ? $event->finished_at->format('Y-m-d\TH:i') : null"><i class="fa fa-fw fa-clock"></i> {{ __('End date') }}</x-bs::form.field>
-                <x-bs::button.group>
-                    <x-button.save>
-                        @isset($event)
-                            {{ __( 'Save' ) }}
-                        @else
-                            {{ __('Create') }}
-                        @endisset
-                    </x-button.save>
-                    <x-button.cancel href="{{ route('events.index') }}"/>
-                </x-bs::button.group>
             </div>
             <div class="col-12 col-md-6">
                 <x-bs::form.field name="location_id" type="select"
@@ -88,6 +88,9 @@
                 ])
             </div>
         </div>
+
+        <x-button.group-save :show-create="!isset($event)"
+                             :index-route="route('events.index')"/>
     </x-bs::form>
 
     <x-text.timestamp :model="$event ?? null"/>

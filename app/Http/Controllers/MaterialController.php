@@ -40,7 +40,11 @@ class MaterialController extends Controller
         /** @phpstan-ignore argument.type */
         if ($material->fillAndSave($request->validated())) {
             Session::flash('success', __(':name created successfully.', ['name' => $material->name]));
-            return redirect(route('materials.edit', $material));
+            return $this->actionAwareRedirect(
+                $request,
+                route('materials.show', $material),
+                createRoute: route('materials.create')
+            );
         }
 
         return back();
@@ -74,7 +78,11 @@ class MaterialController extends Controller
             Session::flash('success', __(':name saved successfully.', ['name' => $material->name]));
         }
 
-        return back();
+        return $this->actionAwareRedirect(
+            $request,
+            route('materials.show', $material),
+            editRoute: route('materials.edit', $material)
+        );
     }
 
     public function destroy(Material $material): RedirectResponse

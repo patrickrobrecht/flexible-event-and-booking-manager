@@ -82,8 +82,13 @@ class MaterialControllerTest extends TestCase
             ],
         ];
 
-        $editRoute = "/materials/{$material->id}/edit";
-        $this->assertUserCanPutOnlyWithAbility("/materials/{$material->id}", $data, Ability::EditMaterials, $editRoute, $editRoute);
+        $this->assertUserCanPutOnlyWithAbility(
+            "/materials/{$material->id}",
+            $data,
+            Ability::EditMaterials,
+            "/materials/{$material->id}/edit",
+            "/materials/{$material->id}"
+        );
         $this->assertDatabaseCount('materials', 1);
         $this->assertDatabaseCount('material_storage_location', 3);
         $this->assertDatabaseHas('material_storage_location', [

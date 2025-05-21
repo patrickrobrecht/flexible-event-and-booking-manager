@@ -45,7 +45,11 @@ class LocationController extends Controller
         $location = new Location();
         if ($location->fillAndSave($request->validated())) {
             Session::flash('success', __(':name created successfully.', ['name' => $location->nameOrAddress]));
-            return redirect(route('locations.edit', $location));
+            return $this->actionAwareRedirect(
+                $request,
+                route('locations.index'),
+                createRoute: route('locations.create')
+            );
         }
 
         return back();
@@ -68,7 +72,11 @@ class LocationController extends Controller
             Session::flash('success', __(':name saved successfully.', ['name' => $location->nameOrAddress]));
         }
 
-        return back();
+        return $this->actionAwareRedirect(
+            $request,
+            route('locations.index'),
+            editRoute: route('locations.edit', $location)
+        );
     }
 
     public function destroy(Location $location): RedirectResponse

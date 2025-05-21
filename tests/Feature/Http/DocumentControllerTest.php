@@ -122,13 +122,12 @@ class DocumentControllerTest extends TestCase
         $data = [
             'title' => 'NEW ' . $document->title,
         ];
-        $editRoute = route('documents.edit', $document);
         $this->assertUserCanPutWithAbility(
             "/documents/{$document->id}",
             $data,
             [$viewReferenceAbility, $editDocumentsAbility],
-            $editRoute,
-            $editRoute
+            route('documents.edit', $document),
+            route('documents.show', $document)
         );
     }
 

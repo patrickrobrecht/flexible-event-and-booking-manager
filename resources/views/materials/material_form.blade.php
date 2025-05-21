@@ -122,12 +122,8 @@
             </div>
         </div>
 
-        <x-bs::button.group>
-            <x-button.save>
-                @isset($material){{ __( 'Save' ) }} @else{{ __('Create') }}@endisset
-            </x-button.save>
-            <x-button.cancel href="{{ route('materials.index') }}"/>
-        </x-bs::button.group>
+        <x-button.group-save :show-create="!isset($material)"
+                             :index-route="route('materials.index')"/>
     </x-bs::form>
 
     <x-text.timestamp :model="$material ?? null"/>

@@ -96,7 +96,11 @@ class EventController extends Controller
         /** @phpstan-ignore argument.type */
         if ($event->fillAndSave($request->validated())) {
             Session::flash('success', __(':name created successfully.', ['name' => $event->name]));
-            return redirect(route('events.edit', $event));
+            return $this->actionAwareRedirect(
+                $request,
+                route('events.show', $event),
+                createRoute: route('events.create')
+            );
         }
 
         return back();
@@ -122,7 +126,11 @@ class EventController extends Controller
         }
 
         // Slug may have changed, so we need to generate the URL here!
-        return redirect(route('events.edit', $event));
+        return $this->actionAwareRedirect(
+            $request,
+            route('events.show', $event),
+            editRoute: route('events.edit', $event)
+        );
     }
 
     public function destroy(Event $event): RedirectResponse

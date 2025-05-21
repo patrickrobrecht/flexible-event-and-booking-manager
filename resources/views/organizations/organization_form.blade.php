@@ -77,16 +77,8 @@
             </div>
         </div>
 
-        <x-bs::button.group>
-            <x-button.save>
-                @isset($organization)
-                    {{ __( 'Save' ) }}
-                @else
-                    {{ __('Create') }}
-                @endisset
-            </x-button.save>
-            <x-button.cancel href="{{ route('organizations.index') }}"/>
-        </x-bs::button.group>
+        <x-button.group-save :show-create="!isset($organization)"
+                             :index-route="route('organizations.index')"/>
     </x-bs::form>
 
     <x-text.timestamp :model="$organization ?? null"/>

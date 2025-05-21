@@ -71,16 +71,8 @@
                     ])
                 </section>
 
-                <x-bs::button.group>
-                    <x-button.save>
-                        @isset($eventSeries)
-                            {{ __( 'Save' ) }}
-                        @else
-                            {{ __('Create') }}
-                        @endisset
-                    </x-button.save>
-                    <x-button.cancel href="{{ route('event-series.index') }}"/>
-                </x-bs::button.group>
+                <x-button.group-save :show-create="!isset($eventSeries)"
+                                     :index-route="route('event-series.index')"/>
             </x-bs::form>
         </div>
 

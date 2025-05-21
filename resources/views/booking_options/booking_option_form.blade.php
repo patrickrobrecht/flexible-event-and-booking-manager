@@ -90,16 +90,8 @@
             </div>
         </div>
 
-        <x-bs::button.group>
-            <x-button.save>
-                @isset($bookingOption)
-                    {{ __( 'Save' ) }}
-                @else
-                    {{ __('Create') }}
-                @endisset
-            </x-button.save>
-            <x-button.cancel href="{{ route('events.show', $event) }}"/>
-        </x-bs::button.group>
+        <x-button.group-save :show-create="!isset($bookingOption)"
+                             :index-route="route('events.show', $event)"/>
     </x-bs::form>
 
     <x-text.timestamp :model="$bookingOption ?? null"/>

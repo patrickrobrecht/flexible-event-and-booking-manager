@@ -65,8 +65,13 @@ class StorageLocationControllerTest extends TestCase
         $storageLocation = self::createStorageLocation();
         $data = self::makeStorageLocationData();
 
-        $editRoute = "/storage-locations/{$storageLocation->id}/edit";
-        $this->assertUserCanPutOnlyWithAbility("/storage-locations/{$storageLocation->id}", $data, Ability::EditStorageLocations, $editRoute, $editRoute);
+        $this->assertUserCanPutOnlyWithAbility(
+            "/storage-locations/{$storageLocation->id}",
+            $data,
+            Ability::EditStorageLocations,
+            "/storage-locations/{$storageLocation->id}/edit",
+            "/storage-locations/{$storageLocation->id}"
+        );
     }
 
     public function testUserCanDeleteStorageLocationOnlyWithCorrectAbility(): void

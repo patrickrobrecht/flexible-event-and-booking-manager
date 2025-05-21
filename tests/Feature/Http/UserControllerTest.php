@@ -104,8 +104,13 @@ class UserControllerTest extends TestCase
         $user = $this->createRandomUser();
         $data = self::makeData(User::factory());
 
-        $editRoute = "/users/{$user->id}/edit";
-        $this->assertUserCanPutOnlyWithAbility("/users/{$user->id}", $data, Ability::EditUsers, $editRoute, '/users');
+        $this->assertUserCanPutOnlyWithAbility(
+            "/users/{$user->id}",
+            $data,
+            Ability::EditUsers,
+            "/users/{$user->id}/edit",
+            "/users/{$user->id}"
+        );
     }
 
     public function testUserCanDeleteUsersOnlyWithCorrectAbility(): void

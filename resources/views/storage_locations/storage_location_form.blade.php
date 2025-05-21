@@ -61,16 +61,8 @@
             'selectedStorageLocation' => $selectedStorageLocation,
         ])
 
-        <x-bs::button.group>
-            <x-button.save>
-                @isset($storageLocation)
-                    {{ __( 'Save' ) }}
-                @else
-                    {{ __('Create') }}
-                @endisset
-            </x-button.save>
-            <x-button.cancel href="{{ route('storage-locations.index') }}"/>
-        </x-bs::button.group>
+        <x-button.group-save :show-create="!isset($storageLocation)"
+                             :index-route="route('storage-locations.index')"/>
     </x-bs::form>
 
     <x-text.timestamp :model="$storageLocation ?? null"/>

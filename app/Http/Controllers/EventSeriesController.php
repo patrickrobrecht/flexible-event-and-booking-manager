@@ -92,7 +92,11 @@ class EventSeriesController extends Controller
         /** @phpstan-ignore argument.type */
         if ($eventSeries->fillAndSave($request->validated())) {
             Session::flash('success', __(':name created successfully.', ['name' => $eventSeries->name]));
-            return redirect(route('event-series.edit', $eventSeries));
+            return $this->actionAwareRedirect(
+                $request,
+                route('event-series.show', $eventSeries),
+                createRoute: route('event-series.create')
+            );
         }
 
         return back();
@@ -123,7 +127,11 @@ class EventSeriesController extends Controller
         }
 
         // Slug may have changed, so we need to generate the URL here!
-        return redirect(route('event-series.edit', $eventSeries));
+        return $this->actionAwareRedirect(
+            $request,
+            route('event-series.show', $eventSeries),
+            editRoute: route('event-series.edit', $eventSeries)
+        );
     }
 
     public function destroy(EventSeries $eventSeries): RedirectResponse

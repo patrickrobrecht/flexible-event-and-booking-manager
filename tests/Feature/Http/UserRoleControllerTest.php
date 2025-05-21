@@ -57,8 +57,13 @@ class UserRoleControllerTest extends TestCase
         $userRole = $this->createRandomUserRole();
         $data = self::makeData(UserRole::factory());
 
-        $editRoute = "/user-roles/{$userRole->id}/edit";
-        $this->assertUserCanPutOnlyWithAbility("/user-roles/{$userRole->id}", $data, Ability::EditUserRoles, $editRoute, '/user-roles');
+        $this->assertUserCanPutOnlyWithAbility(
+            "/user-roles/{$userRole->id}",
+            $data,
+            Ability::EditUserRoles,
+            "/user-roles/{$userRole->id}/edit",
+            "/user-roles/{$userRole->id}"
+        );
     }
 
     public function testUserCanDeleteUserRoleOnlyWithCorrectAbility(): void

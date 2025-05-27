@@ -54,7 +54,11 @@ class UserController extends Controller
             if ($request->validated('send_notification')) {
                 $user->sendAccountCreatedNotification();
             }
-            return $this->actionAwareRedirect($request, route('users.index'), route('users.create'));
+            return $this->actionAwareRedirect(
+                $request,
+                route('users.show', $user),
+                createRoute: route('users.create')
+            );
         }
 
         return back();
@@ -85,10 +89,13 @@ class UserController extends Controller
 
         if ($user->fillAndSave($request->validated())) {
             Session::flash('success', __(':name saved successfully.', ['name' => $user->name]));
-            return redirect(route('users.index'));
         }
 
-        return back();
+        return $this->actionAwareRedirect(
+            $request,
+            route('users.show', $user),
+            editRoute: route('users.edit', $user)
+        );
     }
 
     public function destroy(User $user): RedirectResponse

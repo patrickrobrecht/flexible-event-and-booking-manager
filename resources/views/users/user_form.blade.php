@@ -34,6 +34,14 @@
     @endisset
 @endsection
 
+@section('headline-buttons')
+    @isset($editedUser)
+        @include('users.shared.user_delete_button', [
+            'user' => $editedUser,
+        ])
+    @endisset
+@endsection
+
 @section('content')
     <x-bs::form method="{{ isset($editedUser) ? 'PUT' : 'POST' }}"
                 action="{{ isset($editedUser) ? route('users.update', $editedUser) : route('users.store') }}">
@@ -89,7 +97,7 @@
                 <x-bs::form.field name="status" type="select" :options="\App\Enums\ActiveStatus::toOptions()"
                                   :value="$editedUser->status->value ?? null"><i class="fa fa-fw fa-circle-question"></i> {{ __('Status') }}</x-bs::form.field>
                 @if(!isset($editedUser))
-                    <x-bs::form.field name="send_notification" type="checkbox"
+                    <x-bs::form.field name="send_notification" type="checkbox" class="mb-3"
                                       :options="Options::one(__('Send notification mail to user'))"></x-bs::form.field>
                 @endif
             </div>

@@ -17,7 +17,7 @@ class Controller extends BaseController
 
     protected function actionAwareRedirect(
         FormRequest $request,
-        string $indexRoute,
+        string $defaultRoute,
         ?string $createRoute = null,
         ?string $editRoute = null
     ): RedirectResponse {
@@ -29,6 +29,6 @@ class Controller extends BaseController
             return redirect($editRoute);
         }
 
-        return redirect($indexRoute);
+        return redirect($defaultRoute);
     }
 }

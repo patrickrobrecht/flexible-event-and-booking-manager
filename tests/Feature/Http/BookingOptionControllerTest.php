@@ -166,7 +166,7 @@ class BookingOptionControllerTest extends TestCase
             $data,
             Ability::ManageBookingOptionsOfEvent,
             "/events/{$bookingOption->event->slug}/booking-options/{$bookingOption->slug}/edit",
-            "/events/{$bookingOption->event->slug}/booking-options/{$data['slug']}/edit"
+            "/events/{$bookingOption->event->slug}"
         );
     }
 

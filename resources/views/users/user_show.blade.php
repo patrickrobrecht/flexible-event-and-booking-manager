@@ -21,6 +21,7 @@
     @can('update', $user)
         <x-button.edit href="{{ route('users.edit', $user) }}"/>
     @endcan
+    @include('users.shared.user_delete_button')
 @endsection
 
 @section('content')

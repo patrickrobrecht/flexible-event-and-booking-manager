@@ -25,6 +25,16 @@
     @include('event_series.shared.event_series_breadcrumbs')
 @endsection
 
+@section('headline-buttons')
+    @isset($eventSeries)
+        @can('forceDelete', $eventSeries)
+            <x-form.delete-modal :id="$eventSeries->id"
+                                 :name="$eventSeries->name"
+                                 :route="route('event-series.destroy', $eventSeries)"/>
+        @endcan
+    @endisset
+@endsection
+
 @section('content')
     <div class="row">
         <div class="col-12 col-md-6">
@@ -61,16 +71,8 @@
                     ])
                 </section>
 
-                <x-bs::button.group>
-                    <x-button.save>
-                        @isset($eventSeries)
-                            {{ __( 'Save' ) }}
-                        @else
-                            {{ __('Create') }}
-                        @endisset
-                    </x-button.save>
-                    <x-button.cancel href="{{ route('event-series.index') }}"/>
-                </x-bs::button.group>
+                <x-button.group-save :show-create="!isset($eventSeries)"
+                                     :index-route="route('event-series.index')"/>
             </x-bs::form>
         </div>
 

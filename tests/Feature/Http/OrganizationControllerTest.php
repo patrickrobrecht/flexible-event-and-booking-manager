@@ -86,7 +86,7 @@ class OrganizationControllerTest extends TestCase
             $data,
             Ability::EditOrganizations,
             "/organizations/{$organization->slug}/edit",
-            "/organizations/{$data['slug']}/edit"
+            "/organizations/{$data['slug']}"
         );
     }
 

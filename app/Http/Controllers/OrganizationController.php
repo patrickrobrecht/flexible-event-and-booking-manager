@@ -50,7 +50,11 @@ class OrganizationController extends Controller
         /** @phpstan-ignore argument.type */
         if ($organization->fillAndSave($request->validated())) {
             Session::flash('success', __(':name created successfully.', ['name' => $organization->name]));
-            return redirect(route('organizations.edit', $organization));
+            return $this->actionAwareRedirect(
+                $request,
+                route('organizations.show', $organization),
+                createRoute: route('organizations.create')
+            );
         }
 
         return back();
@@ -88,7 +92,11 @@ class OrganizationController extends Controller
         }
 
         // Slug may have changed, so we need to generate the URL here!
-        return redirect(route('organizations.edit', $organization));
+        return $this->actionAwareRedirect(
+            $request,
+            route('organizations.show', $organization),
+            editRoute: route('organizations.edit', $organization)
+        );
     }
 
     public function destroy(Organization $organization): RedirectResponse

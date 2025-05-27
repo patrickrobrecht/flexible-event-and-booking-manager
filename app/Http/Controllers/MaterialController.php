@@ -25,6 +25,13 @@ class MaterialController extends Controller
         ]);
     }
 
+    public function search(): View
+    {
+        $this->authorize('viewAny', Material::class);
+
+        return view('materials.material_search');
+    }
+
     public function create(): View
     {
         $this->authorize('create', Material::class);

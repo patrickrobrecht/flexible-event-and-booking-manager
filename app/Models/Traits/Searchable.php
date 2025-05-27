@@ -56,7 +56,9 @@ trait Searchable
         if ($like) {
             return $query->where(function (Builder $subQuery) use ($column, $searchTerms) {
                 foreach ($searchTerms as $searchTerm) {
-                    $subQuery->orWhere($column, 'LIKE', self::searchTermForLike($searchTerm));
+                    if (!str_starts_with($searchTerm, '-')) {
+                        $subQuery->orWhere($column, 'LIKE', self::searchTermForLike($searchTerm));
+                    }
                 }
 
                 return $subQuery;
@@ -77,7 +79,10 @@ trait Searchable
         foreach ($searchTerms as $searchTerm) {
             if (trim($searchTerm) !== '') {
                 if (str_starts_with($searchTerm, '-')) {
-                    $searchTermsForExclude[] = substr($searchTerm, 1);
+                    $excludedSearchTerm = trim(substr($searchTerm, 1));
+                    if ($excludedSearchTerm !== '') {
+                        $searchTermsForExclude[] = $excludedSearchTerm;
+                    }
                 } else {
                     $searchTermsForInclude[] = $searchTerm;
                 }

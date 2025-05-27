@@ -61,6 +61,9 @@
                             <i class="{{ \App\Enums\AbilityGroup::Materials->getIcon() }}"></i> {{ __('Materials') }}
                             <x-slot:dropdown>
                                 @if($canViewMaterials)
+                                    <x-bs::dropdown.item href="{{ route('materials.search') }}">
+                                        <i class="fa fa-fw fa-search"></i> {{ __('Material search') }}
+                                    </x-bs::dropdown.item>
                                     <x-bs::dropdown.item href="{{ route('materials.index') }}">
                                         <i class="{{ \App\Enums\AbilityGroup::Materials->getIcon() }}"></i> {{ __('Materials') }}
                                     </x-bs::dropdown.item>

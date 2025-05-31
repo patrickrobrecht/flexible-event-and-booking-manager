@@ -51,7 +51,7 @@
                                     </div>
                                 @endif
                                 <div @class([
-                                    'col-12 col-md-6 offset-1',
+                                    'col-11 offset-1 col-md-6',
                                     $loop->first ? 'offset-md-0' : 'offset-md-6',
                                 ])>
                                     <span>

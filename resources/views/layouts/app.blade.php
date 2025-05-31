@@ -15,13 +15,13 @@
 
     <div class="container-fluid">
         @hasSection('breadcrumbs')
-            <x-bs::breadcrumb container-class="mx-5 mt-3" class="bg-light rounded-pill p-2">
+            <x-bs::breadcrumb container-class="mx-md-3 mx-xl-5 mt-3" class="bg-light rounded-pill p-2">
                 <x-bs::breadcrumb.item href="{{ route('dashboard') }}">{{ __('Dashboard') }}</x-bs::breadcrumb.item>
                 @yield('breadcrumbs')
             </x-bs::breadcrumb>
         @endif
 
-        <main class="mx-5 my-3">
+        <main class="mx-md-3 mx-xl-5 my-3">
             @include('layouts.alerts')
 
             @section('main')
@@ -30,7 +30,7 @@
                         @section('headline')
                             <h1>@yield('title')</h1>
                         @show
-                        <div class="mb-3 mb-lg-1 ms-auto text-nowrap">
+                        <div class="mb-3 mb-lg-1 ms-auto d-flex flex-wrap gap-1">
                             @section('headline-buttons')
                             @show
                         </div>

@@ -6,6 +6,7 @@ use App\Enums\FilterValue;
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\Traits\BelongsToOrganization;
 use App\Models\Traits\FiltersByRelationExistence;
+use App\Models\Traits\Searchable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -28,6 +29,7 @@ class Material extends Model
     use BuildsQueryFromRequest;
     use FiltersByRelationExistence;
     use HasFactory;
+    use Searchable;
 
     protected $fillable = [
         'name',
@@ -40,6 +42,28 @@ class Material extends Model
             ->withPivot(MaterialStorageLocation::PIVOT_COLUMNS)
             ->using(MaterialStorageLocation::class)
             ->withTimestamps();
+    }
+
+    public function scopeNameAndDescription(Builder $query, string ...$search): Builder
+    {
+        return $query->where(function (Builder $q) use ($search) {
+            $this->scopeSearch($q, 'name', true, ...$search)
+            ->orWhere(function (Builder $q) use ($search) {
+                return $this->scopeInclude($q, 'description', true, ...$search);
+            });
+        });
+    }
+
+    public function scopeMaterialStatus(Builder $query, int|string $status): Builder
+    {
+        if ($status === FilterValue::All->value) {
+            return $query;
+        }
+
+        return $query->whereHas(
+            'storageLocations',
+            fn (Builder $statusQuery) => $statusQuery->where('material_storage_location.material_status', '=', (int) $status)
+        );
     }
 
     public function scopeStorageLocation(Builder $query, int|string $storageLocationId): Builder
@@ -91,6 +115,11 @@ class Material extends Model
         return true;
     }
 
+    public function getRoute(): string
+    {
+        return route('materials.show', $this);
+    }
+
     public function loadWithStorageLocations(): self
     {
         return $this->load(
@@ -98,11 +127,6 @@ class Material extends Model
                 ->map(fn ($i) => 'storageLocations' . str_repeat('.parentStorageLocation', $i) . '.childStorageLocations')
                 ->all()
         );
-    }
-
-    public function getRoute(): string
-    {
-        return route('materials.show', $this);
     }
 
     /**
@@ -115,6 +139,9 @@ class Material extends Model
             AllowedFilter::partial('description'),
             AllowedFilter::exact('organization_id')
                 ->ignore(FilterValue::All->value),
+            /** @see self::scopeMaterialStatus() */
+            AllowedFilter::scope('material_status')
+                ->default(FilterValue::All->value),
             /** @see self::scopeStorageLocation() */
             AllowedFilter::scope('storage_location_id', 'storageLocation')
                 ->default(FilterValue::All->value),

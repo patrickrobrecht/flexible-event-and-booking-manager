@@ -28,6 +28,11 @@ class MaterialControllerTest extends TestCase
         $this->assertUserCanGetOnlyWithAbility('/materials', Ability::ViewMaterials);
     }
 
+    public function testUserCanViewMaterialSearchOnlyWithCorrectAbility(): void
+    {
+        $this->assertUserCanGetOnlyWithAbility('/materials/search', Ability::ViewMaterials);
+    }
+
     public function testUserCanViewSingleMaterialOnlyWithCorrectAbility(): void
     {
         $material = self::createMaterial();

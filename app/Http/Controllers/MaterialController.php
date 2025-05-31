@@ -25,6 +25,18 @@ class MaterialController extends Controller
         ]);
     }
 
+    public function search(): View
+    {
+        $this->authorize('viewAny', Material::class);
+
+        return view('materials.material_search', [
+            'organizations' => Organization::query()
+                ->whereHas('materials')
+                ->orderBy('name')
+                ->get(),
+        ]);
+    }
+
     public function create(): View
     {
         $this->authorize('create', Material::class);

@@ -44,6 +44,12 @@
                                   :from-query="true"><i class="fa fa-fw fa-sitemap"></i> {{ __('Organization') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6 col-xl-3">
+                <x-bs::form.field id="material_status" name="filter[material_status]"
+                                  type="select" :options="\App\Enums\MaterialStatus::toOptionsWithAll()"
+                                  :cast="\App\Enums\FilterValue::castToIntIfNoValue()"
+                                  :from-query="true">{{ __('Status') }}</x-bs::form.field>
+            </div>
+            <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="storage_location_id" name="filter[storage_location_id]" type="select"
                                   :options="Options::fromArray(StorageLocation::filterOptions())"
                                   :from-query="true"><i class="fa fa-fw fa-warehouse"></i> {{ __('Storage locations') }}</x-bs::form.field>

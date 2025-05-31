@@ -99,6 +99,8 @@ Route::middleware('auth')->group(static function () {
     });
 
     Route::model('material', Material::class);
+    Route::get('materials/search', [MaterialController::class, 'search'])
+        ->name('materials.search');
     Route::resource('materials', MaterialController::class)
         ->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
 

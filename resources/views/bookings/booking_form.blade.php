@@ -19,11 +19,9 @@
     @can('viewBookings', $bookingOption)
         <x-bs::breadcrumb.item href="{{ route('bookings.index', [$event, $bookingOption]) }}">{{ __('Bookings') }}</x-bs::breadcrumb.item>
     @endcan
-    @isset($booking)
-        <x-bs::breadcrumb.item>{{ __('Booking no. :id', [
-            'id' => $booking->id,
-        ]) }}</x-bs::breadcrumb.item>
-    @endisset
+    <x-bs::breadcrumb.item>{{ __('Booking no. :id', [
+        'id' => $booking->id,
+    ]) }}</x-bs::breadcrumb.item>
 @endsection
 
 @section('headline')
@@ -71,16 +69,14 @@
                     'canEdit' => true,
                 ])
 
-                <x-bs::button.group>
-                    <x-button.save>
-                        @isset($booking)
-                            {{ __( 'Save' ) }}
-                        @else
-                            {{ __('Create') }}
-                        @endisset
-                    </x-button.save>
-                    <x-button.cancel href="{{ route('bookings.index', [$event, $bookingOption]) }}"/>
-                </x-bs::button.group>
+                <div class="d-flex flex-wrap gap-1">
+                    <x-bs::button>
+                        <i class="fa fa-fw fa-save"></i> {{ __('Save') }}
+                    </x-bs::button>
+                    <x-bs::button.link variant="danger" href="{{ route('bookings.index', [$event, $bookingOption]) }}">
+                        <i class="fa fa-fw fa-window-close"></i> {{ __('Discard') }}
+                    </x-bs::button.link>
+                </div>
             </x-bs::form>
         </div>
     </div>

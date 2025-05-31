@@ -21,13 +21,11 @@
 @endsection
 
 @section('content')
-    <x-bs::button.group>
-        @can('create', Material::class)
-            <x-button.create href="{{ route('materials.create') }}">
-                {{ __('Create material') }}
-            </x-button.create>
-        @endcan
-    </x-bs::button.group>
+    @can('create', Material::class)
+        <x-button.create href="{{ route('materials.create') }}">
+            {{ __('Create material') }}
+        </x-button.create>
+    @endcan
 
     <x-form.filter>
         <div class="row">

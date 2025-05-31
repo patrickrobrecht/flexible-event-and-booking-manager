@@ -8,7 +8,7 @@
     /** @var bool $showCreate */
     /** @var ?string $indexRoute */
 @endphp
-<x-bs::button.group>
+<div class="d-flex flex-wrap gap-1">
     <x-bs::button :disabled="$disableSave">
         <i class="fa fa-fw fa-save"></i> {{ __('Save') }}
         <span class="d-block small"><i class="fa fa-fw fa-list"></i> {{ __('and back to overview') }}</span>
@@ -22,7 +22,7 @@
         @else
             <x-bs::button name="action" value="edit" variant="secondary">
                 <i class="fa fa-fw fa-save"></i> {{ __('Save') }}
-                <span class="d-block small"><i class="fa fa-fw fa-plus"></i> {{ __('and continue editing') }}</span>
+                <span class="d-block small">{{ __('and continue editing') }}</span>
             </x-bs::button>
         @endif
     @endif
@@ -32,4 +32,4 @@
             <span class="d-block small"><i class="fa fa-fw fa-list"></i> {{ __('and back to overview') }}</span>
         </x-bs::button.link>
     @endisset
-</x-bs::button.group>
+</div>

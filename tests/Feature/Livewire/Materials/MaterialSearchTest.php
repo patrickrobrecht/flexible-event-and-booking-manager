@@ -35,6 +35,14 @@ class MaterialSearchTest extends TestCase
             ->assertSee([$matchingMaterial1->name, $matchingMaterial2->name])
             ->assertDontSee($nonMatchingMaterial->name);
 
+        // Test search term matching two materials and additional filter for organization.
+        Livewire::test(MaterialSearch::class)
+            ->set('search', 'test')
+            ->set('organization_id', $matchingMaterial1->organization_id)
+            ->assertOk()
+            ->assertSee($matchingMaterial1->name)
+            ->assertDontSee([$matchingMaterial2->name, $nonMatchingMaterial->name]);
+
         // Test search with a term that should match only one material.
         Livewire::test(MaterialSearch::class)
             ->set('search', 'Another')

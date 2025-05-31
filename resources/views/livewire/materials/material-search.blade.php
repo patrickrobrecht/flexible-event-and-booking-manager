@@ -2,20 +2,29 @@
     use App\Livewire\Materials\MaterialSearch;
     use App\Models\Material;
     use Illuminate\Database\Eloquent\Collection;
+    use Portavice\Bladestrap\Support\Options;
 
     /** @var string $search */
     /** @var null|Collection<int, Material> $materials */
 @endphp
 <div>
     <div class="row">
-        <div class="col-12 col-xl-6">
+        <div class="col-12 col-lg-8 col-xl-9">
             <x-bs::form.field name="search" type="text" maxlength="255"
-                              wire:model.live.debounce.300ms="search">
+                              wire:model.live.debounce.50ms="search">
                 {{ __('Search term') }}
-                <x-slot:hint :class="(strlen($search) <= MaterialSearch::MINIMUM_CHARACTERS ? 'text-danger' : '') . ' fw-bold'">
-                    {{ formatTransChoice('Please enter at least :count characters.', MaterialSearch::MINIMUM_CHARACTERS) }}
+                <x-slot:hint class="fw-bold">
+                    <span @class([
+                        'text-danger' => strlen($search) <= MaterialSearch::MINIMUM_CHARACTERS,
+                    ])>{{ formatTransChoice('Please enter at least :count characters.', MaterialSearch::MINIMUM_CHARACTERS) }}</span>
+                    {{ __('Use -keyword to exclude everything containing "keyword".') }}
                 </x-slot:hint>
             </x-bs::form.field>
+        </div>
+        <div class="col-12 col-lg-4 col-xl-3">
+            <x-bs::form.field name="organization_id"
+                              type="select" :options="Options::fromModels($organizations, 'name')->prepend(__('all'), \App\Enums\FilterValue::All->value)"
+                              wire:model.live.debounce.50ms="organization_id"><i class="fa fa-fw fa-sitemap"></i> {{ __('Organization') }}</x-bs::form.field>
         </div>
     </div>
 

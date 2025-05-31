@@ -9,5 +9,7 @@
 @endsection
 
 @section('content')
-    @livewire('materials.material-search')
+    @livewire('materials.material-search', [
+        'organizations' => $organizations,
+    ])
 @endsection

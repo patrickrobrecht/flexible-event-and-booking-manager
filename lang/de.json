@@ -443,6 +443,7 @@
     "Update documents of events": "Dokumente von Veranstaltungen bearbeiten",
     "Update documents of organizations": "Dokumente von Organisationen bearbeiten",
     "Updated at :updated_at": "Aktualisiert am :updated_at",
+    "Use -keyword to exclude everything containing \"keyword\".": "Nutze -suchbegriff, um alles auszuschließen, was „suchbegriff“ enthält.",
     "Use the link above to create a password that you can use to log in.": "Nutze den vorstehenden Link, um ein Passwort zu vergeben, mit dem du dich einloggen kannst.",
     "User": "Benutzer",
     "User role": "Benutzerrolle",

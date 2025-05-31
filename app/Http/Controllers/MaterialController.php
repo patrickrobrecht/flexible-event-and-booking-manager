@@ -29,7 +29,12 @@ class MaterialController extends Controller
     {
         $this->authorize('viewAny', Material::class);
 
-        return view('materials.material_search');
+        return view('materials.material_search', [
+            'organizations' => Organization::query()
+                ->whereHas('materials')
+                ->orderBy('name')
+                ->get(),
+        ]);
     }
 
     public function create(): View

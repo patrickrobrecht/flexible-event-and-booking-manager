@@ -14,4 +14,5 @@
 return [
     'next' => 'Weiter &raquo;',
     'previous' => '&laquo; Zurück',
+    'results' => 'Ergebnisse :first bis :last von :total',
 ];

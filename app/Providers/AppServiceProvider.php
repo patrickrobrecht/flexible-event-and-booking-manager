@@ -23,7 +23,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Use Bootstrap framework for pagination rendering
-        Paginator::useBootstrap();
+        Paginator::useBootstrapFive();
 
         // Use custom PersonalAccessToken implementation.
         Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);

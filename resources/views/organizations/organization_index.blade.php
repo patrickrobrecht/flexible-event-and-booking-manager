@@ -17,13 +17,11 @@
 @endsection
 
 @section('content')
-    <x-bs::button.group>
-        @can('create', \App\Models\Organization::class)
-            <x-button.create href="{{ route('organizations.create') }}">
-                {{ __('Create organization') }}
-            </x-button.create>
-        @endcan
-    </x-bs::button.group>
+    @can('create', \App\Models\Organization::class)
+        <x-button.create href="{{ route('organizations.create') }}">
+            {{ __('Create organization') }}
+        </x-button.create>
+    @endcan
 
     <x-form.filter>
         <div class="row">
@@ -179,7 +177,7 @@
                         </x-bs::list.item>
                     </x-bs::list>
                     @canany(['update', 'forceDelete'], $organization)
-                        <div class="card-body">
+                        <div class="card-body d-flex flex-wrap gap-1">
                             @can('update', $organization)
                                 <x-button.edit href="{{ route('organizations.edit', $organization) }}"/>
                             @endcan

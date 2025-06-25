@@ -23,13 +23,13 @@
                     @include('documents.shared.document_uploaded_by')
                 </div>
                 @canany(['download', 'update', 'forceDelete'], $document)
-                    <x-bs::button.group class="mt-3">
+                    <div class="d-flex flex-wrap gap-1 mt-3">
                         @include('documents.shared.document_download_link')
                         @can('update', $document)
                             <x-button.edit href="{{ route('documents.edit', $document) }}" class="text-nowrap"/>
                         @endcan
                         @include('documents.shared.document_delete_modal_button')
-                    </x-bs::button.group>
+                    </div>
                     @include('documents.shared.document_delete_modal')
                 @endcanany
             </x-bs::list.item>

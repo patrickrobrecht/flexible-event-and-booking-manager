@@ -98,14 +98,12 @@
                         </x-bs::list.item>
                     </x-bs::list>
                     @canany(['download', 'update'], $document)
-                        <div class="card-body">
-                            <x-bs::button.group>
-                                @include('documents.shared.document_download_link')
-                                @can('update', $document)
-                                    <x-button.edit href="{{ route('documents.edit', $document) }}"/>
-                                @endcan
-                                @include('documents.shared.document_delete_modal_button')
-                            </x-bs::button.group>
+                        <div class="card-body d-flex flex-wrap gap-1">
+                            @include('documents.shared.document_download_link')
+                            @can('update', $document)
+                                <x-button.edit href="{{ route('documents.edit', $document) }}"/>
+                            @endcan
+                            @include('documents.shared.document_delete_modal_button')
                             @include('documents.shared.document_delete_modal')
                         </div>
                     @endcanany

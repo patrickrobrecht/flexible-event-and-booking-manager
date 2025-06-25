@@ -33,9 +33,9 @@
                         </div>
                     @endisset
                     @can('update', $organization)
-                        <x-bs::button.group class="mt-3">
+                        <div class="mt-3">
                             <x-button.edit href="{{ route('organizations.edit', $organization) }}" class="text-nowrap"/>
-                        </x-bs::button.group>
+                        </div>
                     @endcan
                 </x-bs::list.item>
             @endcan

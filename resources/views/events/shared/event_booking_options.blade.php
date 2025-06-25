@@ -18,7 +18,7 @@
         @endisset
         @include('booking_options.shared.booking_option_period')
         @canany(['book', 'viewBookings', 'update'], $bookingOption)
-            <x-bs::button.group class="mt-3">
+            <div class="d-flex flex-wrap gap-1 mt-3">
                 @can('book', $bookingOption)
                     <x-button.create href="{{ route('booking-options.show', [$event, $bookingOption]) }}">{{ __('Book') }}</x-button.create>
                 @endcan
@@ -35,7 +35,7 @@
                 @can('update', $bookingOption)
                     <x-button.edit href="{{ route('booking-options.edit', [$event, $bookingOption]) }}"/>
                 @endcan
-            </x-bs::button.group>
+            </div>
         @endcanany
     </x-bs::list.item>
 @endforeach

@@ -53,9 +53,9 @@
                         </div>
                     @endisset
                     @can('update', $eventSeriesItem)
-                        <x-bs::button.group class="mt-3">
+                        <div class="mt-3">
                             <x-button.edit href="{{ route('event-series.edit', $eventSeriesItem) }}" class="text-nowrap"/>
-                        </x-bs::button.group>
+                        </div>
                     @endcan
                 </x-bs::list.item>
             @endforeach

@@ -198,26 +198,24 @@
                         </x-bs::list.item>
                     </x-bs::list>
                     @canany(['viewPDF', 'update', 'delete', 'restore'], $booking)
-                        <div class="card-body">
-                            <x-bs::button.group>
-                                @can('viewPDF', $booking)
-                                    <x-bs::button.link variant="secondary" href="{{ route('bookings.show-pdf', $booking) }}" class="text-nowrap">
-                                        <i class="fa fa-file-pdf"></i> {{ __('PDF') }}
-                                    </x-bs::button.link>
-                                @endcan
-                                @can('update', $booking)
-                                    <x-button.edit href="{{ route('bookings.edit', $booking) }}" class="text-nowrap"/>
-                                @endcan
-                                @can('delete', $booking)
-                                    <x-bs::button variant="danger" form="delete-{{ $booking->id }}">
-                                        <i class="fa fa-fw fa-trash"></i> {{ __('Delete') }}
-                                    </x-bs::button>
-                                @elsecan('restore', $booking)
-                                    <x-bs::button variant="success" form="restore-{{ $booking->id }}">
-                                        <i class="fa fa-fw fa-trash-can-arrow-up"></i> {{ __('Restore') }}
-                                    </x-bs::button>
-                                @endcan
-                            </x-bs::button.group>
+                        <div class="card-body d-flex flex-wrap gap-1">
+                            @can('viewPDF', $booking)
+                                <x-bs::button.link variant="secondary" href="{{ route('bookings.show-pdf', $booking) }}" class="text-nowrap">
+                                    <i class="fa fa-file-pdf"></i> {{ __('PDF') }}
+                                </x-bs::button.link>
+                            @endcan
+                            @can('update', $booking)
+                                <x-button.edit href="{{ route('bookings.edit', $booking) }}" class="text-nowrap"/>
+                            @endcan
+                            @can('delete', $booking)
+                                <x-bs::button variant="danger" form="delete-{{ $booking->id }}">
+                                    <i class="fa fa-fw fa-trash"></i> {{ __('Delete') }}
+                                </x-bs::button>
+                            @elsecan('restore', $booking)
+                                <x-bs::button variant="success" form="restore-{{ $booking->id }}">
+                                    <i class="fa fa-fw fa-trash-can-arrow-up"></i> {{ __('Restore') }}
+                                </x-bs::button>
+                            @endcan
                             @can('delete', $booking)
                                 <x-bs::form id="delete-{{ $booking->id }}" method="DELETE"
                                             action="{{ route('bookings.delete', $booking) }}"/>

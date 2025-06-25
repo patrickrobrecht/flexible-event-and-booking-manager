@@ -11,7 +11,7 @@
 <x-bs::form id="{{ $id }}" method="GET" {{ $attributes->class(['my-3', 'collapse', 'show' => $show]) }}>
     {{ $slot }}
 
-    <x-bs::button.group>
+    <div class="d-flex flex-wrap gap-1">
         <x-bs::button type="submit" variant="outline-primary">
             <i class="fa fa-fw fa-search"></i>
             {{ __('Search and filter') }}
@@ -24,5 +24,5 @@
             <i class="fa fa-fw fa-undo"></i>
             {{ __('Reset') }}
         </x-bs::button.link>
-    </x-bs::button.group>
+    </div>
 </x-bs::form>

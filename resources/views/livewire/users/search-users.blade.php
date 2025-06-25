@@ -25,7 +25,7 @@
         </div>
     @endforeach
 
-    <x-bs::form.field type="text" name="searchTerm"
+    <x-bs::form.field type="text" name="searchTerm" class="mb-3"
                       placeholder="{{ __('Search users') }}"
                       wire:model.live.debounce.1000ms="searchTerm"/>
     @foreach($users as $user)

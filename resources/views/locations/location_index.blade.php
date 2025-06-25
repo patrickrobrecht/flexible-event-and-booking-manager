@@ -15,13 +15,11 @@
 @endsection
 
 @section('content')
-    <x-bs::button.group>
-        @can('create', \App\Models\Location::class)
-            <x-button.create href="{{ route('locations.create') }}">
-                {{ __('Create location') }}
-            </x-button.create>
-        @endcan
-    </x-bs::button.group>
+    @can('create', \App\Models\Location::class)
+        <x-button.create href="{{ route('locations.create') }}">
+            {{ __('Create location') }}
+        </x-button.create>
+    @endcan
 
     <x-form.filter>
         <div class="row">

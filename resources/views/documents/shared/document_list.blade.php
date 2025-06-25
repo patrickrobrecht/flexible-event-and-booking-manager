@@ -5,7 +5,7 @@
 @if($documents->count() > 0)
     <x-bs::list>
         @foreach($documents as $document)
-            <x-bs::list.item>
+            <x-bs::list.item class="avoid-break">
                 <div class="fw-bold">
                     <i class="{{ $document->file_type->getIconClass() }}" title="{{ $document->file_type->getTranslatedName() }}"></i>
                     @can('view', $document)
@@ -23,7 +23,7 @@
                     @include('documents.shared.document_uploaded_by')
                 </div>
                 @canany(['download', 'update', 'forceDelete'], $document)
-                    <div class="d-flex flex-wrap gap-1 mt-3">
+                    <div class="d-flex flex-wrap gap-1 mt-3 d-print-none">
                         @include('documents.shared.document_download_link')
                         @can('update', $document)
                             <x-button.edit href="{{ route('documents.edit', $document) }}" class="text-nowrap"/>

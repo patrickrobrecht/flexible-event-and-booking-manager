@@ -7,9 +7,9 @@
 @section('content')
     <div class="row">
         <div class="col-12 col-lg-6">
-            <div class="card mb-3">
+            <div class="card mb-3 avoid-break">
                 <div class="card-header">{{ __('Application') }}</div>
-                <x-bs::list>
+                <x-bs::list :flush="true">
                     <x-bs::list.item>
                         <span class="me-3">Flexible Event and Booking Manager</span>
                         <x-slot:end>
@@ -51,9 +51,9 @@
                     </x-bs::list.item>
                 </x-bs::list>
             </div>
-            <div class="card mb-3">
+            <div class="card mb-3 avoid-break">
                 <div class="card-header">{{ __('API') }}</div>
-                <x-bs::list>
+                <x-bs::list :flush="true">
                     @can('viewDocumentation', \App\Models\PersonalAccessToken::class)
                         <x-bs::list.item>
                             <a href="{{ route('api-docs.index') }}">{{ __('API documentation') }}</a>
@@ -67,9 +67,9 @@
                     </x-bs::list.item>
                 </x-bs::list>
             </div>
-            <div class="card mb-3">
+            <div class="card mb-3 avoid-break">
                 <div class="card-header">{{ __('Application server') }}</div>
-                <x-bs::list>
+                <x-bs::list :flush="true">
                     @php
                         $webServer = $_SERVER['SERVER_SOFTWARE'] ?? null;
                         if (function_exists('apache_get_version') && (!isset($webServer) || trim($webServer) === 'Apache')) {
@@ -155,9 +155,9 @@
             </div>
         </div>
         <div class="col-12 col-lg-6">
-            <div class="card mb-3">
+            <div class="card mb-3 avoid-break">
                 <div class="card-header">{{ __('Database') }}</div>
-                <x-bs::list>
+                <x-bs::list :flush="true">
                     <x-bs::list.item class="flex-wrap">
                         <span class="me-3">{{ __('Database name') }}</span>
                         <x-slot:end>
@@ -184,9 +184,9 @@
                     </x-bs::list.item>
                 </x-bs::list>
             </div>
-            <div class="card mb-3">
+            <div class="card mb-3 avoid-break">
                 <div class="card-header">{{ __('Cache') }}</div>
-                <x-bs::list>
+                <x-bs::list :flush="true">
                     <x-bs::list.item>
                         <span class="me-3">{{ __('Configuration cached?') }}</span>
                         <x-slot:end>{{ App::configurationIsCached() ? __('Yes') : __('No') }}</x-slot:end>
@@ -201,9 +201,9 @@
                     </x-bs::list.item>
                 </x-bs::list>
             </div>
-            <div class="card mb-3">
+            <div class="card mb-3 avoid-break">
                 <div class="card-header">{{ __('Sending e-mails') }}</div>
-                <x-bs::list>
+                <x-bs::list :flush="true">
                     <x-bs::list.item>
                         <span class="me-3">{{ __('Sender address') }}</span>
                         <x-slot:end>

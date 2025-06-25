@@ -53,7 +53,7 @@
                         </div>
                     @endisset
                     @can('update', $eventSeriesItem)
-                        <div class="mt-3">
+                        <div class="mt-3 d-print-none">
                             <x-button.edit href="{{ route('event-series.edit', $eventSeriesItem) }}" class="text-nowrap"/>
                         </div>
                     @endcan

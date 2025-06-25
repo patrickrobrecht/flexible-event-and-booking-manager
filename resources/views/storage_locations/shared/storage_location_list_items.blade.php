@@ -10,7 +10,7 @@
 @endphp
 
 @foreach($storageLocations as $storageLocation)
-    <x-bs::list.item>
+    <x-bs::list.item class="avoid-break">
         <div class="ms-large-{{$marginLevel}} d-flex justify-content-between align-items-start">
             <div>
                 <{{$headlineTag}}>
@@ -25,7 +25,7 @@
                 @endisset
             </div>
             @canany(['update', 'forceDelete'], $storageLocation)
-                <div class="text-end">
+                <div class="text-end d-print-none">
                     @can('update', $storageLocation)
                         <x-button.edit href="{{ route('storage-locations.edit', $storageLocation) }}"/>
                     @endcan

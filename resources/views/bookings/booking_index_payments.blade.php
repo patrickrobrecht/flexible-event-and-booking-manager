@@ -31,7 +31,9 @@
 
 @section('headline-buttons')
     @can('book', $bookingOption)
-        <x-button.create href="{{ route('booking-options.show', [$event, $bookingOption]) }}">{{ __('Book') }}</x-button.create>
+        <x-bs::button href="{{ route('booking-options.show', [$event, $bookingOption]) }}">
+            <i class="fa fa-fw fa-plus"></i> {{ __('Book') }}
+        </x-bs::button>
     @endcan
     @can('viewGroups', $event)
         <x-bs::button.link href="{{ route('groups.index', $event) }}" variant="secondary">
@@ -109,7 +111,7 @@
                         <span class="is-invalid"></span>
                         <x-bs::form.feedback name="booking_id"/>
                     @enderror
-                    <x-bs::form id="paymentStatusForm" class="mt-3" method="PUT" action="{{ route('bookings.update.payments', [$event, $bookingOption]) }}">
+                    <x-bs::form id="paymentStatusForm" class="mt-3 d-print-none" method="PUT" action="{{ route('bookings.update.payments', [$event, $bookingOption]) }}">
                         <x-bs::form.field name="paid_at" type="datetime-local" :required="true">{{ __('Paid at') }}</x-bs::form.field>
                         <x-bs::button class="w-100"><i class="fa fa-fw fa-save"></i> {{ __('Save payments') }}</x-bs::button>
                     </x-bs::form>

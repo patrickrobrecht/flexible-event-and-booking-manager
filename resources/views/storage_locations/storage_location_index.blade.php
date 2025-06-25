@@ -17,9 +17,9 @@
 
 @section('content')
     @can('create', StorageLocation::class)
-        <x-button.create href="{{ route('storage-locations.create') }}">
-            {{ __('Create storage location') }}
-        </x-button.create>
+        <x-bs::button.link href="{{ route('storage-locations.create') }}" class="d-print-none">
+            <i class="fa fa-fw fa-plus"></i> {{ __('Create storage location') }}
+        </x-bs::button.link>
     @endcan
 
     <x-bs::list class="my-3">

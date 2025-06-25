@@ -49,7 +49,7 @@
                         <x-bs::alert>{{ __('This document has not received any comments yet.') }}</x-bs::alert>
                     @else
                         @foreach($document->documentReviews as $documentReview)
-                            <div class="card mb-3">
+                            <div class="card mb-3 avoid-break">
                                 <div class="card-header">
                                     <div>
                                         <strong>{{ __(':name commented at :created_at.', [
@@ -98,7 +98,7 @@
                     @endif
 
                     @can('create', [\App\Models\DocumentReview::class, $document])
-                        <div class="mt-3">
+                        <div class="mt-3 d-print-none">
                             <h3>{{ __('Add comment') }}</h3>
                             <x-bs::form method="POST" action="{{ route('reviews.store', $document) }}">
                                 <x-bs::form.field name="comment" type="textarea" rows="5">

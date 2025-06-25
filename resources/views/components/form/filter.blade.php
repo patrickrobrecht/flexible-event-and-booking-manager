@@ -8,7 +8,7 @@
         || \Portavice\Bladestrap\Support\ValueHelper::hasAnyFromQueryOrDefault()
         || $errors->any();
 @endphp
-<x-bs::form id="{{ $id }}" method="GET" {{ $attributes->class(['my-3', 'collapse', 'show' => $show]) }}>
+<x-bs::form id="{{ $id }}" method="GET" {{ $attributes->class(['my-3', 'collapse', 'd-print-none', 'show' => $show]) }}>
     {{ $slot }}
 
     <div class="d-flex flex-wrap gap-1">

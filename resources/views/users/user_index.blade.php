@@ -19,9 +19,9 @@
 
 @section('content')
     @can('create', \App\Models\User::class)
-        <x-button.create href="{{ route('users.create') }}">
-            {{ __('Create user') }}
-        </x-button.create>
+        <x-bs::button.link href="{{ route('users.create') }}" class="d-print-none">
+            <i class="fa fa-fw fa-plus"></i> {{ __('Create user') }}
+        </x-bs::button.link>
     @endcan
 
     <x-form.filter>
@@ -62,7 +62,7 @@
                 $showRouteUrl = route('users.show', $user);
             @endphp
             <div class="col-12 col-lg-6 col-xxl-4 mb-3">
-                <div class="card">
+                <div class="card avoid-break">
                     <div class="card-header">
                         <h2 class="card-title">
                             @can('view', $user)
@@ -159,7 +159,7 @@
                         </x-bs::list.item>
                     </x-bs::list>
                     @canany(['update', 'forceDelete'], $user)
-                        <div class="card-body">
+                        <div class="card-body d-print-none">
                             @can('update', $user)
                                 <x-button.edit href="{{ route('users.edit', $user) }}"/>
                             @endcan

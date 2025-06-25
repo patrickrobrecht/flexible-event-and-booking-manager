@@ -8,7 +8,7 @@
             @php
                 $formFields = $bookingOption->formFields->whereIn('id', $showFields);
             @endphp
-            <x-bs::list.item variant="primary">
+            <x-bs::list.item variant="primary" class="avoid-break">
                 {{ $bookingOption->name }} ({{ formatInt($bookingsForOption->count()) }})
                 @isset($averageAge)
                     <x-slot:end>
@@ -17,7 +17,7 @@
                 @endisset
             </x-bs::list.item>
             @foreach($bookingsForOption as $booking)
-                <x-bs::list.item class="draggable-item" draggable="true"
+                <x-bs::list.item class="draggable-item avoid-break" draggable="true"
                                  wire:key="{{ 'booking' . $booking->id }}"
                                  x-on:dragstart="dragStart($event, {{ $booking->id }})">
                     <div class="d-flex justify-content-between align-items-center">

@@ -22,9 +22,9 @@
 
 @section('content')
     @can('create', Material::class)
-        <x-button.create href="{{ route('materials.create') }}">
-            {{ __('Create material') }}
-        </x-button.create>
+        <x-bs::button.link href="{{ route('materials.create') }}" class="d-print-none">
+            <i class="fa fa-fw fa-plus"></i> {{ __('Create material') }}
+        </x-bs::button.link>
     @endcan
 
     <x-form.filter>
@@ -60,7 +60,7 @@
     <div class="row my-3">
         @foreach($materials as $material)
             <div class="col-12 col-md-6 col-xxl-4 mb-3">
-                <div class="card">
+                <div class="card avoid-break">
                     <div class="card-header">
                         <h2 class="card-title">
                             @can('view', $material)
@@ -111,7 +111,7 @@
                         @endif
                     </x-bs::list>
                     @canany(['update', 'forceDelete'], $material)
-                        <div class="card-body">
+                        <div class="card-body d-print-none">
                             @can('update', $material)
                                 <x-button.edit href="{{ route('materials.edit', $material) }}"/>
                             @endcan

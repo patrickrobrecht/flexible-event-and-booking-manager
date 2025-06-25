@@ -1,4 +1,4 @@
-<footer class="bg-light">
+<footer class="bg-light d-print-none">
     <div class="container text-center p-3">
         © {{ date('Y') }} {{ config('app.owner') }}
 

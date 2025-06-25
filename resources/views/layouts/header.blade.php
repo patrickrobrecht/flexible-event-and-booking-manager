@@ -1,4 +1,4 @@
-<header>
+<header class="d-print-none">
     <nav class="navbar navbar-expand-xl navbar-light bg-light">
         <div class="container-fluid mx-xl-5">
             <a class="navbar-brand" href="{{ route('dashboard') }}">{{ config('app.name') }}</a>

@@ -15,7 +15,7 @@
 
     <div class="container-fluid">
         @hasSection('breadcrumbs')
-            <x-bs::breadcrumb container-class="mx-md-3 mx-xl-5 mt-3" class="bg-light rounded-pill p-2">
+            <x-bs::breadcrumb container-class="mx-md-3 mx-xl-5 mt-3 d-print-none" class="bg-light rounded-pill p-2">
                 <x-bs::breadcrumb.item href="{{ route('dashboard') }}">{{ __('Dashboard') }}</x-bs::breadcrumb.item>
                 @yield('breadcrumbs')
             </x-bs::breadcrumb>
@@ -30,7 +30,7 @@
                         @section('headline')
                             <h1>@yield('title')</h1>
                         @show
-                        <div class="mb-3 mb-lg-1 ms-auto d-flex flex-wrap gap-1">
+                        <div class="mb-3 mb-lg-1 ms-auto d-flex flex-wrap gap-1 d-print-none">
                             @section('headline-buttons')
                             @show
                         </div>

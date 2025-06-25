@@ -31,7 +31,7 @@
                         $required = $required && !isset($value);
                     }
                 @endphp
-                <x-bs::form.field container-class="{{ $field->container_class ?? 'col-12' }}"
+                <x-bs::form.field container-class="{{ $field->container_class ?? 'col-12' }} avoid-break"
                                   name="{{ $inputName }}" type="{{ $field->type->value }}"
                                   :options="$allowedValues" :value="$value"
                                   :disabled="!$canEdit" :readonly="!$canEdit" :required="$required">

@@ -18,9 +18,11 @@
         @endisset
         @include('booking_options.shared.booking_option_period')
         @canany(['book', 'viewBookings', 'update'], $bookingOption)
-            <div class="d-flex flex-wrap gap-1 mt-3">
+            <div class="d-flex flex-wrap gap-1 mt-3 d-print-none">
                 @can('book', $bookingOption)
-                    <x-button.create href="{{ route('booking-options.show', [$event, $bookingOption]) }}">{{ __('Book') }}</x-button.create>
+                    <x-bs::button.link href="{{ route('booking-options.show', [$event, $bookingOption]) }}">
+                        <i class="fa fa-fw fa-plus"></i> {{ __('Book') }}
+                    </x-bs::button.link>
                 @endcan
                 @can('viewBookings', $bookingOption)
                     <x-bs::button.link variant="secondary" href="{{ route('bookings.index', [$event, $bookingOption]) }}">

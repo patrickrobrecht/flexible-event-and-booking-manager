@@ -5,6 +5,7 @@
 @can('create', [\App\Models\Document::class, $reference])
     <x-bs::modal.button modal="add-document-modal" variant="primary" @class([
         'mt-3' => $reference->documents->isNotEmpty(),
+        'd-print-none',
     ])>
         <i class="fa fa-fw fa-plus"></i> {{ __('Add document') }}
     </x-bs::modal.button>

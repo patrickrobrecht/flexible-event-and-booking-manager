@@ -9,7 +9,7 @@
         value ? modal.show() : modal.hide();
     });
 }">
-    <div class="row my-3">
+    <div class="row my-3 d-print-none">
         <div class="col-12 col-md-6 col-lg-4 col-xxl-3">
             <x-bs::form.field name="sort" type="select" :options="\App\Models\Booking::sortOptions()->getNamesWithLabels()"
                               wire:model.live="sort" form="export-form">{{ __('Sorting') }}</x-bs::form.field>
@@ -62,14 +62,14 @@
     <div class="row">
         <div class="col-12 col-md-6 col-lg-4 col-xxl-3">
             @can('create', \App\Models\Group::class)
-                <div class="card mb-3">
+                <div class="card mb-3 d-print-none">
                     <div class="card-header">
                         <h2 class="card-title">{{ __('Create group') }}</h2>
                     </div>
                     <form class="card-body" wire:submit.prevent="createGroup">
                         <x-bs::form.field name="form.name" type="text" maxlength="255" wire:model="form.name">{{ __('Name') }}</x-bs::form.field>
                         <x-bs::form.field name="form.description" type="textarea" maxlength="255" wire:model="form.description">{{ __('Description') }}</x-bs::form.field>
-                        <x-bs::button><i class="fa fa-plus"></i> {{ __('Create') }}</x-bs::button>
+                        <x-bs::button><i class="fa fa-fw fa-plus"></i> {{ __('Create') }}</x-bs::button>
                         <x-spinners.saving wire:target="createGroup"/>
                     </form>
                 </div>
@@ -114,7 +114,7 @@
                                 'groupId' => $group->id,
                             ])
                             @canany(['update', 'forceDelete'], $group)
-                                <div class="card-body">
+                                <div class="card-body d-print-none">
                                     @can('update', $group)
                                         <x-bs::button.link data-bs-toggle="collapse" href="{{ '#' . $editFormId }}">
                                             <i class="fa fa-edit"></i> {{ __('Edit') }}

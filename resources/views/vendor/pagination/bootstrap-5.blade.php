@@ -1,5 +1,5 @@
 @if ($paginator->hasPages())
-    <nav class="d-flex flex-column align-items-center justify-content-center">
+    <nav class="d-flex flex-column align-items-center justify-content-center d-print-none">
         <div>
             <p class="text-muted">
                 {!! __('pagination.results', [

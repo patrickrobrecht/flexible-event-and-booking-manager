@@ -203,7 +203,7 @@
                             </x-bs::button.link>
                         @endcan
                         @can('createChild', $event)
-                            <x-bs::button.link href="{{ route('events.create', ['parent_event_id' => $event->id]) }}">
+                            <x-bs::button.link href="{{ route('events.create', ['parent_event_id' => $event->id, 'location_id' => $event->location->id, 'organization_id' => $event->organization->id]) }}">
                                 <i class="fa fa-fw fa-plus"></i> {{ __('Create event') }}
                             </x-bs::button.link>
                         @endcan

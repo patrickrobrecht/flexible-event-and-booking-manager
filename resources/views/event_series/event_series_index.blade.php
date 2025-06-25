@@ -154,9 +154,9 @@
                                 <x-button.edit href="{{ route('event-series.edit', $eventSeriesItem) }}"/>
                             @endcan
                             @can('createChild', $eventSeriesItem)
-                                <x-bs::button href="{{ route('event-series.create', ['parent_event_series_id' => $eventSeriesItem->id]) }}">
+                                <x-bs::button.link href="{{ route('event-series.create', ['parent_event_series_id' => $eventSeriesItem->id, 'organization_id' => $eventSeriesItem->organization->id]) }}">
                                     <i class="fa fa-fw fa-plus"></i> {{ __('Create event series') }}
-                                </x-bs::button>
+                                </x-bs::button.link>
                             @endcan
                             @can('forceDelete', $eventSeriesItem)
                                 <x-form.delete-modal :id="$eventSeriesItem->id"

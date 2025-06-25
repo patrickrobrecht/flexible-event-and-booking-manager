@@ -40,7 +40,7 @@
             @include('event_series.shared.events_in_series')
             @can('create', \App\Models\Event::class)
                 <div class="my-3">
-                    <x-bs::button.link href="{{ route('events.create', ['event_series_id' => $eventSeries->id]) }}">
+                    <x-bs::button.link href="{{ route('events.create', ['event_series_id' => $eventSeries->id, 'organization_id' => $eventSeries->organization->id]) }}">
                         <i class="fa fa-fw fa-plus"></i> {{ __('Create event') }}
                     </x-bs::button.link>
                 </div>
@@ -60,7 +60,7 @@
                 ])
                 @can('createChild', $eventSeries)
                     <div class="mt-3 d-print-none">
-                        <x-bs::button.link href="{{ route('event-series.create', ['parent_event_series_id' => $eventSeries->id]) }}">
+                        <x-bs::button.link href="{{ route('event-series.create', ['parent_event_series_id' => $eventSeries->id, 'organization_id' => $eventSeries->organization->id]) }}">
                             <i class="fa fa-fw fa-plus"></i> {{ __('Create event series') }}
                         </x-bs::button.link>
                     </div>

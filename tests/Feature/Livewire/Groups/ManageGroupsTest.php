@@ -70,7 +70,7 @@ class ManageGroupsTest extends TestCase
             ->assertSeeText(__('Payment status'))
             ->assertSeeText(__('Comment'));
 
-        $bookingOptionListItemHtml = '<li class="list-group-item list-group-item-primary d-flex justify-content-between align-items-center">';
+        $bookingOptionListItemHtml = '<li class="list-group-item list-group-item-primary d-flex justify-content-between align-items-center avoid-break">';
 
         // Assert no booking date, but comment and email is shown for all visible bookings.
         foreach ($selectedBookingOptions as $bookingOption) {

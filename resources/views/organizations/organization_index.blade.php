@@ -18,9 +18,9 @@
 
 @section('content')
     @can('create', \App\Models\Organization::class)
-        <x-button.create href="{{ route('organizations.create') }}">
-            {{ __('Create organization') }}
-        </x-button.create>
+        <x-bs::button.link href="{{ route('organizations.create') }}" class="d-print-none">
+            <i class="fa fa-fw fa-plus"></i> {{ __('Create organization') }}
+        </x-bs::button.link>
     @endcan
 
     <x-form.filter>
@@ -64,7 +64,7 @@
     <div class="row my-3">
         @foreach($organizations as $organization)
             <div class="col-12 col-xl-6 mb-3">
-                <div class="card">
+                <div class="card avoid-break">
                     <div class="card-header">
                         <h2 class="card-title">
                             <a href="{{ $organization->getRoute() }}">{{ $organization->name }}</a>
@@ -177,7 +177,7 @@
                         </x-bs::list.item>
                     </x-bs::list>
                     @canany(['update', 'forceDelete'], $organization)
-                        <div class="card-body d-flex flex-wrap gap-1">
+                        <div class="card-body d-flex flex-wrap gap-1 d-print-none">
                             @can('update', $organization)
                                 <x-button.edit href="{{ route('organizations.edit', $organization) }}"/>
                             @endcan

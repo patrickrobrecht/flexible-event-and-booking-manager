@@ -32,7 +32,7 @@
         <section>
             <div class="d-lg-flex justify-content-between">
                 <h2>{{ __('Materials') }}</h2>
-                <div class="align-content-end">
+                <div class="align-content-end d-print-none">
                     <x-bs::button.link href="{{ route('materials.create', ['storage_location_id' => $storageLocation->id]) }}">
                         <i class="fa fa-fw fa-plus"></i> {{ __('Create material') }}
                     </x-bs::button.link>
@@ -76,7 +76,7 @@
     @elseif($storageLocation->childStorageLocations->isEmpty())
         <div class="d-lg-flex justify-content-between">
             <h2>{{ __('Materials') }}</h2>
-            <div class="align-content-end">
+            <div class="align-content-end d-print-none">
                 <x-bs::button.link href="{{ route('materials.create', ['storage_location_id' => $storageLocation->id]) }}">
                     <i class="fa fa-fw fa-plus"></i> {{ __('Create material') }}
                 </x-bs::button.link>
@@ -89,7 +89,7 @@
         <section class="mt-3">
             <div class="d-lg-flex justify-content-between">
                 <h2>{{ __('Child storage locations') }}</h2>
-                <div class="align-content-end">
+                <div class="align-content-end d-print-none">
                     <x-bs::button.link href="{{ route('storage-locations.create', ['parent_storage_location_id' => $storageLocation->id]) }}">
                         <i class="fa fa-fw fa-plus"></i> {{ __('Create child storage location') }}
                     </x-bs::button.link>

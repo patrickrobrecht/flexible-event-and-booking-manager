@@ -19,9 +19,9 @@
     @include('docs.docs-link')
 
     @can('create', \App\Models\PersonalAccessToken::class)
-        <x-button.create href="{{ route('personal-access-tokens.create') }}">
-            {{ __('Create personal access token') }}
-        </x-button.create>
+        <x-bs::button.link href="{{ route('personal-access-tokens.create') }}">
+            <i class="fa fa-fw fa-plus"></i> {{ __('Create personal access token') }}
+        </x-bs::button.link>
     @endcan
 
     <x-alert.count class="mt-3" :count="$user->tokens->count()"/>

@@ -23,7 +23,7 @@
         @break
 @endswitch
 
-<div class="mt-3">
+<div class="mt-3 d-print-none">
     <x-bs::button.link variant="secondary" href="{{ route('documents.download', $document) }}" class="text-nowrap">
         <i class="fa fa-fw fa-download"></i> {{ __('Download file') }}
     </x-bs::button.link>

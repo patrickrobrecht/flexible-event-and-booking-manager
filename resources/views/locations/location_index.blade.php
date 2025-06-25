@@ -16,9 +16,9 @@
 
 @section('content')
     @can('create', \App\Models\Location::class)
-        <x-button.create href="{{ route('locations.create') }}">
-            {{ __('Create location') }}
-        </x-button.create>
+        <x-bs::button.link href="{{ route('locations.create') }}" class="d-print-none">
+            <i class="fa fa-fw fa-plus"></i> {{ __('Create location') }}
+        </x-bs::button.link>
     @endcan
 
     <x-form.filter>
@@ -55,7 +55,7 @@
     <div class="row my-3">
         @foreach($locations as $location)
             <div class="col-12 col-sm-6 col-md-4 mb-3">
-                <div class="card">
+                <div class="card avoid-break">
                     <div class="card-header">
                         <h2 class="card-title">{{ $location->nameOrAddress }}</h2>
                     </div>
@@ -100,7 +100,7 @@
                         </x-bs::list.item>
                     </x-bs::list>
                     @canany(['update', 'forceDelete'], $location)
-                        <div class="card-body">
+                        <div class="card-body d-print-none">
                             @can('update', $location)
                                 <x-button.edit href="{{ route('locations.edit', $location) }}"/>
                             @endcan

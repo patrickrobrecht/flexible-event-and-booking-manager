@@ -45,7 +45,7 @@
     <div class="row my-3">
         @foreach($documents as $document)
             <div class="col-12 col-md-6 mb-3">
-                <div class="card">
+                <div class="card avoid-break">
                     <div class="card-header">
                         <h2 class="card-title">
                             <i class="{{ $document->file_type->getIconClass() }} text-primary" title="{{ $document->file_type->getTranslatedName() }}"></i>
@@ -98,7 +98,7 @@
                         </x-bs::list.item>
                     </x-bs::list>
                     @canany(['download', 'update'], $document)
-                        <div class="card-body d-flex flex-wrap gap-1">
+                        <div class="card-body d-flex flex-wrap gap-1 d-print-none">
                             @include('documents.shared.document_download_link')
                             @can('update', $document)
                                 <x-button.edit href="{{ route('documents.edit', $document) }}"/>

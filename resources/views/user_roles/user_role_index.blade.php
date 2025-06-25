@@ -17,9 +17,9 @@
 
 @section('content')
     @can('create', \App\Models\UserRole::class)
-        <x-button.create href="{{ route('user-roles.create') }}">
-            {{ __('Create user role') }}
-        </x-button.create>
+        <x-bs::button.link href="{{ route('user-roles.create') }}" class="d-print-none">
+            <i class="fa fa-fw fa-plus"></i> {{ __('Create user role') }}
+        </x-bs::button.link>
     @endcan
 
     <x-form.filter>
@@ -46,7 +46,7 @@
     <div class="row my-3">
         @foreach($userRoles as $userRole)
             <div class="col-12 col-sm-6 col-md-4 mb-3">
-                <div class="card">
+                <div class="card avoid-break">
                     <div class="card-header">
                         <h2 class="card-title">
                             @can('view', $userRole)
@@ -78,7 +78,7 @@
                         </x-bs::list.item>
                     </x-bs::list>
                     @canany(['update', 'forceDelete'], $userRole)
-                        <div class="card-body">
+                        <div class="card-body d-print-none">
                             @can('update', $userRole)
                                 <x-button.edit href="{{ route('user-roles.edit', $userRole) }}"/>
                             @endcan

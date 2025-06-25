@@ -18,9 +18,9 @@
 
 @section('content')
     @can('create', \App\Models\Event::class)
-        <x-button.create href="{{ route('events.create') }}">
-            {{ __('Create event') }}
-        </x-button.create>
+        <x-bs::button.link href="{{ route('events.create') }}" class="d-print-none">
+            <i class="fa fa-fw fa-plus"></i> {{ __('Create event') }}
+        </x-bs::button.link>
     @endcan
 
     <x-form.filter>
@@ -83,7 +83,7 @@
     <div class="row my-3">
         @foreach($events as $event)
             <div class="col-12 col-md-6 mb-3">
-                <div class="card">
+                <div class="card avoid-break">
                     <div class="card-header">
                         <h2 class="card-title">
                             <a href="{{ route('events.show', $event->slug) }}">{{ $event->name }}</a>
@@ -187,7 +187,7 @@
                         </x-bs::list.item>
                         @include('events.shared.event_booking_options')
                     </x-bs::list>
-                    <div class="card-body d-flex flex-wrap gap-1">
+                    <div class="card-body d-flex flex-wrap gap-1 d-print-none">
                         @can('update', $event)
                             <x-button.edit href="{{ route('events.edit', $event) }}"/>
                         @endcan
@@ -198,14 +198,14 @@
                             </x-bs::button.link>
                         @endcan
                         @can('create', [\App\Models\BookingOption::class, $event])
-                            <x-button.create href="{{ route('booking-options.create', $event) }}">
-                                {{ __('Create booking option') }}
-                            </x-button.create>
+                            <x-bs::button.link href="{{ route('booking-options.create', $event) }}">
+                                <i class="fa fa-fw fa-plus"></i> {{ __('Create booking option') }}
+                            </x-bs::button.link>
                         @endcan
                         @can('createChild', $event)
-                            <x-button.create href="{{ route('events.create', ['parent_event_id' => $event->id]) }}">
-                                {{ __('Create event') }}
-                            </x-button.create>
+                            <x-bs::button.link href="{{ route('events.create', ['parent_event_id' => $event->id]) }}">
+                                <i class="fa fa-fw fa-plus"></i> {{ __('Create event') }}
+                            </x-bs::button.link>
                         @endcan
                         @can('forceDelete', $event)
                             <x-form.delete-modal :id="$event->id"

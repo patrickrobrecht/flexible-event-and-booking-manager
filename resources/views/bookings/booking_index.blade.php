@@ -25,7 +25,9 @@
 
 @section('headline-buttons')
     @can('book', $bookingOption)
-        <x-button.create href="{{ route('booking-options.show', [$event, $bookingOption]) }}">{{ __('Book') }}</x-button.create>
+        <x-bs::button.link href="{{ route('booking-options.show', [$event, $bookingOption]) }}">
+            <i class="fa fa-fw fa-plus"></i> {{ __('Book') }}
+        </x-bs::button.link>
     @endcan
     @can('viewAnyPaymentStatus', \App\Models\Booking::class)
         <x-bs::button.link href="{{ route('bookings.index.payments', [$event, $bookingOption]) }}">
@@ -99,7 +101,7 @@
                 $booking->setRelation('bookingOption', $bookingOption);
             @endphp
             <div class="col-12 col-md-6 col-lg-4 col-xxl-3 mb-3">
-                <div class="card">
+                <div class="card avoid-break">
                     <div @class([
                         'card-header',
                         'text-bg-danger' => $booking->trashed(),
@@ -198,7 +200,7 @@
                         </x-bs::list.item>
                     </x-bs::list>
                     @canany(['viewPDF', 'update', 'delete', 'restore'], $booking)
-                        <div class="card-body d-flex flex-wrap gap-1">
+                        <div class="card-body d-flex flex-wrap gap-1 d-print-none">
                             @can('viewPDF', $booking)
                                 <x-bs::button.link variant="secondary" href="{{ route('bookings.show-pdf', $booking) }}" class="text-nowrap">
                                     <i class="fa fa-file-pdf"></i> {{ __('PDF') }}

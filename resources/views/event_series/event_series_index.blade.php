@@ -17,9 +17,9 @@
 
 @section('content')
     @can('create', \App\Models\EventSeries::class)
-        <x-button.create href="{{ route('event-series.create') }}">
-            {{ __('Create event series') }}
-        </x-button.create>
+        <x-bs::button.link href="{{ route('event-series.create') }}" class="d-print-none">
+            <i class="fa fa-fw fa-plus"></i> {{ __('Create event series') }}
+        </x-bs::button.link>
     @endcan
 
     <x-form.filter>
@@ -67,7 +67,7 @@
     <div class="row my-3">
         @foreach($eventSeries as $eventSeriesItem)
             <div class="col-12 col-lg-6 col-xxl-4 mb-3">
-                <div class="card">
+                <div class="card avoid-break">
                     <div class="card-header">
                         <h2 class="card-title">
                             <a href="{{ route('event-series.show', $eventSeriesItem->slug) }}">{{ $eventSeriesItem->name }}</a>
@@ -149,14 +149,14 @@
                         </x-bs::list.item>
                     </x-bs::list>
                     @canany(['update', 'createChild'], $eventSeriesItem)
-                        <div class="card-body d-flex flex-wrap gap-1">
+                        <div class="card-body d-flex flex-wrap gap-1 d-print-none">
                             @can('update', $eventSeriesItem)
                                 <x-button.edit href="{{ route('event-series.edit', $eventSeriesItem) }}"/>
                             @endcan
                             @can('createChild', $eventSeriesItem)
-                                <x-button.create href="{{ route('event-series.create', ['parent_event_series_id' => $eventSeriesItem->id]) }}">
-                                    {{ __('Create event series') }}
-                                </x-button.create>
+                                <x-bs::button href="{{ route('event-series.create', ['parent_event_series_id' => $eventSeriesItem->id]) }}">
+                                    <i class="fa fa-fw fa-plus"></i> {{ __('Create event series') }}
+                                </x-bs::button>
                             @endcan
                             @can('forceDelete', $eventSeriesItem)
                                 <x-form.delete-modal :id="$eventSeriesItem->id"

@@ -12,6 +12,8 @@
         $parentEventId = (int) \Portavice\Bladestrap\Support\ValueHelper::getFromQueryOrDefault('parent_event_id');
         $parentEvent = $events->firstWhere('id', '=', $parentEventId);
     }
+
+    $isCreateForm = \Illuminate\Support\Facades\Request::routeIs('events.create');
 @endphp
 
 @section('title')
@@ -74,20 +76,21 @@
             </div>
             <div class="col-12 col-md-6">
                 <x-bs::form.field name="location_id" type="select"
-                                  :options="$locations->pluck('nameOrAddress', 'id')"
-                                  :value="$event->location_id ?? null"><i class="fa fa-fw fa-location-pin"></i> {{ __('Location') }}</x-bs::form.field>
+                                  :options="Options::fromModels($locations, 'nameOrAddress')"
+                                  :value="$event->location_id ?? null"
+                                  :from-query="$isCreateForm"><i class="fa fa-fw fa-location-pin"></i> {{ __('Location') }}</x-bs::form.field>
                 <x-bs::form.field name="organization_id" type="radio"
                                   :options="Options::fromModels($organizations, 'name')"
                                   :value="$event->organization_id ?? null"
-                                  :from-query="\Illuminate\Support\Facades\Request::routeIs('events.create')"><i class="fa fa-fw fa-sitemap"></i> {{ __('Organization') }}</x-bs::form.field>
+                                  :from-query="$isCreateForm"><i class="fa fa-fw fa-sitemap"></i> {{ __('Organization') }}</x-bs::form.field>
                 <x-bs::form.field name="parent_event_id" type="select"
                                   :options="Options::fromModels($events->except($event->id ?? null), 'name')->prepend(__('none'), '')"
                                   :value="$event->parent_event_id ?? null"
-                                  :from-query="\Illuminate\Support\Facades\Request::routeIs('events.create')"><i class="fa fa-fw fa-calendar-days"></i> {{ __('Part of the event') }}</x-bs::form.field>
+                                  :from-query="$isCreateForm"><i class="fa fa-fw fa-calendar-days"></i> {{ __('Part of the event') }}</x-bs::form.field>
                 <x-bs::form.field name="event_series_id" type="select"
                                   :options="Options::fromModels($eventSeries, 'name')->prepend(__('none'), '')"
                                   :value="$event->event_series_id ?? null"
-                                  :from-query="\Illuminate\Support\Facades\Request::routeIs('events.create')"><i class="fa fa-fw fa-calendar-week"></i> {{ __('Part of the event series') }}</x-bs::form.field>
+                                  :from-query="$isCreateForm"><i class="fa fa-fw fa-calendar-week"></i> {{ __('Part of the event series') }}</x-bs::form.field>
 
                 <h2><i class="fa fa-fw fa-list-check"></i> {{ __('Responsibilities') }}</h2>
                 @livewire('users.search-users', [

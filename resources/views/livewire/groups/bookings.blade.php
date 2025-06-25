@@ -86,7 +86,7 @@
                     @endif
                     @foreach($formFields as $formField)
                         <div class="small">
-                            <i class="fa fa-fw fa-file-lines"></i> {{ $formField->name }}: {{ $booking->getFieldValue($formField) ?? '—' }}
+                            <i class="fa fa-fw fa-file-lines"></i> {{ $formField->name }}: {{ $booking->getFieldValueAsText($formField) ?? '—' }}
                         </div>
                     @endforeach
                 </x-bs::list.item>

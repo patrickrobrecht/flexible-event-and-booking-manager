@@ -61,10 +61,16 @@
                 <x-bs::form.field name="visibility" type="select"
                                   :options="\App\Enums\Visibility::toOptions()"
                                   :value="$event->visibility->value ?? null"><i class="fa fa-fw fa-eye"></i> {{ __('Visibility') }}</x-bs::form.field>
-                <x-bs::form.field name="started_at" type="datetime-local"
-                                  :value="isset($event->started_at) ? $event->started_at->format('Y-m-d\TH:i') : null"><i class="fa fa-fw fa-clock"></i> {{ __('Start date') }}</x-bs::form.field>
-                <x-bs::form.field name="finished_at" type="datetime-local"
-                                  :value="isset($event->finished_at) ? $event->finished_at->format('Y-m-d\TH:i') : null"><i class="fa fa-fw fa-clock"></i> {{ __('End date') }}</x-bs::form.field>
+                <div class="row">
+                    <div class="col-12 col-sm-6">
+                        <x-bs::form.field name="started_at" type="datetime-local"
+                                          :value="isset($event->started_at) ? $event->started_at->format('Y-m-d\TH:i') : null"><i class="fa fa-fw fa-clock"></i> {{ __('Start date') }}</x-bs::form.field>
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <x-bs::form.field name="finished_at" type="datetime-local"
+                                          :value="isset($event->finished_at) ? $event->finished_at->format('Y-m-d\TH:i') : null"><i class="fa fa-fw fa-clock"></i> {{ __('End date') }}</x-bs::form.field>
+                    </div>
+                </div>
             </div>
             <div class="col-12 col-md-6">
                 <x-bs::form.field name="location_id" type="select"
@@ -72,7 +78,8 @@
                                   :value="$event->location_id ?? null"><i class="fa fa-fw fa-location-pin"></i> {{ __('Location') }}</x-bs::form.field>
                 <x-bs::form.field name="organization_id" type="radio"
                                   :options="Options::fromModels($organizations, 'name')"
-                                  :value="$event->organization_id ?? null"><i class="fa fa-fw fa-sitemap"></i> {{ __('Organization') }}</x-bs::form.field>
+                                  :value="$event->organization_id ?? null"
+                                  :from-query="\Illuminate\Support\Facades\Request::routeIs('events.create')"><i class="fa fa-fw fa-sitemap"></i> {{ __('Organization') }}</x-bs::form.field>
                 <x-bs::form.field name="parent_event_id" type="select"
                                   :options="Options::fromModels($events->except($event->id ?? null), 'name')->prepend(__('none'), '')"
                                   :value="$event->parent_event_id ?? null"

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\MaterialsExportSpreadsheet;
+use App\Http\Controllers\Traits\StreamsExport;
 use App\Http\Requests\Filters\MaterialFilterRequest;
 use App\Http\Requests\MaterialRequest;
 use App\Models\Material;
@@ -10,17 +12,30 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
 use Portavice\Bladestrap\Support\ValueHelper;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class MaterialController extends Controller
 {
-    public function index(MaterialFilterRequest $request): View
+    use StreamsExport;
+
+    public function index(MaterialFilterRequest $request): StreamedResponse|View
     {
         $this->authorize('viewAny', Material::class);
         ValueHelper::setDefaults(Material::defaultValuesForQuery());
 
+        $materialsQuery = Material::buildQueryFromRequest();
+
+        $output = $request->query('output');
+        if ($output === 'export') {
+            return $this->streamExcelExport(
+                new MaterialsExportSpreadsheet($materialsQuery->get()),
+                __('Materials') . '.xlsx',
+            );
+        }
+
         return view('materials.material_index', [
             ...$this->formValues(),
-            'materials' => Material::buildQueryFromRequest()
+            'materials' => $materialsQuery
                 ->paginate(),
         ]);
     }

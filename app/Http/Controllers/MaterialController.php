@@ -8,6 +8,7 @@ use App\Http\Requests\Filters\MaterialFilterRequest;
 use App\Http\Requests\MaterialRequest;
 use App\Models\Material;
 use App\Models\Organization;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
@@ -23,7 +24,12 @@ class MaterialController extends Controller
         $this->authorize('viewAny', Material::class);
         ValueHelper::setDefaults(Material::defaultValuesForQuery());
 
-        $materialsQuery = Material::buildQueryFromRequest();
+        /** @var Builder<Material> $materialsQuery */
+        $materialsQuery = Material::buildQueryFromRequest()
+            ->with([
+                'organization',
+                'storageLocations',
+            ]);
 
         $output = $request->query('output');
         if ($output === 'export') {

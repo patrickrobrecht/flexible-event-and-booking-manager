@@ -1,4 +1,7 @@
 @use "sass:map";
+@use '@fortawesome/fontawesome-free/scss/variables' with (
+   $font-path: $root-directory,
+);
 
 /**
  * Frontend styles via Bootstrap Framework.
@@ -8,7 +11,6 @@
 /**
  * Icons via Font Awesome.
  */
-$fa-font-path: '/build/lib';
 @import '@fortawesome/fontawesome-free/scss/fontawesome';
 @import '@fortawesome/fontawesome-free/scss/solid';
 

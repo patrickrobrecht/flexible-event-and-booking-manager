@@ -54,6 +54,7 @@ To get started, you need to install the following software:
 - [Laravel Query Builder](https://spatie.be/docs/laravel-query-builder/v6/introduction) for custom filtering and sorting
 - [Laravel Zipstream](https://github.com/stechstudio/laravel-zipstream) to create and stream zip files
 - [PhpSpreadsheet](https://phpspreadsheet.readthedocs.io/en/stable/) for Excel exports
+- [https://github.com/rapi-doc/RapiDoc](RapiDoc) for Open API documentation
 
 ### How to develop
 To setup/update your development environment:
@@ -63,12 +64,11 @@ To setup/update your development environment:
 - Create/update the `.env` configuration if necessary (see [Configuration](#configuration) below).
 - Run `php artisan migrate` to migrate the database to the latest version.
 - Run `composer stan` to run static analysis with PHPStan.
-- Run `composer test` to execute all the Unit tests.
+- Run `composer test` to execute all PHPUnit tests.
 
 For development, we use
 - [ESlint](https://eslint.org/) for the JavaScript code style check
 - [Laravel Debugbar](https://github.com/barryvdh/laravel-debugbar) for debugging utility
-- [Laravel Mix](https://laravel-mix.com/docs/) for compiling assets
 - [Laravel Pint](https://laravel.com/docs/12.x/pint) for the PHP code style check
 - [Laravel Translatable String Exporter](https://github.com/kkomelin/laravel-translatable-string-exporter)
 - [PHPStan](https://phpstan.org/) with [Larastan](https://github.com/larastan/larastan) and [strict rules extension](https://github.com/phpstan/phpstan-strict-rules) for static analysis

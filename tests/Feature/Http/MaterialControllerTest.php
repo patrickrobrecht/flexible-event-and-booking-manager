@@ -28,6 +28,13 @@ class MaterialControllerTest extends TestCase
         $this->assertUserCanGetOnlyWithAbility('/materials', Ability::ViewMaterials);
     }
 
+    public function testUserCanExportMaterialsOnlyWithCorrectAbility(): void
+    {
+        $this->assertUserCanGetOnlyWithAbility('/materials?output=export', Ability::ViewMaterials)
+            ->assertHeader('content-type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            ->assertHeader('content-disposition', 'attachment; filename=Materialien.xlsx');
+    }
+
     public function testUserCanViewMaterialSearchOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('/materials/search', Ability::ViewMaterials);

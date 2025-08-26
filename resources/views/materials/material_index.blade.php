@@ -53,6 +53,12 @@
                                   :from-query="true"><i class="fa fa-fw fa-warehouse"></i> {{ __('Storage locations') }}</x-bs::form.field>
             </div>
         </div>
+
+        <x-slot:addButtons>
+            <x-bs::button type="submit" name="output" value="export">
+                <i class="fa fa-fw fa-download"></i> {{ __('Export') }}
+            </x-bs::button>
+        </x-slot:addButtons>
     </x-form.filter>
 
     <x-alert.count class="mt-3" :count="$materials->total()"/>

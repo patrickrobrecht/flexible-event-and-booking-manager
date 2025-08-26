@@ -16,6 +16,16 @@
     @include('organizations.shared.organization_breadcrumbs')
 @endsection
 
+@section('headline-buttons')
+    @isset($organization)
+        @can('forceDelete', $organization)
+            <x-form.delete-modal :id="$organization->id"
+                                 :name="$organization->name"
+                                 :route="route('organizations.destroy', $organization)"/>
+        @endcan
+    @endisset
+@endsection
+
 @section('content')
     <x-bs::form method="{{ isset($organization) ? 'PUT' : 'POST' }}"
                 action="{{ isset($organization) ? route('organizations.update', $organization) : route('organizations.store') }}">
@@ -35,7 +45,7 @@
                     </x-slot:hint>
                 </x-bs::form.field>
                 <x-bs::form.field name="status" type="select"
-                                  :options="\App\Options\ActiveStatus::toOptions()"
+                                  :options="\App\Enums\ActiveStatus::toOptions()"
                                   :value="$organization->status->value ?? null"><i class="fa fa-fw fa-circle-question"></i> {{ __('Status') }}</x-bs::form.field>
                 <x-bs::form.field name="register_entry" type="text"
                                   :value="$organization->register_entry ?? null"><i class="fa fa-fw fa-scale-balanced"></i> {{ __('Register entry') }}</x-bs::form.field>
@@ -45,8 +55,7 @@
                                   :value="$organization->phone ?? null"><i class="fa fa-fw fa-phone"></i> {{ __('Phone number') }}</x-bs::form.field>
                 <x-bs::form.field name="email" type="email"
                                   :value="$organization->email ?? null"><i class="fa fa-fw fa-at"></i> {{ __('E-mail') }}</x-bs::form.field>
-                <x-bs::form.field name="location_id" type="select"
-                                  :options="$locations->pluck('nameOrAddress', 'id')"
+                <x-bs::form.field name="location_id" type="select" :options="$locations->pluck('nameOrAddress', 'id')"
                                   :value="$organization->location->id ?? null"><i class="fa fa-fw fa-location-pin"></i> {{ __('Location') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6">
@@ -68,16 +77,8 @@
             </div>
         </div>
 
-        <x-bs::button.group>
-            <x-button.save>
-                @isset($organization)
-                    {{ __( 'Save' ) }}
-                @else
-                    {{ __('Create') }}
-                @endisset
-            </x-button.save>
-            <x-button.cancel href="{{ route('organizations.index') }}"/>
-        </x-bs::button.group>
+        <x-button.group-save :show-create="!isset($organization)"
+                             :index-route="route('organizations.index')"/>
     </x-bs::form>
 
     <x-text.timestamp :model="$organization ?? null"/>

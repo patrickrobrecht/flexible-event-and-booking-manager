@@ -2,9 +2,10 @@
 
 namespace App\Policies;
 
+use App\Enums\Ability;
 use App\Models\Booking;
+use App\Models\BookingOption;
 use App\Models\User;
-use App\Options\Ability;
 use App\Policies\Traits\ChecksAbilities;
 use Illuminate\Auth\Access\Response;
 
@@ -75,9 +76,19 @@ class BookingPolicy
         return $this->requireAbility($user, Ability::EditBookingsOfEvent);
     }
 
+    public function updateAnyBookingComment(User $user, ?BookingOption $bookingOption = null): Response
+    {
+        return $this->requireAbility($user, Ability::EditBookingComment);
+    }
+
     public function updateBookingComment(User $user, Booking $booking): Response
     {
         return $this->requireAbility($user, Ability::EditBookingComment);
+    }
+
+    public function updateAnyPaymentStatus(User $user, BookingOption $bookingOption): Response
+    {
+        return $this->requireAbility($user, Ability::EditPaymentStatus);
     }
 
     public function updatePaymentStatus(User $user, Booking $booking): Response

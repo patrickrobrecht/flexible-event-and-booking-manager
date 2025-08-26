@@ -2,9 +2,9 @@
 
 namespace App\Policies;
 
+use App\Enums\Ability;
 use App\Models\Location;
 use App\Models\User;
-use App\Options\Ability;
 use App\Policies\Traits\ChecksAbilities;
 use Illuminate\Auth\Access\Response;
 
@@ -65,6 +65,24 @@ class LocationPolicy
      */
     public function forceDelete(User $user, Location $location): Response
     {
-        return $this->deny();
+        $eventsCount = $location->events_count ?? $location->events()->count();
+        if ($eventsCount >= 1) {
+            return $this->deny(
+                formatTransChoice(':name cannot be deleted because the location is referenced by :count events.', $eventsCount, [
+                    'name' => $location->nameOrAddress,
+                ])
+            );
+        }
+
+        $organizationsCount = $location->organizations_count ?? $location->organizations()->count();
+        if ($organizationsCount >= 1) {
+            return $this->deny(
+                formatTransChoice(':name cannot be deleted because the location is referenced by :count organizations.', $organizationsCount, [
+                    'name' => $location->nameOrAddress,
+                ])
+            );
+        }
+
+        return $this->requireAbility($user, Ability::DestroyLocations);
     }
 }

@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use App\Enums\Ability;
+use App\Enums\EventType;
+use App\Enums\FilterValue;
+use App\Enums\Visibility;
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\BelongsToLocation;
@@ -11,17 +15,12 @@ use App\Models\Traits\HasDocuments;
 use App\Models\Traits\HasNameAndDescription;
 use App\Models\Traits\HasResponsibleUsers;
 use App\Models\Traits\HasSlugForRouting;
-use App\Options\Ability;
-use App\Options\EventType;
-use App\Options\FilterValue;
-use App\Options\Visibility;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -38,13 +37,12 @@ use Spatie\QueryBuilder\Enums\SortDirection;
  * @property ?Carbon $finished_at
  * @property ?string $website_url
  *
- * @property-read Collection|BookingOption[] $bookingOptions {@see Event::bookingOptions()}
- * @property-read Collection|Booking[] $bookings {@see Event::bookings()}
- * @property-read ?EventSeries $eventSeries {@see Event::eventSeries()}
+ * @property-read Collection|BookingOption[] $bookingOptions {@see self::bookingOptions()}
+ * @property-read Collection|Booking[] $bookings {@see self::bookings()}
+ * @property-read ?EventSeries $eventSeries {@see self::eventSeries()}
  * @property-read Collection|Group[] $groups {@see self::groups()}
- * @property-read Collection|Organization[] $organizations {@see Event::organizations()}
- * @property-read ?Event $parentEvent {@see Event::parentEvent()}
- * @property-read Collection|Event[] $subEvents {@see Event::subEvents()}
+ * @property-read ?Event $parentEvent {@see self::parentEvent()}
+ * @property-read Collection|Event[] $subEvents {@see self::subEvents()}
  */
 class Event extends Model
 {
@@ -58,26 +56,6 @@ class Event extends Model
     use HasResponsibleUsers;
     use HasSlugForRouting;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'name',
-        'slug',
-        'description',
-        'visibility',
-        'started_at',
-        'finished_at',
-        'website_url',
-    ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'groups_count' => 'integer',
         'visibility' => Visibility::class,
@@ -86,6 +64,16 @@ class Event extends Model
         'parent_event_id' => 'integer',
         'event_series_id' => 'integer',
         'organization_id' => 'integer',
+    ];
+
+    protected $fillable = [
+        'name',
+        'slug',
+        'description',
+        'visibility',
+        'started_at',
+        'finished_at',
+        'website_url',
     ];
 
     public function bookingOptions(): HasMany
@@ -107,13 +95,6 @@ class Event extends Model
     public function eventSeries(): BelongsTo
     {
         return $this->belongsTo(EventSeries::class, 'event_series_id');
-    }
-
-    public function organizations(): BelongsToMany
-    {
-        return $this->belongsToMany(Organization::class)
-            ->orderBy('name')
-            ->withTimestamps();
     }
 
     public function parentEvent(): BelongsTo
@@ -170,20 +151,34 @@ class Event extends Model
         };
     }
 
+    public function deleteWithGroups(): bool|null
+    {
+        $this->groups()->delete();
+        return $this->delete();
+    }
+
+    /**
+     * @param array{location_id: int, event_series_id?: int, parent_event_id?: int, organization_id: int} $validatedData
+     */
     public function fillAndSave(array $validatedData): bool
     {
         $this->fill($validatedData);
-        $this->location()->associate($validatedData['location_id'] ?? null);
+        $this->location()->associate($validatedData['location_id']);
         $this->eventSeries()->associate($validatedData['event_series_id'] ?? null);
         $this->parentEvent()->associate($validatedData['parent_event_id'] ?? null);
-        $this->organization()->associate($validatedData['organization_id'] ?? null);
+        $this->organization()->associate($validatedData['organization_id']);
 
-        return $this->save()
-            && $this->saveResponsibleUsers($validatedData);
+        if (!$this->save()) {
+            return false;
+        }
+
+        $this->saveResponsibleUsers($validatedData);
+        return true;
     }
 
     public function findOrCreateGroup(int|string $groupIndex): Group
     {
+        /** @phpstan-ignore-next-line */
         return $this->groups()
             ->firstOrCreate([
                 'name' => __('Group') . ' ' . $groupIndex,
@@ -195,6 +190,9 @@ class Event extends Model
         return Ability::ViewResponsibilitiesOfEvents;
     }
 
+    /**
+     * @return Collection<int, BookingOption>
+     */
     public function getBookingOptions(): Collection
     {
         if (isset($this->parentEvent)) {
@@ -210,6 +208,9 @@ class Event extends Model
         return $this->bookingOptions;
     }
 
+    /**
+     * @return Collection<int, Booking>
+     */
     public function getBookings(): Collection
     {
         if (isset($this->parentEvent)) {
@@ -234,6 +235,9 @@ class Event extends Model
         return 'events/' . $this->id;
     }
 
+    /**
+     * @return AllowedFilter[]
+     */
     public static function allowedFilters(): array
     {
         return [
@@ -247,7 +251,8 @@ class Event extends Model
             AllowedFilter::scope('date_until'),
             /** @see self::scopeEventSeries() */
             AllowedFilter::scope('event_series_id', 'eventSeries'),
-            AllowedFilter::exact('organization_id'),
+            AllowedFilter::exact('organization_id')
+                ->ignore(FilterValue::All->value),
             AllowedFilter::exact('location_id')
                 ->ignore(FilterValue::All->value),
             /** @see self::scopeDocument() */
@@ -259,6 +264,9 @@ class Event extends Model
         ];
     }
 
+    /**
+     * @return array<string, string>
+     */
     public static function filterOptions(): array
     {
         return [

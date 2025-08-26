@@ -2,16 +2,17 @@
 
 namespace App\Models;
 
+use App\Enums\Ability;
+use App\Enums\ActiveStatus;
+use App\Enums\FilterValue;
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\BelongsToLocation;
 use App\Models\Traits\HasDocuments;
 use App\Models\Traits\HasResponsibleUsers;
 use App\Models\Traits\HasSlugForRouting;
-use App\Options\Ability;
-use App\Options\ActiveStatus;
-use App\Options\FilterValue;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -27,12 +28,16 @@ use Spatie\QueryBuilder\AllowedFilter;
  * @property ?string $phone
  * @property ?string $email
  * @property ?string $website_url
+ * @property-read int $location_id
  * @property ?string $bank_account_holder
  * @property ?string $iban
  * @property ?string $bank_name
  *
- * @property Collection|Event[] $events {@see Organization::events()}
+ * @property-read string[] $bank_account_lines {@see self::bankAccountLines()}
+ *
+ * @property Collection|Event[] $events {@see self::events()}
  * @property Collection|EventSeries[] $eventSeries {@see self::eventSeries()}
+ * @property Collection|Material[] $materials {@see self::materials()}
  */
 class Organization extends Model
 {
@@ -43,11 +48,6 @@ class Organization extends Model
     use HasResponsibleUsers;
     use HasSlugForRouting;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'slug',
@@ -61,14 +61,18 @@ class Organization extends Model
         'bank_name',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'status' => ActiveStatus::class,
     ];
+
+    public function bankAccountLines(): Attribute
+    {
+        return Attribute::get(fn () => isset($this->iban, $this->bank_name) ? [
+            __('Account holder') . ': ' . ($this->bank_account_holder ?? $this->name),
+            'IBAN: ' . $this->iban,
+            __('Bank') . ': ' .$this->bank_name,
+        ] : [])->shouldCache();
+    }
 
     public function events(): HasMany
     {
@@ -80,19 +84,31 @@ class Organization extends Model
         return $this->hasMany(EventSeries::class);
     }
 
+    public function materials(): HasMany
+    {
+        return $this->hasMany(Material::class);
+    }
+
     public function scopeEvent(Builder $query, int|string $eventId): Builder
     {
         return $this->scopeRelation($query, $eventId, 'events', fn (Builder $q) => $q->where('event_id', '=', $eventId));
     }
 
+    /**
+     * @param array{location_id: int} $validatedData
+     */
     public function fillAndSave(array $validatedData): bool
     {
         $this->fill($validatedData);
 
         $this->location()->associate($validatedData['location_id']);
 
-        return $this->save()
-            && $this->saveResponsibleUsers($validatedData);
+        if (!$this->save()) {
+            return false;
+        }
+
+        $this->saveResponsibleUsers($validatedData);
+        return true;
     }
 
     public function getAbilityToViewResponsibilities(): Ability
@@ -110,6 +126,9 @@ class Organization extends Model
         return 'organizations/' . $this->id;
     }
 
+    /**
+     * @return AllowedFilter[]
+     */
     public static function allowedFilters(): array
     {
         return [
@@ -126,6 +145,9 @@ class Organization extends Model
         ];
     }
 
+    /**
+     * @return array<string, string>
+     */
     public static function filterOptions(): array
     {
         return [

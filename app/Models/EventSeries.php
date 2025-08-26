@@ -2,16 +2,16 @@
 
 namespace App\Models;
 
+use App\Enums\Ability;
+use App\Enums\EventSeriesType;
+use App\Enums\FilterValue;
+use App\Enums\Visibility;
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\BelongsToOrganization;
 use App\Models\Traits\HasDocuments;
 use App\Models\Traits\HasResponsibleUsers;
 use App\Models\Traits\HasSlugForRouting;
-use App\Options\Ability;
-use App\Options\EventSeriesType;
-use App\Options\FilterValue;
-use App\Options\Visibility;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -26,9 +26,9 @@ use Spatie\QueryBuilder\AllowedFilter;
  * @property string $slug
  * @property Visibility $visibility
  *
- * @property-read Collection|Event[] $events {@see EventSeries::events()}
- * @property-read ?EventSeries $parentEventSeries {@see EventSeries::parentEventSeries()}
- * @property-read Collection|EventSeries[] subEventSeries {@see EventSeries::subEventSeries()}
+ * @property-read Collection|Event[] $events {@see self::events()}
+ * @property-read ?EventSeries $parentEventSeries {@see self::parentEventSeries()}
+ * @property-read Collection|EventSeries[] $subEventSeries {@see self::subEventSeries()}
  */
 class EventSeries extends Model
 {
@@ -39,11 +39,6 @@ class EventSeries extends Model
     use HasResponsibleUsers;
     use HasSlugForRouting;
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'events_count' => 'integer',
         'organization_id' => 'integer',
@@ -51,11 +46,6 @@ class EventSeries extends Model
         'parent_event_series_id' => 'integer',
     ];
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'slug',
@@ -83,7 +73,7 @@ class EventSeries extends Model
 
     public function scopeEvent(Builder $query, int|string $eventId): Builder
     {
-        return $this->scopeRelation($query, $eventId, 'events', fn (Builder $q) => $q->where('id', '=', $documentId));
+        return $this->scopeRelation($query, $eventId, 'events', fn (Builder $q) => $q->where('id', '=', $eventId));
     }
 
     public function scopeEventSeriesType(Builder $query, EventSeriesType|string $eventSeriesType): Builder
@@ -101,14 +91,21 @@ class EventSeries extends Model
         };
     }
 
+    /**
+     * @param array{organization_id: int, parent_event_series_id?: int} $validatedData
+     */
     public function fillAndSave(array $validatedData): bool
     {
         $this->fill($validatedData);
         $this->organization()->associate($validatedData['organization_id']);
         $this->parentEventSeries()->associate($validatedData['parent_event_series_id'] ?? null);
 
-        return $this->save()
-            && $this->saveResponsibleUsers($validatedData);
+        if (!$this->save()) {
+            return false;
+        }
+
+        $this->saveResponsibleUsers($validatedData);
+        return true;
     }
 
     public function getAbilityToViewResponsibilities(): Ability
@@ -126,6 +123,9 @@ class EventSeries extends Model
         return 'event-series/' . $this->id;
     }
 
+    /**
+     * @return AllowedFilter[]
+     */
     public static function allowedFilters(): array
     {
         return [
@@ -134,7 +134,8 @@ class EventSeries extends Model
                 ->ignore(FilterValue::All->value),
             /** @see self::scopeEvent() */
             AllowedFilter::scope('event_id', 'event'),
-            AllowedFilter::exact('organization_id'),
+            AllowedFilter::exact('organization_id')
+                ->ignore(FilterValue::All->value),
             /** @see self::scopeDocument() */
             AllowedFilter::scope('document_id', 'document'),
             /** @see self::scopeEventSeriesType() */
@@ -144,6 +145,9 @@ class EventSeries extends Model
         ];
     }
 
+    /**
+     * @return array<string, string>
+     */
     public static function filterOptions(): array
     {
         return [

@@ -105,7 +105,11 @@ class DocumentController extends Controller
             Session::flash('success', __('Saved successfully.'));
         }
 
-        return back();
+        return $this->actionAwareRedirect(
+            $request,
+            route('documents.show', $document),
+            editRoute: route('documents.edit', $document)
+        );
     }
 
     public function destroy(Document $document): RedirectResponse

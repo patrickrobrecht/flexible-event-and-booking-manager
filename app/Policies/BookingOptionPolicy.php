@@ -2,12 +2,12 @@
 
 namespace App\Policies;
 
+use App\Enums\Ability;
+use App\Enums\BookingRestriction;
+use App\Enums\Visibility;
 use App\Models\BookingOption;
 use App\Models\Event;
 use App\Models\User;
-use App\Options\Ability;
-use App\Options\BookingRestriction;
-use App\Options\Visibility;
 use App\Policies\Traits\ChecksAbilities;
 use Illuminate\Auth\Access\Response;
 

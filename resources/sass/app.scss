@@ -38,3 +38,12 @@ $fa-font-path: '/build/lib';
 .draggable-item {
     cursor: move;
 }
+
+/*
+ * Large margins
+ */
+@for $i from 0 through 5 {
+    .ms-large-#{$i} {
+        margin-left: #{$i * 2}rem !important;
+    }
+}

@@ -24,6 +24,11 @@
     @can('update', $eventSeries)
         <x-button.edit href="{{ route('event-series.edit', $eventSeries) }}"/>
     @endcan
+    @can('forceDelete', $eventSeries)
+        <x-form.delete-modal :id="$eventSeries->id"
+                             :name="$eventSeries->name"
+                             :route="route('event-series.destroy', $eventSeries)"/>
+    @endcan
 @endsection
 
 @section('content')
@@ -35,9 +40,9 @@
             @include('event_series.shared.events_in_series')
             @can('create', \App\Models\Event::class)
                 <div class="my-3">
-                    <x-button.create href="{{ route('events.create', ['event_series_id' => $eventSeries->id]) }}">
-                        {{ __('Create event') }}
-                    </x-button.create>
+                    <x-bs::button.link href="{{ route('events.create', ['event_series_id' => $eventSeries->id, 'organization_id' => $eventSeries->organization->id]) }}">
+                        <i class="fa fa-fw fa-plus"></i> {{ __('Create event') }}
+                    </x-bs::button.link>
                 </div>
             @endcan
         </div>
@@ -54,10 +59,10 @@
                     'showParentEventSeries' => false,
                 ])
                 @can('createChild', $eventSeries)
-                    <div class="mt-3">
-                        <x-button.create href="{{ route('event-series.create', ['parent_event_series_id' => $eventSeries->id]) }}">
-                            {{ __('Create event series') }}
-                        </x-button.create>
+                    <div class="mt-3 d-print-none">
+                        <x-bs::button.link href="{{ route('event-series.create', ['parent_event_series_id' => $eventSeries->id, 'organization_id' => $eventSeries->organization->id]) }}">
+                            <i class="fa fa-fw fa-plus"></i> {{ __('Create event series') }}
+                        </x-bs::button.link>
                     </div>
                 @endcan
             </div>

@@ -2,9 +2,9 @@
 
 namespace App\Policies;
 
+use App\Enums\Ability;
 use App\Models\Organization;
 use App\Models\User;
-use App\Options\Ability;
 use App\Policies\Traits\ChecksAbilities;
 use Illuminate\Auth\Access\Response;
 
@@ -30,6 +30,9 @@ class OrganizationPolicy
 
     public function viewResponsibilities(?User $user, Organization $organization): Response
     {
+        if (!isset($user)) {
+            return $this->deny();
+        }
         $viewResponse = $this->view($user, $organization);
         if ($viewResponse->denied()) {
             return $viewResponse;
@@ -40,7 +43,7 @@ class OrganizationPolicy
             Ability::ViewResponsibilitiesOfOrganizations,
             fn () => $this->response(
                 $organization->hasPubliclyVisibleResponsibleUsers()
-                || (isset($user) && $user->isResponsibleFor($organization))
+                || $user->isResponsibleFor($organization)
             )
         );
     }
@@ -82,6 +85,25 @@ class OrganizationPolicy
      */
     public function forceDelete(User $user, Organization $organization): Response
     {
-        return $this->deny();
+        $eventsCount = $organization->events_count ?? $organization->events()->count();
+        if ($eventsCount >= 1) {
+            return $this->deny(
+                formatTransChoice(':name cannot be deleted because the organization is referenced by :count events.', $eventsCount, [
+                    'name' => $organization->name,
+                ])
+            );
+        }
+
+        /** @phpstan-ignore property.notFound */
+        $eventsSeriesCount = $organization->events_series_count ?? $organization->eventSeries()->count();
+        if ($eventsSeriesCount >= 1) {
+            return $this->deny(
+                formatTransChoice(':name cannot be deleted because the organization is referenced by :count event series.', $eventsSeriesCount, [
+                    'name' => $organization->name,
+                ])
+            );
+        }
+
+        return $this->requireAbility($user, Ability::DestroyOrganizations);
     }
 }

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @php
-    use App\Options\FilterValue;
+    use App\Enums\FilterValue;
     use Portavice\Bladestrap\Support\Options;
 
     /** @var \Illuminate\Pagination\LengthAwarePaginator|\App\Models\UserRole[] $userRoles */
@@ -16,17 +16,15 @@
 @endsection
 
 @section('content')
-    <x-bs::button.group>
-        @can('create', \App\Models\UserRole::class)
-            <x-button.create href="{{ route('user-roles.create') }}">
-                {{ __('Create user role') }}
-            </x-button.create>
-        @endcan
-    </x-bs::button.group>
+    @can('create', \App\Models\UserRole::class)
+        <x-bs::button.link href="{{ route('user-roles.create') }}" class="d-print-none">
+            <i class="fa fa-fw fa-plus"></i> {{ __('Create user role') }}
+        </x-bs::button.link>
+    @endcan
 
     <x-form.filter>
         <div class="row">
-            <div class="col-12 col-xl-6">
+            <div class="col-12 col-sm-6 col-lg">
                 <x-bs::form.field id="name" name="filter[name]" type="text"
                                   :from-query="true">{{ __('Name') }}</x-bs::form.field>
             </div>
@@ -48,7 +46,7 @@
     <div class="row my-3">
         @foreach($userRoles as $userRole)
             <div class="col-12 col-sm-6 col-md-4 mb-3">
-                <div class="card">
+                <div class="card avoid-break">
                     <div class="card-header">
                         <h2 class="card-title">
                             @can('view', $userRole)
@@ -62,7 +60,11 @@
                         <x-bs::list.item>
                             <span>
                                 <i class="fa fa-fw fa-users"></i>
-                                <a href="{{ route('users.index', ['filter[user_role_id]' => $userRole->id]) }}" target="_blank">{{ __('Users') }}</a>
+                                @can('viewAny', \App\Models\User::class)
+                                    <a href="{{ route('users.index', ['filter[user_role_id]' => $userRole->id, 'filter[status]' => FilterValue::All]) }}" target="_blank">{{ __('Users') }}</a>
+                                @else
+                                    {{ __('Users') }}
+                                @endcan
                             </span>
                             <x-slot:end>
                                 <x-bs::badge>{{ formatInt($userRole->users_count) }}</x-bs::badge>
@@ -75,11 +77,14 @@
                             </x-slot:end>
                         </x-bs::list.item>
                     </x-bs::list>
-                    @can('update', $userRole)
-                        <div class="card-body">
-                            <x-button.edit href="{{ route('user-roles.edit', $userRole) }}"/>
+                    @canany(['update', 'forceDelete'], $userRole)
+                        <div class="card-body d-print-none">
+                            @can('update', $userRole)
+                                <x-button.edit href="{{ route('user-roles.edit', $userRole) }}"/>
+                            @endcan
+                            @include('user_roles.shared.user_role_delete_button')
                         </div>
-                    @endcan
+                    @endcanany
                     <div class="card-footer">
                         <x-text.updated-human-diff :model="$userRole"/>
                     </div>

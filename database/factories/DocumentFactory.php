@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Enums\ApprovalStatus;
+use App\Enums\FileType;
 use App\Models\Document;
-use App\Options\ApprovalStatus;
-use App\Options\FileType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

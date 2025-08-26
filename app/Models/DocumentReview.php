@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Options\ApprovalStatus;
+use App\Enums\ApprovalStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -43,6 +43,9 @@ class DocumentReview extends Model
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * @param array<string, mixed> $validatedData
+     */
     public function fillAndSave(array $validatedData): bool
     {
         return $this->fill($validatedData)->save();

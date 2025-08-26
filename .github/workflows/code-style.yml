@@ -19,7 +19,7 @@ jobs:
           php-version: 8.4
 
       - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-interaction
+        run: composer install --prefer-dist --no-interaction --no-progress
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -31,6 +31,9 @@ jobs:
 
       - name: Check code style for PHP
         run: composer csPHP
+
+      - name: Run static analysis for PHP
+        run: composer stan
 
       - name: Check code style for CSS and JavaScript
         run: npm run cs

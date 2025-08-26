@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @php
-    use App\Options\FilterValue;
+    use App\Enums\FilterValue;
     use Portavice\Bladestrap\Support\Options;
 
     /** @var \Illuminate\Pagination\LengthAwarePaginator|\App\Models\Organization[] $organizations */
@@ -17,13 +17,11 @@
 @endsection
 
 @section('content')
-    <x-bs::button.group>
-        @can('create', \App\Models\Organization::class)
-            <x-button.create href="{{ route('organizations.create') }}">
-                {{ __('Create organization') }}
-            </x-button.create>
-        @endcan
-    </x-bs::button.group>
+    @can('create', \App\Models\Organization::class)
+        <x-bs::button.link href="{{ route('organizations.create') }}" class="d-print-none">
+            <i class="fa fa-fw fa-plus"></i> {{ __('Create organization') }}
+        </x-bs::button.link>
+    @endcan
 
     <x-form.filter>
         <div class="row">
@@ -49,7 +47,7 @@
             </div>
             <div class="col-12 col-sm-6 col-xl-3">
                 <x-bs::form.field id="status" name="filter[status]" type="select"
-                                  :options="\App\Options\ActiveStatus::toOptionsWithAll()"
+                                  :options="\App\Enums\ActiveStatus::toOptionsWithAll()"
                                   :cast="FilterValue::castToIntIfNoValue()"
                                   :from-query="true"><i class="fa fa-fw fa-circle-question"></i> {{ __('Status') }}</x-bs::form.field>
             </div>
@@ -66,12 +64,12 @@
     <div class="row my-3">
         @foreach($organizations as $organization)
             <div class="col-12 col-xl-6 mb-3">
-                <div class="card">
+                <div class="card avoid-break">
                     <div class="card-header">
                         <h2 class="card-title">
                             <a href="{{ $organization->getRoute() }}">{{ $organization->name }}</a>
                         </h2>
-                        <x-badge.active-status :active="$organization->status" />
+                        <x-badge.active-status :active="$organization->status"/>
                     </div>
                     <x-bs::list :flush="true">
                         <x-bs::list.item>
@@ -136,6 +134,19 @@
                         </x-bs::list.item>
                         <x-bs::list.item>
                             <span>
+                                <i class="fa fa-fw fa-toolbox"></i>
+                                @can('viewAny', \App\Models\Material::class)
+                                    <a href="{{ route('materials.index', ['filter[organization_id]' => $organization->id]) }}" target="_blank">{{ __('Materials') }}</a>
+                                @else
+                                    {{ __('Materials') }}
+                                @endcan
+                            </span>
+                            <x-slot:end>
+                                <x-bs::badge>{{ formatInt($organization->materials_count) }}</x-bs::badge>
+                            </x-slot:end>
+                        </x-bs::list.item>
+                        <x-bs::list.item>
+                            <span>
                                 <i class="fa fa-fw fa-calendar-days"></i>
                                 @can('viewAny', \App\Models\Event::class)
                                     <a href="{{ route('events.index', [
@@ -165,11 +176,18 @@
                             </x-slot:end>
                         </x-bs::list.item>
                     </x-bs::list>
-                    @can('update', $organization)
-                        <div class="card-body">
-                            <x-button.edit href="{{ route('organizations.edit', $organization) }}"/>
+                    @canany(['update', 'forceDelete'], $organization)
+                        <div class="card-body d-flex flex-wrap gap-1 d-print-none">
+                            @can('update', $organization)
+                                <x-button.edit href="{{ route('organizations.edit', $organization) }}"/>
+                            @endcan
+                            @can('forceDelete', $organization)
+                                <x-form.delete-modal :id="$organization->id"
+                                                     :name="$organization->name"
+                                                     :route="route('organizations.destroy', $organization)"/>
+                            @endcan
                         </div>
-                    @endcan
+                    @endcanany
                     <div class="card-footer">
                         <x-text.updated-human-diff :model="$organization"/>
                     </div>

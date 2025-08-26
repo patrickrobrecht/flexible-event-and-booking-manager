@@ -2,15 +2,17 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\FormElementType;
 use App\Http\Requests\Traits\ValidatesAddressFields;
 use App\Models\Booking;
 use App\Models\BookingOption;
-use App\Options\FormElementType;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Stringable;
 
 /**
- * @property-read BookingOption $booking_option
+ * @property BookingOption $booking_option
  * @property-read ?Booking $booking
  */
 class BookingRequest extends FormRequest
@@ -26,9 +28,7 @@ class BookingRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, mixed>
+     * @return array<string, array<int, string|Stringable|ValidationRule>>
      */
     public function rules(): array
     {
@@ -113,10 +113,14 @@ class BookingRequest extends FormRequest
             $rules[$field->input_name] = array_merge($rulesForField, $field->validation_rules ?? []);
         }
 
+        /** @phpstan-ignore return.type */
         return array_replace($rules, $commonRules);
     }
 
-    public function attributes()
+    /**
+     * @return array<string, string>
+     */
+    public function attributes(): array
     {
         $attributes = parent::attributes();
 

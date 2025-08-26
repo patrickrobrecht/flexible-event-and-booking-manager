@@ -2,6 +2,9 @@
 
 namespace Tests\Feature\Http;
 
+use App\Enums\Ability;
+use App\Enums\GroupGenerationMethod;
+use App\Enums\Visibility;
 use App\Exports\GroupsExportSpreadsheet;
 use App\GroupGenerationMethods\AgeBasedGroupGenerationMethod;
 use App\GroupGenerationMethods\GeneralGroupGenerationMethod;
@@ -13,17 +16,14 @@ use App\Http\Requests\GenerateGroupsRequest;
 use App\Models\Booking;
 use App\Models\Event;
 use App\Models\Group;
-use App\Options\Ability;
-use App\Options\GroupGenerationMethod;
-use App\Options\Visibility;
 use App\Policies\GroupPolicy;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Closure;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
-use Tests\Traits\GeneratesTestData;
 
 #[CoversClass(AgeBasedGroupGenerationMethod::class)]
+#[CoversClass(Event::class)]
 #[CoversClass(GeneralGroupGenerationMethod::class)]
 #[CoversClass(GenerateGroupsRequest::class)]
 #[CoversClass(Group::class)]
@@ -36,9 +36,6 @@ use Tests\Traits\GeneratesTestData;
 #[CoversClass(RandomizedGroupGenerationMethod::class)]
 class GroupControllerTest extends TestCase
 {
-    use GeneratesTestData;
-    use RefreshDatabase;
-
     public function testUserCanViewGroupsOnlyWithCorrectAbility(): void
     {
         $event = self::createEventWithBookingOptions(Visibility::Private);
@@ -48,7 +45,7 @@ class GroupControllerTest extends TestCase
 
         // Verify content of the page.
         $response = $this->get($route)->assertOk();
-        $event->bookings->each(fn (Booking $booking) => $response->assertSeeText($booking->bookedByUser?->name));
+        $event->bookings->each(fn (Booking $booking) => $response->assertSeeText($booking->bookedByUser->name ?? ''));
     }
 
     public function testUserCanExportGroupsOnlyWithCorrectAbility(): void
@@ -94,13 +91,16 @@ class GroupControllerTest extends TestCase
         $event->bookings->each(fn (Booking $booking) => $this->assertNotNull($booking->getGroup($event)));
     }
 
+    /**
+     * @return array<int, mixed[]>
+     */
     public static function groupGenerationMethods(): array
     {
         return array_map(static fn (GroupGenerationMethod $method) => [$method], GroupGenerationMethod::cases());
     }
 
     #[DataProvider('deleteGroupTestCases')]
-    public function testUserCanDeleteGroupsWithCorrectAbility(\Closure $dataProvider, int $countAfterRequest): void
+    public function testUserCanDeleteGroupsWithCorrectAbility(Closure $dataProvider, int $countAfterRequest): void
     {
         $event = self::createEventWithBookingOptions(Visibility::Private);
         self::createGroups($event, 3);
@@ -113,6 +113,9 @@ class GroupControllerTest extends TestCase
         $this->assertCount($countAfterRequest, $event->groups);
     }
 
+    /**
+     * @return array<int, array{Closure(Event): array<string, mixed>, int}>
+     */
     public static function deleteGroupTestCases(): array
     {
         return [

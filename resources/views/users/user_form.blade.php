@@ -1,10 +1,14 @@
 @extends('layouts.app')
 
 @php
-    /** @var ?\App\Models\User $editedUser */
-    /** @var \Illuminate\Database\Eloquent\Collection|\App\Models\UserRole[] $userRoles */
-
+    use App\Models\User;
+    use App\Models\UserRole;
+    use App\Enums\ActiveStatus;
+    use Illuminate\Database\Eloquent\Collection;
     use Portavice\Bladestrap\Support\Options;
+
+    /** @var ?User $editedUser */
+    /** @var Collection|UserRole[] $userRoles */
 @endphp
 
 @section('title')
@@ -16,7 +20,7 @@
 @endsection
 
 @section('breadcrumbs')
-    @can('viewAny', \App\Models\User::class)
+    @can('viewAny', User::class)
         <x-bs::breadcrumb.item href="{{ route('users.index') }}">{{ __('Users') }}</x-bs::breadcrumb.item>
     @else
         <x-bs::breadcrumb.item>{{ __('Users') }}</x-bs::breadcrumb.item>
@@ -30,6 +34,14 @@
     @endisset
 @endsection
 
+@section('headline-buttons')
+    @isset($editedUser)
+        @include('users.shared.user_delete_button', [
+            'user' => $editedUser,
+        ])
+    @endisset
+@endsection
+
 @section('content')
     <x-bs::form method="{{ isset($editedUser) ? 'PUT' : 'POST' }}"
                 action="{{ isset($editedUser) ? route('users.update', $editedUser) : route('users.store') }}">
@@ -37,11 +49,11 @@
             <div class="col-12 col-lg-6">
                 <div class="row">
                     <div class="col-12 col-md-6">
-                        <x-bs::form.field name="first_name" type="text"
+                        <x-bs::form.field name="first_name" type="text" maxlength="255" :required="true"
                                           :value="$editedUser->first_name ?? null">{{ __('First name') }}</x-bs::form.field>
                     </div>
                     <div class="col-12 col-md-6">
-                        <x-bs::form.field name="last_name" type="text"
+                        <x-bs::form.field name="last_name" type="text" maxlength="255" :required="true"
                                           :value="$editedUser->last_name ?? null">{{ __('Last name') }}</x-bs::form.field>
                     </div>
                 </div>
@@ -55,7 +67,7 @@
                                           :value="$editedUser->phone ?? null"><i class="fa fa-fw fa-phone"></i> {{ __('Phone number') }}</x-bs::form.field>
                     </div>
                 </div>
-                <x-bs::form.field name="email" type="email"
+                <x-bs::form.field name="email" type="email" maxlength="255" :required="true"
                                   :value="$editedUser->email ?? null"><i class="fa fa-fw fa-at"></i> {{ __('E-mail') }}</x-bs::form.field>
                 @isset($editedUser->email_verified_at)
                     <x-bs::alert variant="primary">
@@ -82,11 +94,10 @@
                                   :options="$userRoles->pluck('name', 'id')"
                                   :value="isset($editedUser) ? $editedUser->userRoles->pluck('id')->toArray() : []"
                                   :valuesToInt="true"><i class="fa fa-fw fa-user-group"></i> {{ __('User role') }}</x-bs::form.field>
-                <x-bs::form.field name="status" type="select"
-                                  :options="\App\Options\ActiveStatus::toOptions()"
+                <x-bs::form.field name="status" type="select" :options="\App\Enums\ActiveStatus::toOptions()"
                                   :value="$editedUser->status->value ?? null"><i class="fa fa-fw fa-circle-question"></i> {{ __('Status') }}</x-bs::form.field>
                 @if(!isset($editedUser))
-                    <x-bs::form.field name="send_notification" type="checkbox"
+                    <x-bs::form.field name="send_notification" type="checkbox" class="mb-3"
                                       :options="Options::one(__('Send notification mail to user'))"></x-bs::form.field>
                 @endif
             </div>
@@ -97,13 +108,9 @@
             </div>
         </div>
 
-        <x-bs::button.group>
-            <x-button.save>
-                @isset($editedUser){{ __( 'Save' ) }} @else{{ __('Create') }}@endisset
-            </x-button.save>
-            <x-button.cancel href="{{ route('users.index') }}"/>
-        </x-bs::button.group>
+        <x-button.group-save :show-create="!isset($editedUser)"
+                             :index-route="route('users.index')"/>
     </x-bs::form>
 
-    <x-text.timestamp :model="$editedUser ?? null" />
+    <x-text.timestamp :model="$editedUser ?? null"/>
 @endsection

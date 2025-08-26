@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @php
-    use App\Options\FilterValue;
+    use App\Enums\FilterValue;
     use Portavice\Bladestrap\Support\Options;
 
     /** @var \Illuminate\Pagination\LengthAwarePaginator|\App\Models\Event[] $events */
@@ -17,13 +17,11 @@
 @endsection
 
 @section('content')
-    <x-bs::button.group>
-        @can('create', \App\Models\Event::class)
-            <x-button.create href="{{ route('events.create') }}">
-                {{ __('Create event') }}
-            </x-button.create>
-        @endcan
-    </x-bs::button.group>
+    @can('create', \App\Models\Event::class)
+        <x-bs::button.link href="{{ route('events.create') }}" class="d-print-none">
+            <i class="fa fa-fw fa-plus"></i> {{ __('Create event') }}
+        </x-bs::button.link>
+    @endcan
 
     <x-form.filter>
         <div class="row">
@@ -33,7 +31,7 @@
             </div>
             <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="visibility" name="filter[visibility]" type="select"
-                                  :options="\App\Options\Visibility::toOptionsWithAll()"
+                                  :options="\App\Enums\Visibility::toOptionsWithAll()"
                                   :from-query="true"><i class="fa fa-fw fa-eye"></i> {{ __('Visibility') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-sm-6 col-xl-3">
@@ -69,7 +67,7 @@
             </div>
             <div class="col-12 col-md-6 col-xl-3">
                 <x-bs::form.field id="event_type" name="filter[event_type]" type="select"
-                                  :options="\App\Options\EventType::toOptionsWithAll()"
+                                  :options="\App\Enums\EventType::toOptionsWithAll()"
                                   :from-query="true"><i class="fa fa-fw fa-calendar-check"></i> {{ __('Event type') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-lg-6 col-xl-3">
@@ -85,7 +83,7 @@
     <div class="row my-3">
         @foreach($events as $event)
             <div class="col-12 col-md-6 mb-3">
-                <div class="card">
+                <div class="card avoid-break">
                     <div class="card-header">
                         <h2 class="card-title">
                             <a href="{{ route('events.show', $event->slug) }}">{{ $event->name }}</a>
@@ -189,7 +187,7 @@
                         </x-bs::list.item>
                         @include('events.shared.event_booking_options')
                     </x-bs::list>
-                    <div class="card-body">
+                    <div class="card-body d-flex flex-wrap gap-1 d-print-none">
                         @can('update', $event)
                             <x-button.edit href="{{ route('events.edit', $event) }}"/>
                         @endcan
@@ -200,14 +198,19 @@
                             </x-bs::button.link>
                         @endcan
                         @can('create', [\App\Models\BookingOption::class, $event])
-                            <x-button.create href="{{ route('booking-options.create', $event) }}">
-                                {{ __('Create booking option') }}
-                            </x-button.create>
+                            <x-bs::button.link href="{{ route('booking-options.create', $event) }}">
+                                <i class="fa fa-fw fa-plus"></i> {{ __('Create booking option') }}
+                            </x-bs::button.link>
                         @endcan
                         @can('createChild', $event)
-                            <x-button.create href="{{ route('events.create', ['parent_event_id' => $event->id]) }}">
-                                {{ __('Create event') }}
-                            </x-button.create>
+                            <x-bs::button.link href="{{ route('events.create', ['parent_event_id' => $event->id, 'location_id' => $event->location->id, 'organization_id' => $event->organization->id]) }}">
+                                <i class="fa fa-fw fa-plus"></i> {{ __('Create event') }}
+                            </x-bs::button.link>
+                        @endcan
+                        @can('forceDelete', $event)
+                            <x-form.delete-modal :id="$event->id"
+                                                 :name="$event->name"
+                                                 :route="route('events.destroy', $event)"/>
                         @endcan
                     </div>
                     <div class="card-footer">

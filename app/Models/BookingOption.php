@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
+use App\Enums\BookingRestriction;
+use App\Enums\FormElementType;
 use App\Models\Traits\HasNameAndDescription;
 use App\Models\Traits\HasSlugForRouting;
-use App\Options\BookingRestriction;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -21,12 +22,15 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property ?Carbon $available_from
  * @property ?Carbon $available_until
  * @property ?float $price
- * @property array $price_conditions
- * @property array $restrictions
+ * @property mixed[] $price_conditions
+ * @property ?int $payment_due_days
+ * @property string[] $restrictions
+ * @property string $confirmation_text
  *
  * @property-read Collection|Booking[] $bookings {@see self::bookings()}
  * @property-read Event $event {@see self::event()}
  * @property-read Collection|FormField[] $formFields {@see self::formFields()}
+ * @property-read Collection|FormField[] $formFieldsForFiles {@see self::formFieldsForFiles()}
  */
 class BookingOption extends Model
 {
@@ -34,11 +38,16 @@ class BookingOption extends Model
     use HasNameAndDescription;
     use HasSlugForRouting;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+    protected $casts = [
+        'maximum_bookings' => 'integer',
+        'available_from' => 'datetime',
+        'available_until' => 'datetime',
+        'price' => 'float',
+        'price_conditions' => 'json',
+        'payment_due_days' => 'integer',
+        'restrictions' => 'json', /* @see BookingRestriction */
+    ];
+
     protected $fillable = [
         'name',
         'slug',
@@ -48,21 +57,9 @@ class BookingOption extends Model
         'available_until',
         'price',
         'price_conditions',
+        'payment_due_days',
         'restrictions',
-    ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'maximum_bookings' => 'integer',
-        'available_from' => 'datetime',
-        'available_until' => 'datetime',
-        'price' => 'float',
-        'price_conditions' => 'json',
-        'restrictions' => 'json', /* @see BookingRestriction */
+        'confirmation_text',
     ];
 
     public function bookings(): HasMany
@@ -81,6 +78,15 @@ class BookingOption extends Model
                     ->orderBy('sort');
     }
 
+    public function formFieldsForFiles(): HasMany
+    {
+        return $this->formFields()
+            ->where('type', '=', FormElementType::File);
+    }
+
+    /**
+     * @param array<string, mixed> $validatedData
+     */
     public function fillAndSave(array $validatedData): bool
     {
         return $this->fill($validatedData)->save();
@@ -93,6 +99,13 @@ class BookingOption extends Model
             $this->event_id,
             $this->id,
         ]);
+    }
+
+    public function getPaymentDeadline(?Carbon $bookedAt = null): Carbon
+    {
+        return ($bookedAt ?? Carbon::now())
+            ->endOfDay()
+            ->addWeekdays($this->payment_due_days ?? 0);
     }
 
     public function isRestrictedBy(BookingRestriction $restriction): bool

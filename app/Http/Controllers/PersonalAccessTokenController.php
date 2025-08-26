@@ -28,6 +28,7 @@ class PersonalAccessTokenController extends Controller
     {
         $this->authorize('create', PersonalAccessToken::class);
 
+        /** @phpstan-ignore-next-line argument.type */
         $newAccessToken = PersonalAccessToken::createTokenFromValidated($request->user(), $request->validated());
         Session::flash('success', __('Your personal access token is :token. Please make a note of it (e.g. in your password safe) - you will not be able to view it again.', [
             'token' => $newAccessToken->plainTextToken,
@@ -45,12 +46,14 @@ class PersonalAccessTokenController extends Controller
         ]);
     }
 
-    public function update(PersonalAccessToken $personalAccessToken, PersonalAccessTokenRequest $request): RedirectResponse
-    {
+    public function update(
+        PersonalAccessToken $personalAccessToken,
+        PersonalAccessTokenRequest $request
+    ): RedirectResponse {
         $this->authorize('update', $personalAccessToken);
 
         if ($personalAccessToken->fillAndSave($request->validated())) {
-            Session::flash('success', __('Saved successfully.'));
+            Session::flash('success', __(':name saved successfully.', ['name' => $personalAccessToken->name]));
         }
 
         return back();
@@ -61,7 +64,7 @@ class PersonalAccessTokenController extends Controller
         $this->authorize('forceDelete', $personalAccessToken);
 
         if ($personalAccessToken->forceDelete()) {
-            Session::flash('success', __('Deleted successfully.'));
+            Session::flash('success', __(':name deleted successfully.', ['name' => $personalAccessToken->name]));
             return redirect(route('personal-access-tokens.index'));
         }
 

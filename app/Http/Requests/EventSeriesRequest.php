@@ -2,15 +2,19 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\Visibility;
 use App\Http\Requests\Traits\ValidatesBelongsToOrganization;
 use App\Http\Requests\Traits\ValidatesResponsibleUsers;
 use App\Models\EventSeries;
-use App\Options\Visibility;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Stringable;
 
 /**
  * @property ?EventSeries $event_series
+ * @property-read ?string $slug
  */
 class EventSeriesRequest extends FormRequest
 {
@@ -18,9 +22,7 @@ class EventSeriesRequest extends FormRequest
     use ValidatesResponsibleUsers;
 
     /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, mixed>
+     * @return array<string, array<int, Closure|string|Stringable|ValidationRule>>
      */
     public function rules(): array
     {
@@ -55,15 +57,16 @@ class EventSeriesRequest extends FormRequest
                         return;
                     }
 
+                    /** @var ?EventSeries $parentEventSeries */
                     $parentEventSeries = EventSeries::query()->find($value);
-                    if (!isset($parentEventSeries) || $parentEventSeries->id === $this->event_series->id || $parentEventSeries->parent_event_series_id !== null) {
+                    if (!isset($parentEventSeries) || $parentEventSeries->id === $this->event_series?->id || $parentEventSeries->parent_event_series_id !== null) {
                         $fail(__('validation.exists', [
                             'attribute' => __('validation.attributes.parent_event_series_id'),
                         ]));
                         return;
                     }
 
-                    if (isset($parentEventSeries, $organization) && $parentEventSeries->organization_id !== $organization->id) {
+                    if (isset($organization) && $parentEventSeries->organization_id !== $organization->id) {
                         $fail(__('validation.organization', [
                             'attribute' => __('validation.attributes.parent_event_series_id'),
                             'organization' => $organization->name,
@@ -75,6 +78,9 @@ class EventSeriesRequest extends FormRequest
         ];
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function attributes(): array
     {
         return $this->attributesForResponsibleUsers();

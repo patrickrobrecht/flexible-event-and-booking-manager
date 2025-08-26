@@ -9,7 +9,9 @@ trait ValidatesFiles
     public static function getMaxFileSizeInBytes(): int
     {
         return min(
+            /** @phpstan-ignore argument.type */
             ini_parse_quantity(ini_get('upload_max_filesize')),
+            /** @phpstan-ignore argument.type */
             ini_parse_quantity(ini_get('post_max_size'))
         );
     }
@@ -30,6 +32,10 @@ trait ValidatesFiles
         return 'max:' . $maxFileSize;
     }
 
+    /**
+     * @param string[] $extensions
+     * @return string[]
+     */
     public static function getMimeTypesFromExtensions(array $extensions): array
     {
         return array_unique(

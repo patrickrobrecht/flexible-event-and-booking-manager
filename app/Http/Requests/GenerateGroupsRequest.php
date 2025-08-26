@@ -2,14 +2,17 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\GroupGenerationMethod;
 use App\Models\Event;
-use App\Options\GroupGenerationMethod;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Stringable;
 
 /**
  * @property Event $event
+ * @property-read int[] $booking_option_id
+ * @property-read int[] $exclude_parent_group_id
  */
 class GenerateGroupsRequest extends FormRequest
 {
@@ -21,12 +24,14 @@ class GenerateGroupsRequest extends FormRequest
             // Cast IDs to integers.
             'booking_option_id' => array_map(
                 'intval',
+                /** @phpstan-ignore booleanAnd.rightAlwaysTrue */
                 isset($this->booking_option_id) && is_array($this->booking_option_id)
                     ? $this->booking_option_id
                     : []
             ),
             'exclude_parent_group_id' => array_map(
                 'intval',
+                /** @phpstan-ignore booleanAnd.rightAlwaysTrue */
                 isset($this->exclude_parent_group_id) && is_array($this->exclude_parent_group_id)
                     ? $this->exclude_parent_group_id
                     : []
@@ -35,13 +40,12 @@ class GenerateGroupsRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array|string>
+     * @return array<string, array<int, string|Stringable|ValidationRule>>
      */
     public function rules(): array
     {
         $selectedBookingOptionIds = array_intersect(
+            /** @phpstan-ignore-next-line argument.type */
             $this->input('booking_option_id'),
             $this->event->getBookingOptions()->pluck('id')->toArray()
         );
@@ -85,13 +89,18 @@ class GenerateGroupsRequest extends FormRequest
         ];
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function attributes(): array
     {
+        /** @var array<string, string> $attributes */
         $attributes = [
             'booking_option_id' => __('Booking options'),
             'exclude_parent_group_id' => __('Exclude members of groups'),
         ];
 
+        /** @phpstan-ignore-next-line argument.type */
         foreach (range(0, count($this->input('exclude_parent_group_id')) - 1) as $id) {
             $attributes['exclude_parent_group_id.' . $id] = __('Exclude members of groups');
         }

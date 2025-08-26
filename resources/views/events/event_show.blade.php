@@ -30,6 +30,11 @@
             <x-bs::badge variant="danger">{{ formatInt($event->groups_count) }}</x-bs::badge>
         </x-bs::button.link>
     @endcan
+    @can('forceDelete', $event)
+        <x-form.delete-modal :id="$event->id"
+                             :name="$event->name"
+                             :route="route('events.destroy', $event)"/>
+    @endcan
 @endsection
 
 @section('content')
@@ -53,10 +58,11 @@
                 @can('create', [\App\Models\BookingOption::class, $event])
                     <div @class([
                         'mt-3' => $event->bookingOptions->isNotEmpty(),
+                        'd-print-none',
                     ])>
-                        <x-button.create href="{{ route('booking-options.create', $event) }}">
-                            {{ __('Create booking option') }}
-                        </x-button.create>
+                        <x-bs::button.link href="{{ route('booking-options.create', $event) }}">
+                            <i class="fa fa-fw fa-plus"></i> {{ __('Create booking option') }}
+                        </x-bs::button.link>
                     </div>
                 @endcan
             @endif
@@ -138,10 +144,10 @@
                             ])
                         @endif
                         @can('createChild', $event)
-                            <div class="mt-3">
-                                <x-button.create href="{{ route('events.create', ['parent_event_id' => $event->id]) }}">
-                                    {{ __('Create event') }}
-                                </x-button.create>
+                            <div class="mt-3 d-print-none">
+                                <x-bs::button.link href="{{ route('events.create', ['parent_event_id' => $event->id, 'location_id' => $event->location->id, 'organization_id' => $event->organization->id]) }}">
+                                    <i class="fa fa-fw fa-plus"></i> {{ __('Create event') }}
+                                </x-bs::button.link>
                             </div>
                         @endcan
                     </section>

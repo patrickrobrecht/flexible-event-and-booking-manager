@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Enums\ActiveStatus;
 use App\Models\User;
-use App\Options\ActiveStatus;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Auth\SessionGuard;
 use Illuminate\Foundation\Http\FormRequest;
@@ -14,6 +14,9 @@ use Illuminate\Validation\ValidationException;
 
 class LoginRequest extends FormRequest
 {
+    /**
+     * @return array<string, string[]>
+     */
     public function rules(): array
     {
         return [
@@ -85,6 +88,7 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
+        /** @phpstan-ignore-next-line argument.type */
         return Str::lower($this->input('email')) . '|' . $this->ip();
     }
 }

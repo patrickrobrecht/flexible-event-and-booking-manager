@@ -2,7 +2,7 @@
 
 namespace App\Models\Traits;
 
-use App\Options\FilterValue;
+use App\Enums\FilterValue;
 use Illuminate\Database\Eloquent\Builder;
 
 trait FiltersByRelationExistence

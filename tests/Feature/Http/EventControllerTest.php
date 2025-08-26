@@ -2,35 +2,34 @@
 
 namespace Tests\Feature\Http;
 
+use App\Enums\Ability;
+use App\Enums\EventType;
+use App\Enums\FilterValue;
+use App\Enums\Visibility;
 use App\Http\Controllers\EventController;
 use App\Http\Requests\EventRequest;
 use App\Http\Requests\Filters\EventFilterRequest;
+use App\Models\Document;
 use App\Models\Event;
-use App\Options\Ability;
-use App\Options\EventType;
-use App\Options\FilterValue;
-use App\Options\Visibility;
+use App\Models\EventSeries;
 use App\Policies\EventPolicy;
-use Database\Factories\EventFactory;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Closure;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
-use Tests\Traits\GeneratesTestData;
 
+#[CoversClass(Document::class)]
 #[CoversClass(Event::class)]
 #[CoversClass(EventController::class)]
-#[CoversClass(EventFactory::class)]
 #[CoversClass(EventFilterRequest::class)]
 #[CoversClass(EventPolicy::class)]
 #[CoversClass(EventRequest::class)]
+#[CoversClass(EventSeries::class)]
 #[CoversClass(EventType::class)]
 #[CoversClass(FilterValue::class)]
 #[CoversClass(Visibility::class)]
 class EventControllerTest extends TestCase
 {
-    use GeneratesTestData;
-    use RefreshDatabase;
-
     public function testUserCanViewEventsOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('/events', Ability::ViewEvents);
@@ -75,6 +74,7 @@ class EventControllerTest extends TestCase
     public function testUserCanUpdateEventOnlyWithCorrectAbility(): void
     {
         $event = self::createEvent();
+        /** @var array{slug: string} $data */
         $data = $this->generateRandomEventData();
 
         $this->assertUserCanPutOnlyWithAbility(
@@ -82,16 +82,57 @@ class EventControllerTest extends TestCase
             $data,
             Ability::EditEvents,
             "/events/{$event->slug}/edit",
-            "/events/{$data['slug']}/edit"
+            "/events/{$data['slug']}"
         );
     }
 
+    public function testUserCanDeleteEventsOnlyWithCorrectAbility(): void
+    {
+        $event = self::createEvent();
+        self::createGroups($event, 2);
+
+        $this->assertDatabaseHas('events', ['id' => $event->id]);
+        $this->assertUserCanDeleteOnlyWithAbility("/events/{$event->slug}", Ability::DestroyEvents, '/events');
+        $this->assertDatabaseMissing('events', ['id' => $event->id]);
+    }
+
+    /**
+     * @param Closure(): Event $eventProvider
+     */
+    #[DataProvider('eventsWithReferences')]
+    public function testUserCannotDeleteEventsBecauseOfReferences(Closure $eventProvider, string $message): void
+    {
+        $event = $eventProvider();
+
+        $this->assertUserCannotDeleteDespiteAbility("/events/{$event->slug}", [Ability::ViewEvents, Ability::DestroyEvents], null)
+            ->assertSee($message);
+    }
+
+    /**
+     * @return array<int, array{Closure(): Event, string}>
+     */
+    public static function eventsWithReferences(): array
+    {
+        return [
+            [fn () => self::createEvent(subEventsCount: 3), 'kann nicht gelöscht werden, weil die Veranstaltung 3 Teil-Veranstaltungen hat.'],
+            [fn () => self::createBooking()->bookingOption->event, 'kann nicht gelöscht werden, weil die Veranstaltung 1 Anmeldeoption hat.'],
+            [fn () => self::createBookingOptionForEvent()->event, 'kann nicht gelöscht werden, weil die Veranstaltung 1 Anmeldeoption hat.'],
+            [fn () => self::createEventWithBookingOptions(bookingOptionCount: 3), 'kann nicht gelöscht werden, weil die Veranstaltung 3 Anmeldeoptionen hat.'],
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
     private function generateRandomEventData(): array
     {
+        /** @var Event $eventData */
         $eventData = Event::factory()->makeOne();
         return [
             ...$eventData->toArray(),
+            /** @phpstan-ignore method.nonObject */
             'started_at' => $eventData->started_at->format('Y-m-d\TH:i'),
+            /** @phpstan-ignore method.nonObject */
             'finished_at' => $eventData->finished_at->format('Y-m-d\TH:i'),
             'location_id' => self::createLocation()->id,
             'organization_id' => self::createOrganization()->id,

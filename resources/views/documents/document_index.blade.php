@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @php
-    use App\Options\FilterValue;
+    use App\Enums\FilterValue;
 
     /** @var \Illuminate\Pagination\LengthAwarePaginator|\App\Models\Document[] $documents */
 @endphp
@@ -23,12 +23,12 @@
             </div>
             <div class="col-12 col-sm-6 col-xl-3">
                 <x-bs::form.field id="file_type" name="filter[file_type]" type="select"
-                                  :options="\App\Options\FileType::toOptionsWithAll()"
+                                  :options="\App\Enums\FileType::toOptionsWithAll()"
                                   :from-query="true"><i class="fa fa-fw fa-file-circle-question"></i> {{ __('File type') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-sm-6 col-xl-3">
                 <x-bs::form.field id="approval_status" name="filter[approval_status]" type="select"
-                                  :options="\App\Options\ApprovalStatus::toOptionsWithAll()"
+                                  :options="\App\Enums\ApprovalStatus::toOptionsWithAll()"
                                   :cast="FilterValue::castToIntIfNoValue()"
                                   :from-query="true"><i class="fa fa-fw fa-circle-question"></i> {{ __('Approval status') }}</x-bs::form.field>
             </div>
@@ -45,7 +45,7 @@
     <div class="row my-3">
         @foreach($documents as $document)
             <div class="col-12 col-md-6 mb-3">
-                <div class="card">
+                <div class="card avoid-break">
                     <div class="card-header">
                         <h2 class="card-title">
                             <i class="{{ $document->file_type->getIconClass() }} text-primary" title="{{ $document->file_type->getTranslatedName() }}"></i>
@@ -98,14 +98,12 @@
                         </x-bs::list.item>
                     </x-bs::list>
                     @canany(['download', 'update'], $document)
-                        <div class="card-body">
-                            <x-bs::button.group>
-                                @include('documents.shared.document_download_link')
-                                @can('update', $document)
-                                    <x-button.edit href="{{ route('documents.edit', $document) }}"/>
-                                @endcan
-                                @include('documents.shared.document_delete_modal_button')
-                            </x-bs::button.group>
+                        <div class="card-body d-flex flex-wrap gap-1 d-print-none">
+                            @include('documents.shared.document_download_link')
+                            @can('update', $document)
+                                <x-button.edit href="{{ route('documents.edit', $document) }}"/>
+                            @endcan
+                            @include('documents.shared.document_delete_modal_button')
                             @include('documents.shared.document_delete_modal')
                         </div>
                     @endcanany

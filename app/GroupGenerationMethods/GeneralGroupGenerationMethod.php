@@ -28,9 +28,9 @@ abstract class GeneralGroupGenerationMethod implements GeneratesGroups
      * Generate $groupsWithoutAdditionalBookings             groups with each $bookingsPerGroup     bookings
      *      and $groupsCount - $groupsWithAdditionalBookings groups with each $bookingsPerGroup + 1 bookings.
      *
-     * @param  Collection<Booking> $bookings
+     * @param  Collection<int, Booking> $bookings
      *
-     * @return array<Collection<Booking>>
+     * @return array<Collection<int, Booking>>
      */
     protected function buildGroups(
         Collection $bookings
@@ -50,9 +50,9 @@ abstract class GeneralGroupGenerationMethod implements GeneratesGroups
     }
 
     /**
-     * @param Collection<Booking> $bookings
+     * @param Collection<int, Booking> $bookings
      *
-     * @return Collection<Booking>
+     * @return Collection<int, Booking>
      */
     abstract protected function sortBookings(Collection $bookings): Collection;
 }

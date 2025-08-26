@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
+use App\Enums\Ability;
+use App\Enums\FilterValue;
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\FiltersByRelationExistence;
-use App\Options\Ability;
-use App\Options\FilterValue;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -21,7 +21,7 @@ use Spatie\QueryBuilder\Enums\SortDirection;
  * @property string $name
  * @property string[] $abilities
  *
- * @property-read Collection|User[] $users {@see UserRole::users()}
+ * @property-read Collection|User[] $users {@see self::users()}
  */
 class UserRole extends Model
 {
@@ -49,6 +49,15 @@ class UserRole extends Model
         return $this->scopeRelation($query, $userId, 'users', fn (Builder $q) => $q->where('user_id', '=', $userId));
     }
 
+    public function deleteAfterDetachingUsers(): bool|null
+    {
+        $this->users()->detach();
+        return $this->delete();
+    }
+
+    /**
+     * @param array<string, mixed> $validatedData
+     */
     public function fillAndSave(array $validatedData): bool
     {
         return $this->fill($validatedData)->save();
@@ -59,6 +68,9 @@ class UserRole extends Model
         return in_array($ability->value, $this->abilities, true);
     }
 
+    /**
+     * @return AllowedFilter[]
+     */
     public static function allowedFilters(): array
     {
         return [
@@ -69,6 +81,9 @@ class UserRole extends Model
         ];
     }
 
+    /**
+     * @return array<string, string>
+     */
     public static function filterOptions(): array
     {
         return [

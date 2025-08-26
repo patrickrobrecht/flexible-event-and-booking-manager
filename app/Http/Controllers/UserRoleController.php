@@ -39,8 +39,12 @@ class UserRoleController extends Controller
 
         $userRole = new UserRole();
         if ($userRole->fillAndSave($request->validated())) {
-            Session::flash('success', __('Created successfully.'));
-            return redirect(route('user-roles.edit', $userRole));
+            Session::flash('success', __(':name created successfully.', ['name' => $userRole->name]));
+            return $this->actionAwareRedirect(
+                $request,
+                route('user-roles.show', $userRole),
+                createRoute: route('user-roles.create')
+            );
         }
 
         return back();
@@ -69,7 +73,23 @@ class UserRoleController extends Controller
         $this->authorize('update', $userRole);
 
         if ($userRole->fillAndSave($request->validated())) {
-            Session::flash('success', __('Saved successfully.'));
+            Session::flash('success', __(':name saved successfully.', ['name' => $userRole->name]));
+        }
+
+        return $this->actionAwareRedirect(
+            $request,
+            route('user-roles.show', $userRole),
+            editRoute: route('user-roles.edit', $userRole)
+        );
+    }
+
+    public function destroy(UserRole $userRole): RedirectResponse
+    {
+        $this->authorize('forceDelete', $userRole);
+
+        if ($userRole->deleteAfterDetachingUsers()) {
+            Session::flash('success', __(':name deleted successfully.', ['name' => $userRole->name]));
+            return redirect(route('user-roles.index'));
         }
 
         return back();

@@ -11,16 +11,17 @@
         "build": "vite build"
     },
     "devDependencies": {
-        "@eslint/js": "^9.20.0",
+        "@eslint/js": "^9.22.0",
         "@fortawesome/fontawesome-free": "^6.7.2",
         "alpinejs": "^3.14.8",
         "axios": "^1.7.9",
         "bootstrap": "^5.3.3",
-        "eslint": "^9.20.1",
+        "eslint": "^9.22.0",
         "laravel-vite-plugin": "^1.2.0",
-        "sass": "^1.85.0",
+        "rapidoc": "^9.3.8",
+        "sass": "^1.85.1",
         "sass-loader": "^16.0.5",
-        "stylelint": "^16.14.1",
+        "stylelint": "^16.15.0",
         "stylelint-config-recommended-scss": "^14.1.0",
         "vite": "^6.1.0",
         "vite-plugin-static-copy": "^2.2.0"

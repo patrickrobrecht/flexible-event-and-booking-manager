@@ -27,11 +27,11 @@
             <div class="col-12 col-lg-6">
                 <div class="row">
                     <div class="col-12 col-md-6">
-                        <x-bs::form.field name="first_name" type="text"
+                        <x-bs::form.field name="first_name" type="text" maxlength="255" :required="true"
                                           :value="$user->first_name ?? null">{{ __('First name') }}</x-bs::form.field>
                     </div>
                     <div class="col-12 col-md-6">
-                        <x-bs::form.field name="last_name" type="text"
+                        <x-bs::form.field name="last_name" type="text" maxlength="255" :required="true"
                                           :value="$user->last_name ?? null">{{ __('Last name') }}</x-bs::form.field>
                     </div>
                 </div>
@@ -45,7 +45,7 @@
                                           :value="$user->phone ?? null"><i class="fa fa-fw fa-phone"></i> {{ __('Phone number') }}</x-bs::form.field>
                     </div>
                 </div>
-                <x-bs::form.field name="email" type="email"
+                <x-bs::form.field name="email" type="email" maxlength="255" :required="true"
                                   :value="$user->email ?? null"><i class="fa fa-fw fa-at"></i> {{ __('E-mail') }}</x-bs::form.field>
                 @isset($user->email_verified_at)
                     <x-bs::alert variant="primary">
@@ -60,11 +60,15 @@
                     </x-bs::alert>
                 @endisset
                 <x-bs::form.field name="password" type="password" autocomplete="new-password">
-                    <i class="fa fa-fw fa-key"></i> {{ __('New password') }}
+                    <i class="fa fa-fw fa-lock"></i> {{ __('New password') }}
                     <x-slot:hint>{{ __('Leave empty to keep the current password.') }}</x-slot:hint>
                 </x-bs::form.field>
                 <x-bs::form.field name="password_confirmation" type="password"
-                                  autocomplete="new-password"><i class="fa fa-fw fa-key"></i> {{ __('Confirm password') }}</x-bs::form.field>
+                                  autocomplete="new-password"><i class="fa fa-fw fa-lock"></i> {{ __('Confirm new password') }}</x-bs::form.field>
+                <x-bs::form.field name="current_password" type="password">
+                    <i class="fa fa-fw fa-lock-open"></i> {{ __('Current password') }}
+                    <x-slot:hint>{{ __('Please confirm your current password when changing your password or e-mail address.') }}</x-slot:hint>
+                </x-bs::form.field>
             </div>
             <div class="col-12 col-lg-6">
                 @include('_shared.address_fields_form', [
@@ -72,9 +76,6 @@
                 ])
             </div>
         </div>
-
-        <x-button.save>
-            @isset($user){{ __( 'Save' ) }} @else{{ __('Create') }}@endisset
-        </x-button.save>
+        <x-bs::button><i class="fa fa-fw fa-save"></i> {{ __('Save') }}</x-bs::button>
     </x-bs::form>
 @endsection

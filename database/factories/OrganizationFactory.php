@@ -2,8 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Enums\ActiveStatus;
+use App\Models\Location;
 use App\Models\Organization;
-use App\Options\ActiveStatus;
+use Database\Factories\Traits\BelongsToLocation;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -12,6 +14,8 @@ use Illuminate\Support\Str;
  */
 class OrganizationFactory extends Factory
 {
+    use BelongsToLocation;
+
     public function definition(): array
     {
         $name = $this->faker->company();
@@ -24,6 +28,11 @@ class OrganizationFactory extends Factory
             'email' => sprintf('%s@%s', Str::slug($name), $this->faker->unique()->domainName()),
             'website_url' => $this->faker->optional()->url(),
         ];
+    }
+
+    public function forLocation(?Location $location = null): static
+    {
+        return $this->for($location ?? Location::factory()->create());
     }
 
     public function withBankAccount(): static

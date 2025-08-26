@@ -8,30 +8,17 @@ use App\Models\BookingOption;
 use App\Models\Event;
 use App\Models\Location;
 use App\Models\User;
-use Database\Factories\BookingFactory;
-use Database\Factories\BookingOptionFactory;
-use Database\Factories\EventFactory;
-use Database\Factories\LocationFactory;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
-use Tests\Traits\GeneratesTestData;
 
-#[CoversClass(DashboardController::class)]
 #[CoversClass(Booking::class)]
-#[CoversClass(BookingFactory::class)]
 #[CoversClass(BookingOption::class)]
-#[CoversClass(BookingOptionFactory::class)]
+#[CoversClass(DashboardController::class)]
 #[CoversClass(Event::class)]
-#[CoversClass(EventFactory::class)]
 #[CoversClass(Location::class)]
-#[CoversClass(LocationFactory::class)]
 class DashboardControllerTest extends TestCase
 {
-    use GeneratesTestData;
-    use RefreshDatabase;
-
     public function testGuestCanViewTheDashboard(): void
     {
         $this->createEvents(User::factory()->create(), 5);
@@ -50,9 +37,12 @@ class DashboardControllerTest extends TestCase
         $response = $this->get('/')
             ->assertOk()
             ->assertSee('fa-file-contract');
-        $events->each(fn ($event) => $response->assertSee($event->name));
+        $events->each(fn (Event $event) => $response->assertSee($event->name));
     }
 
+    /**
+     * @return Collection<int, Event>
+     */
     private function createEvents(User $bookedByUser, int $eventsCount): Collection
     {
         return Event::factory()

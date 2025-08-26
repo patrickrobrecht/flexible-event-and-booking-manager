@@ -2,16 +2,19 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\BookingRestriction;
 use App\Models\BookingOption;
 use App\Models\Event;
-use App\Options\BookingRestriction;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Stringable;
 
 /**
  * @property Event $event
  * @property ?BookingOption $booking_option
+ * @property-read ?string $slug
  */
 class BookingOptionRequest extends FormRequest
 {
@@ -25,9 +28,7 @@ class BookingOptionRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, mixed>
+     * @return array<string, array<int, string|Stringable|ValidationRule>>
      */
     public function rules(): array
     {
@@ -70,9 +71,12 @@ class BookingOptionRequest extends FormRequest
                 'lte:999999.99',
                 Rule::prohibitedIf(!isset($this->event->organization->iban)),
             ],
-            'book_for_self_only' => [
+            'payment_due_days' => [
                 'nullable',
-                'bool',
+                'required_with:price',
+                'integer',
+                'gte:0',
+                'lte:365',
             ],
             'restrictions' => [
                 'nullable',
@@ -80,6 +84,10 @@ class BookingOptionRequest extends FormRequest
             ],
             'restrictions.*' => [
                 BookingRestriction::rule(),
+            ],
+            'confirmation_text' => [
+                'nullable',
+                'string',
             ],
         ];
     }

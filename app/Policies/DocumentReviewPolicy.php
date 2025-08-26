@@ -2,10 +2,10 @@
 
 namespace App\Policies;
 
+use App\Enums\Ability;
 use App\Models\Document;
 use App\Models\DocumentReview;
 use App\Models\User;
-use App\Options\Ability;
 use App\Policies\Traits\ChecksAbilities;
 use Illuminate\Auth\Access\Response;
 
@@ -62,8 +62,11 @@ class DocumentReviewPolicy
              * - they are responsible for the event, event series or organization the document was uploaded to.
              * - they uploaded the document.
              */
-            $user->is($document->uploadedByUser)
-            || $user->isResponsibleFor($document->reference)
+            isset($document)
+            && (
+                $user->is($document->uploadedByUser)
+                || $user->isResponsibleFor($document->reference)
+            )
         ) {
             return $this->allow();
         }

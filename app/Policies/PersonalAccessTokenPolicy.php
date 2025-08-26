@@ -2,9 +2,9 @@
 
 namespace App\Policies;
 
+use App\Enums\Ability;
 use App\Models\PersonalAccessToken;
 use App\Models\User;
-use App\Options\Ability;
 use App\Policies\Traits\ChecksAbilities;
 use Illuminate\Auth\Access\Response;
 
@@ -35,6 +35,11 @@ class PersonalAccessTokenPolicy
     public function view(User $user, PersonalAccessToken $personalAccessToken): Response
     {
         return $this->update($user, $personalAccessToken);
+    }
+
+    public function viewDocumentation(User $user): Response
+    {
+        return $this->requireAbility($user, Ability::ViewApiDocumentation);
     }
 
     /**

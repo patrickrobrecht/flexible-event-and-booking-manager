@@ -16,15 +16,15 @@
 @endsection
 
 @section('content')
-    <x-bs::button.group>
-        @can('create', \App\Models\PersonalAccessToken::class)
-            <x-button.create href="{{ route('personal-access-tokens.create') }}">
-                {{ __('Create personal access token') }}
-            </x-button.create>
-        @endcan
-    </x-bs::button.group>
+    @include('docs.docs-link')
 
-    <x-alert.count class="mt-3" :count="$user->tokens->count()" />
+    @can('create', \App\Models\PersonalAccessToken::class)
+        <x-bs::button.link href="{{ route('personal-access-tokens.create') }}">
+            <i class="fa fa-fw fa-plus"></i> {{ __('Create personal access token') }}
+        </x-bs::button.link>
+    @endcan
+
+    <x-alert.count class="mt-3" :count="$user->tokens->count()"/>
 
     <div class="row my-3">
         @foreach($user->tokens as $token)
@@ -39,16 +39,18 @@
                             @endif
                         </p>
                     </div>
-                    <div class="card-body">
-                        @can('update', $token)
-                            <x-button.edit href="{{ route('personal-access-tokens.edit', $token) }}"/>
-                        @endcan
-                        @can('forceDelete', $token)
-                            <x-button.delete form="delete-{{ $token->id }}" />
-                            <x-bs::form id="delete-{{ $token->id }}" method="DELETE"
-                                        action="{{ route('personal-access-tokens.destroy', $token) }}"/>
-                        @endcan
-                    </div>
+                    @canany(['update', 'forceDelete'], $token)
+                        <div class="card-body">
+                            @can('update', $token)
+                                <x-button.edit href="{{ route('personal-access-tokens.edit', $token) }}"/>
+                            @endcan
+                            @can('forceDelete', $token)
+                                <x-form.delete-modal :id="$token->id"
+                                                     :name="$token->name"
+                                                     :route="route('personal-access-tokens.destroy', $token)"/>
+                            @endcan
+                        </div>
+                    @endcanany
                 </div>
             </div>
         @endforeach

@@ -34,7 +34,7 @@ class CheckDocumentsCommand extends Command
     }
 
     /**
-     * @param Collection<Document> $documents
+     * @param Collection<int, Document> $documents
      */
     public function checkDocuments(Collection $documents): void
     {

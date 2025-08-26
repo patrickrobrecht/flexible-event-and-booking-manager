@@ -11,6 +11,8 @@
         $parentEventSeriesId = (int) \Portavice\Bladestrap\Support\ValueHelper::getFromQueryOrDefault('parent_event_series_id');
         $parentEventSeries = $allEventSeries->firstWhere('id', '=', $parentEventSeriesId);
     }
+
+    $isCreateForm = \Illuminate\Support\Facades\Request::routeIs('event-series.create');
 @endphp
 
 @section('title')
@@ -23,6 +25,16 @@
 
 @section('breadcrumbs')
     @include('event_series.shared.event_series_breadcrumbs')
+@endsection
+
+@section('headline-buttons')
+    @isset($eventSeries)
+        @can('forceDelete', $eventSeries)
+            <x-form.delete-modal :id="$eventSeries->id"
+                                 :name="$eventSeries->name"
+                                 :route="route('event-series.destroy', $eventSeries)"/>
+        @endcan
+    @endisset
 @endsection
 
 @section('content')
@@ -44,15 +56,16 @@
                     </x-slot:hint>
                 </x-bs::form.field>
                 <x-bs::form.field name="visibility" type="select"
-                                  :options="\App\Options\Visibility::toOptions()"
+                                  :options="\App\Enums\Visibility::toOptions()"
                                   :value="$eventSeries->visibility->value ?? null"><i class="fa fa-fw fa-eye"></i> {{ __('Visibility') }}</x-bs::form.field>
                 <x-bs::form.field name="organization_id" type="radio"
                                   :options="Options::fromModels($organizations, 'name')"
-                                  :value="$eventSeries->organization_id ?? null"><i class="fa fa-fw fa-sitemap"></i> {{ __('Organization') }}</x-bs::form.field>
+                                  :value="$eventSeries->organization_id ?? null"
+                                  :from-query="$isCreateForm"><i class="fa fa-fw fa-sitemap"></i> {{ __('Organization') }}</x-bs::form.field>
                 <x-bs::form.field name="parent_event_series_id" type="select"
                                   :options="Options::fromModels($allEventSeries->except($eventSeries->id ?? null), 'name')->prepend(__('none'), '')"
                                   :value="$eventSeries->parent_event_series_id ?? null"
-                                  :from-query="\Illuminate\Support\Facades\Request::routeIs('event-series.create')"><i class="fa fa-fw fa-calendar-days"></i> {{ __('Part of the event series') }}</x-bs::form.field>
+                                  :from-query="$isCreateForm"><i class="fa fa-fw fa-calendar-days"></i> {{ __('Part of the event series') }}</x-bs::form.field>
 
                 <section class="my-3">
                     <h2><i class="fa fa-fw fa-list-check"></i> {{ __('Responsibilities') }}</h2>
@@ -61,16 +74,8 @@
                     ])
                 </section>
 
-                <x-bs::button.group>
-                    <x-button.save>
-                        @isset($eventSeries)
-                            {{ __( 'Save' ) }}
-                        @else
-                            {{ __('Create') }}
-                        @endisset
-                    </x-button.save>
-                    <x-button.cancel href="{{ route('event-series.index') }}"/>
-                </x-bs::button.group>
+                <x-button.group-save :show-create="!isset($eventSeries)"
+                                     :index-route="route('event-series.index')"/>
             </x-bs::form>
         </div>
 

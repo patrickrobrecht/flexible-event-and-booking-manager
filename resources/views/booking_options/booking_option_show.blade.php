@@ -3,7 +3,6 @@
 @php
     /** @var \App\Models\Event $event */
     /** @var \App\Models\BookingOption $bookingOption */
-    $organization = $event->organization;
 @endphp
 
 @section('title')
@@ -31,14 +30,14 @@
         </div>
         <div class="col-12 col-lg-8 pt-3 pt-lg-0">
             @auth
-                @if($bookingOption->isRestrictedBy(\App\Options\BookingRestriction::VerifiedEmailAddressRequired) && Auth::user()?->email_verified_at === null)
+                @if($bookingOption->isRestrictedBy(\App\Enums\BookingRestriction::VerifiedEmailAddressRequired) && Auth::user()?->email_verified_at === null)
                     <x-bs::alert variant="danger">
                         {{ __('Bookings are only available for logged-in users with a verified email address.') }}
                         <a href="{{ route('verification.notice') }}" class="alert-link">{{ __('Verify e-mail address') }}</a>
                     </x-bs::alert>
                 @endif
             @else
-                @if($bookingOption->isRestrictedBy(\App\Options\BookingRestriction::AccountRequired))
+                @if($bookingOption->isRestrictedBy(\App\Enums\BookingRestriction::AccountRequired))
                     <x-bs::alert variant="danger">
                         {{ __('Bookings are only available for logged-in users.') }}
                         <a href="{{ route('login') }}" class="alert-link">{{ __('Login') }}</a>
@@ -71,18 +70,7 @@
                         'canEdit' => $canBookResponse->allowed(),
                     ])
 
-                    @if(isset($bookingOption->price) && $bookingOption->price)
-                        <x-bs::alert>
-                            {{ __('Please transfer :price to the following bank account:', [
-                                'price' => formatDecimal($bookingOption->price) . ' €',
-                            ]) }}
-                            <ul>
-                                <li>{{ __('Account holder') }}: {{ $organization->bank_account_holder ?? $organization->name }}</li>
-                                <li>IBAN: {{ $organization->iban }}</li>
-                                <li>{{ __('Bank') }}: {{ $organization->bank_name }}</li>
-                            </ul>
-                        </x-bs::alert>
-                    @endif
+                    @include('booking_options.shared.booking_option_payment')
 
                     <x-button.save :disabled="$canBookResponse->denied()">
                         @isset($bookingOption->price)

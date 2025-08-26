@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Enums\BookingRestriction;
 use App\Models\BookingOption;
-use App\Options\BookingRestriction;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -15,7 +15,7 @@ class BookingOptionFactory extends Factory
 {
     public function definition(): array
     {
-        $name = __('Booking option') . ' #' . $this->faker->unique()->randomNumber();
+        $name = __('Booking option') . ' #' . Str::padLeft($this->faker->unique()->randomNumber(), 8, '0');
 
         return [
             'name' => $name,
@@ -24,6 +24,8 @@ class BookingOptionFactory extends Factory
             'available_from' => $this->faker->dateTimeBetween('-30 years', '-1 day'),
             'available_until' => $this->faker->dateTimeBetween('+1 day', '+30 days'),
             'price' => $this->faker->randomFloat(2, 5, 100),
+            'payment_due_days' => $this->faker->numberBetween(5, 10),
+            'confirmation_text' => $this->faker->optional()->paragraph(),
         ];
     }
 
@@ -67,6 +69,7 @@ class BookingOptionFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'price' => null,
+            'payment_due_days' => null,
         ]);
     }
 }

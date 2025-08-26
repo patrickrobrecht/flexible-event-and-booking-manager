@@ -4,6 +4,9 @@ namespace App\Http\Requests\Traits;
 
 trait ValidatesAddressFields
 {
+    /**
+     * @return array<string, string[]>
+     */
     protected function rulesForAddressFields(string $default): array
     {
         return [

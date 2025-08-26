@@ -2,8 +2,8 @@
 
 namespace App\GroupGenerationMethods;
 
+use App\Enums\GroupGenerationMethod;
 use App\Models\Booking;
-use App\Options\GroupGenerationMethod;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
@@ -12,9 +12,9 @@ use Illuminate\Database\Eloquent\Collection;
 class RandomizedGroupGenerationMethod extends GeneralGroupGenerationMethod
 {
     /**
-     * @param Collection<Booking> $bookings
+     * @param Collection<int, Booking> $bookings
      *
-     * @return Collection<Booking>
+     * @return Collection<int, Booking>
      */
     protected function sortBookings(Collection $bookings): Collection
     {

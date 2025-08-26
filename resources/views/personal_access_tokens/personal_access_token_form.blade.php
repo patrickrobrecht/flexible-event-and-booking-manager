@@ -24,11 +24,13 @@
 @endsection
 
 @section('content')
+    @include('docs.docs-link')
+
     <x-bs::form method="{{ isset($token) ? 'PUT' : 'POST' }}"
                 action="{{ isset($token) ? route('personal-access-tokens.update', $token) : route('personal-access-tokens.store') }}">
         <div class="row">
             <div class="col-12 col-md-6">
-                <x-bs::form.field name="name" type="text"
+                <x-bs::form.field name="name" type="text" maxlength="255" :required="true"
                                   :value="$token->name ?? null">{{ __('Name') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6">
@@ -42,18 +44,25 @@
                 </x-bs::form.field>
             </div>
         </div>
-        <x-bs::form.field id="abilities" name="abilities[]" type="switch"
-                          :options="\Portavice\Bladestrap\Support\Options::fromEnum(\App\Options\Ability::apiCases(), 'getTranslatedName')"
-                          :value="$token->abilities ?? []"
-                          check-container-class="cols-lg-2 cols-xl-3 cols-xxl-4"><i class="fa fa-fw fa-user-shield"></i> {{ __('Abilities') }}</x-bs::form.field>
+        <div class="cols-lg-2 cols-xxl-3 mb-3">
+            @include('user_roles.ability_group', [
+                'selectableAbilities' => \App\Enums\Ability::apiCases(),
+                'selectedAbilities' => $token->abilities ?? [],
+                'abilityGroups' => \App\Enums\AbilityGroup::casesAtRootLevel(),
+                'editable' => true,
+                'headlineLevel' => 3,
+            ])
+        </div>
 
-        <x-bs::button.group>
-            <x-button.save>
-                @isset($token){{ __( 'Save' ) }} @else{{ __('Create') }}@endisset
-            </x-button.save>
-            <x-button.cancel href="{{ route('personal-access-tokens.index') }}"/>
-        </x-bs::button.group>
+        <div class="d-flex flex-wrap gap-1">
+            <x-bs::button>
+                <i class="fa fa-fw fa-save"></i> {{ __('Save') }}
+            </x-bs::button>
+            <x-bs::button.link variant="danger" href="{{ route('personal-access-tokens.index') }}">
+                <i class="fa fa-fw fa-window-close"></i> {{ __('Discard') }}
+            </x-bs::button.link>
+        </div>
     </x-bs::form>
 
-    <x-text.timestamp :model="$token ?? null" />
+    <x-text.timestamp :model="$token ?? null"/>
 @endsection

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\ActiveStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
-use App\Options\ActiveStatus;
 use App\Policies\UserPolicy;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;

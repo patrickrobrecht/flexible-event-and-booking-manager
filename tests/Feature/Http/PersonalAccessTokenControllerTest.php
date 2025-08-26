@@ -2,15 +2,13 @@
 
 namespace Tests\Feature\Http;
 
+use App\Enums\Ability;
 use App\Http\Controllers\PersonalAccessTokenController;
 use App\Http\Requests\PersonalAccessTokenRequest;
 use App\Models\PersonalAccessToken;
 use App\Models\User;
-use App\Options\Ability;
 use App\Policies\PersonalAccessTokenPolicy;
 use App\Providers\AppServiceProvider;
-use Database\Factories\PersonalAccessTokenFactory;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 
@@ -18,13 +16,10 @@ use Tests\TestCase;
 #[CoversClass(AppServiceProvider::class)]
 #[CoversClass(PersonalAccessToken::class)]
 #[CoversClass(PersonalAccessTokenController::class)]
-#[CoversClass(PersonalAccessTokenFactory::class)]
 #[CoversClass(PersonalAccessTokenPolicy::class)]
 #[CoversClass(PersonalAccessTokenRequest::class)]
 class PersonalAccessTokenControllerTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testUserCanViewOwnPersonalAccessTokensOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('/personal-access-tokens', Ability::ManagePersonalAccessTokens);

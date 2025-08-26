@@ -3,6 +3,7 @@
 namespace App\Models\Traits;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
@@ -18,14 +19,21 @@ trait HasSlugForRouting
         return 'slug';
     }
 
+    /**
+     * @param int|string $value
+     */
+    /** @phpstan-ignore method.childParameterType */
     public function resolveRouteBinding($value, $field = null): ?static
     {
-        /** @var ?static $model */
-        $model = self::query()
-             ->where('slug', '=', $value)
-             ->firstOrFail();
-
-        return $model;
+        try {
+            return self::query()
+                 ->where('slug', '=', $value)
+                 ->firstOrFail();
+        } catch (ModelNotFoundException $exception) {
+            // Set $value as model IDs for proper exception handling.
+            /** @phpstan-ignore argument.type */
+            throw $exception->setModel($exception->getModel(), [$value]);
+        }
     }
 
     public function getSlugOptions(): SlugOptions

@@ -2,36 +2,33 @@
 
 namespace Tests\Feature\Http;
 
+use App\Enums\Ability;
+use App\Enums\FilterValue;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Requests\Filters\OrganizationFilterRequest;
 use App\Http\Requests\OrganizationRequest;
 use App\Models\BookingOption;
+use App\Models\Document;
 use App\Models\Event;
 use App\Models\Location;
 use App\Models\Organization;
-use App\Options\Ability;
-use App\Options\FilterValue;
 use App\Policies\OrganizationPolicy;
 use Closure;
 use Database\Factories\OrganizationFactory;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
-use Tests\Traits\GeneratesTestData;
 
+#[CoversClass(Document::class)]
+#[CoversClass(Event::class)]
 #[CoversClass(FilterValue::class)]
 #[CoversClass(Organization::class)]
 #[CoversClass(OrganizationController::class)]
-#[CoversClass(OrganizationFactory::class)]
 #[CoversClass(OrganizationFilterRequest::class)]
 #[CoversClass(OrganizationPolicy::class)]
 #[CoversClass(OrganizationRequest::class)]
 class OrganizationControllerTest extends TestCase
 {
-    use GeneratesTestData;
-    use RefreshDatabase;
-
     public function testUserCanViewOrganizationsOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('/organizations', Ability::ViewOrganizations);
@@ -62,11 +59,9 @@ class OrganizationControllerTest extends TestCase
 
     public function testUserCanStoreOrganizationOnlyWithCorrectAbility(): void
     {
-        $locations = Location::factory()->count(5)->create();
-        $organization = Organization::factory()->makeOne();
         $data = [
-            ...$organization->toArray(),
-            'location_id' => $this->faker->randomElement($locations)->id,
+            ...self::makeData(Organization::factory()),
+            'location_id' => Location::factory()->create()->id,
         ];
 
         $this->assertUserCanPostOnlyWithAbility('organizations', $data, Ability::CreateOrganizations, null);
@@ -80,9 +75,10 @@ class OrganizationControllerTest extends TestCase
     public function testUserCanUpdateOrganizationOnlyWithCorrectAbility(): void
     {
         $organization = $this->createRandomOrganization();
+        /** @var array{slug: string} $data */
         $data = [
-            ...Organization::factory()->makeOne()->toArray(),
-            'location_id' => $this->faker->randomElement(Location::factory()->count(5)->create())->id,
+            ...self::makeData(Organization::factory()),
+            'location_id' => Location::factory()->create()->id,
         ];
 
         $this->assertUserCanPutOnlyWithAbility(
@@ -90,7 +86,7 @@ class OrganizationControllerTest extends TestCase
             $data,
             Ability::EditOrganizations,
             "/organizations/{$organization->slug}/edit",
-            "/organizations/{$data['slug']}/edit"
+            "/organizations/{$data['slug']}"
         );
     }
 
@@ -104,6 +100,7 @@ class OrganizationControllerTest extends TestCase
         Closure $dataProvider,
         bool $ok
     ): void {
+        /** @var Organization $organization */
         $organization = $organizationProvider()
             ->for(self::createLocation())
             ->create();
@@ -123,6 +120,9 @@ class OrganizationControllerTest extends TestCase
             ]);
     }
 
+    /**
+     * @return array<int, mixed[]>
+     */
     public static function updateBankAccountCases(): array
     {
         return [
@@ -163,6 +163,39 @@ class OrganizationControllerTest extends TestCase
                 fn () => Organization::factory(),
                 false,
             ],
+        ];
+    }
+
+    public function testUserCanDeleteOrganizationsOnlyWithCorrectAbility(): void
+    {
+        $organization = self::createOrganization();
+
+        $this->assertDatabaseHas('organizations', ['id' => $organization->id]);
+        $this->assertUserCanDeleteOnlyWithAbility("/organizations/{$organization->slug}", Ability::DestroyOrganizations, '/organizations');
+        $this->assertDatabaseMissing('organizations', ['id' => $organization->id]);
+    }
+
+    /**
+     * @param Closure(): Organization $organizationProvider
+     */
+    #[DataProvider('organizationsWithReferences')]
+    public function testUserCannotDeleteOrganizationBecauseOfReferences(Closure $organizationProvider, string $message): void
+    {
+        $organization = $organizationProvider();
+
+        $this->assertUserCannotDeleteDespiteAbility("/organizations/{$organization->slug}", [Ability::ViewOrganizations, Ability::DestroyOrganizations], null)
+            ->assertSee($message);
+    }
+
+    /**
+     * @return array<int, array{Closure(): Organization, string}>
+     */
+    public static function organizationsWithReferences(): array
+    {
+        return [
+            [fn () => self::createEvent()->organization, 'kann nicht gelöscht werden, weil die Organisation von 1 Veranstaltung referenziert wird.'],
+            [fn () => self::createEventSeries(eventsCount: 3)->organization, 'kann nicht gelöscht werden, weil die Organisation von 3 Veranstaltungen referenziert wird.'],
+            [fn () => self::createEventSeries(eventsCount: 0)->organization, 'kann nicht gelöscht werden, weil die Organisation von 1 Veranstaltungsreihe referenziert wird'],
         ];
     }
 

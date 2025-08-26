@@ -6,6 +6,7 @@ use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\FiltersByRelationExistence;
 use App\Models\Traits\HasAddress;
+use App\Models\Traits\HasIdForRouting;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
@@ -16,14 +17,14 @@ use Spatie\QueryBuilder\AllowedFilter;
 
 /**
  * @property-read int $id
- * @property string $name
+ * @property ?string $name
  * @property ?string $website_url
  *
- * @property-read string[] $fullAddressBlock {@see Location::fullAddressBlock()}
- * @property-read string $nameOrAddress {@see Location::nameOrAddress()}
+ * @property-read string[] $fullAddressBlock {@see self::fullAddressBlock()}
+ * @property-read string $nameOrAddress {@see self::nameOrAddress()}
  *
- * @property-read Collection|Event $events {@see Location::events()}
- * @property-read Collection|Organization $organizations {@see Location::organizations()}
+ * @property-read Collection|Event[] $events {@see self::events()}
+ * @property-read Collection|Organization[] $organizations {@see self::organizations()}
  */
 class Location extends Model
 {
@@ -31,12 +32,8 @@ class Location extends Model
     use FiltersByRelationExistence;
     use HasAddress;
     use HasFactory;
+    use HasIdForRouting;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'street',
@@ -81,11 +78,17 @@ class Location extends Model
         return $this->scopeRelation($query, $eventId, 'organizations', fn (Builder $q) => $q->where('organization_id', '=', $eventId));
     }
 
+    /**
+     * @param array<string, mixed> $validatedData
+     */
     public function fillAndSave(array $validatedData): bool
     {
         return $this->fill($validatedData)->save();
     }
 
+    /**
+     * @return AllowedFilter[]
+     */
     public static function allowedFilters(): array
     {
         return [

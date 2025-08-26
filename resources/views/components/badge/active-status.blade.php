@@ -1,23 +1,20 @@
 @php
-    /** @var \App\Options\ActiveStatus $active */
+    /** @var \App\Enums\ActiveStatus $active */
 @endphp
 @switch($active)
-    @case(\App\Options\ActiveStatus::Active)
+    @case(\App\Enums\ActiveStatus::Active)
         <x-bs::badge variant="success">
-            <i class="fa fa-check-circle"></i>
-            {{ __('active') }}
+            <i class="fa fa-check-circle"></i> {{ __('active') }}
         </x-bs::badge>
-    @break
-    @case(\App\Options\ActiveStatus::Inactive)
+        @break
+    @case(\App\Enums\ActiveStatus::Inactive)
         <x-bs::badge variant="danger">
-            <i class="fa fa-power-off"></i>
-            {{ __('inactive') }}
+            <i class="fa fa-power-off"></i> {{ __('inactive') }}
         </x-bs::badge>
-    @break
-    @case(\App\Options\ActiveStatus::Archived)
+        @break
+    @case(\App\Enums\ActiveStatus::Archived)
         <x-bs::badge variant="dark">
-            <i class="fa fa-archive"></i>
-            {{ __('archived') }}
+            <i class="fa fa-archive"></i> {{ __('archived') }}
         </x-bs::badge>
-    @break
+        @break
 @endswitch

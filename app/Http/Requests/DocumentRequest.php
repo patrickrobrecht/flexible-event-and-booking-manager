@@ -2,27 +2,31 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\ApprovalStatus;
+use App\Enums\FileType;
 use App\Http\Requests\Traits\ValidatesFiles;
 use App\Models\Document;
-use App\Models\Traits\HasDocuments;
-use App\Options\ApprovalStatus;
-use App\Options\FileType;
+use App\Models\Event;
+use App\Models\EventSeries;
+use App\Models\Organization;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Stringable;
 
 /**
  * @property ?Document $document
+ * @property-read ?Event $event
+ * @property-read ?EventSeries $event_series
+ * @property-read ?Organization $organization
  */
 class DocumentRequest extends FormRequest
 {
     use ValidatesFiles;
 
     /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array|string>
+     * @return array<string, array<int, string|Stringable|ValidationRule>>
      */
     public function rules(): array
     {
@@ -33,7 +37,7 @@ class DocumentRequest extends FormRequest
             'application/x-empty',
         ];
 
-        /** @var HasDocuments $reference */
+        /** @var Event|EventSeries|Organization $reference */
         $reference = $this->getReference();
 
         return [
@@ -61,10 +65,10 @@ class DocumentRequest extends FormRequest
             'approval_status' => [
                 (
                     $this->routeIs('*.documents.store')
-                    && $this->user()->can('approve', Document::class)
+                    && $this->user()?->can('approve', Document::class)
                 ) || (
                     $this->routeIs('documents.update')
-                    && $this->user()->can('approve', $this->document)
+                    && $this->user()?->can('approve', $this->document)
                 )
                     ? 'required'
                     : 'prohibited',
@@ -76,21 +80,25 @@ class DocumentRequest extends FormRequest
     private function getReference(): Model
     {
         if ($this->routeIs('documents.update')) {
+            /** @phpstan-ignore-next-line property.nonObject */
             return $this->document->reference;
         }
 
         if ($this->routeIs('events.documents.store')) {
+            /** @phpstan-ignore-next-line return.type */
             return $this->event;
         }
 
         if ($this->routeIs('event-series.documents.store')) {
+            /** @phpstan-ignore-next-line return.type */
             return $this->event_series;
         }
 
         if ($this->routeIs('organizations.documents.store')) {
+            /** @phpstan-ignore-next-line return.type */
             return $this->organization;
         }
 
-        throw new \InvalidArgumentException("{$this->route()->getName()} not supported");
+        throw new \InvalidArgumentException("{$this->route()?->getName()} not supported");
     }
 }

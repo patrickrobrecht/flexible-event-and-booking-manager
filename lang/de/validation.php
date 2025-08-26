@@ -145,6 +145,9 @@ return [
     */
 
     'custom' => [
+        'booking_id' => [
+            'required' => 'Mindestens eine Anmeldung muss ausgewählt werden.',
+        ],
         'house_number' => [
             'regex' => ':attribute muss eine Zahl mit optionalem Buchstabenzusatz sein.',
         ],
@@ -175,9 +178,11 @@ return [
         'available_until' => 'Ende des Anmeldezeitraums',
         'bank_account_holder' => 'Kontoinhaber',
         'bank_name' => 'Name der Bank',
+        'booking_id' => 'Anmeldung',
         'booking_option_id' => 'Anmeldeoption',
         'city' => 'Stadt',
         'comment' => 'Kommentar',
+        'confirmation_text' => 'Bestätigungstext',
         'country' => 'Land',
         'current_password' => 'Derzeitiges Passwort',
         'date' => 'Datum',
@@ -209,12 +214,15 @@ return [
         'month' => 'Monat',
         'name' => 'Name',
         'organization_id' => 'Organisation',
+        'output' => 'Ausgabeformat',
         'paid_at' => 'Bezahlt am',
         'parent_event_id' => 'Teil der Veranstaltung',
         'parent_event_series_id' => 'Teil der Veranstaltungsreihe',
         'parent_organization_id' => 'Übergeordnete Organisation',
+        'parent_storage_location_id' => 'Übergeordneter Lagerplatz',
         'password' => 'Passwort',
         'password_confirmation' => 'Passwort Bestätigung',
+        'payment_due_days' => 'Zahlungsziel',
         'payment_status' => 'Zahlungsstatus',
         'phone' => 'Telefonnummer',
         'position' => 'Position',
@@ -237,6 +245,7 @@ return [
         'thickness' => 'Dicke',
         'time' => 'Uhrzeit',
         'title' => 'Titel',
+        'trashed' => 'Gelöschte anzeigen?',
         'unit' => 'Einheit',
         'user_role_id' => 'Benutzerrolle',
         'visibility' => 'Sichtbarkeit',

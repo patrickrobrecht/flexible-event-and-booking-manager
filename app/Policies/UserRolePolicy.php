@@ -2,9 +2,9 @@
 
 namespace App\Policies;
 
+use App\Enums\Ability;
 use App\Models\User;
 use App\Models\UserRole;
-use App\Options\Ability;
 use App\Policies\Traits\ChecksAbilities;
 use Illuminate\Auth\Access\Response;
 
@@ -65,6 +65,6 @@ class UserRolePolicy
      */
     public function forceDelete(User $user, UserRole $userRole): Response
     {
-        return $this->deny();
+        return $this->requireAbility($user, Ability::DestroyUserRoles);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Database\Factories\Traits;
 
-use App\Options\Visibility;
+use App\Enums\Visibility;
 
 trait HasVisibility
 {

@@ -2,34 +2,27 @@
 
 namespace Tests\Feature\Http;
 
+use App\Enums\Ability;
+use App\Enums\ApprovalStatus;
+use App\Enums\Visibility;
 use App\Http\Controllers\DocumentReviewController;
 use App\Http\Requests\DocumentReviewRequest;
 use App\Models\Document;
 use App\Models\DocumentReview;
-use App\Options\Ability;
-use App\Options\ApprovalStatus;
-use App\Options\Visibility;
 use App\Policies\DocumentReviewPolicy;
 use Closure;
-use Database\Factories\DocumentReviewFactory;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
-use Tests\Traits\GeneratesTestData;
 
 #[CoversClass(ApprovalStatus::class)]
 #[CoversClass(Document::class)]
 #[CoversClass(DocumentReview::class)]
 #[CoversClass(DocumentReviewController::class)]
-#[CoversClass(DocumentReviewFactory::class)]
 #[CoversClass(DocumentReviewPolicy::class)]
 #[CoversClass(DocumentReviewRequest::class)]
 class DocumentReviewControllerTest extends TestCase
 {
-    use GeneratesTestData;
-    use RefreshDatabase;
-
     #[DataProvider('referenceClasses')]
     public function testUserCanAddDocumentReviewOnlyWithCorrectAbility(Closure $referenceProvider): void
     {
@@ -93,6 +86,9 @@ class DocumentReviewControllerTest extends TestCase
             ->assertRedirect($documentReview->document->getRouteForComments());
     }
 
+    /**
+     * @return array<int, array{Closure}>
+     */
     public static function referenceClasses(): array
     {
         return [

@@ -6,7 +6,7 @@ use App\Exports\Traits\ExportsToExcel;
 use App\Models\Booking;
 use App\Models\Event;
 use App\Models\Group;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 class GroupsExportSpreadsheet extends Spreadsheet
@@ -24,6 +24,7 @@ class GroupsExportSpreadsheet extends Spreadsheet
             'groups.bookings',
         ]);
 
+        /** @var int $rowCount */
         $rowCount = $this->event->groups
             ->max(fn (Group $group) => $group->bookings->count());
 
@@ -50,10 +51,13 @@ class GroupsExportSpreadsheet extends Spreadsheet
                 ->toArray();
         }
 
+        /** @var Collection<int, int> $rows */
+        $rows = Collection::range(0, $rowCount - 1);
         self::fillSheetFromCollection(
             $this->getActiveSheet(),
             $this->event->name,
-            Collection::range(0, $rowCount - 1),
+            $rows,
+            /** @phpstan-ignore-next-line argument.type */
             $this->event->groups
                 ->map(fn (Group $group) => $group->name)
                 ->toArray(),

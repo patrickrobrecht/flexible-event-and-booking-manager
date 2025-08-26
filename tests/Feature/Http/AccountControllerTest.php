@@ -2,30 +2,32 @@
 
 namespace Tests\Feature\Http;
 
+use App\Enums\Ability;
 use App\Http\Controllers\AccountController;
 use App\Http\Requests\UserRequest;
 use App\Models\User;
-use App\Options\Ability;
 use App\Policies\UserPolicy;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 
 #[CoversClass(AccountController::class)]
+#[CoversClass(User::class)]
 #[CoversClass(UserPolicy::class)]
 #[CoversClass(UserRequest::class)]
 class AccountControllerTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testUserCanViewAccountOnlyWithCorrectAbility(): void
     {
-        $this->assertUserCanGetOnlyWithAbility('/account', Ability::ViewAccount);
+        $this->assertUserCanGetOnlyWithAbility('/account', [Ability::ViewAccount, Ability::ViewAbilities]);
     }
 
     public function testUserCanViewAbilitiesOnlyWithCorrectAbility(): void
     {
-        $this->assertUserCanGetOnlyWithAbility('/account/abilities', Ability::ViewAbilities);
+        $this->actingAsUserWithAbility(Ability::ViewAccount);
+        $this->get('/account')->assertDontSee(__('Abilities'));
+
+        $this->actingAsUserWithAbility([Ability::ViewAccount, Ability::ViewAbilities]);
+        $this->get('/account')->assertSee(__('Abilities'));
     }
 
     public function testUserCanOpenEditAccountFormOnlyWithCorrectAbility(): void
@@ -35,37 +37,42 @@ class AccountControllerTest extends TestCase
 
     public function testUserCanUpdateAccountWithCorrectAbility(): void
     {
-        $this->actingAsUserWithAbility(Ability::EditAccount);
+        $user = $this->actingAsUserWithAbility(Ability::EditAccount);
 
-        $this->from('/account/edit')
-            ->put('/account', $this->getRandomUserData())
+        $this->put('/account', $this->getRandomUserData($user))
             ->assertSessionDoesntHaveErrors()
             ->assertRedirect('/account/edit');
     }
 
     public function testUserCannotUpdateAccountWithoutAbility(): void
     {
-        $this->actingAsUserWithAbility(Ability::ViewAccount);
+        $user = $this->actingAsUserWithAbility(Ability::ViewAccount);
 
-        $this->put('/account', $this->getRandomUserData())->assertForbidden();
+        $this->put('/account', $this->getRandomUserData($user))->assertForbidden();
     }
 
     public function testUserReceivesErrorMessagesForInvalidAccountData(): void
     {
-        $this->actingAsUserWithAbility(Ability::EditAccount);
+        $user = $this->actingAsUserWithAbility(Ability::EditAccount);
 
-        $data = array_replace($this->getRandomUserData(), ['first_name' => null]);
+        $data = array_replace($this->getRandomUserData($user), ['first_name' => null]);
         $this->put('/account', $data)
             ->assertSessionHasErrors([
                 'first_name' => 'Vorname muss ausgefüllt werden.',
             ]);
     }
 
-    private function getRandomUserData(): array
+    /**
+     * @return array<string, mixed>
+     */
+    private function getRandomUserData(User $user): array
     {
-        return array_intersect_key(
-            User::factory()->raw(),
-            array_flip(['first_name', 'last_name', 'street', 'house_number', 'postal_code', 'city', 'email'])
-        );
+        $userData = User::factory()->makeOne();
+
+        return [
+            'first_name' => $userData->first_name,
+            'last_name' => $userData->last_name,
+            'email' => $user->email,
+        ];
     }
 }

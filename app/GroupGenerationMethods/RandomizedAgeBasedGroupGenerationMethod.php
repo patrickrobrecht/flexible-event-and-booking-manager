@@ -2,6 +2,7 @@
 
 namespace App\GroupGenerationMethods;
 
+use App\Enums\GroupGenerationMethod;
 use App\Models\Booking;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
@@ -12,9 +13,9 @@ use Illuminate\Support\Arr;
 class RandomizedAgeBasedGroupGenerationMethod extends AgeBasedGroupGenerationMethod
 {
     /**
-     * @param Collection<Booking> $bookings
+     * @param Collection<int, Booking> $bookings
      *
-     * @return Collection<Booking>
+     * @return Collection<int, Booking>
      */
     protected function sortBookings(Collection $bookings): Collection
     {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\GroupGenerationMethod;
 use App\Exports\GroupsExportSpreadsheet;
 use App\Http\Controllers\Traits\StreamsExport;
 use App\Http\Requests\Filters\GroupFilterRequest;
@@ -9,7 +10,6 @@ use App\Http\Requests\GenerateGroupsRequest;
 use App\Models\Booking;
 use App\Models\Event;
 use App\Models\Group;
-use App\Options\GroupGenerationMethod;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Request;
@@ -31,6 +31,7 @@ class GroupController extends Controller
             return $this->streamExcelExport(
                 new GroupsExportSpreadsheet(
                     $event,
+                    /** @phpstan-ignore-next-line argument.type */
                     $request->validated('sort', 'name')
                 ),
                 str_replace(' ', '-', $fileName) . '.xlsx',
@@ -53,15 +54,19 @@ class GroupController extends Controller
     {
         $this->authorize('create', Group::class);
 
+        /** @phpstan-ignore-next-line argument.type */
         $method = GroupGenerationMethod::from($request->validated('method'));
+        /** @phpstan-ignore-next-line cast.int */
         $groupsCount = (int) $request->validated('groups_count');
 
+        /** @var int[] $bookingOptionIds */
         $bookingOptionIds = $request->validated('booking_option_id', []);
         $bookings = $event->getBookings()
             ->filter(fn (Booking $booking) => (
                 in_array($booking->bookingOption->id, $bookingOptionIds, true)
             ));
 
+        /** @var int[] $parentGroupIdsToExclude */
         $parentGroupIdsToExclude = $request->validated('exclude_parent_group_id');
         if (isset($event->parentEvent) && count($parentGroupIdsToExclude) > 0) {
             $bookings = $bookings

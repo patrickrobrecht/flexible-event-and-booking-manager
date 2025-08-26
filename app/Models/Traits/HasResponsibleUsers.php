@@ -2,8 +2,8 @@
 
 namespace App\Models\Traits;
 
+use App\Enums\Ability;
 use App\Models\User;
-use App\Options\Ability;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
@@ -32,6 +32,9 @@ trait HasResponsibleUsers
 
     abstract public function getAbilityToViewResponsibilities(): Ability;
 
+    /**
+     * @return Collection<int, User>
+     */
     public function getResponsibleUsersVisibleForCurrentUser(): Collection
     {
         $currentUser = Auth::user();
@@ -48,7 +51,7 @@ trait HasResponsibleUsers
     }
 
     /**
-     * @return Collection<User>
+     * @return Collection<int, User>
      */
     public function getPubliclyVisibleResponsibleUsers(): Collection
     {
@@ -60,6 +63,10 @@ trait HasResponsibleUsers
         return $this->responsibleUsers->first(fn (User $responsibleUser) => self::isPubliclyVisible($responsibleUser)) !== null;
     }
 
+    /**
+     * @param array{responsible_user_id?: int[]|null, responsible_user_data?: array<int, array<string|bool>>} $validatedData
+     * @return array{attached: int[], detached: int[], updated: int[]}
+     */
     public function saveResponsibleUsers(array $validatedData): array
     {
         $responsibleUsers = [];
@@ -74,6 +81,7 @@ trait HasResponsibleUsers
 
     private static function isPubliclyVisible(User $responsibleUser): bool
     {
+        /** @phpstan-ignore property.notFound */
         return isset($responsibleUser->pivot->publicly_visible)
             && $responsibleUser->pivot->publicly_visible;
     }

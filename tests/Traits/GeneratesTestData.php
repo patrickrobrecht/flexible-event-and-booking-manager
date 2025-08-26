@@ -2,6 +2,10 @@
 
 namespace Tests\Traits;
 
+use App\Enums\FileType;
+use App\Enums\FormElementType;
+use App\Enums\MaterialStatus;
+use App\Enums\Visibility;
 use App\Models\Booking;
 use App\Models\BookingOption;
 use App\Models\Document;
@@ -12,11 +16,11 @@ use App\Models\FormField;
 use App\Models\FormFieldValue;
 use App\Models\Group;
 use App\Models\Location;
+use App\Models\Material;
 use App\Models\Organization;
+use App\Models\StorageLocation;
 use App\Models\User;
-use App\Options\FileType;
-use App\Options\FormElementType;
-use App\Options\Visibility;
+use App\Models\UserRole;
 use Closure;
 use Database\Factories\BookingFactory;
 use Database\Factories\BookingOptionFactory;
@@ -26,6 +30,10 @@ use Database\Factories\FormFieldFactory;
 use Database\Factories\FormFieldValueFactory;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 #[CoversClass(Booking::class)]
@@ -46,59 +54,103 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(Visibility::class)]
 trait GeneratesTestData
 {
-    public static function visibilityProvider(): array
+    /**
+     * @template TModel of Model
+     *
+     * @param Factory<TModel> $factory
+     * @return Collection<int, TModel>
+     */
+    public function createCollection(Factory $factory, ?int $count = null): Collection
     {
-        return array_map(static fn (Visibility $method) => [$method], Visibility::cases());
+        /** @phpstan-ignore return.type */
+        return $factory
+            ->count($count ?? $this->faker->numberBetween(5, 10))
+            ->create();
     }
 
-    protected static function createBooking(?BookingOption $bookingOption = null): Booking
+    /**
+     * @return array<int, mixed[]>
+     */
+    public static function visibilityProvider(): array
+    {
+        return array_map(static fn (Visibility $visibility) => [$visibility], Visibility::cases());
+    }
+
+    /**
+     * @param array<string, mixed> $attributes
+     */
+    protected static function createBooking(?BookingOption $bookingOption = null, array $attributes = []): Booking
     {
         $booking = Booking::factory()
             ->for($bookingOption ?? self::createBookingOptionForEvent(Visibility::Public))
-            ->has(User::factory(), 'bookedByUser')
-            ->create();
+            ->for(User::factory(), 'bookedByUser')
+            ->create([
+                ...$attributes,
+                'price' => $bookingOption?->price,
+            ]);
 
         if (isset($bookingOption) && $bookingOption->formFields->isNotEmpty()) {
             foreach ($bookingOption->formFields as $formField) {
-                $booking->setFieldValue(
-                    $formField,
-                    FormFieldValue::factory()
+                if ($formField->type === FormElementType::File) {
+                    $filePath = $bookingOption->getFilePath() . '/' . fake()->uuid() . '.txt';
+                    Storage::disk('local')->put($filePath, 'Test File Contents');
+                    $value = $filePath;
+                } else {
+                    $value = FormFieldValue::factory()
                         ->forFormField($formField)
                         ->makeOne()
-                        ->value
-                );
+                        ->value;
+                }
+
+                $booking->setFieldValue($formField, $value);
             }
         }
 
         return $booking;
     }
 
+    /**
+     * @return Collection<int, Booking>
+     */
     protected static function createBookings(BookingOption $bookingOption): Collection
     {
         return Booking::factory()
             ->for($bookingOption)
             ->has(User::factory(), 'bookedByUser')
             ->count(fake()->numberBetween(5, 42))
-            ->create();
+            ->create([
+                'price' => $bookingOption->price,
+            ]);
     }
 
+    /**
+     * @return Collection<int, Booking>
+     */
     protected static function createBookingsForUser(BookingOption $bookingOption, User $user): Collection
     {
         return Booking::factory()
             ->for($bookingOption)
             ->for($user, 'bookedByUser')
             ->count(fake()->numberBetween(1, 3))
-            ->create();
+            ->create([
+                'price' => $bookingOption->price,
+            ]);
     }
 
-    protected static function createBookingOptionForEvent(?Visibility $visibility = null): BookingOption
+    /**
+     * @param array<string, mixed> $attributes
+     */
+    protected static function createBookingOptionForEvent(?Visibility $visibility = null, array $attributes = []): BookingOption
     {
         return BookingOption::factory()
             ->for(self::createEvent($visibility))
-            ->create();
+            ->create($attributes);
     }
 
-    protected static function createBookingOptionForEventWithCustomFormFields(?Visibility $visibility = null): BookingOption
+    /**
+     * @param FormElementType[]|null $formElementTypes
+     */
+    protected static function createBookingOptionForEventWithCustomFormFields(?Visibility $visibility = null, ?array $formElementTypes = null): BookingOption
     {
         $bookingOptionFactory = BookingOption::factory()
             ->for(self::createEvent($visibility))
@@ -106,8 +158,8 @@ trait GeneratesTestData
             ->has(FormField::factory()->forColumn('last_name'))
             ->has(FormField::factory()->forColumn('email'));
 
-        foreach (FormElementType::casesForFields() as $type) {
-            $bookingOptionFactory
+        foreach ($formElementTypes ?? FormElementType::casesForFields() as $type) {
+            $bookingOptionFactory = $bookingOptionFactory
                 ->has(
                     FormField::factory()
                         ->count(random_int(2, 10))
@@ -140,9 +192,13 @@ trait GeneratesTestData
             ->create();
     }
 
+    /**
+     * @return Collection<int, Document>
+     */
     protected static function createDocuments(): Collection
     {
         return Document::factory()
+            /** @phpstan-ignore-next-line argument.type */
             ->for(fake()->randomElement([
                 self::createEvent(Visibility::Public),
                 self::createEventSeries(Visibility::Private),
@@ -166,16 +222,24 @@ trait GeneratesTestData
             ->create();
     }
 
-    protected static function createEvent(?Visibility $visibility = null): Event
+    protected static function createEvent(?Visibility $visibility = null, int $subEventsCount = 0): Event
     {
+        $organization = self::createOrganization();
         return Event::factory()
             ->visibility($visibility)
             ->for(self::createLocation())
-            ->for(self::createOrganization())
+            ->for($organization)
+            ->has(
+                Event::factory()
+                    ->for(self::createLocation())
+                    ->for($organization)
+                    ->count($subEventsCount),
+                'subEvents'
+            )
             ->create();
     }
 
-    protected static function createEventWithBookingOptions(Visibility $visibility): Event
+    protected static function createEventWithBookingOptions(?Visibility $visibility = null, ?int $bookingOptionCount = null): Event
     {
         $event = Event::factory()
             ->visibility($visibility)
@@ -183,7 +247,7 @@ trait GeneratesTestData
             ->for(self::createOrganization())
             ->has(
                 BookingOption::factory()
-                    ->count(fake()->numberBetween(3, 5))
+                    ->count($bookingOptionCount ?? fake()->numberBetween(3, 5))
             )
             ->create();
 
@@ -192,7 +256,18 @@ trait GeneratesTestData
         return $event;
     }
 
-    protected static function createEventSeries(?Visibility $visibility = null): EventSeries
+    protected static function createEventWithBookings(?Visibility $visibility = null): Event
+    {
+        $event = self::createEventWithBookingOptions();
+
+        foreach ($event->bookingOptions as $bookingOption) {
+            self::createBookings($bookingOption);
+        }
+
+        return $event;
+    }
+
+    protected static function createEventSeries(?Visibility $visibility = null, ?int $eventsCount = null, int $subEventSeriesCount = 0): EventSeries
     {
         $organization = self::createOrganization();
         return EventSeries::factory()
@@ -201,7 +276,13 @@ trait GeneratesTestData
                 Event::factory()
                     ->for(self::createLocation())
                     ->for($organization)
-                    ->count(fake()->numberBetween(1, 5))
+                    ->count($eventsCount ?? fake()->numberBetween(1, 5))
+            )
+            ->has(
+                EventSeries::factory()
+                    ->for($organization)
+                    ->count($subEventSeriesCount),
+                'subEventSeries'
             )
             ->visibility($visibility)
             ->create();
@@ -225,6 +306,14 @@ trait GeneratesTestData
         return Location::factory()->create();
     }
 
+    protected static function createMaterial(?int $storageLocationCount = null): Material
+    {
+        return Material::factory()
+            ->forOrganization(self::createOrganization())
+            ->hasStorageLocations($storageLocationCount)
+            ->create();
+    }
+
     protected static function createOrganization(): Organization
     {
         return Organization::factory()
@@ -233,11 +322,71 @@ trait GeneratesTestData
             ->create();
     }
 
+    protected static function createStorageLocation(
+        ?StorageLocation $parentStorageLocation = null,
+        int $childStorageLocationsCount = 0,
+        int $materialsCount = 0,
+    ): StorageLocation {
+        return StorageLocation::factory()
+            ->has(
+                StorageLocation::factory()->count($childStorageLocationsCount),
+                'childStorageLocations'
+            )
+            ->hasAttached(
+                Material::factory()->forOrganization()->count($materialsCount),
+                ['material_status' => MaterialStatus::Checked],
+                'materials'
+            )
+            ->forParentStorageLocation($parentStorageLocation)
+            ->create();
+    }
+
+    public static function createUserResponsibleFor(Event|EventSeries|Organization $responsibleFor): User
+    {
+        return User::factory()
+            /** @phpstan-ignore-next-line match.unhandled */
+            ->hasAttached($responsibleFor, ['publicly_visible' => true], match ($responsibleFor::class) {
+                Event::class => 'responsibleForEvents',
+                EventSeries::class => 'responsibleForEventSeries',
+                Organization::class => 'responsibleForOrganizations',
+            })
+            ->create();
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
     protected static function createUsersWithBookings(BookingOption $bookingOption): Collection
     {
         return User::factory()
             ->count(fake()->numberBetween(2, 5))
             ->create()
             ->each(fn ($user) => self::createBookingsForUser($bookingOption, $user));
+    }
+
+    public static function createUserWithUserRole(UserRole $userRole): User
+    {
+        return User::factory()
+            ->hasAttached($userRole)
+            ->create();
+    }
+
+    /**
+     * @return array<string, mixed>
+     * @phpstan-ignore missingType.generics
+     */
+    public static function makeData(Factory $factory): array
+    {
+        return $factory->makeOne()->toArray();
+    }
+
+    /**
+     * @param string[] $without
+     * @return array<string, mixed>
+     * @phpstan-ignore missingType.generics
+     */
+    public static function makeDataWithout(Factory $factory, array $without = []): array
+    {
+        return Arr::except(self::makeData($factory), $without);
     }
 }

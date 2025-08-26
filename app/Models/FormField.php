@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Options\FormElementType;
+use App\Enums\FormElementType;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,14 +19,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property ?string $column
  * @property FormElementType $type
  * @property bool $required
- * @property ?array $validation_rules
- * @property ?array $allowed_values
+ * @property string[]|null $validation_rules
+ * @property string[]|null $allowed_values
  * @property bool $editable_after_submission
  *
  * @property string $input_name {@see self::inputName()}
  *
  * @property BookingOption $bookingOption {@see self::bookingOption()}
- * @property Collection|FormFieldValue $formFieldValue {@see self::formFieldValues()}
+ * @property Collection|FormFieldValue[] $formFieldValue {@see self::formFieldValues()}
  */
 class FormField extends Model
 {
@@ -69,6 +69,9 @@ class FormField extends Model
         return $this->hasMany(FormFieldValue::class);
     }
 
+    /**
+     * @param array<string, mixed> $validatedData
+     */
     public function fillAndSave(array $validatedData): bool
     {
         return $this->fill($validatedData)->save();

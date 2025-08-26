@@ -2,22 +2,32 @@
 
 namespace App\Http\Requests\Filters;
 
+use App\Enums\DeletedFilter;
+use App\Enums\FilterValue;
+use App\Enums\PaymentStatus;
 use App\Http\Requests\Traits\FiltersList;
 use App\Models\Booking;
+use App\Models\BookingOption;
+use App\Models\Event;
 use App\Models\Group;
-use App\Options\FilterValue;
-use App\Options\PaymentStatus;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use Stringable;
 
 /**
  * Filter for {@see Booking}s
+ *
+ * @property-read Event $event
+ * @property-read BookingOption $booking_option
  */
 class BookingFilterRequest extends FormRequest
 {
     use FiltersList;
 
     /**
-     * Get the validation rules that apply to the request.
+     * @return array<string, array<int, Closure|ValidationRule|string|Stringable>>
      */
     public function rules(): array
     {
@@ -30,9 +40,24 @@ class BookingFilterRequest extends FormRequest
             'filter.search' => $this->ruleForText(),
             'filter.payment_status' => $this->ruleForAllowedOrExistsInEnum(PaymentStatus::class, [FilterValue::All->value]),
             'filter.group_id' => $this->ruleForAllowedOrExistsInDatabase($groupQuery, [FilterValue::All->value]),
+            'filter.trashed' => [
+                'nullable',
+                DeletedFilter::rule(),
+            ],
             'sort' => [
                 'nullable',
                 Booking::sortOptions()->getRule(),
+            ],
+            'output' => [
+                'nullable',
+                Rule::in([
+                    'export',
+                    'pdf',
+                    ...$this->booking_option
+                        ->formFieldsForFiles
+                        ->pluck('id')
+                        ->toArray(),
+                ]),
             ],
         ];
     }

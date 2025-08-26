@@ -2,13 +2,16 @@
 
 namespace App\Models;
 
+use App\Enums\DeletedFilter;
+use App\Enums\FilterValue;
+use App\Enums\FormElementType;
+use App\Enums\PaymentStatus;
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\HasAddress;
-use App\Options\DeletedFilter;
-use App\Options\FilterValue;
-use App\Options\FormElementType;
-use App\Options\PaymentStatus;
+use App\Models\Traits\HasFullName;
+use App\Models\Traits\HasPhone;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -20,8 +23,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\Enums\SortDirection;
@@ -42,6 +48,9 @@ use Spatie\QueryBuilder\Enums\SortDirection;
  * @property-read int $booking_option_id
  *
  * @property-read ?float $age {@see self::age()}
+ * @property-read string $file_name {@see self::fileName()}
+ * @property-read string $file_name_for_pdf_download {@see self::fileNameForPdfDownload()}
+ * @property-read ?Carbon $payment_deadline {@see self::paymentDeadline()}
  *
  * @property-read ?User $bookedByUser {@see self::bookedByUser()}
  * @property-read BookingOption $bookingOption {@see self::bookingOption()}
@@ -53,13 +62,19 @@ class Booking extends Model
     use BuildsQueryFromRequest;
     use HasAddress;
     use HasFactory;
+    use HasFullName;
+    use HasPhone;
     use SoftDeletes;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+    protected $casts = [
+        'booking_option_id' => 'integer',
+        'date_of_birth' => 'date',
+        'booked_at' => 'datetime',
+        'price' => 'float',
+        'paid_at' => 'datetime',
+        'deleted_at' => 'datetime',
+    ];
+
     protected $fillable = [
         'first_name',
         'last_name',
@@ -76,22 +91,30 @@ class Booking extends Model
         'comment',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'booking_option_id' => 'integer',
-        'date_of_birth' => 'date',
-        'booked_at' => 'datetime',
-        'paid_at' => 'datetime',
-        'deleted_at' => 'datetime',
-    ];
-
-    public function age(): Attribute
+    protected function age(): Attribute
     {
-        return Attribute::get(fn () => $this->date_of_birth?->diffInYears());
+        return Attribute::get(fn () => $this->date_of_birth?->diffInYears())
+            ->shouldCache();
+    }
+
+    protected function fileName(): Attribute
+    {
+        return Attribute::get(fn () => Str::slug(implode('-', [
+            $this->id,
+            $this->first_name,
+            $this->last_name,
+        ])));
+    }
+
+    protected function fileNameForPdfDownload(): Attribute
+    {
+        return Attribute::get(fn () => $this->prefixFileNameWithGroup($this->file_name . '.pdf'));
+    }
+
+    protected function paymentDeadline(): Attribute
+    {
+        return Attribute::get(fn () => isset($this->price) ? $this->bookingOption->getPaymentDeadline($this->booked_at) : null)
+            ->shouldCache();
     }
 
     public function bookedByUser(): BelongsTo
@@ -144,6 +167,9 @@ class Booking extends Model
         return $this->scopeIncludeColumns($query, ['first_name', 'last_name'], true, ...$searchTerms);
     }
 
+    /**
+     * @param array<string, mixed> $validatedData
+     */
     public function fillAndSave(array $validatedData): bool
     {
         if (!$this->fill($validatedData)->save()) {
@@ -190,6 +216,35 @@ class Booking extends Model
         return true;
     }
 
+    public function prefixFileNameWithGroup(string $baseFileName): string
+    {
+        $downloadFileName = $baseFileName;
+        $group = $this->getGroup($this->bookingOption->event);
+        if (isset($group)) {
+            $downloadFileName = Str::slug($group->name) . '-' . $downloadFileName;
+        }
+
+        return $downloadFileName;
+    }
+
+    public function prepareMailMessage(): MailMessage
+    {
+        $mail = new MailMessage();
+        $mail->greeting($this->bookedByUser->greeting ?? $this->greeting);
+
+        if (isset($this->bookedByUser) && $this->bookedByUser->email !== $this->email) {
+            $mail->cc($this->bookedByUser->email);
+        }
+
+        $organization = $this->bookingOption->event->organization;
+        if (isset($organization->email)) {
+            $mail->bcc($organization->email)
+                ->replyTo($organization->email, $organization->name);
+        }
+
+        return $mail;
+    }
+
     public function getGroup(Event $event): ?Group
     {
         return $this->groups->first(fn (Group $group) => $group->event_id === $event->id);
@@ -208,6 +263,7 @@ class Booking extends Model
         }
 
         $formFieldValue->forceCast();
+        /** @phpstan-ignore-next-line assign.propertyType */
         $formFieldValue->value = $value;
         return $formFieldValue->save();
     }
@@ -215,6 +271,7 @@ class Booking extends Model
     public function getFieldValue(FormField $formField): mixed
     {
         if (isset($formField->column)) {
+            /** @phpstan-ignore property.dynamicName */
             return $this->{$formField->column} ?? null;
         }
 
@@ -241,15 +298,46 @@ class Booking extends Model
             }
 
             $value = match ($formField->type) {
+                /** @phpstan-ignore-next-line argument.type */
                 FormElementType::Date => formatDate($value),
+                /** @phpstan-ignore-next-line argument.type */
                 FormElementType::DateTime => formatDateTime($value),
                 default => $value,
             };
         }
 
+        /** @phpstan-ignore-next-line return.type */
         return $value;
     }
 
+    public function storePdfFile(): string
+    {
+        $directoryPath = $this->bookingOption->getFilePath();
+        Storage::disk('local')->makeDirectory($directoryPath);
+
+        $filePath = $directoryPath . '/' . $this->file_name . '.pdf';
+        Pdf::loadView('bookings.booking_show_pdf', [
+            'booking' => $this->loadMissing([
+                'bookingOption.formFields',
+            ]),
+        ])
+            /** @phpstan-ignore-next-line argument.type */
+            ->addInfo([
+                'Author' => config('app.owner'),
+                'Title' => implode(' ', [
+                    $this->bookingOption->name,
+                    $this->first_name,
+                    $this->last_name,
+                ]),
+            ])
+            ->save(Storage::disk('local')->path($filePath));
+
+        return $filePath;
+    }
+
+    /**
+     * @return AllowedFilter[]
+     */
     public static function allowedFilters(): array
     {
         return [
@@ -267,8 +355,8 @@ class Booking extends Model
     }
 
     /**
-     * @param Collection<self> $bookings
-     * @return Collection<self>
+     * @param Collection<int, self> $bookings
+     * @return Collection<int, self>
      */
     public static function sort(Collection $bookings, string $sort): Collection
     {

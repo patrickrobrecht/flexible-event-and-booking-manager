@@ -2,10 +2,10 @@
 
 namespace App\Policies;
 
+use App\Enums\Ability;
+use App\Enums\Visibility;
 use App\Models\EventSeries;
 use App\Models\User;
-use App\Options\Ability;
-use App\Options\Visibility;
 use App\Policies\Traits\ChecksAbilities;
 use Illuminate\Auth\Access\Response;
 
@@ -105,6 +105,24 @@ class EventSeriesPolicy
      */
     public function forceDelete(User $user, EventSeries $eventSeries): Response
     {
-        return $this->deny();
+        $eventsCount = $eventSeries->events_count ?? $eventSeries->events()->count();
+        if ($eventsCount >= 1) {
+            return $this->deny(
+                formatTransChoice(':name cannot be deleted because the event series is referenced by :count events.', $eventsCount, [
+                    'name' => $eventSeries->name,
+                ])
+            );
+        }
+
+        $subEventSeriesCount = $eventSeries->sub_event_series_count ?? $eventSeries->subEventSeries()->count();
+        if ($subEventSeriesCount >= 1) {
+            return $this->deny(
+                formatTransChoice(':name cannot be deleted because the event series has :count sub events series.', $subEventSeriesCount, [
+                    'name' => $eventSeries->name,
+                ])
+            );
+        }
+
+        return $this->requireAbility($user, Ability::DestroyEventSeries);
     }
 }

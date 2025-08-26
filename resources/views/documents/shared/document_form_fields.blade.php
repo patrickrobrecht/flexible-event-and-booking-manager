@@ -7,7 +7,7 @@
             $maxFileSizeAsText = \App\Http\Requests\DocumentRequest::getMaxFileSizeInMegaBytes() . ' MB';
         @endphp
         <x-bs::form.field name="file"
-                          type="file" :accept="\App\Options\FileType::extensionsForHtmlAccept()"
+                          type="file" :accept="\App\Enums\FileType::extensionsForHtmlAccept()"
                           data-max-file-size="{{ \App\Http\Requests\DocumentRequest::getMaxFileSizeInBytes() }}"
                           x-ref="file" @change="() => {
                 alert = false;
@@ -55,8 +55,8 @@
         <x-bs::form.field name="description" type="textarea"
                           :value="$document->description ?? null">{{ __('Description') }}</x-bs::form.field>
         @can('approve', $document ?? \App\Models\Document::class)
-            <x-bs::form.field name="approval_status" type="radio" :options="\App\Options\ApprovalStatus::toOptions()"
-                              :value="$document->approval_status->value ?? \App\Options\ApprovalStatus::WaitingForApproval->value">
+            <x-bs::form.field name="approval_status" type="radio" :options="\App\Enums\ApprovalStatus::toOptions()"
+                              :value="$document->approval_status->value ?? \App\Enums\ApprovalStatus::WaitingForApproval->value">
                 <i class="fa fa-fw fa-circle-question"></i> {{ __('Approval status') }}
             </x-bs::form.field>
         @endcan

@@ -2,35 +2,29 @@
 
 namespace Tests\Feature\Http;
 
+use App\Enums\Ability;
+use App\Enums\BookingRestriction;
+use App\Enums\Visibility;
 use App\Http\Controllers\BookingOptionController;
 use App\Http\Requests\BookingOptionRequest;
 use App\Models\Booking;
 use App\Models\BookingOption;
 use App\Models\User;
-use App\Options\Ability;
-use App\Options\BookingRestriction;
-use App\Options\Visibility;
 use App\Policies\BookingOptionPolicy;
 use Closure;
 use Database\Factories\BookingOptionFactory;
 use Database\Factories\UserFactory;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
-use Tests\Traits\GeneratesTestData;
 
 #[CoversClass(BookingOption::class)]
 #[CoversClass(BookingOptionController::class)]
-#[CoversClass(BookingOptionFactory::class)]
 #[CoversClass(BookingOptionPolicy::class)]
 #[CoversClass(BookingOptionRequest::class)]
 #[CoversClass(BookingRestriction::class)]
 class BookingOptionControllerTest extends TestCase
 {
-    use GeneratesTestData;
-    use RefreshDatabase;
-
     public function testGuestCanViewBookingOptionOfPublicEvent(): void
     {
         $bookingOption = self::createBookingOptionForEvent(Visibility::Public);
@@ -74,6 +68,9 @@ class BookingOptionControllerTest extends TestCase
             ->assertSeeText($errorMessageProvider($bookingOption));
     }
 
+    /**
+     * @return array<int, array{Closure(BookingOptionFactory): BookingOptionFactory, Closure(BookingOption): string[]}>
+     */
     public static function casesForBookingOptions(): array
     {
         return [
@@ -81,12 +78,14 @@ class BookingOptionControllerTest extends TestCase
                 fn (BookingOptionFactory $factory) => $factory->availabilityStartingInFuture(),
                 fn (BookingOption $bookingOption) => [
                     __('Bookings are not possible yet.'),
+                    /** @phpstan-ignore-next-line argument.type */
                     __('The booking period starts at :date.', ['date' => formatDateTime($bookingOption->available_from)]),
                 ],
             ],
             [
                 fn (BookingOptionFactory $factory) => $factory->availabilityEndedInPast(),
                 fn (BookingOption $bookingOption) => [
+                    /** @phpstan-ignore-next-line argument.type */
                     __('The booking period ended at :date.', ['date' => formatDateTime($bookingOption->available_until)]),
                     __('Bookings are not possible anymore.'),
                 ],
@@ -107,7 +106,9 @@ class BookingOptionControllerTest extends TestCase
             ->create();
 
         if (isset($userFactory)) {
-            $this->actingAs($userFactory->create());
+            /** @var User $user */
+            $user = $userFactory->create();
+            $this->actingAs($user);
         }
 
         $this->get("events/{$bookingOption->event->slug}/booking-options/{$bookingOption->slug}")
@@ -115,6 +116,9 @@ class BookingOptionControllerTest extends TestCase
             ->assertSeeText($errorMessageProvider($bookingOption));
     }
 
+    /**
+     * @return array<int, array{BookingRestriction, ?UserFactory, Closure(): string}>
+     */
     public static function bookingRestrictions(): array
     {
         return [
@@ -154,6 +158,7 @@ class BookingOptionControllerTest extends TestCase
     public function testUserCanUpdateBookingOptionOnlyWithCorrectAbility(): void
     {
         $bookingOption = self::createBookingOptionForEvent();
+        /** @var array{slug: string} $data */
         $data = $this->generateRandomBookingOptionData();
 
         $this->assertUserCanPutOnlyWithAbility(
@@ -161,16 +166,21 @@ class BookingOptionControllerTest extends TestCase
             $data,
             Ability::ManageBookingOptionsOfEvent,
             "/events/{$bookingOption->event->slug}/booking-options/{$bookingOption->slug}/edit",
-            "/events/{$bookingOption->event->slug}/booking-options/{$data['slug']}/edit"
+            "/events/{$bookingOption->event->slug}"
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function generateRandomBookingOptionData(): array
     {
         $bookingOption = BookingOption::factory()->makeOne();
         return [
             ...$bookingOption->toArray(),
+            /** @phpstan-ignore method.nonObject */
             'available_from' => $bookingOption->available_from->format('Y-m-d\TH:i'),
+            /** @phpstan-ignore method.nonObject */
             'available_until' => $bookingOption->available_until->format('Y-m-d\TH:i'),
         ];
     }

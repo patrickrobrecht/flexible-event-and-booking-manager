@@ -18,7 +18,8 @@ class OrganizationController extends Controller
         $this->authorize('viewAny', Organization::class);
         ValueHelper::setDefaults(Organization::defaultValuesForQuery());
 
-        return view('organizations.organization_index', $this->formValues([
+        return view('organizations.organization_index', [
+            ...$this->formValues(),
             'organizations' => Organization::buildQueryFromRequest()
                 ->with([
                     'location',
@@ -28,9 +29,10 @@ class OrganizationController extends Controller
                     'documents',
                     'events',
                     'eventSeries',
+                    'materials',
                 ])
                 ->paginate(10),
-        ]));
+        ]);
     }
 
     public function create(): View
@@ -45,9 +47,14 @@ class OrganizationController extends Controller
         $this->authorize('create', Organization::class);
 
         $organization = new Organization();
+        /** @phpstan-ignore argument.type */
         if ($organization->fillAndSave($request->validated())) {
-            Session::flash('success', __('Created successfully.'));
-            return redirect(route('organizations.edit', $organization));
+            Session::flash('success', __(':name created successfully.', ['name' => $organization->name]));
+            return $this->actionAwareRedirect(
+                $request,
+                route('organizations.show', $organization),
+                createRoute: route('organizations.create')
+            );
         }
 
         return back();
@@ -69,29 +76,50 @@ class OrganizationController extends Controller
     {
         $this->authorize('update', $organization);
 
-        return view('organizations.organization_form', $this->formValues([
+        return view('organizations.organization_form', [
+            ...$this->formValues(),
             'organization' => $organization,
-        ]));
+        ]);
     }
 
     public function update(Organization $organization, OrganizationRequest $request): RedirectResponse
     {
         $this->authorize('update', $organization);
 
+        /** @phpstan-ignore argument.type */
         if ($organization->fillAndSave($request->validated())) {
-            Session::flash('success', __('Saved successfully.'));
+            Session::flash('success', __(':name saved successfully.', ['name' => $organization->name]));
         }
 
         // Slug may have changed, so we need to generate the URL here!
-        return redirect(route('organizations.edit', $organization));
+        return $this->actionAwareRedirect(
+            $request,
+            route('organizations.show', $organization),
+            editRoute: route('organizations.edit', $organization)
+        );
     }
 
-    private function formValues(array $values = []): array
+    public function destroy(Organization $organization): RedirectResponse
     {
-        return array_replace([
+        $this->authorize('forceDelete', $organization);
+
+        if ($organization->delete()) {
+            Session::flash('success', __(':name deleted successfully.', ['name' => $organization->name]));
+            return redirect(route('organizations.index'));
+        }
+
+        return back();
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function formValues(): array
+    {
+        return [
             'locations' => Location::query()
                 ->orderBy('name')
                 ->get(),
-        ], $values);
+        ];
     }
 }

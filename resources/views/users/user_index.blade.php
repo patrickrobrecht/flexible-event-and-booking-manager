@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
 @php
-    use App\Options\FilterValue;
+    use App\Enums\FilterValue;
+    use App\Enums\ActiveStatus;
     use Portavice\Bladestrap\Support\Options;
 
     /** @var \Illuminate\Pagination\LengthAwarePaginator|\App\Models\User[] $users */
@@ -17,13 +18,11 @@
 @endsection
 
 @section('content')
-    <x-bs::button.group>
-        @can('create', \App\Models\User::class)
-            <x-button.create href="{{ route('users.create') }}">
-                {{ __('Create user') }}
-            </x-button.create>
-        @endcan
-    </x-bs::button.group>
+    @can('create', \App\Models\User::class)
+        <x-bs::button.link href="{{ route('users.create') }}" class="d-print-none">
+            <i class="fa fa-fw fa-plus"></i> {{ __('Create user') }}
+        </x-bs::button.link>
+    @endcan
 
     <x-form.filter>
         <div class="row">
@@ -43,7 +42,7 @@
             </div>
             <div class="col-12 col-sm-6 col-xl-3">
                 <x-bs::form.field id="status" name="filter[status]" type="select"
-                                  :options="\App\Options\ActiveStatus::toOptionsWithAll()"
+                                  :options="ActiveStatus::toOptionsWithAll()"
                                   :cast="FilterValue::castToIntIfNoValue()"
                                   :from-query="true"><i class="fa fa-fw fa-circle-question"></i> {{ __('Status') }}</x-bs::form.field>
             </div>
@@ -63,7 +62,7 @@
                 $showRouteUrl = route('users.show', $user);
             @endphp
             <div class="col-12 col-lg-6 col-xxl-4 mb-3">
-                <div class="card">
+                <div class="card avoid-break">
                     <div class="card-header">
                         <h2 class="card-title">
                             @can('view', $user)
@@ -84,7 +83,7 @@
                             <x-bs::list.item>
                                 <span class="text-nowrap"><i class="fa fa-fw fa-phone"></i> {{ __('Phone number') }}</span>
                                 <x-slot:end>
-                                    <span class="text-end">{{ $user->phone }}</span>
+                                    <span class="text-end"><a href="{{ $user->phone_link }}">{{ $user->phone }}</a></span>
                                 </x-slot:end>
                             </x-bs::list.item>
                         @endisset
@@ -92,7 +91,7 @@
                             <span class="text-nowrap"><i class="fa fa-fw fa-at"></i> {{ __('E-mail') }}</span>
                             <x-slot:end>
                                 <span class="text-end">
-                                    {{ $user->email }}
+                                    <a href="mailto:{{ $user->email }}">{{ $user->email }}</a>
                                     @isset($user->email_verified_at)
                                         <x-bs::badge variant="success">{{ __('verified') }}</x-bs::badge>
                                     @else
@@ -134,7 +133,12 @@
                         <x-bs::list.item>
                             <span class="text-nowrap"><i class="fa fa-fw fa-file-contract"></i> <a href="{{ $showRouteUrl }}#bookings">{{ __('Bookings') }}</a></span>
                             <x-slot:end>
-                                <x-bs::badge>{{ formatInt($user->bookings_count) }}</x-bs::badge>
+                                <span>
+                                    <x-bs::badge>{{ formatInt($user->bookings_count) }}</x-bs::badge>
+                                    @if($user->bookings_trashed_count > 0)
+                                        <x-bs::badge variant="danger">+&nbsp;{{ formatInt($user->bookings_trashed_count) }} {{ __('trashed') }}</x-bs::badge>
+                                    @endif
+                                </span>
                             </x-slot:end>
                         </x-bs::list.item>
                         <x-bs::list.item>
@@ -154,13 +158,16 @@
                             </x-slot:end>
                         </x-bs::list.item>
                     </x-bs::list>
-                    @can('update', $user)
-                        <div class="card-body">
-                            <x-button.edit href="{{ route('users.edit', $user) }}"/>
+                    @canany(['update', 'forceDelete'], $user)
+                        <div class="card-body d-print-none">
+                            @can('update', $user)
+                                <x-button.edit href="{{ route('users.edit', $user) }}"/>
+                            @endcan
+                            @include('users.shared.user_delete_button')
                         </div>
-                    @endcan
+                    @endcanany
                     <div class="card-footer">
-                        <x-text.updated-human-diff :model="$user" />
+                        <x-text.updated-human-diff :model="$user"/>
                     </div>
                 </div>
             </div>

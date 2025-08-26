@@ -12,7 +12,7 @@
     <div class="list-group">
         @foreach($events as $event)
             @can('view', $event)
-                <x-bs::list.item>
+                <x-bs::list.item class="avoid-break">
                     <div><a href="{{ route('events.show', $event->slug) }}" class="fw-bold">{{ $event->name }}</a></div>
                     @isset($event->description)
                         <div class="text-muted">{{ $event->description }}</div>
@@ -42,7 +42,7 @@
                         </div>
                     @endisset
                     @canany(['update', 'viewGroups'], $event)
-                        <x-bs::button.group class="mt-3">
+                        <div class="d-flex flex-wrap gap-1 mt-3 d-print-none">
                             @can('update', $event)
                                 <x-button.edit href="{{ route('events.edit', $event) }}" class="text-nowrap"/>
                             @endcan
@@ -56,7 +56,7 @@
                                     <i class="fa fa-fw fa-people-group"></i> {{ __('Groups') }} <x-bs::badge variant="danger">{{ formatInt($event->groups_count) }}</x-bs::badge>
                                 </x-bs::button.link>
                             @endcan
-                        </x-bs::button.group>
+                        </div>
                     @endcanany
                 </x-bs::list.item>
             @endcan

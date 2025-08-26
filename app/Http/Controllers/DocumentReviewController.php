@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ApprovalStatus;
 use App\Http\Requests\DocumentReviewRequest;
 use App\Models\Document;
 use App\Models\DocumentReview;
-use App\Options\ApprovalStatus;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -19,6 +19,7 @@ class DocumentReviewController extends Controller
         $validated = $request->validated();
 
         // Change approval status of the document if requested.
+        /** @phpstan-ignore-next-line argument.type */
         $approvalStatus = ApprovalStatus::tryFrom($request->validated('approval_status'));
         if ($approvalStatus) {
             if ($document->approval_status === $approvalStatus) {

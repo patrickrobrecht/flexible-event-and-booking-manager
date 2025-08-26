@@ -89,9 +89,14 @@ class EventSeriesController extends Controller
         $this->authorize('create', EventSeries::class);
 
         $eventSeries = new EventSeries();
+        /** @phpstan-ignore argument.type */
         if ($eventSeries->fillAndSave($request->validated())) {
-            Session::flash('success', __('Created successfully.'));
-            return redirect(route('event-series.edit', $eventSeries));
+            Session::flash('success', __(':name created successfully.', ['name' => $eventSeries->name]));
+            return $this->actionAwareRedirect(
+                $request,
+                route('event-series.show', $eventSeries),
+                createRoute: route('event-series.create')
+            );
         }
 
         return back();
@@ -116,14 +121,34 @@ class EventSeriesController extends Controller
     {
         $this->authorize('update', $eventSeries);
 
+        /** @phpstan-ignore argument.type */
         if ($eventSeries->fillAndSave($request->validated())) {
-            Session::flash('success', __('Saved successfully.'));
+            Session::flash('success', __(':name saved successfully.', ['name' => $eventSeries->name]));
         }
 
         // Slug may have changed, so we need to generate the URL here!
-        return redirect(route('event-series.edit', $eventSeries));
+        return $this->actionAwareRedirect(
+            $request,
+            route('event-series.show', $eventSeries),
+            editRoute: route('event-series.edit', $eventSeries)
+        );
     }
 
+    public function destroy(EventSeries $eventSeries): RedirectResponse
+    {
+        $this->authorize('forceDelete', $eventSeries);
+
+        if ($eventSeries->delete()) {
+            Session::flash('success', __(':name deleted successfully.', ['name' => $eventSeries->name]));
+            return redirect(route('event-series.index'));
+        }
+
+        return back();
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
     private function formValues(): array
     {
         return [

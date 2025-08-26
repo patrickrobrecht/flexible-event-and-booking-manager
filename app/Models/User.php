@@ -2,21 +2,22 @@
 
 namespace App\Models;
 
+use App\Enums\Ability;
+use App\Enums\ActiveStatus;
+use App\Enums\FilterValue;
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\FiltersByRelationExistence;
 use App\Models\Traits\HasAddress;
+use App\Models\Traits\HasFullName;
+use App\Models\Traits\HasPhone;
 use App\Models\Traits\Searchable;
 use App\Notifications\AccountCreatedNotification;
 use App\Notifications\ResetPasswordNotification;
 use App\Notifications\VerifyEmailNotification;
-use App\Options\Ability;
-use App\Options\ActiveStatus;
-use App\Options\FilterValue;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -39,20 +40,19 @@ use Spatie\QueryBuilder\Enums\SortDirection;
  * @property ?Carbon $date_of_birth
  * @property ?string $phone
  * @property string $email
- * @property-read ?Carbon $email_verified_at
+ * @property ?Carbon $email_verified_at
  * @property ?string $password
  * @property ActiveStatus $status
  * @property ?Carbon $last_login_at
  *
- * @property-read string greeting {@see User::greeting()}
- * @property-read string $name {@see User::name()}
- *
  * @property-read Collection|Booking[] $bookings {@see self::bookings()}
+ * @property-read Collection|Booking[] $bookingsTrashed {@see self::bookingsTrashed()}
+ * @property-read Collection|Document[] $documents {@see self::documents()}
  * @property-read Collection|Event[] $responsibleForEvents {@see self::responsibleForEvents()}
  * @property-read Collection|EventSeries[] $responsibleForEventSeries {@see self::responsibleForEventSeries()}
  * @property-read Collection|Organization[] $responsibleForOrganizations {@see self::responsibleForOrganizations()}
  * @property-read Collection|PersonalAccessToken[] $tokens {@see HasApiTokens::tokens()}
- * @property-read Collection|UserRole[] $userRoles {@see User::userRoles()}
+ * @property-read Collection|UserRole[] $userRoles {@see self::userRoles()}
  */
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -61,14 +61,26 @@ class User extends Authenticatable implements MustVerifyEmail
     use HasAddress;
     use HasApiTokens;
     use HasFactory;
+    use HasFullName;
+    use HasPhone;
     use Notifiable;
     use Searchable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+    protected $casts = [
+        'date_of_birth' => 'date',
+        'email_verified_at' => 'datetime',
+        'status' => ActiveStatus::class,
+        'last_login_at' => 'datetime',
+        // counts
+        'bookings_count' => 'integer',
+        'bookings_trashed_count' => 'integer',
+        'documents_count' => 'integer',
+        'responsible_for_events_count' => 'integer',
+        'responsible_for_event_series_count' => 'integer',
+        'responsible_for_organizations_count' => 'integer',
+        'tokens_count' => 'integer',
+    ];
+
     protected $fillable = [
         'first_name',
         'last_name',
@@ -83,43 +95,23 @@ class User extends Authenticatable implements MustVerifyEmail
         'status',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'date_of_birth' => 'date',
-        'email_verified_at' => 'datetime',
-        'status' => ActiveStatus::class,
-        'last_login_at' => 'datetime',
-    ];
-
-    public function greeting(): Attribute
-    {
-        return new Attribute(fn () => __('Hello :name', ['name' => $this->name]));
-    }
-
-    public function name(): Attribute
-    {
-        return new Attribute(fn () => $this->first_name . ' ' . $this->last_name);
-    }
 
     public function bookings(): HasMany
     {
         return $this->hasMany(Booking::class, 'booked_by_user_id')
             ->orderByDesc('booked_at')
             ->orderByDesc('created_at');
+    }
+
+    public function bookingsTrashed(): HasMany
+    {
+        /** @phpstan-ignore-next-line method.notFound */
+        return $this->bookings()
+            ->onlyTrashed();
     }
 
     public function documents(): HasMany
@@ -129,7 +121,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * @param class-string $class
+     * @param class-string<Model> $class
      */
     private function responsibleFor(string $class): MorphToMany
     {
@@ -167,24 +159,40 @@ class User extends Authenticatable implements MustVerifyEmail
             ->withTimestamps();
     }
 
-    public function scopeEmail(Builder $query, ...$searchTerms): Builder
+    public function scopeEmail(Builder $query, string ...$searchTerms): Builder
     {
         return $this->scopeSearch($query, 'email', true, ...$searchTerms);
     }
 
-    public function scopeName(Builder $query, ...$searchTerms): Builder
+    public function scopeName(Builder $query, string ...$searchTerms): Builder
     {
         return $this->scopeIncludeColumns($query, ['first_name', 'last_name'], true, ...$searchTerms);
     }
 
-    public function scopeUserRole(Builder $query, $userRoleId): Builder
+    public function scopeUserRole(Builder $query, int|string $userRoleId): Builder
     {
         return $this->scopeRelation($query, $userRoleId, 'userRoles', fn (Builder $q) => $q->where('user_role_id', '=', $userRoleId));
     }
 
+    public function deleteWithRelations(): bool|null
+    {
+        $this->userRoles()->detach();
+        $this->tokens()->delete();
+        return $this->delete();
+    }
+
+    /**
+     * @param array<string, mixed> $validatedData
+     */
     public function fillAndSave(array $validatedData): bool
     {
+        /** @phpstan-var array{password: ?string, user_role_id: int[]|null} $validatedData */
         $this->fill($validatedData);
+
+        if ($this->isDirty('email')) {
+            // If the email address is changed, reset verification.
+            $this->email_verified_at = null;
+        }
 
         if (isset($validatedData['password'])) {
             $this->password = Hash::make($validatedData['password']);
@@ -205,7 +213,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * @return Collection<string>
+     * @return \Illuminate\Support\Collection<int, string>
      */
     public function getAbilitiesAsStrings(): \Illuminate\Support\Collection
     {
@@ -214,12 +222,13 @@ class User extends Authenticatable implements MustVerifyEmail
             $abilities->add($userRole->abilities);
         }
 
+        /** @phpstan-ignore-next-line return.type */
         return $abilities->flatten()
             ->unique();
     }
 
     /**
-     * @return \Illuminate\Support\Collection<Ability>
+     * @return \Illuminate\Support\Collection<int, Ability>
      */
     public function getAbilities(): \Illuminate\Support\Collection
     {
@@ -242,7 +251,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return false;
     }
 
-    public function isResponsibleFor(Model $model): bool
+    public function isResponsibleFor(Event|EventSeries|Organization $model): bool
     {
         return ($model->responsibleUsers ?? Collection::empty())
             ->pluck('id')
@@ -255,6 +264,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'bookings.bookingOption.event.location',
             'documents.reference',
             'responsibleForEvents' => fn (MorphToMany $events) => $events
+                /** @phpstan-ignore argument.type */
                 ->with([
                     'bookingOptions' => fn (HasMany $bookingOptions) => $bookingOptions
                         ->withCount([
@@ -303,6 +313,9 @@ class User extends Authenticatable implements MustVerifyEmail
         $this->notify(new ResetPasswordNotification($this, $token));
     }
 
+    /**
+     * @return AllowedFilter[]
+     */
     public static function allowedFilters(): array
     {
         return [
@@ -319,6 +332,9 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
+    /**
+     * @return array<string, string>
+     */
     public static function filterOptions(): array
     {
         return [

@@ -27,6 +27,12 @@
     @endisset
 @endsection
 
+@section('headline-buttons')
+    @isset($userRole)
+        @include('user_roles.shared.user_role_delete_button')
+    @endisset
+@endsection
+
 @section('content')
     @isset($userRole)
         @include('user_roles.shared.user_role_badge_count')
@@ -36,7 +42,7 @@
                 action="{{ isset($userRole) ? route('user-roles.update', $userRole) : route('user-roles.store') }}">
         <div class="row">
             <div class="col-12 col-md-6">
-                <x-bs::form.field name="name" type="text"
+                <x-bs::form.field name="name" type="text" maxlength="255" :required="true"
                                   :value="$userRole->name ?? null">{{ __('Name') }}</x-bs::form.field>
             </div>
         </div>
@@ -45,22 +51,14 @@
         <div class="cols-lg-2 cols-xxl-3 mb-3">
             @include('user_roles.ability_group', [
                 'selectedAbilities' => $userRole->abilities ?? [],
-                'abilityGroups' => \App\Options\AbilityGroup::casesAtRootLevel(),
+                'abilityGroups' => \App\Enums\AbilityGroup::casesAtRootLevel(),
                 'editable' => true,
                 'headlineLevel' => 3,
             ])
         </div>
 
-        <x-bs::button.group>
-            <x-button.save>
-                @isset($userRole)
-                    {{ __( 'Save' ) }}
-                @else
-                    {{ __('Create') }}
-                @endisset
-            </x-button.save>
-            <x-button.cancel href="{{ route('user-roles.index') }}"/>
-        </x-bs::button.group>
+        <x-button.group-save :show-create="!isset($userRole)"
+                             :index-route="route('user-roles.index')"/>
     </x-bs::form>
 
     <x-text.timestamp :model="$userRole ?? null"/>

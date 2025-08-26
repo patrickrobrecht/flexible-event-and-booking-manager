@@ -2,12 +2,12 @@
 
 namespace App\Policies;
 
+use App\Enums\Ability;
 use App\Models\Document;
 use App\Models\Event;
 use App\Models\EventSeries;
 use App\Models\Organization;
 use App\Models\User;
-use App\Options\Ability;
 use App\Policies\Traits\ChecksAbilities;
 use Illuminate\Auth\Access\Response;
 
@@ -139,9 +139,9 @@ class DocumentPolicy
         }
 
         return match ($document->reference::class) {
-            Event::class => $this->requireAbility($user, Ability::DeleteDocumentsOfEvents),
-            EventSeries::class => $this->requireAbility($user, Ability::DeleteDocumentsOfEventSeries),
-            Organization::class => $this->requireAbility($user, Ability::DeleteDocumentsOfOrganizations),
+            Event::class => $this->requireAbility($user, Ability::DestroyDocumentsOfEvents),
+            EventSeries::class => $this->requireAbility($user, Ability::DestroyDocumentsOfEventSeries),
+            Organization::class => $this->requireAbility($user, Ability::DestroyDocumentsOfOrganizations),
             default => $this->deny(),
         };
     }

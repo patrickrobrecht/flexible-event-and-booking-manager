@@ -2,18 +2,18 @@
     /** @var \App\Models\Document $document */
 @endphp
 @switch($document->file_type)
-    @case(\App\Options\FileType::Audio)
+    @case(\App\Enums\FileType::Audio)
         <audio controls>
             <source src="{{ route('documents.stream', $document) }}" alt="{{ $document->title }}"/>
         </audio>
         @break
-    @case(\App\Options\FileType::Image)
+    @case(\App\Enums\FileType::Image)
         <img src="{{ route('documents.stream', $document) }}" alt="{{ $document->title }}" class="img-fluid"/>
         @break
-    @case(\App\Options\FileType::PDF)
+    @case(\App\Enums\FileType::PDF)
         <object data="{{ route('documents.stream', $document) }}" type="application/pdf" class="w-100 vh-100"></object>
         @break
-    @case(\App\Options\FileType::Video)
+    @case(\App\Enums\FileType::Video)
         <video width="1000" controls>
             <source src="{{ route('documents.stream', $document) }}" alt="{{ $document->title }}"/>
         </video>
@@ -23,7 +23,7 @@
         @break
 @endswitch
 
-<div class="mt-3">
+<div class="mt-3 d-print-none">
     <x-bs::button.link variant="secondary" href="{{ route('documents.download', $document) }}" class="text-nowrap">
         <i class="fa fa-fw fa-download"></i> {{ __('Download file') }}
     </x-bs::button.link>

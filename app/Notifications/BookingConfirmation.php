@@ -15,26 +15,19 @@ class BookingConfirmation extends Notification
     {
     }
 
-    /**
-     * Get the mail representation of the notification.
-     *
-     * @return MailMessage
-     */
-    public function toMail($notifiable)
+    public function toMail(mixed $notifiable): MailMessage
     {
-        $mail = (new MailMessage())
-            ->subject(config('app.name') . ': ' . __('Booking'))
+        $mail = $this->booking->prepareMailMessage()
+            ->subject(
+                /** @phpstan-ignore-next-line binaryOp.invalid */
+                config('app.name')
+                . ': '
+                . __('Booking no. :id', [
+                    'id' => $this->booking->id,
+                ])
+            )
             ->line(__('we received your booking:'))
-            ->line($this->booking->first_name . ' ' . $this->booking->last_name);
-
-        if (isset($this->booking->bookedByUser) && $this->booking->bookedByUser->email !== $this->booking->email) {
-            $mail->cc($this->booking->bookedByUser->email);
-        }
-
-        $organization = $this->booking->bookingOption->event->organization;
-        if (isset($organization->email)) {
-            $mail->replyTo($organization->email, $organization->name);
-        }
+            ->line($this->booking->name);
 
         if (isset($this->booking->street)) {
             $mail->line($this->booking->street . ' ' . ($this->booking->house_number ?? ''));
@@ -44,20 +37,25 @@ class BookingConfirmation extends Notification
         }
 
         if (isset($this->booking->price) && $this->booking->price > 0) {
-            $mail->line(__('Please transfer :price to the following bank account:', [
+            $mail->line(__('Please transfer :price to the following bank account by :date:', [
                 'price' => formatDecimal($this->booking->price) . ' €',
+                /** @phpstan-ignore-next-line argument.type */
+                'date' => formatDate($this->booking->payment_deadline),
             ]));
-            $mail->lines([
-                __('Account holder') . ': ' . ($organization->bank_account_holder ?? $organization->name),
-                'IBAN: ' . $organization->iban,
-                __('Bank') . ': ' .$organization->bank_name,
-            ]);
+            $mail->lines($this->booking->bookingOption->event->organization->bank_account_lines);
+        }
+
+        if (isset($this->booking->bookingOption->confirmation_text)) {
+            $mail->line($this->booking->bookingOption->confirmation_text);
         }
 
         return $mail;
     }
 
-    public function via($notifiable)
+    /**
+     * @return string[]
+     */
+    public function via(mixed $notifiable): array
     {
         return ['mail'];
     }

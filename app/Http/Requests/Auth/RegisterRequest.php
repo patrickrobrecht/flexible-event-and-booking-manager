@@ -7,6 +7,9 @@ use Illuminate\Validation\Rules\Password;
 
 class RegisterRequest extends FormRequest
 {
+    /**
+     * @return array<string, array<int, string|Password>>
+     */
     public function rules(): array
     {
         return [
@@ -30,7 +33,7 @@ class RegisterRequest extends FormRequest
             'password' => [
                 'required',
                 'confirmed',
-                Password::defaults(),
+                Password::default(),
             ],
             'terms_and_conditions' => [
                 config('app.urls.terms_and_conditions') ? 'accepted' : 'nullable',

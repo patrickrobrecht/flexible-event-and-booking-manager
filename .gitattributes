@@ -7,6 +7,7 @@
 *.js text diff=javascript
 *.json text diff=json
 *.md text diff=markdown
+*.mjs text diff=javascript
 *.php text diff=php
 *.scss text diff=css
 *.txt text diff=text
@@ -35,4 +36,4 @@
 /phpunit.xml export-ignore
 /phpunit_coverage.xml export-ignore
 /phpunit_report.xml export-ignore
-/webpack.mix.js export-ignore
+/vite.config.mjs export-ignore

@@ -4,7 +4,7 @@ module.exports = {
     ...js.configs.all,
     languageOptions: {
         ecmaVersion: "latest",
-        sourceType: "commonjs",
+        sourceType: "module",
     },
     rules: {
         indent: [

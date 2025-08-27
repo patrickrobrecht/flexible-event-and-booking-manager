@@ -16,7 +16,7 @@
                           data-target="delete-button-{{$id}}"/>
         @once
             @push('scripts')
-                <script src="{{ mix('js/enable-button-by-checkbox.js') }}"></script>
+                @vite(['resources/js/enable-button-by-checkbox.js'])
             @endpush
         @endonce
     @endif

@@ -64,5 +64,5 @@
 </div>
 
 @push('scripts')
-    <script src="{{ mix('/lib/alpinejs.min.js') }}" defer></script>
+    @vite(['node_modules/alpinejs/dist/cdn.min.js'])
 @endpush

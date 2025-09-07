@@ -90,7 +90,10 @@ trait SupportsIncludesInSnakeCase
     }
 
     /**
-     * @return LengthAwarePaginator<int, Model>
+     * @template TModel of Model
+     *
+     * @param QueryBuilder<TModel> $query
+     * @return LengthAwarePaginator<int, TModel>
      */
     protected function loadPaginatedListWithIncludes(FormRequest $request, QueryBuilder $query): LengthAwarePaginator
     {

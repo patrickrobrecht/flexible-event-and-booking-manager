@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Location;
 use App\Models\StorageLocation;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Database\Eloquent\Collection;

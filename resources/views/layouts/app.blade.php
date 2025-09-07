@@ -6,8 +6,10 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>@yield('title')</title>
-
-    <link rel="stylesheet" href="{{ mix('css/app.css') }}">
+    @vite([
+        'resources/js/app.js',
+        'resources/sass/app.scss',
+    ])
     @stack('styles')
 </head>
 <body>
@@ -49,7 +51,7 @@
     @include('layouts.footer')
 
     @section('scripts')
-        <script src="{{ mix('/lib/bootstrap.bundle.min.js') }}"></script>
+        @vite(['node_modules/bootstrap/dist/js/bootstrap.bundle.min.js'])
         @stack('scripts')
     @show
 </body>

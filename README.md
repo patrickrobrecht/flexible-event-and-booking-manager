@@ -54,24 +54,27 @@ To get started, you need to install the following software:
 - [Laravel Query Builder](https://spatie.be/docs/laravel-query-builder/v6/introduction) for custom filtering and sorting
 - [Laravel Zipstream](https://github.com/stechstudio/laravel-zipstream) to create and stream zip files
 - [PhpSpreadsheet](https://phpspreadsheet.readthedocs.io/en/stable/) for Excel exports
+- [https://github.com/rapi-doc/RapiDoc](RapiDoc) for Open API documentation
 
 ### How to develop
 To setup/update your development environment:
 - Run `composer install` to setup autoloading and install the development dependencies for PHP.
+- Run `npm install` to install CSS and JavaScript libraries.
+- Use `npm run dev` to start the development server if you modify the compiled or copied files.
 - Create/update the `.env` configuration if necessary (see [Configuration](#configuration) below).
 - Run `php artisan migrate` to migrate the database to the latest version.
 - Run `composer stan` to run static analysis with PHPStan.
-- Run `composer test` to execute all the Unit tests.
+- Run `composer test` to execute all PHPUnit tests.
 
 For development, we use
 - [ESlint](https://eslint.org/) for the JavaScript code style check
 - [Laravel Debugbar](https://github.com/barryvdh/laravel-debugbar) for debugging utility
-- [Laravel Mix](https://laravel-mix.com/docs/) for compiling assets
 - [Laravel Pint](https://laravel.com/docs/12.x/pint) for the PHP code style check
 - [Laravel Translatable String Exporter](https://github.com/kkomelin/laravel-translatable-string-exporter)
 - [PHPStan](https://phpstan.org/) with [Larastan](https://github.com/larastan/larastan) and [strict rules extension](https://github.com/phpstan/phpstan-strict-rules) for static analysis
 - [PHPUnit](https://docs.phpunit.de/) for Unit tests
 - [Stylelint](https://stylelint.io/) for the SASS code style check
+- [Vite](https://laravel.com/docs/11.x/vite#introduction) for compiling and copying assets
 
 ### Code Style
 Run `composer cs` to check compliance with the code style
@@ -91,9 +94,10 @@ Use `composer translate` to extract them to `lang/de.json`.
 
 ### How to deploy
 - Run `composer production` to remove development dependencies.
+- Run `npm run build` to build production files.
+- Upload files to the production system.
 - Create/update the `.env` configuration if necessary.
 - Run `php artisan migrate` to migrate the database to the latest version.
-- Upload files to the production system.
 - Optimize performance with caching for config, events, routes, views by running `php artisan optimize`.
 
 

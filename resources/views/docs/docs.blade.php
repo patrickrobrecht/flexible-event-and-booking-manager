@@ -12,5 +12,5 @@
 @endsection
 
 @push('scripts')
-    <script type="module" src="{{ mix('lib/rapidoc-min.js') }}"></script>
+    @vite(['node_modules/rapidoc/dist/rapidoc-min.js'])
 @endpush

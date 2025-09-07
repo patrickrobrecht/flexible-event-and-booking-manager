@@ -64,6 +64,6 @@
 
 @once
     @push('scripts')
-        <script src="{{ mix('js/ability-dependencies.js') }}"></script>
+        @vite(['resources/js/ability-dependencies.js'])
     @endpush
 @endonce

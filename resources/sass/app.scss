@@ -1,16 +1,18 @@
 @use "sass:map";
+@use '@fortawesome/fontawesome-free/scss/variables' with (
+   $font-path: $root-directory,
+);
 
 /**
  * Frontend styles via Bootstrap Framework.
  */
-@import '~bootstrap/scss/bootstrap';
+@import 'bootstrap/scss/bootstrap';
 
 /**
  * Icons via Font Awesome.
  */
-$fa-font-path: '/lib';
-@import '~@fortawesome/fontawesome-free/scss/fontawesome';
-@import '~@fortawesome/fontawesome-free/scss/solid';
+@import '@fortawesome/fontawesome-free/scss/fontawesome';
+@import '@fortawesome/fontawesome-free/scss/solid';
 
 /*
  * Classes for column-count

@@ -42,7 +42,7 @@ jobs:
         run: npm clean-install
 
       - name: Build
-        run: npm run production
+        run: npm run build
 
       - name: Run tests (PHP <= 8.3)
         if: matrix.php-version != '8.4'

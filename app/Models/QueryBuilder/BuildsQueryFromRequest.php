@@ -21,6 +21,7 @@ trait BuildsQueryFromRequest
      * @template TDeclaringModel of Model
      *
      * @param Builder<self>|HasMany<self, TDeclaringModel>|string|null $subject
+     * @return QueryBuilder<self>
      */
     public static function buildQueryFromRequest(Builder|Relation|string|null $subject = null): QueryBuilder
     {
@@ -30,6 +31,7 @@ trait BuildsQueryFromRequest
         }
         /** @phpstan-var AllowedSort|non-empty-array<AllowedSort> $defaultSorts */
 
+        /** @phpstan-ignore-next-line argument.type */
         return QueryBuilder::for($subject ?? self::class)
             ->allowedFilters(self::allowedFilters())
             ->allowedSorts(self::allowedSorts())

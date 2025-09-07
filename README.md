@@ -94,10 +94,10 @@ Use `composer translate` to extract them to `lang/de.json`.
 
 ### How to deploy
 - Run `composer production` to remove development dependencies.
-- Create/update the `.env` configuration if necessary.
-- Run `php artisan migrate` to migrate the database to the latest version.
 - Run `npm run build` to build production files.
 - Upload files to the production system.
+- Create/update the `.env` configuration if necessary.
+- Run `php artisan migrate` to migrate the database to the latest version.
 - Optimize performance with caching for config, events, routes, views by running `php artisan optimize`.
 
 

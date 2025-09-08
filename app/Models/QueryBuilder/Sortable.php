@@ -2,14 +2,28 @@
 
 namespace App\Models\QueryBuilder;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use Spatie\QueryBuilder\AllowedSort;
+use Spatie\QueryBuilder\Enums\SortDirection;
 
 /**
  * @mixin Model
  */
 trait Sortable
 {
+    public static function allowedSortForRelationCount(string $relation): AllowedSort
+    {
+        $countColumn = Str::snake($relation) . '_count';
+        return AllowedSort::callback(
+            $countColumn,
+            static fn (Builder $query, bool $descending, string $property) => $query
+                ->withCount($relation)
+                ->orderBy($countColumn, $descending ? SortDirection::DESCENDING : SortDirection::ASCENDING),
+        );
+    }
+
     /**
      * @return AllowedSort[]
      */

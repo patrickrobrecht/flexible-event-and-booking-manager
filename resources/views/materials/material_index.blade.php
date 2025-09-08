@@ -52,6 +52,11 @@
                                   :options="Options::fromArray(StorageLocation::filterOptions())"
                                   :from-query="true"><i class="fa fa-fw fa-warehouse"></i> {{ __('Storage locations') }}</x-bs::form.field>
             </div>
+            <div class="col-12 col-lg-6 col-xl-3">
+                <x-bs::form.field name="sort" type="select"
+                                  :options="\App\Models\Material::sortOptions()->getNamesWithLabels()"
+                                  :from-query="true"><i class="fa fa-fw fa-sort"></i> {{ __('Sorting') }}</x-bs::form.field>
+            </div>
         </div>
 
         <x-slot:addButtons>

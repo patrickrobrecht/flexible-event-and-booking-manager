@@ -377,7 +377,7 @@ class Booking extends Model
                 __('Name'),
                 AllowedSort::callback(
                     'name',
-                    fn (Builder $query, bool $descending, string $property) => $query
+                    static fn (Builder $query, bool $descending, string $property) => $query
                         ->orderBy('last_name', $descending ? SortDirection::DESCENDING : SortDirection::ASCENDING)
                         ->orderBy('first_name', $descending ? SortDirection::DESCENDING : SortDirection::ASCENDING)
                 ),

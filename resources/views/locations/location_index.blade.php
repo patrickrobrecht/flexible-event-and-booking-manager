@@ -79,6 +79,17 @@
                         <x-bs::list.item>
                             <span>
                                 <i class="fa fa-fw fa-calendar-days"></i>
+                                <a href="{{ route('events.index', ['filter[location_id]' => $location->id, 'filter[event_type]' => \App\Enums\EventType::MainEvent]) }}" target="_blank">
+                                    {{ __('Main events') }}
+                                </a>
+                            </span>
+                            <x-slot:end>
+                                <x-bs::badge>{{ formatInt($location->main_events_count) }}</x-bs::badge>
+                            </x-slot:end>
+                        </x-bs::list.item>
+                        <x-bs::list.item>
+                            <span>
+                                <i class="fa fa-fw fa-calendar-days"></i>
                                 <a href="{{ route('events.index', ['filter[location_id]' => $location->id]) }}" target="_blank">
                                     {{ __('Events') }}
                                 </a>

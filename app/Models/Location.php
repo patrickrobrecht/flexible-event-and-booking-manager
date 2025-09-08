@@ -24,6 +24,7 @@ use Spatie\QueryBuilder\AllowedFilter;
  * @property-read string $nameOrAddress {@see self::nameOrAddress()}
  *
  * @property-read Collection|Event[] $events {@see self::events()}
+ * @property-read Collection|Event[] $mainEvents {@see self::mainEvents()}
  * @property-read Collection|Organization[] $organizations {@see self::organizations()}
  */
 class Location extends Model
@@ -61,6 +62,12 @@ class Location extends Model
     public function events(): HasMany
     {
         return $this->hasMany(Event::class);
+    }
+
+    public function mainEvents(): HasMany
+    {
+        return $this->events()
+            ->whereNull('parent_event_id');
     }
 
     public function organizations(): HasMany
@@ -104,6 +111,8 @@ class Location extends Model
 
     public static function sortOptions(): SortOptions
     {
-        return self::sortOptionsForNameAndTimeStamps();
+        return self::sortOptionsForNameAndTimeStamps()
+            ->addBothDirections(__('Number of main events'), self::allowedSortForRelationCount('mainEvents'))
+            ->addBothDirections(__('Number of events'), self::allowedSortForRelationCount('events'));
     }
 }

@@ -278,18 +278,28 @@ class Event extends Model
 
     public static function sortOptions(): SortOptions
     {
-        return (new SortOptions())
-            ->addBothDirections(__('Name'), AllowedSort::field('name'))
-            ->merge(self::sortOptionsForTimeStamps())
+        return self::sortOptionsForNameAndTimeStamps()
             ->addBothDirections(
                 __('Period of the event'),
                 AllowedSort::callback(
                     'period',
-                    fn (Builder $query, bool $descending, string $property) => $query
+                    static fn (Builder $query, bool $descending, string $property) => $query
                         ->orderBy('started_at', $descending ? SortDirection::DESCENDING : SortDirection::ASCENDING)
                         ->orderBy('finished_at', $descending ? SortDirection::DESCENDING : SortDirection::ASCENDING)
-                ),
+                )
+                ->defaultDirection(SortDirection::DESCENDING),
                 true
             );
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public static function defaultValuesForQuery(): array
+    {
+        return [
+            ...self::defaultValuesForFilters(),
+            config('query-builder.parameters.sort') => '-period',
+        ];
     }
 }

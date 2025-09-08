@@ -29,6 +29,10 @@ class MaterialFilterRequest extends FormRequest
             'filter.description' => $this->ruleForText(),
             'filter.organization_id' => $this->ruleForAllowedOrExistsInDatabase(Organization::query(), [FilterValue::All->value]),
             'filter.storage_location_id' => $this->ruleForAllowedOrExistsInDatabase(StorageLocation::query(), FilterValue::values()),
+            'sort' => [
+                'nullable',
+                Material::sortOptions()->getRule(),
+            ],
         ];
     }
 }

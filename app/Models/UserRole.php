@@ -13,8 +13,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\QueryBuilder\AllowedFilter;
-use Spatie\QueryBuilder\AllowedSort;
-use Spatie\QueryBuilder\Enums\SortDirection;
 
 /**
  * @property-read int $id
@@ -96,14 +94,6 @@ class UserRole extends Model
     public static function sortOptions(): SortOptions
     {
         return self::sortOptionsForNameAndTimeStamps()
-            ->addBothDirections(
-                __('Number of users'),
-                AllowedSort::callback(
-                    'users_count',
-                    fn (Builder $query, bool $descending, string $property) => $query
-                        ->withCount('users')
-                        ->orderBy('users_count', $descending ? SortDirection::DESCENDING : SortDirection::ASCENDING)
-                )
-            );
+            ->addBothDirections(__('Number of users'), self::allowedSortForRelationCount('users'));
     }
 }

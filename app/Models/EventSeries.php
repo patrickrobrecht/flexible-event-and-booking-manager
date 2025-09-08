@@ -159,6 +159,8 @@ class EventSeries extends Model
 
     public static function sortOptions(): SortOptions
     {
-        return self::sortOptionsForNameAndTimeStamps();
+        return self::sortOptionsForNameAndTimeStamps()
+            ->addBothDirections(__('Number of events'), self::allowedSortForRelationCount('events'))
+            ->addBothDirections(__('Number of event series'), self::allowedSortForRelationCount('subEventSeries'));
     }
 }

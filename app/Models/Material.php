@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\FilterValue;
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
+use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\BelongsToOrganization;
 use App\Models\Traits\FiltersByRelationExistence;
 use App\Models\Traits\Searchable;
@@ -156,5 +157,11 @@ class Material extends Model
         return [
             'name',
         ];
+    }
+
+    public static function sortOptions(): SortOptions
+    {
+        return self::sortOptionsForNameAndTimeStamps()
+            ->addBothDirections(__('Number of storage locations'), self::allowedSortForRelationCount('storageLocations'));
     }
 }

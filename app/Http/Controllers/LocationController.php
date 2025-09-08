@@ -22,6 +22,7 @@ class LocationController extends Controller
             'locations' => Location::buildQueryFromRequest()
                 ->withCount([
                     'events',
+                    'mainEvents',
                     'organizations',
                 ])
                 ->paginate(18),

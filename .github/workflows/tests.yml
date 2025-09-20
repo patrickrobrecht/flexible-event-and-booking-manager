@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -34,9 +34,9 @@ jobs:
         run: composer install --prefer-dist --no-interaction --no-progress
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: 22
+          node-version: 24
 
       - name: Install npm dependencies
         run: npm clean-install
@@ -44,7 +44,7 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Run tests (PHP <= 8.3)
+      - name: Run tests (PHP not 8.4)
         if: matrix.php-version != '8.4'
         run: composer test
 

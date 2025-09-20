@@ -23,10 +23,10 @@ trait HasSlugForRouting
      * @param int|string $value
      */
     /** @phpstan-ignore method.childParameterType */
-    public function resolveRouteBinding($value, $field = null): ?static
+    public function resolveRouteBinding($value, $field = null): static
     {
         try {
-            return self::query()
+            return static::query()
                  ->where('slug', '=', $value)
                  ->firstOrFail();
         } catch (ModelNotFoundException $exception) {

@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
 /**
- * @property string $street
- * @property string $house_number
- * @property string $postal_code
- * @property string $city
- * @property string $country
+ * @property ?string $street
+ * @property ?string $house_number
+ * @property ?string $postal_code
+ * @property ?string $city
+ * @property ?string $country
  *
  * @property-read string[] $addressBlock {@see HasAddress::addressBlock()}
  * @property-read string $addressLine {@see HasAddress::addressLine()}

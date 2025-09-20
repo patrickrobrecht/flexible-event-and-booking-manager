@@ -22,7 +22,7 @@
         "barryvdh/laravel-debugbar": "^3.16",
         "fakerphp/faker": "^1.24",
         "kkomelin/laravel-translatable-string-exporter": "^1.23",
-        "larastan/larastan": "^3.6",
+        "larastan/larastan": "^3.7",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.8",
         "phpstan/phpstan": "^2.1",

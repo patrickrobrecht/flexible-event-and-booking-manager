@@ -6,7 +6,6 @@ import fs from 'fs';
 import crypto from 'crypto';
 
 const filesFromLibraries = {
-    'node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2': 'fa-solid-900.woff2',
     'node_modules/alpinejs/dist/cdn.min.js': 'alpinejs',
     'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js': 'bootstrap.bundle',
     'node_modules/rapidoc/dist/rapidoc-min.js': 'rapidoc',
@@ -31,11 +30,8 @@ for (const [sourceFilePath, fileName] of Object.entries(filesFromLibraries)) {
 
 function generateHashedFileName(fileName, fullPath) {
     const fileExtension = path.extname(fullPath);
-    if (fileExtension === '.woff2') {
-        return fileName;
-    }
     const fileBuffer = fs.readFileSync(fullPath);
-    const hash = crypto.createHash('md5').update(fileBuffer).digest('hex');
+    const hash = crypto.createHash('sha256').update(fileBuffer).digest('hex');
     return `${fileName}.${hash}${fileExtension}`;
 }
 
@@ -69,7 +65,13 @@ export default defineConfig(({ mode }) => {
             },
             // Copy static files from libraries...
             viteStaticCopy({
-                targets: filesFromLibrariesForConfiguration,
+                targets: [
+                    ...filesFromLibrariesForConfiguration,
+                    {
+                        src: 'node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2',
+                        dest: 'lib',
+                    }
+                ]
             }),
             // ... and add their hash-based file names to the manifest file.
             {
@@ -92,7 +94,6 @@ export default defineConfig(({ mode }) => {
                     silenceDeprecations: [
                         // Bootstrap framework is still using deprecated syntax.
                         'import',
-                        'legacy-js-api',
                     ],
                     additionalData: (content) => {
                         const rootDir = mode === 'production' ? '/build/lib' : '/lib';

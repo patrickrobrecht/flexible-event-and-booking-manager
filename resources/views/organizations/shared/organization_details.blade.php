@@ -22,7 +22,7 @@
     @isset($organization->phone)
         <x-bs::list.item class="d-flex">
             <span class="me-3"><i class="fa fa-fw fa-phone"></i></span>
-            <span>{{ $organization->phone }}</span>
+            <span><a href="{{ $organization->phone_link }}">{{ $organization->phone }}</a></span>
         </x-bs::list.item>
     @endisset
     @isset($organization->email)

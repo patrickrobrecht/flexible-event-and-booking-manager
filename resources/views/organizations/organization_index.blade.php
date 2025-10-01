@@ -93,7 +93,7 @@
                         @isset($organization->phone)
                             <x-bs::list.item>
                                 <i class="fa fa-fw fa-phone"></i>
-                                <a href="{{ $organization->website_url }}">{{ $organization->phone }}</a>
+                                <a href="{{ $organization->phone_link }}">{{ $organization->phone }}</a>
                             </x-bs::list.item>
                         @endisset
                         @isset($organization->email)

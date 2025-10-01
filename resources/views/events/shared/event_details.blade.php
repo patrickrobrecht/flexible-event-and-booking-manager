@@ -47,7 +47,7 @@
             @isset($event->organization->phone)
                 <div class="d-flex">
                     <span class="me-3"><i class="fa fa-fw fa-phone"></i></span>
-                    {{ $event->organization->phone }}
+                    <a href="{{ $event->organization->phone_link }}">{{ $event->organization->phone }}</a>
                 </div>
             @endisset
             @isset($event->organization->email)

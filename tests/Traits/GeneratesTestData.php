@@ -187,7 +187,7 @@ trait GeneratesTestData
     protected static function createDocument(Closure $referenceProvider): Document
     {
         return Document::factory()
-            ->for($referenceProvider(), 'reference')
+            ->forReference($referenceProvider())
             ->for(User::factory()->create(), 'uploadedByUser')
             ->create();
     }

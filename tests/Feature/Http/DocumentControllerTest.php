@@ -150,6 +150,11 @@ class DocumentControllerTest extends TestCase
     {
         $document = self::createDocument($referenceProvider);
 
+        Storage::shouldReceive('delete')
+            ->with($document->path)
+            ->once()
+            ->andReturn(true);
+
         $this->assertUserCanDeleteOnlyWithAbility("/documents/{$document->id}", [$viewReferenceAbility, $deleteDocumentsAbility], $document->reference->getRoute());
     }
 

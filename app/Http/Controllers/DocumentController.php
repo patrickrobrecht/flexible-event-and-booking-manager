@@ -117,6 +117,7 @@ class DocumentController extends Controller
         $this->authorize('forceDelete', $document);
 
         if ($document->delete()) {
+            Storage::delete($document->path);
             Session::flash('success', __('Deleted successfully.'));
         }
 

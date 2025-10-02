@@ -9,6 +9,7 @@ use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\BelongsToLocation;
 use App\Models\Traits\HasDocuments;
+use App\Models\Traits\HasPhone;
 use App\Models\Traits\HasResponsibleUsers;
 use App\Models\Traits\HasSlugForRouting;
 use Illuminate\Database\Eloquent\Builder;
@@ -45,6 +46,7 @@ class Organization extends Model
     use BuildsQueryFromRequest;
     use HasDocuments;
     use HasFactory;
+    use HasPhone;
     use HasResponsibleUsers;
     use HasSlugForRouting;
 

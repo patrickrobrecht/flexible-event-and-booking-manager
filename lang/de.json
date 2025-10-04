@@ -386,6 +386,7 @@
     "select status": "Status auswählen",
     "Select storage location": "Lagerplatz auswählen",
     "Send notification mail to user": "Benutzer per Mail benachrichtigen",
+    "Send verification link via e-mail": "Verifikations-Link per E-Mail senden",
     "Sender address": "Absenderadresse",
     "Sending e-mails": "E-Mail-Versand",
     "Sending method": "Sendemethode",
@@ -420,6 +421,7 @@
     "The file is :actualSize, but the maximum allowed size is :allowedSize.": "Die Datei ist :actualSize groß, das zulässige Maximum liegt jedoch bei :allowedSize.",
     "The maximum number of bookings has been reached.": "Die maximale Anzahl an Anmeldungen wurde erreicht.",
     "The name of the event is not correct.": "Der Name der Veranstaltung ist nicht korrekt.",
+    "The registration failed. Please try again.": "Die Registrierung ist fehlgeschlagen. Bitte versuche es erneut.",
     "There are no public future events.": "Es gibt keine öffentlichen Veranstaltungen in der Zukunft.",
     "This booking has been deleted.": "Diese Anmeldung wurde gelöscht.",
     "This document has not received any comments yet.": "Dieses Dokument wurde noch nicht kommentiert.",
@@ -513,6 +515,7 @@
     "Yes": "Ja",
     "You are receiving this email because we received a password reset request for your account.": "Du erhälst diese E-Mail, weil wir für dein Konto eine Anforderung zum Zurücksetzen des Passworts erhalten haben.",
     "Your booking has been saved successfully.": "Deine Anmeldung wurde erfolgreich gespeichert.",
+    "Your e-mail address :email has not been verified yet.": "Deine E-mail-Adresse :email wurde noch nicht verifiziert.",
     "Your e-mail address has been verified.": "Deine E-Mail-Adresse wurde verifiziert.",
     "Your personal access token is :token. Please make a note of it (e.g. in your password safe) - you will not be able to view it again.": "Dein persönliches Zugangstoken lautet :token. Bitte notiere dir dieses (bspw. in deinem Passwort-Tresor) - du kannst dieses nachträglich nicht nochmals einsehen."
 }

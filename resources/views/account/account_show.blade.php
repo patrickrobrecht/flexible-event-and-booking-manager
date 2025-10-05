@@ -26,6 +26,7 @@
     @include('users.shared.user_profile_data', [
         'user' => $user,
     ])
+    @include('account.shared.unverified_email')
 
     @include('users.shared.user_profile_responsibilities', [
         'user' => $user,

@@ -31,7 +31,7 @@ class AppServiceProvider extends ServiceProvider
         // Use custom PersonalAccessToken implementation.
         Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
 
-        // Rate limiting
+        // Define rate limiting for registrations.
         RateLimiter::for('register', static function (Request $request) {
             return Limit::perMinute(2)->by($request->ip());
         });

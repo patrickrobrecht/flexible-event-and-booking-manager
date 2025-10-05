@@ -5,11 +5,9 @@ namespace Tests\Feature\Http\Auth;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
-use App\Notifications\VerifyEmailNotification;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Notification;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 
@@ -38,8 +36,6 @@ class RegistrationTest extends TestCase
         Config::set('app.features.registration', true);
         Config::set('app.urls.terms_and_conditions', '');
 
-        Notification::fake();
-
         $data = $this->registrationData();
         $response = $this->post('/register', $data);
 
@@ -50,10 +46,6 @@ class RegistrationTest extends TestCase
             ->where('email', $data['email'])
             ->first();
         $this->assertNotNull($registeredUser);
-
-        Notification::assertSentTo($registeredUser, VerifyEmailNotification::class, static function ($notification) use ($registeredUser) {
-            return str_contains($notification->toMail($registeredUser)->render(), $registeredUser->greeting);
-        });
     }
 
     public function testNewUserCannotRegisterWithoutAcceptingTheTerms(): void

@@ -13,8 +13,20 @@
         </x-bs::alert>
 
         <x-bs::form method="POST" action="{{ route('register') }}">
-            <x-bs::form.field name="first_name" type="text" required autofocus>{{ __('First name') }}</x-bs::form.field>
-            <x-bs::form.field name="last_name" type="text" required>{{ __('Last name') }}</x-bs::form.field>
+            @if($errors->hasAny(['start_time', 'fax']))
+                <x-bs::alert variant="danger">{{ __('The registration failed. Please try again.') }}</x-bs::alert>
+            @endif
+            <input type="hidden" name="start_time" value="{{ \Carbon\Carbon::now()->timestamp }}">
+            <div class="row">
+                <div class="col-12 col-md-6">
+                    <x-bs::form.field name="first_name" type="text" required autofocus>{{ __('First name') }}</x-bs::form.field>
+                </div>
+                <div class="col-12 col-md-6">
+                    <x-bs::form.field name="last_name" type="text" required>{{ __('Last name') }}</x-bs::form.field>
+                </div>
+            </div>
+            <x-bs::form.field name="phone" type="tel">{{ __('Phone number') }}</x-bs::form.field>
+            <x-bs::form.field name="fax" type="tel" container-class="visually-hidden">Fax</x-bs::form.field>
             <x-bs::form.field name="email" type="email" required>{{ __('E-mail') }}</x-bs::form.field>
             <x-bs::form.field name="password" type="password" required
                               autocomplete="current-password">{{ __('Password') }}</x-bs::form.field>

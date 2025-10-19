@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
 use App\Policies\UserPolicy;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
@@ -32,8 +31,6 @@ class RegisteredUserController extends Controller
 
         $user = new User();
         $user->fillAndSave($data);
-
-        event(new Registered($user));
 
         Auth::login($user, $request->boolean('remember'));
 

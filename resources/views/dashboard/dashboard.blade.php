@@ -10,6 +10,8 @@
 @endsection
 
 @section('content')
+    @include('account.shared.unverified_email')
+
     <div class="row">
         <div class="col-12 col-md-6">
             <h2><i class="fa fa-fw fa-calendar-days"></i> {{ __('Next events') }}</h2>

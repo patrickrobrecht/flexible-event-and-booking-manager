@@ -16,7 +16,7 @@ enum BookingRestriction: string
     {
         return match ($this) {
             self::AccountRequired => __('account required'),
-            self::VerifiedEmailAddressRequired => __('verified email address required'),
+            self::VerifiedEmailAddressRequired => __('verified e-mail address required'),
             self::OnlySelf => __('only self'),
         };
     }

@@ -18,7 +18,7 @@ class VerifyEmailNotification extends VerifyEmail
         return (new MailMessage())
             /** @phpstan-ignore-next-line binaryOp.invalid */
             ->subject(config('app.name') . ': ' . __('Verify e-mail address'))
-            ->greeting($this->user->greeting . ',')
+            ->greeting($this->user->greeting)
             ->line(__('Please click the button below to verify your e-mail address.'))
             ->action(__('Verify e-mail address'), $url)
             ->line(__('If you did not create an account, no further action is required.'));

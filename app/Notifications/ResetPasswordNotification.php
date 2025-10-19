@@ -20,7 +20,7 @@ class ResetPasswordNotification extends ResetPassword
         return (new MailMessage())
             /** @phpstan-ignore-next-line binaryOp.invalid */
             ->subject(config('app.name') . ': ' . __('Reset password'))
-            ->greeting($this->user->greeting . ',')
+            ->greeting($this->user->greeting)
             ->line(__('You are receiving this email because we received a password reset request for your account.'))
             ->action(__('Reset password'), $url)
             /** @phpstan-ignore-next-line  argument.type */

@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Sanctum\PersonalAccessToken;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -301,16 +302,19 @@ class User extends Authenticatable implements MustVerifyEmail
     public function sendAccountCreatedNotification(): void
     {
         $this->notify(new AccountCreatedNotification($this));
+        Log::info("Account created email sent to {$this->email}");
     }
 
     public function sendEmailVerificationNotification(): void
     {
         $this->notify(new VerifyEmailNotification($this));
+        Log::info("Verification email sent to {$this->email}");
     }
 
     public function sendPasswordResetNotification($token): void
     {
         $this->notify(new ResetPasswordNotification($this, $token));
+        Log::info("Reset password email sent to {$this->email}");
     }
 
     /**

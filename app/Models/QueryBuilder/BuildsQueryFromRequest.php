@@ -47,6 +47,7 @@ trait BuildsQueryFromRequest
 
         return [
             ...self::defaultValuesForFilters(),
+            /** @phpstan-ignore-next-line array.invalidKey */
             config('query-builder.parameters.sort') => $defaultSort instanceof AllowedSort ? $defaultSort->getName() : null,
         ];
     }

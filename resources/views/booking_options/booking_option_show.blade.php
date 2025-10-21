@@ -35,10 +35,10 @@
                 $canBookResponse = \Illuminate\Support\Facades\Gate::inspect('book', $bookingOption);
                 $canUpdate = \Illuminate\Support\Facades\Auth::user()?->can('update', $bookingOption);
             @endphp
-            @if($canUpdate)
-                <x-bs::alert variant="info" class="fw-bolder">{{ __('Because you can edit the booking option, you can see a preview of the booking form here, although bookings are not currently possible.') }}</x-bs::alert>
-            @endif
             @if($canBookResponse->denied())
+                @if($canUpdate)
+                    <x-bs::alert variant="info" class="fw-bolder">{{ __('Because you can edit the booking option, you can see a preview of the booking form here, although bookings are not currently possible.') }}</x-bs::alert>
+                @endif
                 <x-bs::alert variant="danger">
                     {{ $canBookResponse->message() }}
                     @auth

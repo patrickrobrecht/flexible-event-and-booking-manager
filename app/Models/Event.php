@@ -299,6 +299,7 @@ class Event extends Model
     {
         return [
             ...self::defaultValuesForFilters(),
+            /** @phpstan-ignore-next-line array.invalidKey */
             config('query-builder.parameters.sort') => '-period',
         ];
     }

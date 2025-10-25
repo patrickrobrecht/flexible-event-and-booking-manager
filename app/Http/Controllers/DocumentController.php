@@ -22,6 +22,8 @@ class DocumentController extends Controller
 
         return view('documents.document_index', [
             'documents' => Document::buildQueryFromRequest()
+                /** @see Document::scopeVisibleForUser() */
+                ->visibleForUser()
                 ->with([
                     'reference',
                     'uploadedByUser',
@@ -76,14 +78,14 @@ class DocumentController extends Controller
 
     public function download(Document $document): StreamedResponse
     {
-        $this->authorize('view', $document);
+        $this->authorize('download', $document);
 
         return Storage::download($document->path, $document->file_name_from_title);
     }
 
     public function stream(Document $document): StreamedResponse
     {
-        $this->authorize('view', $document);
+        $this->authorize('download', $document);
 
         return Storage::response($document->path);
     }

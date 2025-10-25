@@ -3,17 +3,51 @@
 namespace App\Policies;
 
 use App\Enums\Ability;
+use App\Http\Controllers\DocumentController;
 use App\Models\Document;
 use App\Models\Event;
 use App\Models\EventSeries;
 use App\Models\Organization;
 use App\Models\User;
 use App\Policies\Traits\ChecksAbilities;
+use App\Policies\Traits\ChecksAbilitiesForDocuments;
 use Illuminate\Auth\Access\Response;
+use Illuminate\Database\Eloquent\Model;
 
 class DocumentPolicy
 {
     use ChecksAbilities;
+    use ChecksAbilitiesForDocuments;
+
+    public const array VIEW_DOCUMENTS_ABILITIES = [
+        Event::class => Ability::ViewDocumentsOfEvents,
+        EventSeries::class => Ability::ViewDocumentsOfEventSeries,
+        Organization::class => Ability::ViewDocumentsOfOrganizations,
+    ];
+
+    public const array ADD_DOCUMENTS_ABILITIES = [
+        Event::class => Ability::AddDocumentsToEvents,
+        EventSeries::class => Ability::AddDocumentsToEventSeries,
+        Organization::class => Ability::AddDocumentsToOrganizations,
+    ];
+
+    public const array EDIT_DOCUMENTS_ABILITIES = [
+        Event::class => Ability::EditDocumentsOfEvents,
+        EventSeries::class => Ability::EditDocumentsOfEventSeries,
+        Organization::class => Ability::EditDocumentsOfOrganizations,
+    ];
+
+    public const array DELETE_DOCUMENTS_ABILITIES = [
+        Event::class => Ability::DestroyDocumentsOfEvents,
+        EventSeries::class => Ability::DestroyDocumentsOfEventSeries,
+        Organization::class => Ability::DestroyDocumentsOfOrganizations,
+    ];
+
+    public const array CHANGE_APPROVAL_STATUS_OF_DOCUMENTS_ABILITIES = [
+        Event::class => Ability::ChangeApprovalStatusOfDocumentsOfEvents,
+        EventSeries::class => Ability::ChangeApprovalStatusOfDocumentsOfEventSeries,
+        Organization::class => Ability::ChangeApprovalStatusOfDocumentsOfOrganizations,
+    ];
 
     /**
      * Determine whether the user can view any models.
@@ -21,35 +55,27 @@ class DocumentPolicy
     public function viewAny(User $user, Event|EventSeries|Organization|null $reference = null): Response
     {
         if ($reference === null) {
-            return $this->requireAbility($user, Ability::ViewDocuments);
+            /** List of documents filtered in {@see DocumentController::index()}. */
+            return $this->requireOneAbilityOf($user, self::VIEW_DOCUMENTS_ABILITIES);
         }
 
-        if ($user->cannot('view', $reference)) {
-            return $this->deny();
-        }
-
-        if ($user->hasAbility(Ability::ViewDocuments)) {
-            // ViewDocuments grants access to all documents.
-            return $this->allow();
-        }
-
-        return $this->requireAbilityOrResponsibleUser(
-            match ($reference::class) {
-                Event::class => $this->requireAbility($user, Ability::ViewDocumentsOfEvents),
-                EventSeries::class => $this->requireAbility($user, Ability::ViewDocumentsOfEventSeries),
-                Organization::class => $this->requireAbility($user, Ability::ViewDocumentsOfOrganizations),
-                default => $this->deny(),
-            },
-            $user,
-            $reference
-        );
+        return $this->requireAbilityOrResponsibleUser(self::VIEW_DOCUMENTS_ABILITIES, $user, $reference);
     }
 
+    /**
+     * @param array<class-string<Model>, Ability> $abilitiesPerReferenceType
+     */
     private function requireAbilityOrResponsibleUser(
-        Response $abilityResponse,
+        array $abilitiesPerReferenceType,
         User $user,
         Event|EventSeries|Organization $reference
     ): Response {
+        $abilityForReference = $abilitiesPerReferenceType[$reference::class] ?? null;
+        if ($abilityForReference === null) {
+            return $this->deny();
+        }
+
+        $abilityResponse = $this->requireAbility($user, $abilityForReference);
         if ($abilityResponse->allowed()) {
             return $abilityResponse;
         }
@@ -76,20 +102,7 @@ class DocumentPolicy
      */
     public function create(User $user, Event|EventSeries|Organization $reference): Response
     {
-        if ($user->cannot('view', $reference)) {
-            return $this->deny();
-        }
-
-        return $this->requireAbilityOrResponsibleUser(
-            match ($reference::class) {
-                Event::class => $this->requireAbility($user, Ability::AddDocumentsToEvents),
-                EventSeries::class => $this->requireAbility($user, Ability::AddDocumentsToEventSeries),
-                Organization::class => $this->requireAbility($user, Ability::AddDocumentsToOrganizations),
-                default => $this->deny(),
-            },
-            $user,
-            $reference
-        );
+        return $this->requireAbilityOrResponsibleUser(self::ADD_DOCUMENTS_ABILITIES, $user, $reference);
     }
 
     /**
@@ -97,20 +110,7 @@ class DocumentPolicy
      */
     public function update(User $user, Document $document): Response
     {
-        if ($user->cannot('view', $document->reference)) {
-            return $this->deny();
-        }
-
-        return $this->requireAbilityOrResponsibleUser(
-            match ($document->reference::class) {
-                Event::class => $this->requireAbility($user, Ability::EditDocumentsOfEvents),
-                EventSeries::class => $this->requireAbility($user, Ability::EditDocumentsOfEventSeries),
-                Organization::class => $this->requireAbility($user, Ability::EditDocumentsOfOrganizations),
-                default => $this->deny(),
-            },
-            $user,
-            $document->reference
-        );
+        return $this->requireAbilityOrResponsibleUser(self::EDIT_DOCUMENTS_ABILITIES, $user, $document->reference);
     }
 
     /**
@@ -134,16 +134,7 @@ class DocumentPolicy
      */
     public function forceDelete(User $user, Document $document): Response
     {
-        if ($user->cannot('view', $document->reference)) {
-            return $this->deny();
-        }
-
-        return match ($document->reference::class) {
-            Event::class => $this->requireAbility($user, Ability::DestroyDocumentsOfEvents),
-            EventSeries::class => $this->requireAbility($user, Ability::DestroyDocumentsOfEventSeries),
-            Organization::class => $this->requireAbility($user, Ability::DestroyDocumentsOfOrganizations),
-            default => $this->deny(),
-        };
+        return $this->requireAbilityForDocument(self::DELETE_DOCUMENTS_ABILITIES, $user, $document);
     }
 
     /**
@@ -151,6 +142,10 @@ class DocumentPolicy
      */
     public function approve(User $user, ?Document $document = null): Response
     {
-        return $this->requireAbility($user, Ability::ChangeApprovalStatusOfDocuments);
+        if ($document === null) {
+            return $this->deny();
+        }
+
+        return $this->requireAbilityForDocument(self::CHANGE_APPROVAL_STATUS_OF_DOCUMENTS_ABILITIES, $user, $document);
     }
 }

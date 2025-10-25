@@ -228,17 +228,6 @@ class User extends Authenticatable implements MustVerifyEmail
             ->unique();
     }
 
-    /**
-     * @return \Illuminate\Support\Collection<int, Ability>
-     */
-    public function getAbilities(): \Illuminate\Support\Collection
-    {
-        return $this->getAbilitiesAsStrings()
-            ->map(static fn (string $ability) => Ability::tryFrom($ability))
-            ->filter()
-            ->values();
-    }
-
     public function hasAbility(Ability $ability): bool
     {
         if ($this->status === ActiveStatus::Active) {

@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Enums\Ability;
 use App\Enums\ApprovalStatus;
 use App\Enums\FileType;
 use App\Enums\FilterValue;
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\Searchable;
+use App\Policies\DocumentPolicy;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -79,6 +81,25 @@ class Document extends Model
         return $this->belongsTo(User::class, 'uploaded_by_user_id');
     }
 
+    public function scopeSearchTitleAndDescription(Builder $query, string ...$searchTerms): Builder
+    {
+        return $this->scopeIncludeColumns($query, ['title', 'description'], true, ...$searchTerms);
+    }
+
+    public function scopeVisibleForUser(Builder $query): Builder
+    {
+        $user = Auth::user();
+        if ($user === null) {
+            return $query;
+        }
+
+        $modelTypes = array_filter(
+            DocumentPolicy::VIEW_DOCUMENTS_ABILITIES,
+            static fn (Ability $ability) => $user->hasAbility($ability)
+        );
+        return $query->whereIn('reference_type', array_keys($modelTypes));
+    }
+
     /**
      * @param array<string, mixed> $validatedData
      */
@@ -125,11 +146,6 @@ class Document extends Model
     public function getRouteForComments(): string
     {
         return $this->getRoute() . '#comments';
-    }
-
-    public function scopeSearchTitleAndDescription(Builder $query, string ...$searchTerms): Builder
-    {
-        return $this->scopeIncludeColumns($query, ['title', 'description'], true, ...$searchTerms);
     }
 
     /**

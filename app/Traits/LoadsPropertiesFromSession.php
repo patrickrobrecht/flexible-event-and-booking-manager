@@ -12,7 +12,7 @@ trait LoadsPropertiesFromSession
     abstract public function getSessionKey(string $propertyName): string;
 
     /**
-     * @return int[]|string[]|string|null
+     * @return int[]|string|string[]|null
      */
     private function getValidatedValue(string $propertyName, string $expectedType): array|string|null
     {
@@ -34,7 +34,7 @@ trait LoadsPropertiesFromSession
             $value = $this->getValidatedValue($propertyName, $expectedType);
             if (isset($value)) {
                 /** @phpstan-ignore property.dynamicName */
-                $this->$propertyName = $value;
+                $this->{$propertyName} = $value;
             }
         }
     }

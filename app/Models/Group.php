@@ -15,8 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property-read int $group_id
  * @property string $name
  * @property ?string $description
- *
- * @property-read Collection|Booking[] $bookings {@see self::bookings()}
+ * @property-read Booking[]|Collection $bookings {@see self::bookings()}
  * @property-read Event $event {@see self::event()}
  */
 class Group extends Model

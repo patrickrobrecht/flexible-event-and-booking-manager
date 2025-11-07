@@ -13,6 +13,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use InvalidArgumentException;
 use Stringable;
 
 /**
@@ -99,6 +100,6 @@ class DocumentRequest extends FormRequest
             return $this->organization;
         }
 
-        throw new \InvalidArgumentException("{$this->route()?->getName()} not supported");
+        throw new InvalidArgumentException("{$this->route()?->getName()} not supported");
     }
 }

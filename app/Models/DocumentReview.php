@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property ?ApprovalStatus $approval_status
  * @property Carbon $created_at
  * @property Carbon $updated_at
- *
  * @property-read Document $document {@see self::document()}
  * @property-read User $user {@see self::user()}
  */

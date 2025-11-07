@@ -31,6 +31,7 @@ enum AbilityGroup
 
     /**
      * @param Ability[] $abilities
+     *
      * @return Ability[]
      */
     public function filterAbilities(array $abilities): array

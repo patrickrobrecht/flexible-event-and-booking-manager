@@ -12,10 +12,8 @@ use Illuminate\Support\Str;
 /**
  * @property int $id
  * @property string $value
- *
  * @property-read string $file_extension {@see self::fileExtension()}
  * @property-read string $file_name_for_download {@see self::fileNameForDownload()}
- *
  * @property Booking $booking {@see self::booking()}
  * @property FormField $formField {@see self::formField()}
  */

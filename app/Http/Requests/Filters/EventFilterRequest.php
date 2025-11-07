@@ -17,14 +17,14 @@ use Illuminate\Foundation\Http\FormRequest;
 use Stringable;
 
 /**
- * Filter for {@see Event}s
+ * Filter for {@see Event}s.
  */
 class EventFilterRequest extends FormRequest
 {
     use FiltersList;
 
     /**
-     * @return array<string, array<int, Closure|ValidationRule|string|Stringable>>
+     * @return array<string, array<int, Closure|string|Stringable|ValidationRule>>
      */
     public function rules(): array
     {

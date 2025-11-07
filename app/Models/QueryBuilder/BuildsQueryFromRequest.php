@@ -21,6 +21,7 @@ trait BuildsQueryFromRequest
      * @template TDeclaringModel of Model
      *
      * @param Builder<self>|HasMany<self, TDeclaringModel>|string|null $subject
+     *
      * @return QueryBuilder<self>
      */
     public static function buildQueryFromRequest(Builder|Relation|string|null $subject = null): QueryBuilder

@@ -25,7 +25,6 @@ use Spatie\QueryBuilder\AllowedFilter;
  * @property string $name
  * @property string $slug
  * @property Visibility $visibility
- *
  * @property-read Collection|Event[] $events {@see self::events()}
  * @property-read ?EventSeries $parentEventSeries {@see self::parentEventSeries()}
  * @property-read Collection|EventSeries[] $subEventSeries {@see self::subEventSeries()}

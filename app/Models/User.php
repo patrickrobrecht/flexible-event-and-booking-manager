@@ -45,9 +45,8 @@ use Spatie\QueryBuilder\Enums\SortDirection;
  * @property ?string $password
  * @property ActiveStatus $status
  * @property ?Carbon $last_login_at
- *
- * @property-read Collection|Booking[] $bookings {@see self::bookings()}
- * @property-read Collection|Booking[] $bookingsTrashed {@see self::bookingsTrashed()}
+ * @property-read Booking[]|Collection $bookings {@see self::bookings()}
+ * @property-read Booking[]|Collection $bookingsTrashed {@see self::bookingsTrashed()}
  * @property-read Collection|Document[] $documents {@see self::documents()}
  * @property-read Collection|Event[] $responsibleForEvents {@see self::responsibleForEvents()}
  * @property-read Collection|EventSeries[] $responsibleForEventSeries {@see self::responsibleForEventSeries()}
@@ -175,7 +174,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->scopeRelation($query, $userRoleId, 'userRoles', fn (Builder $q) => $q->where('user_role_id', '=', $userRoleId));
     }
 
-    public function deleteWithRelations(): bool|null
+    public function deleteWithRelations(): ?bool
     {
         $this->userRoles()->detach();
         $this->tokens()->delete();

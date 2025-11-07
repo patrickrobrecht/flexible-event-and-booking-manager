@@ -17,7 +17,7 @@ use Illuminate\Validation\Rule;
 use Stringable;
 
 /**
- * Filter for {@see Booking}s
+ * Filter for {@see Booking}s.
  *
  * @property-read Event $event
  * @property-read BookingOption $booking_option
@@ -27,7 +27,7 @@ class BookingFilterRequest extends FormRequest
     use FiltersList;
 
     /**
-     * @return array<string, array<int, Closure|ValidationRule|string|Stringable>>
+     * @return array<string, array<int, Closure|string|Stringable|ValidationRule>>
      */
     public function rules(): array
     {

@@ -14,7 +14,6 @@ use Laravel\Sanctum\PersonalAccessToken as SanctumPersonalAccessToken;
  * @property string[] $abilities
  * @property-read ?Carbon $last_used_at
  * @property-read ?Carbon $expires_at
- *
  * @property-read User $tokenable {@see SanctumPersonalAccessToken::tokenable()}
  */
 class PersonalAccessToken extends SanctumPersonalAccessToken

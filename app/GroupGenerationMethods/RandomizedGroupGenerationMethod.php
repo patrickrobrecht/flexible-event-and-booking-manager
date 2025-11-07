@@ -7,7 +7,7 @@ use App\Models\Booking;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
- * Implementation of {@see GroupGenerationMethod::Randomized}
+ * Implementation of {@see GroupGenerationMethod::Randomized}.
  */
 class RandomizedGroupGenerationMethod extends GeneralGroupGenerationMethod
 {

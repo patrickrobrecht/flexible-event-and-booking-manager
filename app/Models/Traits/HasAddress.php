@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
  * @property ?string $postal_code
  * @property ?string $city
  * @property ?string $country
- *
  * @property-read string[] $addressBlock {@see HasAddress::addressBlock()}
  * @property-read string $addressLine {@see HasAddress::addressLine()}
  * @property-read string $streetLine {@see HasAddress::streetLine()}

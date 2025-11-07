@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9bdda682e3455ffa36e86210dfe0e86a",
+    "content-hash": "a4ca7057766f93c87b24fc7837d8905b",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -8861,20 +8861,20 @@
         },
         {
             "name": "portavice/laravel-pint-config",
-            "version": "v2.0.0",
+            "version": "v3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/portavice/laravel-pint-config.git",
-                "reference": "a8276fe0af35895d5aaad9370dfecfd19891cf7e"
+                "reference": "3634ce13c21daae33691fbe73d0aa9d7be4a2305"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/portavice/laravel-pint-config/zipball/a8276fe0af35895d5aaad9370dfecfd19891cf7e",
-                "reference": "a8276fe0af35895d5aaad9370dfecfd19891cf7e",
+                "url": "https://api.github.com/repos/portavice/laravel-pint-config/zipball/3634ce13c21daae33691fbe73d0aa9d7be4a2305",
+                "reference": "3634ce13c21daae33691fbe73d0aa9d7be4a2305",
                 "shasum": ""
             },
             "require": {
-                "laravel/pint": "^1.13"
+                "laravel/pint": "^1.25"
             },
             "type": "library",
             "notification-url": "https://packagist.org/downloads/",
@@ -8891,9 +8891,9 @@
             "description": "Laravel Pint configuration used at portavice",
             "support": {
                 "issues": "https://github.com/portavice/laravel-pint-config/issues",
-                "source": "https://github.com/portavice/laravel-pint-config/tree/v2.0.0"
+                "source": "https://github.com/portavice/laravel-pint-config/tree/v3.0.0"
             },
-            "time": "2023-11-14T12:15:49+00:00"
+            "time": "2025-11-05T15:47:25+00:00"
         },
         {
             "name": "sebastian/cli-parser",

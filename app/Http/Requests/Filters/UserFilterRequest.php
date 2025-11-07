@@ -12,14 +12,14 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * Filter for {@see User}s
+ * Filter for {@see User}s.
  */
 class UserFilterRequest extends FormRequest
 {
     use FiltersList;
 
     /**
-     * @return array<string, array<int, Closure|ValidationRule|string>>
+     * @return array<string, array<int, Closure|string|ValidationRule>>
      */
     public function rules(): array
     {

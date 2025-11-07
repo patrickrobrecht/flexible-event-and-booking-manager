@@ -44,14 +44,11 @@ use Spatie\QueryBuilder\Enums\SortDirection;
  * @property ?Carbon $paid_at
  * @property ?string $comment
  * @property ?Carbon $deleted_at
- *
  * @property-read int $booking_option_id
- *
  * @property-read ?float $age {@see self::age()}
  * @property-read string $file_name {@see self::fileName()}
  * @property-read string $file_name_for_pdf_download {@see self::fileNameForPdfDownload()}
  * @property-read ?Carbon $payment_deadline {@see self::paymentDeadline()}
- *
  * @property-read ?User $bookedByUser {@see self::bookedByUser()}
  * @property-read BookingOption $bookingOption {@see self::bookingOption()}
  * @property-read Collection|FormFieldValue[] $formFieldValues {@see self::formFieldValues()}
@@ -356,6 +353,7 @@ class Booking extends Model
 
     /**
      * @param Collection<int, self> $bookings
+     *
      * @return Collection<int, self>
      */
     public static function sort(Collection $bookings, string $sort): Collection

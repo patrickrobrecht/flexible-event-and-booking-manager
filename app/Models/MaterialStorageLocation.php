@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  */
 class MaterialStorageLocation extends Pivot
 {
-    /** @var array<int, string>  */
+    /** @var array<int, string> */
     public const array PIVOT_COLUMNS = [
         'id',
         'material_status',

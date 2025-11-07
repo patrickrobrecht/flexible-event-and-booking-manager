@@ -20,7 +20,6 @@ use Spatie\QueryBuilder\AllowedFilter;
  * @property string $name
  * @property ?string $description
  * @property-read int $organization_id
- *
  * @property-read Collection|StorageLocation[] $storageLocations {@see self::storageLocations()}
  * @property-read MaterialStorageLocation $pivot {@see self::storageLocations()}
  */

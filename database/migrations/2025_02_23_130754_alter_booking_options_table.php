@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations: Alter {@see \App\Models\BookingOption}s table.
+     * Run the migrations: Alter {@see App\Models\BookingOption}s table.
      */
     public function up(): void
     {

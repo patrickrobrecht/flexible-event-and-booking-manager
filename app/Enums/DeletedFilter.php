@@ -6,7 +6,7 @@ use App\Enums\Traits\NamedOption;
 use Spatie\QueryBuilder\Filters\FiltersTrashed;
 
 /**
- * Options to display {@see FiltersTrashed}
+ * Options to display {@see FiltersTrashed}.
  */
 enum DeletedFilter: string
 {

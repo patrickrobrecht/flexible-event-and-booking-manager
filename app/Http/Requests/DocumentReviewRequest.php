@@ -11,6 +11,7 @@ use Stringable;
 
 /**
  * For create requests:
+ *
  * @property-read ?Document $document
  *
  * For update requests:

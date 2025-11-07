@@ -13,14 +13,14 @@ use Illuminate\Foundation\Http\FormRequest;
 use Stringable;
 
 /**
- * Filter for {@see Location}s
+ * Filter for {@see Location}s.
  */
 class LocationFilterRequest extends FormRequest
 {
     use FiltersList;
 
     /**
-     * @return array<string, array<int, Closure|ValidationRule|string|Stringable>>
+     * @return array<string, array<int, Closure|string|Stringable|ValidationRule>>
      */
     public function rules(): array
     {

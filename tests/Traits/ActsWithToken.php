@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 trait ActsWithToken
 {
     /**
-     * @param  Ability|Ability[]  $ability
+     * @param Ability|Ability[] $ability
      */
     protected function assertTokenCanGetOnlyWithAbility(string $route, Ability|array $ability): void
     {
@@ -23,7 +23,8 @@ trait ActsWithToken
     }
 
     /**
-     * @param  Ability|Ability[]  $ability
+     * @param Ability|Ability[] $ability
+     *
      * @return TestResponse<JsonResponse>
      */
     protected function assertTokenCanGetWithAbility(string $route, Ability|array $ability): TestResponse
@@ -34,7 +35,8 @@ trait ActsWithToken
     }
 
     /**
-     * @param  Ability|Ability[]  $ability
+     * @param Ability|Ability[] $ability
+     *
      * @return TestResponse<JsonResponse>
      */
     protected function assertTokenCannotGetDespiteAbility(string $route, Ability|array $ability, int $statusCode = Response::HTTP_FORBIDDEN): TestResponse
@@ -45,7 +47,8 @@ trait ActsWithToken
     }
 
     /**
-     * @param  Ability|Ability[]  $ability
+     * @param Ability|Ability[] $ability
+     *
      * @return TestResponse<JsonResponse>
      */
     protected function assertTokenCannotGetWithoutAbility(string $route, Ability|array $ability): TestResponse
@@ -56,7 +59,7 @@ trait ActsWithToken
     }
 
     /**
-     * @param  Ability|Ability[]  $ability
+     * @param Ability|Ability[] $ability
      */
     protected function createTokenWithAbility(Ability|array $ability): NewAccessToken
     {
@@ -81,7 +84,7 @@ trait ActsWithToken
     }
 
     /**
-     * @param  Ability|Ability[]  $ability
+     * @param Ability|Ability[] $ability
      */
     protected function withHeadersForApiRequestWithAbility(Ability|array $ability): self
     {

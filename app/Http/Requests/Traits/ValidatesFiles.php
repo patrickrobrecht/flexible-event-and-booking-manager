@@ -34,6 +34,7 @@ trait ValidatesFiles
 
     /**
      * @param string[] $extensions
+     *
      * @return string[]
      */
     public static function getMimeTypesFromExtensions(array $extensions): array

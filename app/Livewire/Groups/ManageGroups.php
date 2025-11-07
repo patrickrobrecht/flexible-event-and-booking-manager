@@ -195,7 +195,7 @@ class ManageGroups extends Component
     }
 
     /**
-     * React on changes of {@see self::$sort}
+     * React on changes of {@see self::$sort}.
      */
     public function updatedSort(): void
     {
@@ -243,6 +243,7 @@ class ManageGroups extends Component
 
     /**
      * @param Collection<int, Booking> $bookings
+     *
      * @return Collection<int, Booking>
      */
     private function sortBookingsInGroup(Collection $bookings): Collection

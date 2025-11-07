@@ -63,9 +63,11 @@ trait FiltersList
 
     /**
      * @template TModel of Model
+     *
      * @param Builder<TModel> $query
      * @param array<int, int|string> $allowedValues
-     * @return array<int, string|Closure>
+     *
+     * @return array<int, Closure|string>
      */
     public function ruleForAllowedOrExistsInDatabase(Builder $query, array $allowedValues): array
     {
@@ -84,7 +86,8 @@ trait FiltersList
     /**
      * @param class-string $enumClass
      * @param array<int, int|string> $allowedValues
-     * @return array<int, string|Closure>
+     *
+     * @return array<int, Closure|string>
      */
     public function ruleForAllowedOrExistsInEnum(string $enumClass, array $allowedValues): array
     {

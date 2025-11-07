@@ -48,6 +48,7 @@ class SearchUsers extends Component
 
     /**
      * @param string[] $searchTerms
+     *
      * @return Builder<User>
      */
     private function userQuery(array $searchTerms): Builder

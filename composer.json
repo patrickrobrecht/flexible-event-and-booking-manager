@@ -28,7 +28,7 @@
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-strict-rules": "^2.0",
         "phpunit/phpunit": "^12.4",
-        "portavice/laravel-pint-config": "^2.0",
+        "portavice/laravel-pint-config": "^3.0",
         "spatie/laravel-ignition": "^2.9"
     },
     "autoload": {

@@ -9,14 +9,14 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * Filter for {@see Group}s
+ * Filter for {@see Group}s.
  */
 class GroupFilterRequest extends FormRequest
 {
     use FiltersList;
 
     /**
-     * @return array<string, array<int, ValidationRule|string>>
+     * @return array<string, array<int, string|ValidationRule>>
      */
     public function rules(): array
     {

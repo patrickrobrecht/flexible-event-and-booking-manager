@@ -19,10 +19,8 @@ use Spatie\QueryBuilder\AllowedFilter;
  * @property-read int $id
  * @property ?string $name
  * @property ?string $website_url
- *
  * @property-read string[] $fullAddressBlock {@see self::fullAddressBlock()}
  * @property-read string $nameOrAddress {@see self::nameOrAddress()}
- *
  * @property-read Collection|Event[] $events {@see self::events()}
  * @property-read Collection|Event[] $mainEvents {@see self::mainEvents()}
  * @property-read Collection|Organization[] $organizations {@see self::organizations()}

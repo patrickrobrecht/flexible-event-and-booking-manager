@@ -91,8 +91,8 @@ class OrganizationControllerTest extends TestCase
     }
 
     /**
-     * @param  Closure(): OrganizationFactory  $organizationProvider
-     * @param  Closure(): OrganizationFactory  $dataProvider
+     * @param Closure(): OrganizationFactory $organizationProvider
+     * @param Closure(): OrganizationFactory $dataProvider
      */
     #[DataProvider('updateBankAccountCases')]
     public function testUserCannotUpdateOrganizationAndRemoveIfPaidBookingOptionsExist(

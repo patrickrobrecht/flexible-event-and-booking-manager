@@ -58,6 +58,7 @@ trait GeneratesTestData
      * @template TModel of Model
      *
      * @param Factory<TModel> $factory
+     *
      * @return Collection<int, TModel>
      */
     public function createCollection(Factory $factory, ?int $count = null): Collection
@@ -373,6 +374,7 @@ trait GeneratesTestData
 
     /**
      * @return array<string, mixed>
+     *
      * @phpstan-ignore missingType.generics
      */
     public static function makeData(Factory $factory): array
@@ -382,7 +384,9 @@ trait GeneratesTestData
 
     /**
      * @param string[] $without
+     *
      * @return array<string, mixed>
+     *
      * @phpstan-ignore missingType.generics
      */
     public static function makeDataWithout(Factory $factory, array $without = []): array

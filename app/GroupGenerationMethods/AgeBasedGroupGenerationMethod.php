@@ -7,7 +7,7 @@ use App\Models\Booking;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
- * Implementation of {@see GroupGenerationMethod::AgeBased}
+ * Implementation of {@see GroupGenerationMethod::AgeBased}.
  */
 class AgeBasedGroupGenerationMethod extends GeneralGroupGenerationMethod
 {

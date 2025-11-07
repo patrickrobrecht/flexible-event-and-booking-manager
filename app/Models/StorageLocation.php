@@ -21,11 +21,9 @@ use Spatie\QueryBuilder\AllowedFilter;
  * @property ?string $description
  * @property ?string $packaging_instructions
  * @property ?int $parent_storage_location_id
- *
  * @property int $child_storage_locations_count
  * @property-read \Illuminate\Support\Collection<int, MaterialStatus> $material_statuses {@see self::materialStatuses()}
  * @property int $materials_count
- *
  * @property-read Collection|StorageLocation[] $childStorageLocations {@see self::childStorageLocations()}
  * @property-read Collection|Material[] $materials {@see self::materials()}
  * @property-read ?StorageLocation $parentStorageLocation {@see self::parentStorageLocation()}

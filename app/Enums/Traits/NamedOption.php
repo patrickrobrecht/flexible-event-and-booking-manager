@@ -43,6 +43,7 @@ trait NamedOption
 
     /**
      * @param self[]|null $array
+     *
      * @return array<int, int|string>
      */
     public static function values(?array $array = null): array

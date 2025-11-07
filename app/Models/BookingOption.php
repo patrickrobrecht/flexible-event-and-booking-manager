@@ -26,8 +26,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property ?int $payment_due_days
  * @property string[] $restrictions
  * @property string $confirmation_text
- *
- * @property-read Collection|Booking[] $bookings {@see self::bookings()}
+ * @property-read Booking[]|Collection $bookings {@see self::bookings()}
  * @property-read Event $event {@see self::event()}
  * @property-read Collection|FormField[] $formFields {@see self::formFields()}
  * @property-read Collection|FormField[] $formFieldsForFiles {@see self::formFieldsForFiles()}

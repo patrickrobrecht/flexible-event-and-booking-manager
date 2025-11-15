@@ -80,6 +80,20 @@ class DocumentReviewControllerTest extends TestCase
         );
     }
 
+    /**
+     * @return array<int, array{Closure, Ability}>
+     */
+    public static function referenceClassesWithAbilities(): array
+    {
+        return [
+            [fn () => self::createEvent(Visibility::Public), Ability::CommentOnDocumentsOfEvents, Ability::ChangeApprovalStatusOfDocumentsOfEvents],
+            [fn () => self::createEvent(Visibility::Private), Ability::CommentOnDocumentsOfEvents, Ability::ChangeApprovalStatusOfDocumentsOfEvents],
+            [fn () => self::createEventSeries(Visibility::Public), Ability::CommentOnDocumentsOfEventSeries, Ability::ChangeApprovalStatusOfDocumentsOfEventSeries],
+            [fn () => self::createEventSeries(Visibility::Private), Ability::CommentOnDocumentsOfEventSeries, Ability::ChangeApprovalStatusOfDocumentsOfEventSeries],
+            [fn () => self::createOrganization(), Ability::CommentOnDocumentsOfOrganizations, Ability::ChangeApprovalStatusOfDocumentsOfOrganizations],
+        ];
+    }
+
     #[DataProvider('referenceClasses')]
     public function testUserCanUpdateDocumentReviewOnlyWithCorrectAbility(Closure $referenceProvider, Ability $ability): void
     {
@@ -118,20 +132,6 @@ class DocumentReviewControllerTest extends TestCase
             [fn () => self::createEventSeries(Visibility::Public), Ability::CommentOnDocumentsOfEventSeries],
             [fn () => self::createEventSeries(Visibility::Private), Ability::CommentOnDocumentsOfEventSeries],
             [fn () => self::createOrganization(), Ability::CommentOnDocumentsOfOrganizations],
-        ];
-    }
-
-    /**
-     * @return array<int, array{Closure, Ability}>
-     */
-    public static function referenceClassesWithAbilities(): array
-    {
-        return [
-            [fn () => self::createEvent(Visibility::Public), Ability::CommentOnDocumentsOfEvents, Ability::ChangeApprovalStatusOfDocumentsOfEvents],
-            [fn () => self::createEvent(Visibility::Private), Ability::CommentOnDocumentsOfEvents, Ability::ChangeApprovalStatusOfDocumentsOfEvents],
-            [fn () => self::createEventSeries(Visibility::Public), Ability::CommentOnDocumentsOfEventSeries, Ability::ChangeApprovalStatusOfDocumentsOfEventSeries],
-            [fn () => self::createEventSeries(Visibility::Private), Ability::CommentOnDocumentsOfEventSeries, Ability::ChangeApprovalStatusOfDocumentsOfEventSeries],
-            [fn () => self::createOrganization(), Ability::CommentOnDocumentsOfOrganizations, Ability::ChangeApprovalStatusOfDocumentsOfOrganizations],
         ];
     }
 }

@@ -18,6 +18,7 @@ use App\Models\Event;
 use App\Models\Group;
 use App\Policies\GroupPolicy;
 use Closure;
+use Illuminate\Support\Str;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
@@ -121,7 +122,7 @@ class GroupControllerTest extends TestCase
         return [
             [fn (Event $event) => ['name' => $event->name], 0],
             [fn (Event $event) => ['name' => $event->name . ' '], 0],
-            [fn (Event $event) => ['name' => \Str::random(42)], 3],
+            [fn (Event $event) => ['name' => Str::random(42)], 3],
             [fn (Event $event) => ['name' => ''], 3],
             [fn (Event $event) => [], 3],
         ];

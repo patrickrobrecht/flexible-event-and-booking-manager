@@ -10,7 +10,7 @@ use Illuminate\Validation\Rules\Password;
 class RegisterRequest extends FormRequest
 {
     /**
-     * @return array<string, list<Closure|string|Password>>
+     * @return array<string, list<Closure|Password|string>>
      */
     public function rules(): array
     {

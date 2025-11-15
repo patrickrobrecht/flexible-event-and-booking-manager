@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 interface GeneratesGroups
 {
     /**
-     * @param  Collection<int, Booking> $bookings
+     * @param Collection<int, Booking> $bookings
      *
      * @return array<int, Collection<int, Booking>>
      */

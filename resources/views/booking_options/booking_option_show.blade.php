@@ -8,12 +8,12 @@
 @endphp
 
 @section('title')
-    {{ $bookingOption->event->name }}: {{ $bookingOption->name }}
+    {{ $event->name }}: {{ $bookingOption->name }}
 @endsection
 
 @section('breadcrumbs')
     <x-bs::breadcrumb.item href="{{ route('events.index') }}">{{ __('Events') }}</x-bs::breadcrumb.item>
-    <x-bs::breadcrumb.item href="{{ route('events.show', $bookingOption->event) }}">{{ $bookingOption->event->name }}</x-bs::breadcrumb.item>
+    <x-bs::breadcrumb.item href="{{ route('events.show', $event) }}">{{ $event->name }}</x-bs::breadcrumb.item>
     <x-bs::breadcrumb.item>{{ $bookingOption->name }}</x-bs::breadcrumb.item>
 @endsection
 

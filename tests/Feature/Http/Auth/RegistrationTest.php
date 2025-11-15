@@ -81,7 +81,7 @@ class RegistrationTest extends TestCase
      */
     private function registrationData(): array
     {
-        /* @var User $user */
+        /** @var User $user */
         $user = User::factory()->makeOne();
 
         return [

@@ -27,7 +27,7 @@ class UserRequest extends FormRequest
     }
 
     /**
-     * @return array<string, array<int, string|Password|Stringable|ValidationRule>>
+     * @return array<string, array<int, Password|string|Stringable|ValidationRule>>
      */
     public function rules(): array
     {

@@ -31,6 +31,30 @@ class BookingOptionControllerTest extends TestCase
         $this->assertGuestCanGet("/events/{$bookingOption->event->slug}/booking-options/{$bookingOption->slug}");
     }
 
+    public function testSelectsBookingOptionForCorrectEventWhenSlugIsDuplicated(): void
+    {
+        $eventA = self::createEvent(Visibility::Public);
+        $eventB = self::createEvent(Visibility::Public);
+
+        BookingOption::factory()->for($eventA)->create([
+            'name' => 'Option A',
+            'slug' => 'shared-slug',
+        ]);
+        BookingOption::factory()->for($eventB)->create([
+            'name' => 'Option B',
+            'slug' => 'shared-slug',
+        ]);
+
+        $this->get("/events/{$eventA->slug}/booking-options/shared-slug")
+            ->assertOk()
+            ->assertSeeText('Option A')
+            ->assertDontSeeText('Option B');
+        $this->get("/events/{$eventB->slug}/booking-options/shared-slug")
+            ->assertOk()
+            ->assertSeeText('Option B')
+            ->assertDontSeeText('Option A');
+    }
+
     public function testGuestCanViewBookingOptionOfPublicEventWithCustomFields(): void
     {
         $bookingOption = self::createBookingOptionForEventWithCustomFormFields(Visibility::Public);

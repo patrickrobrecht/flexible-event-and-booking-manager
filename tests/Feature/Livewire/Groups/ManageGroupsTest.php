@@ -138,7 +138,7 @@ class ManageGroupsTest extends TestCase
             ->assertDontSeeHtml('<h2 class="card-title">' . $group->name);
 
         $this->assertCount(7, $event->refresh()->groups);
-    }#
+    }
 
     public function testBookingMoved(): void
     {

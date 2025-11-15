@@ -14,14 +14,14 @@ use Illuminate\Foundation\Http\FormRequest;
 use Stringable;
 
 /**
- * Filter for {@see Organization}s
+ * Filter for {@see Organization}s.
  */
 class OrganizationFilterRequest extends FormRequest
 {
     use FiltersList;
 
     /**
-     * @return array<string, array<int, Closure|ValidationRule|string|Stringable>>
+     * @return array<string, array<int, Closure|string|Stringable|ValidationRule>>
      */
     public function rules(): array
     {

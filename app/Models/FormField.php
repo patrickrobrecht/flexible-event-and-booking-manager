@@ -22,9 +22,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string[]|null $validation_rules
  * @property string[]|null $allowed_values
  * @property bool $editable_after_submission
- *
  * @property string $input_name {@see self::inputName()}
- *
  * @property BookingOption $bookingOption {@see self::bookingOption()}
  * @property Collection|FormFieldValue[] $formFieldValue {@see self::formFieldValues()}
  */

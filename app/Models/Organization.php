@@ -33,9 +33,7 @@ use Spatie\QueryBuilder\AllowedFilter;
  * @property ?string $bank_account_holder
  * @property ?string $iban
  * @property ?string $bank_name
- *
  * @property-read string[] $bank_account_lines {@see self::bankAccountLines()}
- *
  * @property Collection|Event[] $events {@see self::events()}
  * @property Collection|EventSeries[] $eventSeries {@see self::eventSeries()}
  * @property Collection|Material[] $materials {@see self::materials()}

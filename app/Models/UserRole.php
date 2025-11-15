@@ -18,7 +18,6 @@ use Spatie\QueryBuilder\AllowedFilter;
  * @property-read int $id
  * @property string $name
  * @property string[] $abilities
- *
  * @property-read Collection|User[] $users {@see self::users()}
  */
 class UserRole extends Model
@@ -47,7 +46,7 @@ class UserRole extends Model
         return $this->scopeRelation($query, $userId, 'users', fn (Builder $q) => $q->where('user_id', '=', $userId));
     }
 
-    public function deleteAfterDetachingUsers(): bool|null
+    public function deleteAfterDetachingUsers(): ?bool
     {
         $this->users()->detach();
         return $this->delete();

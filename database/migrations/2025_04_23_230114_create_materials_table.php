@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations: Create table for {@see \App\Models\Material}s.
+     * Run the migrations: Create table for {@see App\Models\Material}s.
      */
     public function up(): void
     {

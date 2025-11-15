@@ -18,6 +18,7 @@ trait BuildsResource
      * Transform the resource into an array.
      *
      * @param Request $request
+     *
      * @return array<string, mixed>
      */
     public function toArray($request): array
@@ -57,6 +58,7 @@ trait BuildsResource
 
     /**
      * @param array<string, mixed> $array
+     *
      * @return array<string, mixed>
      */
     protected function cleanup(array $array): array

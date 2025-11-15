@@ -7,11 +7,14 @@ use App\Enums\FormElementType;
 use App\Models\Traits\HasNameAndDescription;
 use App\Models\Traits\HasSlugForRouting;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\Sluggable\SlugOptions;
 
 /**
  * @property-read int $id
@@ -26,8 +29,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property ?int $payment_due_days
  * @property string[] $restrictions
  * @property string $confirmation_text
- *
- * @property-read Collection|Booking[] $bookings {@see self::bookings()}
+ * @property-read Booking[]|Collection $bookings {@see self::bookings()}
  * @property-read Event $event {@see self::event()}
  * @property-read Collection|FormField[] $formFields {@see self::formFields()}
  * @property-read Collection|FormField[] $formFieldsForFiles {@see self::formFieldsForFiles()}
@@ -36,7 +38,9 @@ class BookingOption extends Model
 {
     use HasFactory;
     use HasNameAndDescription;
-    use HasSlugForRouting;
+    use HasSlugForRouting {
+        getSlugOptions as parentSlugOptions;
+    }
 
     protected $casts = [
         'maximum_bookings' => 'integer',
@@ -108,14 +112,41 @@ class BookingOption extends Model
             ->addWeekdays($this->payment_due_days ?? 0);
     }
 
-    public function isRestrictedBy(BookingRestriction $restriction): bool
+    public function getSlugOptions(): SlugOptions
     {
-        return in_array($restriction->value, $this->restrictions ?? [], true);
+        return $this->parentSlugOptions()
+            ->extraScope(fn (Builder $bookingOption) => $bookingOption->where('event_id', $this->event->id));
     }
 
     public function hasReachedMaximumBookings(): bool
     {
         return isset($this->maximum_bookings)
-               && $this->bookings->count() >= $this->maximum_bookings;
+            && $this->bookings->count() >= $this->maximum_bookings;
+    }
+
+    public function isRestrictedBy(BookingRestriction $restriction): bool
+    {
+        return in_array($restriction->value, $this->restrictions ?? [], true);
+    }
+
+    /**
+     * @param int|string $value
+     *
+     * @phpstan-ignore-next-line method.childParameterType
+     */
+    public function resolveRouteBinding($value, $field = null): static
+    {
+        /** @var Event $event */
+        $event = request()->route('event');
+
+        try {
+            return static::query()
+                ->where('event_id', $event->id)
+                ->where('slug', '=', $value)
+                ->firstOrFail();
+        } catch (ModelNotFoundException $exception) {
+            // Set $value as model IDs for proper exception handling.
+            throw $exception->setModel($exception->getModel(), [$value]);
+        }
     }
 }

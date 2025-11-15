@@ -36,9 +36,8 @@ use Spatie\QueryBuilder\Enums\SortDirection;
  * @property ?Carbon $started_at
  * @property ?Carbon $finished_at
  * @property ?string $website_url
- *
- * @property-read Collection|BookingOption[] $bookingOptions {@see self::bookingOptions()}
- * @property-read Collection|Booking[] $bookings {@see self::bookings()}
+ * @property-read BookingOption[]|Collection $bookingOptions {@see self::bookingOptions()}
+ * @property-read Booking[]|Collection $bookings {@see self::bookings()}
  * @property-read ?EventSeries $eventSeries {@see self::eventSeries()}
  * @property-read Collection|Group[] $groups {@see self::groups()}
  * @property-read ?Event $parentEvent {@see self::parentEvent()}
@@ -151,7 +150,7 @@ class Event extends Model
         };
     }
 
-    public function deleteWithGroups(): bool|null
+    public function deleteWithGroups(): ?bool
     {
         $this->groups()->delete();
         return $this->delete();

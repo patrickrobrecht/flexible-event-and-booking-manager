@@ -22,6 +22,7 @@ trait ExportsToExcel
 
     /**
      * @template TValue
+     *
      * @param Collection<int, TValue> $collection
      * @param string[] $headerColumns
      * @param (Closure(TValue): array<int|string, mixed>) $rowProvider

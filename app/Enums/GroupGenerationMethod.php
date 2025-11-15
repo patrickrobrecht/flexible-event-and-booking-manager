@@ -19,7 +19,8 @@ enum GroupGenerationMethod: string
     case AgeBased = 'age_based';
 
     /**
-     * @param  Collection<int, Booking> $bookings
+     * @param Collection<int, Booking> $bookings
+     *
      * @return array<int, Collection<int, Booking>>
      */
     public function generateGroups(int $groupsCount, Collection $bookings): array

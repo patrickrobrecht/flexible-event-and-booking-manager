@@ -3,6 +3,7 @@
 namespace App\Enums;
 
 use App\Enums\Traits\NamedOption;
+use Closure;
 
 enum FilterValue: string
 {
@@ -21,7 +22,7 @@ enum FilterValue: string
         };
     }
 
-    public static function castToIntIfNoValue(): \Closure
+    public static function castToIntIfNoValue(): Closure
     {
         return static fn ($v) => in_array($v, self::values(), true) ? $v : (int) $v;
     }

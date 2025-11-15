@@ -14,6 +14,15 @@ trait HasSlugForRouting
 {
     use HasSlug;
 
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom('name')
+            ->saveSlugsTo('slug')
+            ->preventOverwrite()
+            ->startSlugSuffixFrom(2);
+    }
+
     public function getRouteKeyName(): string
     {
         return 'slug';
@@ -21,8 +30,9 @@ trait HasSlugForRouting
 
     /**
      * @param int|string $value
+     *
+     * @phpstan-ignore-next-line method.childParameterType
      */
-    /** @phpstan-ignore method.childParameterType */
     public function resolveRouteBinding($value, $field = null): static
     {
         try {
@@ -31,16 +41,7 @@ trait HasSlugForRouting
                  ->firstOrFail();
         } catch (ModelNotFoundException $exception) {
             // Set $value as model IDs for proper exception handling.
-            /** @phpstan-ignore argument.type */
             throw $exception->setModel($exception->getModel(), [$value]);
         }
-    }
-
-    public function getSlugOptions(): SlugOptions
-    {
-        return SlugOptions::create()
-            ->generateSlugsFrom('name')
-            ->saveSlugsTo('slug')
-            ->preventOverwrite();
     }
 }

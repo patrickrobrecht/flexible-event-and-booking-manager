@@ -106,7 +106,11 @@ Route::middleware('auth')->group(static function () {
 
     Route::model('location', Location::class);
     Route::resource('locations', LocationController::class)
-        ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+        ->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
+    Route::prefix('locations/{location}')->group(function () {
+        Route::post('documents', [DocumentController::class, 'storeForLocation'])
+            ->name('locations.documents.store');
+    });
 
     Route::model('organization', Organization::class);
     Route::resource('organizations', OrganizationController::class)

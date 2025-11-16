@@ -34,7 +34,7 @@ use Spatie\QueryBuilder\AllowedSort;
  * @property ApprovalStatus $approval_status
  * @property-read string $file_name_from_title {@see self::fileNameFromTitle()}
  * @property-read Collection|DocumentReview[] $documentReviews {@see self::documentReviews()}
- * @property-read Event|EventSeries|Organization $reference {@see self::reference()}
+ * @property-read Event|EventSeries|Location|Organization $reference {@see self::reference()}
  * @property-read User $uploadedByUser {@see self::uploadedByUser()}
  */
 class Document extends Model

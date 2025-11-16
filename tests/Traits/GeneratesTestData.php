@@ -185,6 +185,9 @@ trait GeneratesTestData
             ->create();
     }
 
+    /**
+     * @param Closure(): (Event|EventSeries|Location|Organization) $referenceProvider
+     */
     protected static function createDocument(Closure $referenceProvider): Document
     {
         return Document::factory()

@@ -56,6 +56,19 @@ class LocationController extends Controller
         return back();
     }
 
+    public function show(Location $location): View
+    {
+        $this->authorize('view', $location);
+
+        return view('locations.location_show', [
+            'location' => $location->loadCount([
+                'events',
+                'mainEvents',
+                'organizations',
+            ]),
+        ]);
+    }
+
     public function edit(Location $location): View
     {
         $this->authorize('update', $location);

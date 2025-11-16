@@ -12,6 +12,7 @@ use App\Http\Requests\Filters\DocumentFilterRequest;
 use App\Models\Document;
 use App\Models\Event;
 use App\Models\EventSeries;
+use App\Models\Location;
 use App\Models\Organization;
 use App\Policies\DocumentPolicy;
 use Closure;
@@ -67,6 +68,7 @@ class DocumentControllerTest extends TestCase
             [fn () => self::createEvent(Visibility::Private), Ability::ViewDocumentsOfEvents],
             [fn () => self::createEventSeries(Visibility::Public), Ability::ViewDocumentsOfEventSeries],
             [fn () => self::createEventSeries(Visibility::Private), Ability::ViewDocumentsOfEventSeries],
+            [fn () => self::createLocation(), Ability::ViewDocumentsOfLocations],
             [fn () => self::createOrganization(), Ability::ViewDocumentsOfOrganizations],
         ];
     }
@@ -74,12 +76,13 @@ class DocumentControllerTest extends TestCase
     #[DataProvider('referenceClassesWithCreateAbility')]
     public function testUserCanAddDocumentWithCorrectAbility(Closure $referenceProvider, Ability $addDocumentsAbility): void
     {
-        /** @var Event|EventSeries|Organization $reference */
+        /** @var Event|EventSeries|Location|Organization $reference */
         $reference = $referenceProvider();
         /** @phpstan-ignore match.unhandled */
         $storeUri = match ($reference::class) {
             Event::class => "events/{$reference->slug}/documents",
             EventSeries::class => "event-series/{$reference->slug}/documents",
+            Location::class => "locations/{$reference->id}/documents",
             Organization::class => "organizations/{$reference->slug}/documents",
         };
 
@@ -103,6 +106,7 @@ class DocumentControllerTest extends TestCase
             [fn () => self::createEvent(Visibility::Private), Ability::AddDocumentsToEvents],
             [fn () => self::createEventSeries(Visibility::Public), Ability::AddDocumentsToEventSeries],
             [fn () => self::createEventSeries(Visibility::Private), Ability::AddDocumentsToEventSeries],
+            [fn () => self::createLocation(), Ability::AddDocumentsToLocations],
             [fn () => self::createOrganization(), Ability::AddDocumentsToOrganizations],
         ];
     }
@@ -142,6 +146,7 @@ class DocumentControllerTest extends TestCase
             [fn () => self::createEvent(Visibility::Private), Ability::EditDocumentsOfEvents],
             [fn () => self::createEventSeries(Visibility::Public), Ability::EditDocumentsOfEventSeries],
             [fn () => self::createEventSeries(Visibility::Private), Ability::EditDocumentsOfEventSeries],
+            [fn () => self::createLocation(), Ability::EditDocumentsOfLocations],
             [fn () => self::createOrganization(), Ability::EditDocumentsOfOrganizations],
         ];
     }
@@ -169,6 +174,7 @@ class DocumentControllerTest extends TestCase
             [fn () => self::createEvent(Visibility::Private), Ability::DestroyDocumentsOfEvents],
             [fn () => self::createEventSeries(Visibility::Public), Ability::DestroyDocumentsOfEventSeries],
             [fn () => self::createEventSeries(Visibility::Private), Ability::DestroyDocumentsOfEventSeries],
+            [fn () => self::createLocation(), Ability::DestroyDocumentsOfLocations],
             [fn () => self::createOrganization(), Ability::DestroyDocumentsOfOrganizations],
         ];
     }

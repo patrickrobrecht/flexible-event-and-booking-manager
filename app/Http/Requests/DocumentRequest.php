@@ -8,6 +8,7 @@ use App\Http\Requests\Traits\ValidatesFiles;
 use App\Models\Document;
 use App\Models\Event;
 use App\Models\EventSeries;
+use App\Models\Location;
 use App\Models\Organization;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Database\Eloquent\Model;
@@ -20,6 +21,7 @@ use Stringable;
  * @property ?Document $document
  * @property-read ?Event $event
  * @property-read ?EventSeries $event_series
+ * @property-read ?Location $location
  * @property-read ?Organization $organization
  */
 class DocumentRequest extends FormRequest
@@ -93,6 +95,11 @@ class DocumentRequest extends FormRequest
         if ($this->routeIs('event-series.documents.store')) {
             /** @phpstan-ignore-next-line return.type */
             return $this->event_series;
+        }
+
+        if ($this->routeIs('locations.documents.store')) {
+            /** @phpstan-ignore-next-line return.type */
+            return $this->location;
         }
 
         if ($this->routeIs('organizations.documents.store')) {

@@ -7,6 +7,7 @@ use App\Models\Document;
 use App\Models\DocumentReview;
 use App\Models\Event;
 use App\Models\EventSeries;
+use App\Models\Location;
 use App\Models\Organization;
 use App\Models\User;
 use App\Policies\Traits\ChecksAbilities;
@@ -21,12 +22,14 @@ class DocumentReviewPolicy
     public const array VIEW_COMMENTS_ON_DOCUMENTS_ABILITIES = [
         Event::class => Ability::ViewCommentsOnDocumentsOfEvents,
         EventSeries::class => Ability::ViewCommentsOnDocumentsOfEventSeries,
+        Location::class => Ability::ViewCommentsOnDocumentsOfLocations,
         Organization::class => Ability::ViewCommentsOnDocumentsOfOrganizations,
     ];
 
     public const array COMMENT_ON_DOCUMENTS_ABILITIES = [
         Event::class => Ability::CommentOnDocumentsOfEvents,
         EventSeries::class => Ability::CommentOnDocumentsOfEventSeries,
+        Location::class => Ability::CommentOnDocumentsOfLocations,
         Organization::class => Ability::CommentOnDocumentsOfOrganizations,
     ];
 
@@ -42,7 +45,7 @@ class DocumentReviewPolicy
              * - they uploaded the document.
              */
             $user->is($document->uploadedByUser)
-            || $user->isResponsibleFor($document->reference)
+            || (!$document->reference instanceof Location && $user->isResponsibleFor($document->reference))
         ) {
             return $this->allow();
         }
@@ -78,7 +81,7 @@ class DocumentReviewPolicy
              * - they uploaded the document.
              */
             $user->is($document->uploadedByUser)
-            || $user->isResponsibleFor($document->reference)
+            || (!$document->reference instanceof Location && $user->isResponsibleFor($document->reference))
         ) {
             return $this->allow();
         }

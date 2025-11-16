@@ -7,6 +7,7 @@ use App\Http\Controllers\DocumentController;
 use App\Models\Document;
 use App\Models\Event;
 use App\Models\EventSeries;
+use App\Models\Location;
 use App\Models\Organization;
 use App\Models\User;
 use App\Policies\Traits\ChecksAbilities;
@@ -22,37 +23,42 @@ class DocumentPolicy
     public const array VIEW_DOCUMENTS_ABILITIES = [
         Event::class => Ability::ViewDocumentsOfEvents,
         EventSeries::class => Ability::ViewDocumentsOfEventSeries,
+        Location::class => Ability::ViewDocumentsOfLocations,
         Organization::class => Ability::ViewDocumentsOfOrganizations,
     ];
 
     public const array ADD_DOCUMENTS_ABILITIES = [
         Event::class => Ability::AddDocumentsToEvents,
         EventSeries::class => Ability::AddDocumentsToEventSeries,
+        Location::class => Ability::AddDocumentsToLocations,
         Organization::class => Ability::AddDocumentsToOrganizations,
     ];
 
     public const array EDIT_DOCUMENTS_ABILITIES = [
         Event::class => Ability::EditDocumentsOfEvents,
         EventSeries::class => Ability::EditDocumentsOfEventSeries,
+        Location::class => Ability::EditDocumentsOfLocations,
         Organization::class => Ability::EditDocumentsOfOrganizations,
     ];
 
     public const array DELETE_DOCUMENTS_ABILITIES = [
         Event::class => Ability::DestroyDocumentsOfEvents,
         EventSeries::class => Ability::DestroyDocumentsOfEventSeries,
+        Location::class => Ability::DestroyDocumentsOfLocations,
         Organization::class => Ability::DestroyDocumentsOfOrganizations,
     ];
 
     public const array CHANGE_APPROVAL_STATUS_OF_DOCUMENTS_ABILITIES = [
         Event::class => Ability::ChangeApprovalStatusOfDocumentsOfEvents,
         EventSeries::class => Ability::ChangeApprovalStatusOfDocumentsOfEventSeries,
+        Location::class => Ability::ChangeApprovalStatusOfDocumentsOfLocations,
         Organization::class => Ability::ChangeApprovalStatusOfDocumentsOfOrganizations,
     ];
 
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user, Event|EventSeries|Organization|null $reference = null): Response
+    public function viewAny(User $user, Event|EventSeries|Location|Organization|null $reference = null): Response
     {
         if ($reference === null) {
             /** List of documents filtered in {@see DocumentController::index()}. */
@@ -68,7 +74,7 @@ class DocumentPolicy
     private function requireAbilityOrResponsibleUser(
         array $abilitiesPerReferenceType,
         User $user,
-        Event|EventSeries|Organization $reference
+        Event|EventSeries|Location|Organization $reference
     ): Response {
         $abilityForReference = $abilitiesPerReferenceType[$reference::class] ?? null;
         if ($abilityForReference === null) {
@@ -78,6 +84,10 @@ class DocumentPolicy
         $abilityResponse = $this->requireAbility($user, $abilityForReference);
         if ($abilityResponse->allowed()) {
             return $abilityResponse;
+        }
+
+        if ($reference instanceof Location) {
+            return $this->deny();
         }
 
         // Responsible users can always access documents of their events, event series and organizations.
@@ -100,7 +110,7 @@ class DocumentPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user, Event|EventSeries|Organization $reference): Response
+    public function create(User $user, Event|EventSeries|Location|Organization $reference): Response
     {
         return $this->requireAbilityOrResponsibleUser(self::ADD_DOCUMENTS_ABILITIES, $user, $reference);
     }

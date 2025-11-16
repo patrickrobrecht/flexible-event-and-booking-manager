@@ -90,6 +90,7 @@ class DocumentReviewControllerTest extends TestCase
             [fn () => self::createEvent(Visibility::Private), Ability::CommentOnDocumentsOfEvents, Ability::ChangeApprovalStatusOfDocumentsOfEvents],
             [fn () => self::createEventSeries(Visibility::Public), Ability::CommentOnDocumentsOfEventSeries, Ability::ChangeApprovalStatusOfDocumentsOfEventSeries],
             [fn () => self::createEventSeries(Visibility::Private), Ability::CommentOnDocumentsOfEventSeries, Ability::ChangeApprovalStatusOfDocumentsOfEventSeries],
+            [fn () => self::createLocation(), Ability::CommentOnDocumentsOfLocations, Ability::ChangeApprovalStatusOfDocumentsOfLocations],
             [fn () => self::createOrganization(), Ability::CommentOnDocumentsOfOrganizations, Ability::ChangeApprovalStatusOfDocumentsOfOrganizations],
         ];
     }
@@ -131,6 +132,7 @@ class DocumentReviewControllerTest extends TestCase
             [fn () => self::createEvent(Visibility::Private), Ability::CommentOnDocumentsOfEvents],
             [fn () => self::createEventSeries(Visibility::Public), Ability::CommentOnDocumentsOfEventSeries],
             [fn () => self::createEventSeries(Visibility::Private), Ability::CommentOnDocumentsOfEventSeries],
+            [fn () => self::createLocation(), Ability::CommentOnDocumentsOfLocations],
             [fn () => self::createOrganization(), Ability::CommentOnDocumentsOfOrganizations],
         ];
     }

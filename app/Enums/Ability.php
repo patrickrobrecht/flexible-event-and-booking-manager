@@ -65,6 +65,14 @@ enum Ability: string
     case ChangeApprovalStatusOfDocumentsOfEventSeries = 'event_series.documents.approve';
     case DestroyDocumentsOfEventSeries = 'event_series.documents.destroy';
 
+    case ViewDocumentsOfLocations = 'locations.documents.view';
+    case AddDocumentsToLocations = 'locations.documents.create';
+    case EditDocumentsOfLocations = 'locations.documents.edit';
+    case ViewCommentsOnDocumentsOfLocations = 'locations.documents.comments.view';
+    case CommentOnDocumentsOfLocations = 'locations.documents.comments.create';
+    case ChangeApprovalStatusOfDocumentsOfLocations = 'locations.documents.approve';
+    case DestroyDocumentsOfLocations = 'locations.documents.destroy';
+
     case ViewDocumentsOfOrganizations = 'organizations.documents.view';
     case AddDocumentsToOrganizations = 'organizations.documents.create';
     case EditDocumentsOfOrganizations = 'organizations.documents.edit';
@@ -154,6 +162,13 @@ enum Ability: string
             self::DestroyDocumentsOfEventSeries => self::ViewDocumentsOfEventSeries,
             self::CommentOnDocumentsOfEventSeries => self::ViewCommentsOnDocumentsOfEventSeries,
 
+            self::AddDocumentsToLocations,
+            self::EditDocumentsOfLocations,
+            self::ViewCommentsOnDocumentsOfLocations,
+            self::ChangeApprovalStatusOfDocumentsOfLocations,
+            self::DestroyDocumentsOfLocations => self::ViewDocumentsOfLocations,
+            self::CommentOnDocumentsOfLocations => self::ViewCommentsOnDocumentsOfLocations,
+
             self::AddDocumentsToOrganizations,
             self::EditDocumentsOfOrganizations,
             self::ViewCommentsOnDocumentsOfOrganizations,
@@ -240,6 +255,13 @@ enum Ability: string
             self::CommentOnDocumentsOfEventSeries,
             self::ChangeApprovalStatusOfDocumentsOfEventSeries,
             self::DestroyDocumentsOfEventSeries => AbilityGroup::DocumentsOfEventSeries,
+            self::ViewDocumentsOfLocations,
+            self::AddDocumentsToLocations,
+            self::EditDocumentsOfLocations,
+            self::ViewCommentsOnDocumentsOfLocations,
+            self::CommentOnDocumentsOfLocations,
+            self::ChangeApprovalStatusOfDocumentsOfLocations,
+            self::DestroyDocumentsOfLocations => AbilityGroup::DocumentsOfLocations,
             self::ViewDocumentsOfOrganizations,
             self::AddDocumentsToOrganizations,
             self::EditDocumentsOfOrganizations,
@@ -324,24 +346,31 @@ enum Ability: string
             // Documents
             self::ViewDocumentsOfEvents,
             self::ViewDocumentsOfEventSeries,
+            self::ViewDocumentsOfLocations,
             self::ViewDocumentsOfOrganizations => __('View documents'),
             self::AddDocumentsToEvents,
             self::AddDocumentsToEventSeries,
+            self::AddDocumentsToLocations,
             self::AddDocumentsToOrganizations => __('Add documents'),
             self::EditDocumentsOfEvents,
             self::EditDocumentsOfEventSeries,
+            self::EditDocumentsOfLocations,
             self::EditDocumentsOfOrganizations => __('Edit documents'),
             self::ViewCommentsOnDocumentsOfEvents,
             self::ViewCommentsOnDocumentsOfEventSeries,
+            self::ViewCommentsOnDocumentsOfLocations,
             self::ViewCommentsOnDocumentsOfOrganizations => __('View comments on documents'),
             self::CommentOnDocumentsOfEvents,
             self::CommentOnDocumentsOfEventSeries,
+            self::CommentOnDocumentsOfLocations,
             self::CommentOnDocumentsOfOrganizations => __('Comment on documents'),
             self::ChangeApprovalStatusOfDocumentsOfEvents,
             self::ChangeApprovalStatusOfDocumentsOfOrganizations,
+            self::ChangeApprovalStatusOfDocumentsOfLocations,
             self::ChangeApprovalStatusOfDocumentsOfEventSeries => __('Change approval status of documents'),
             self::DestroyDocumentsOfEvents,
             self::DestroyDocumentsOfEventSeries,
+            self::DestroyDocumentsOfLocations,
             self::DestroyDocumentsOfOrganizations => __('Delete documents permanently'),
 
             // Materials

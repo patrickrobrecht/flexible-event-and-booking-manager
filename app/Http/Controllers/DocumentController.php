@@ -7,6 +7,7 @@ use App\Http\Requests\Filters\DocumentFilterRequest;
 use App\Models\Document;
 use App\Models\Event;
 use App\Models\EventSeries;
+use App\Models\Location;
 use App\Models\Organization;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
@@ -46,6 +47,13 @@ class DocumentController extends Controller
         return $this->store($request, $eventSeries, route('event-series.show', $eventSeries));
     }
 
+    public function storeForLocation(DocumentRequest $request, Location $location): RedirectResponse
+    {
+        $this->authorize('create', [Document::class, $location]);
+
+        return $this->store($request, $location, route('locations.show', $location));
+    }
+
     public function storeForOrganization(DocumentRequest $request, Organization $organization): RedirectResponse
     {
         $this->authorize('create', [Document::class, $organization]);
@@ -53,7 +61,7 @@ class DocumentController extends Controller
         return $this->store($request, $organization, route('organizations.show', $organization));
     }
 
-    private function store(DocumentRequest $request, Event|EventSeries|Organization $reference, string $routeForReference): RedirectResponse
+    private function store(DocumentRequest $request, Event|EventSeries|Location|Organization $reference, string $routeForReference): RedirectResponse
     {
         $document = new Document();
         $document->reference()->associate($reference);

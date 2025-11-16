@@ -6,6 +6,7 @@ use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\FiltersByRelationExistence;
 use App\Models\Traits\HasAddress;
+use App\Models\Traits\HasDocuments;
 use App\Models\Traits\HasIdForRouting;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -30,6 +31,7 @@ class Location extends Model
     use BuildsQueryFromRequest;
     use FiltersByRelationExistence;
     use HasAddress;
+    use HasDocuments;
     use HasFactory;
     use HasIdForRouting;
 
@@ -89,6 +91,16 @@ class Location extends Model
     public function fillAndSave(array $validatedData): bool
     {
         return $this->fill($validatedData)->save();
+    }
+
+    public function getRoute(): string
+    {
+        return route('locations.show', $this);
+    }
+
+    public function getStoragePath(): string
+    {
+        return 'locations/' . $this->id;
     }
 
     /**

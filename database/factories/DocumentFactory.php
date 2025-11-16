@@ -7,6 +7,7 @@ use App\Enums\FileType;
 use App\Models\Document;
 use App\Models\Event;
 use App\Models\EventSeries;
+use App\Models\Location;
 use App\Models\Organization;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -33,7 +34,7 @@ class DocumentFactory extends Factory
         ];
     }
 
-    public function forReference(Event|EventSeries|Organization $reference): static
+    public function forReference(Event|EventSeries|Location|Organization $reference): static
     {
         return $this->for($reference, 'reference')
             ->afterCreating(function (Document $document): void {

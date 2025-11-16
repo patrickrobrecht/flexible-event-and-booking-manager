@@ -49,24 +49,28 @@ enum Ability: string
     case DestroyLocations = 'locations.destroy';
 
     // Documents
-    case ViewDocuments = 'documents.view';
-    case ViewCommentsOnDocuments = 'documents.comments.view';
-    case CommentOnDocuments = 'documents.comments.create';
-    case ChangeApprovalStatusOfDocuments = 'documents.approve';
-
     case ViewDocumentsOfEvents = 'events.documents.view';
     case AddDocumentsToEvents = 'events.documents.create';
     case EditDocumentsOfEvents = 'events.documents.edit';
+    case ViewCommentsOnDocumentsOfEvents = 'events.documents.comments.view';
+    case CommentOnDocumentsOfEvents = 'events.documents.comments.create';
+    case ChangeApprovalStatusOfDocumentsOfEvents = 'events.documents.approve';
     case DestroyDocumentsOfEvents = 'events.documents.destroy';
 
     case ViewDocumentsOfEventSeries = 'event_series.documents.view';
     case AddDocumentsToEventSeries = 'event_series.documents.create';
     case EditDocumentsOfEventSeries = 'event_series.documents.edit';
+    case ViewCommentsOnDocumentsOfEventSeries = 'event_series.documents.comments.view';
+    case CommentOnDocumentsOfEventSeries = 'event_series.documents.comments.create';
+    case ChangeApprovalStatusOfDocumentsOfEventSeries = 'event_series.documents.approve';
     case DestroyDocumentsOfEventSeries = 'event_series.documents.destroy';
 
     case ViewDocumentsOfOrganizations = 'organizations.documents.view';
     case AddDocumentsToOrganizations = 'organizations.documents.create';
     case EditDocumentsOfOrganizations = 'organizations.documents.edit';
+    case ViewCommentsOnDocumentsOfOrganizations = 'organizations.documents.comments.view';
+    case CommentOnDocumentsOfOrganizations = 'organizations.documents.comments.create';
+    case ChangeApprovalStatusOfDocumentsOfOrganizations = 'organizations.documents.approve';
     case DestroyDocumentsOfOrganizations = 'organizations.documents.destroy';
 
     // Material
@@ -136,21 +140,26 @@ enum Ability: string
             self::DestroyLocations => self::ViewLocations,
 
             // Documents
-            self::ViewCommentsOnDocuments,
-            self::ChangeApprovalStatusOfDocuments => self::ViewDocuments,
-            self::CommentOnDocuments => self::ViewCommentsOnDocuments,
-
             self::AddDocumentsToEvents,
             self::EditDocumentsOfEvents,
+            self::ViewCommentsOnDocumentsOfEvents,
+            self::ChangeApprovalStatusOfDocumentsOfEvents,
             self::DestroyDocumentsOfEvents => self::ViewDocumentsOfEvents,
+            self::CommentOnDocumentsOfEvents => self::ViewCommentsOnDocumentsOfEvents,
 
             self::AddDocumentsToEventSeries,
             self::EditDocumentsOfEventSeries,
+            self::ViewCommentsOnDocumentsOfEventSeries,
+            self::ChangeApprovalStatusOfDocumentsOfEventSeries,
             self::DestroyDocumentsOfEventSeries => self::ViewDocumentsOfEventSeries,
+            self::CommentOnDocumentsOfEventSeries => self::ViewCommentsOnDocumentsOfEventSeries,
 
             self::AddDocumentsToOrganizations,
             self::EditDocumentsOfOrganizations,
+            self::ViewCommentsOnDocumentsOfOrganizations,
+            self::ChangeApprovalStatusOfDocumentsOfOrganizations,
             self::DestroyDocumentsOfOrganizations => self::ViewDocumentsOfOrganizations,
+            self::CommentOnDocumentsOfOrganizations => self::ViewCommentsOnDocumentsOfOrganizations,
 
             // Materials
             self::CreateMaterials,
@@ -217,21 +226,26 @@ enum Ability: string
             self::DestroyLocations => AbilityGroup::Locations,
 
             // Documents
-            self::ViewDocuments,
-            self::ViewCommentsOnDocuments,
-            self::CommentOnDocuments,
-            self::ChangeApprovalStatusOfDocuments => AbilityGroup::Documents,
             self::ViewDocumentsOfEvents,
             self::AddDocumentsToEvents,
             self::EditDocumentsOfEvents,
+            self::ViewCommentsOnDocumentsOfEvents,
+            self::CommentOnDocumentsOfEvents,
+            self::ChangeApprovalStatusOfDocumentsOfEvents,
             self::DestroyDocumentsOfEvents => AbilityGroup::DocumentsOfEvents,
             self::ViewDocumentsOfEventSeries,
             self::AddDocumentsToEventSeries,
             self::EditDocumentsOfEventSeries,
+            self::ViewCommentsOnDocumentsOfEventSeries,
+            self::CommentOnDocumentsOfEventSeries,
+            self::ChangeApprovalStatusOfDocumentsOfEventSeries,
             self::DestroyDocumentsOfEventSeries => AbilityGroup::DocumentsOfEventSeries,
             self::ViewDocumentsOfOrganizations,
             self::AddDocumentsToOrganizations,
             self::EditDocumentsOfOrganizations,
+            self::ViewCommentsOnDocumentsOfOrganizations,
+            self::CommentOnDocumentsOfOrganizations,
+            self::ChangeApprovalStatusOfDocumentsOfOrganizations,
             self::DestroyDocumentsOfOrganizations => AbilityGroup::DocumentsOfOrganizations,
 
             // Materials
@@ -308,25 +322,27 @@ enum Ability: string
             self::DestroyLocations => __('Delete locations permanently'),
 
             // Documents
-            self::ViewDocuments => __('View documents'),
-            self::ViewCommentsOnDocuments => __('View comments on documents'),
-            self::CommentOnDocuments => __('Comment on documents'),
-            self::ChangeApprovalStatusOfDocuments => __('Change approval status of documents'),
-
-            self::ViewDocumentsOfEvents => __('View documents of events'),
-            self::AddDocumentsToEvents => __('Add documents to events'),
-            self::EditDocumentsOfEvents => __('Update documents of events'),
-            self::DestroyDocumentsOfEvents => __('Delete documents of events'),
-
-            self::ViewDocumentsOfEventSeries => __('View documents of event series'),
-            self::AddDocumentsToEventSeries => __('Add documents to event series'),
-            self::EditDocumentsOfEventSeries => __('Update documents of event series'),
-            self::DestroyDocumentsOfEventSeries => __('Delete documents of event series'),
-
-            self::ViewDocumentsOfOrganizations => __('View documents of organizations'),
-            self::AddDocumentsToOrganizations => __('Add documents to organizations'),
-            self::EditDocumentsOfOrganizations => __('Update documents of organizations'),
-            self::DestroyDocumentsOfOrganizations => __('Delete documents of organizations'),
+            self::ViewDocumentsOfEvents,
+            self::ViewDocumentsOfEventSeries,
+            self::ViewDocumentsOfOrganizations => __('View documents'),
+            self::AddDocumentsToEvents,
+            self::AddDocumentsToEventSeries,
+            self::AddDocumentsToOrganizations => __('Add documents'),
+            self::EditDocumentsOfEvents,
+            self::EditDocumentsOfEventSeries,
+            self::EditDocumentsOfOrganizations => __('Edit documents'),
+            self::ViewCommentsOnDocumentsOfEvents,
+            self::ViewCommentsOnDocumentsOfEventSeries,
+            self::ViewCommentsOnDocumentsOfOrganizations => __('View comments on documents'),
+            self::CommentOnDocumentsOfEvents,
+            self::CommentOnDocumentsOfEventSeries,
+            self::CommentOnDocumentsOfOrganizations => __('Comment on documents'),
+            self::ChangeApprovalStatusOfDocumentsOfEvents,
+            self::ChangeApprovalStatusOfDocumentsOfOrganizations,
+            self::ChangeApprovalStatusOfDocumentsOfEventSeries => __('Change approval status of documents'),
+            self::DestroyDocumentsOfEvents,
+            self::DestroyDocumentsOfEventSeries,
+            self::DestroyDocumentsOfOrganizations => __('Delete documents permanently'),
 
             // Materials
             self::ViewMaterials => __('View materials'),

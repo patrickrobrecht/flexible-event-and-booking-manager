@@ -140,7 +140,10 @@ trait ActsAsUser
         return $this->get($route)->assertOk();
     }
 
-    protected function assertUserCannotGetDespiteAbility(string $route, Ability $ability): TestResponse
+    /**
+     * @param Ability|Ability[] $ability
+     */
+    protected function assertUserCannotGetDespiteAbility(string $route, Ability|array $ability): TestResponse
     {
         $this->actingAsUserWithAbility($ability);
         return $this->get($route)->assertForbidden();

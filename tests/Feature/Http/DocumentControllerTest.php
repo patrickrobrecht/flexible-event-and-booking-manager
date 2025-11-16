@@ -33,11 +33,14 @@ class DocumentControllerTest extends TestCase
 {
     public function testUserCanViewAllDocumentsWithCorrectAbility(): void
     {
-        $this->assertUserCanGetOnlyWithAbility('/documents', Ability::ViewDocuments);
+        foreach (DocumentPolicy::VIEW_DOCUMENTS_ABILITIES as $ability) {
+            $this->assertUserCanGetWithAbility('/documents', $ability);
+        }
+        $this->assertUserCannotGetDespiteAbility('/documents', Ability::casesExcept(DocumentPolicy::VIEW_DOCUMENTS_ABILITIES));
     }
 
     #[DataProvider('referenceClassesWithViewAbility')]
-    public function testUserCanViewSingleDocumentWithCorrectAbility(Closure $referenceProvider, Ability $viewReferenceAbility, Ability $viewDocumentsAbility): void
+    public function testUserCanViewSingleDocumentWithCorrectAbility(Closure $referenceProvider, Ability $viewDocumentsAbility): void
     {
         $document = self::createDocument($referenceProvider);
 
@@ -50,28 +53,26 @@ class DocumentControllerTest extends TestCase
 
         $urlPrefix = "/documents/{$document->id}";
         foreach ([$urlPrefix, $urlPrefix . '/download', $urlPrefix . '/stream'] as $documentUrl) {
-            $this->assertUserCanGetWithAbility($documentUrl, [$viewReferenceAbility, Ability::ViewDocuments]);
-            $this->assertUserCanGetWithAbility($documentUrl, [$viewReferenceAbility, $viewDocumentsAbility]);
-            $this->assertUserCannotGetWithoutAbility($documentUrl, [$viewReferenceAbility, $viewDocumentsAbility, Ability::ViewDocuments]);
+            $this->assertUserCanGetOnlyWithAbility($documentUrl, $viewDocumentsAbility);
         }
     }
 
     /**
-     * @return array<int, array{Closure, Ability, Ability}>
+     * @return array<int, array{Closure, Ability}>
      */
     public static function referenceClassesWithViewAbility(): array
     {
         return [
-            [fn () => self::createEvent(Visibility::Public), Ability::ViewEvents, Ability::ViewDocumentsOfEvents],
-            [fn () => self::createEvent(Visibility::Private), Ability::ViewPrivateEvents, Ability::ViewDocumentsOfEvents],
-            [fn () => self::createEventSeries(Visibility::Public), Ability::ViewEventSeries, Ability::ViewDocumentsOfEventSeries],
-            [fn () => self::createEventSeries(Visibility::Private), Ability::ViewPrivateEventSeries, Ability::ViewDocumentsOfEventSeries],
-            [fn () => self::createOrganization(), Ability::ViewOrganizations, Ability::ViewDocumentsOfOrganizations],
+            [fn () => self::createEvent(Visibility::Public), Ability::ViewDocumentsOfEvents],
+            [fn () => self::createEvent(Visibility::Private), Ability::ViewDocumentsOfEvents],
+            [fn () => self::createEventSeries(Visibility::Public), Ability::ViewDocumentsOfEventSeries],
+            [fn () => self::createEventSeries(Visibility::Private), Ability::ViewDocumentsOfEventSeries],
+            [fn () => self::createOrganization(), Ability::ViewDocumentsOfOrganizations],
         ];
     }
 
-    #[DataProvider('referenceClassesWithViewAndCreateAbility')]
-    public function testUserCanAddDocumentWithCorrectAbility(Closure $referenceProvider, Ability $viewReferenceAbility, Ability $addDocumentsAbility): void
+    #[DataProvider('referenceClassesWithCreateAbility')]
+    public function testUserCanAddDocumentWithCorrectAbility(Closure $referenceProvider, Ability $addDocumentsAbility): void
     {
         /** @var Event|EventSeries|Organization $reference */
         $reference = $referenceProvider();
@@ -89,33 +90,33 @@ class DocumentControllerTest extends TestCase
             'file' => $file,
         ];
 
-        $this->assertUserCanPostWithAbility($storeUri, $data, [$viewReferenceAbility, $addDocumentsAbility], $reference->getRoute());
+        $this->assertUserCanPostWithAbility($storeUri, $data, [$addDocumentsAbility], $reference->getRoute());
     }
 
     /**
-     * @return array<int, array{Closure, Ability, Ability}>
+     * @return array<int, array{Closure, Ability}>
      */
-    public static function referenceClassesWithViewAndCreateAbility(): array
+    public static function referenceClassesWithCreateAbility(): array
     {
         return [
-            [fn () => self::createEvent(Visibility::Public), Ability::ViewEvents, Ability::AddDocumentsToEvents],
-            [fn () => self::createEvent(Visibility::Private), Ability::ViewPrivateEvents, Ability::AddDocumentsToEvents],
-            [fn () => self::createEventSeries(Visibility::Public), Ability::ViewEventSeries, Ability::AddDocumentsToEventSeries],
-            [fn () => self::createEventSeries(Visibility::Private), Ability::ViewPrivateEventSeries, Ability::AddDocumentsToEventSeries],
-            [fn () => self::createOrganization(), Ability::ViewOrganizations, Ability::AddDocumentsToOrganizations],
+            [fn () => self::createEvent(Visibility::Public), Ability::AddDocumentsToEvents],
+            [fn () => self::createEvent(Visibility::Private), Ability::AddDocumentsToEvents],
+            [fn () => self::createEventSeries(Visibility::Public), Ability::AddDocumentsToEventSeries],
+            [fn () => self::createEventSeries(Visibility::Private), Ability::AddDocumentsToEventSeries],
+            [fn () => self::createOrganization(), Ability::AddDocumentsToOrganizations],
         ];
     }
 
-    #[DataProvider('referenceClassesWithViewAndEditAbility')]
-    public function testUserCanOpenEditDocumentFormOnlyWithCorrectAbility(Closure $referenceProvider, Ability $viewReferenceAbility, Ability $editDocumentsAbility): void
+    #[DataProvider('referenceClassesWithEditAbility')]
+    public function testUserCanOpenEditDocumentFormOnlyWithCorrectAbility(Closure $referenceProvider, Ability $editDocumentsAbility): void
     {
         $document = self::createDocument($referenceProvider);
 
-        $this->assertUserCanGetOnlyWithAbility("/documents/{$document->id}/edit", [$viewReferenceAbility, $editDocumentsAbility]);
+        $this->assertUserCanGetOnlyWithAbility("/documents/{$document->id}/edit", $editDocumentsAbility);
     }
 
-    #[DataProvider('referenceClassesWithViewAndEditAbility')]
-    public function testUserCanUpdateDocumentWithCorrectAbility(Closure $referenceProvider, Ability $viewReferenceAbility, Ability $editDocumentsAbility): void
+    #[DataProvider('referenceClassesWithEditAbility')]
+    public function testUserCanUpdateDocumentWithCorrectAbility(Closure $referenceProvider, Ability $editDocumentsAbility): void
     {
         $document = self::createDocument($referenceProvider);
 
@@ -125,28 +126,28 @@ class DocumentControllerTest extends TestCase
         $this->assertUserCanPutWithAbility(
             "/documents/{$document->id}",
             $data,
-            [$viewReferenceAbility, $editDocumentsAbility],
+            $editDocumentsAbility,
             route('documents.edit', $document),
             route('documents.show', $document)
         );
     }
 
     /**
-     * @return array<int, array{Closure, Ability, Ability}>
+     * @return array<int, array{Closure, Ability}>
      */
-    public static function referenceClassesWithViewAndEditAbility(): array
+    public static function referenceClassesWithEditAbility(): array
     {
         return [
-            [fn () => self::createEvent(Visibility::Public), Ability::ViewEvents, Ability::EditDocumentsOfEvents],
-            [fn () => self::createEvent(Visibility::Private), Ability::ViewPrivateEvents, Ability::EditDocumentsOfEvents],
-            [fn () => self::createEventSeries(Visibility::Public), Ability::ViewEventSeries, Ability::EditDocumentsOfEventSeries],
-            [fn () => self::createEventSeries(Visibility::Private), Ability::ViewPrivateEventSeries, Ability::EditDocumentsOfEventSeries],
-            [fn () => self::createOrganization(), Ability::ViewOrganizations, Ability::EditDocumentsOfOrganizations],
+            [fn () => self::createEvent(Visibility::Public), Ability::EditDocumentsOfEvents],
+            [fn () => self::createEvent(Visibility::Private), Ability::EditDocumentsOfEvents],
+            [fn () => self::createEventSeries(Visibility::Public), Ability::EditDocumentsOfEventSeries],
+            [fn () => self::createEventSeries(Visibility::Private), Ability::EditDocumentsOfEventSeries],
+            [fn () => self::createOrganization(), Ability::EditDocumentsOfOrganizations],
         ];
     }
 
-    #[DataProvider('referenceClassesWithViewAndDeleteAbility')]
-    public function testDeletionIsPossibleOnlyWithCorrectAbility(Closure $referenceProvider, Ability $viewReferenceAbility, Ability $deleteDocumentsAbility): void
+    #[DataProvider('referenceClassesWithDeleteAbility')]
+    public function testDeletionIsPossibleOnlyWithCorrectAbility(Closure $referenceProvider, Ability $deleteDocumentsAbility): void
     {
         $document = self::createDocument($referenceProvider);
 
@@ -155,20 +156,20 @@ class DocumentControllerTest extends TestCase
             ->once()
             ->andReturn(true);
 
-        $this->assertUserCanDeleteOnlyWithAbility("/documents/{$document->id}", [$viewReferenceAbility, $deleteDocumentsAbility], $document->reference->getRoute());
+        $this->assertUserCanDeleteOnlyWithAbility("/documents/{$document->id}", $deleteDocumentsAbility, $document->reference->getRoute());
     }
 
     /**
-     * @return array<int, array{Closure, Ability, Ability}>
+     * @return array<int, array{Closure, Ability}>
      */
-    public static function referenceClassesWithViewAndDeleteAbility(): array
+    public static function referenceClassesWithDeleteAbility(): array
     {
         return [
-            [fn () => self::createEvent(Visibility::Public), Ability::ViewEvents, Ability::DestroyDocumentsOfEvents],
-            [fn () => self::createEvent(Visibility::Private), Ability::ViewPrivateEvents, Ability::DestroyDocumentsOfEvents],
-            [fn () => self::createEventSeries(Visibility::Public), Ability::ViewEventSeries, Ability::DestroyDocumentsOfEventSeries],
-            [fn () => self::createEventSeries(Visibility::Private), Ability::ViewPrivateEventSeries, Ability::DestroyDocumentsOfEventSeries],
-            [fn () => self::createOrganization(), Ability::ViewOrganizations, Ability::DestroyDocumentsOfOrganizations],
+            [fn () => self::createEvent(Visibility::Public), Ability::DestroyDocumentsOfEvents],
+            [fn () => self::createEvent(Visibility::Private), Ability::DestroyDocumentsOfEvents],
+            [fn () => self::createEventSeries(Visibility::Public), Ability::DestroyDocumentsOfEventSeries],
+            [fn () => self::createEventSeries(Visibility::Private), Ability::DestroyDocumentsOfEventSeries],
+            [fn () => self::createOrganization(), Ability::DestroyDocumentsOfOrganizations],
         ];
     }
 }

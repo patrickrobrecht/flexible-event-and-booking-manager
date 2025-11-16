@@ -2,7 +2,9 @@
     /** @var \Illuminate\Database\Eloquent\Collection|\App\Models\Document[] $documents */
 @endphp
 
-@if($documents->count() > 0)
+@if($documents->count() === 0)
+    <p>{{ __('No documents have been uploaded yet.') }}</p>
+@else
     <x-bs::list>
         @foreach($documents as $document)
             <x-bs::list.item class="avoid-break">

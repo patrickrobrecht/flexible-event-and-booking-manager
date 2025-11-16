@@ -19,15 +19,18 @@ class DocumentReviewController extends Controller
         $validated = $request->validated();
 
         // Change approval status of the document if requested.
-        /** @phpstan-ignore-next-line argument.type */
-        $approvalStatus = ApprovalStatus::tryFrom($request->validated('approval_status'));
-        if ($approvalStatus) {
-            if ($document->approval_status === $approvalStatus) {
-                // Don't save approval status in review.
-                $validated['approval_status'] = null;
-            } else {
-                // Change the approval status of the document.
-                $document->approval_status = $approvalStatus;
+        /** @var ?string $approvalStatus */
+        $approvalStatus = $request->validated('approval_status');
+        if ($approvalStatus !== null) {
+            $approvalStatus = ApprovalStatus::tryFrom($approvalStatus);
+            if ($approvalStatus) {
+                if ($document->approval_status === $approvalStatus) {
+                    // Don't save approval status in review.
+                    $validated['approval_status'] = null;
+                } else {
+                    // Change the approval status of the document.
+                    $document->approval_status = $approvalStatus;
+                }
             }
         }
 

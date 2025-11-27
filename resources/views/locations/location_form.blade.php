@@ -13,10 +13,7 @@
 @endsection
 
 @section('breadcrumbs')
-    <x-bs::breadcrumb.item href="{{ route('locations.index') }}">{{ __('Locations') }}</x-bs::breadcrumb.item>
-    @isset($location)
-        <x-bs::breadcrumb.item>{{ $location->nameOrAddress }}</x-bs::breadcrumb.item>
-    @endisset
+    @include('locations.shared.location_breadcrumbs')
 @endsection
 
 @section('headline-buttons')

@@ -2,7 +2,11 @@
     /** @var ?\App\Models\EventSeries $eventSeries */
     $parentEventSeries = $eventSeries->parentEventSeries ?? null;
 @endphp
-<x-bs::breadcrumb.item href="{{ route('event-series.index') }}">{{ __('Event series') }}</x-bs::breadcrumb.item>
+@can('viewAny', \App\Models\EventSeries::class)
+    <x-bs::breadcrumb.item href="{{ route('event-series.index') }}">{{ __('Event series') }}</x-bs::breadcrumb.item>
+@else
+    <x-bs::breadcrumb.item>{{ __('Event series') }}</x-bs::breadcrumb.item>
+@endcan
 @isset($parentEventSeries)
     @can('view', $parentEventSeries)
         <x-bs::breadcrumb.item href="{{ route('event-series.show', $parentEventSeries) }}">{{ $parentEventSeries->name }}</x-bs::breadcrumb.item>

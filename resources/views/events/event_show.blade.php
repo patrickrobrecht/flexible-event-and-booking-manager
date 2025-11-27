@@ -15,7 +15,11 @@
         <x-bs::breadcrumb.item>{{ __('Events') }}</x-bs::breadcrumb.item>
     @endcan
     @isset($event->parentEvent)
-        <x-bs::breadcrumb.item href="{{ route('events.show', $event->parentEvent) }}">{{ $event->parentEvent->name }}</x-bs::breadcrumb.item>
+        @can('view', $event->parentEvent)
+            <x-bs::breadcrumb.item href="{{ route('events.show', $event->parentEvent) }}">{{ $event->parentEvent->name }}</x-bs::breadcrumb.item>
+        @else
+            <x-bs::breadcrumb.item>{{ $event->parentEvent->name }}</x-bs::breadcrumb.item>
+        @endcan
     @endisset
     <x-bs::breadcrumb.item>@yield('title')</x-bs::breadcrumb.item>
 @endsection

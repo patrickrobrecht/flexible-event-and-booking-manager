@@ -15,26 +15,26 @@ jobs:
       fail-fast: false
       matrix:
         php-version:
-          - 8.3
           - 8.4
+          - 8.5
 
     name: Tests PHP ${{ matrix.php-version }}
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          coverage: ${{ matrix.php-version == '8.4' && 'xdebug' || 'none' }}
+          coverage: ${{ matrix.php-version == '8.5' && 'xdebug' || 'none' }}
 
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-interaction --no-progress
 
       - name: Setup Node
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version: 24
 
@@ -44,18 +44,18 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Run tests (PHP not 8.4)
-        if: matrix.php-version != '8.4'
+      - name: Run tests (older supported PHP versions)
+        if: matrix.php-version != '8.5'
         run: composer test
 
-      - name: Run tests with coverage (PHP 8.4)
-        if: matrix.php-version == '8.4'
+      - name: Run tests with coverage (latest PHP version only)
+        if: matrix.php-version == '8.5'
         run: composer test -- --coverage-clover=phpunit_coverage.xml --log-junit=phpunit_report.xml
 
       - name: Upload coverage report to GitHub Artifacts
         id: artifact-upload-step
-        if: matrix.php-version == '8.4'
-        uses: actions/upload-artifact@v4
+        if: matrix.php-version == '8.5'
+        uses: actions/upload-artifact@v6
         with:
           name: Code coverage report (PHP ${{ matrix.php-version }})
           path: |
@@ -64,7 +64,7 @@ jobs:
           if-no-files-found: warn
 
       - name: Calculate coverage percentage
-        if: matrix.php-version == '8.4'
+        if: matrix.php-version == '8.5'
         run: |
           COVERAGE=$(php -r "
             \$xml = simplexml_load_file('phpunit_coverage.xml');
@@ -77,7 +77,7 @@ jobs:
           echo "COVERAGE=$COVERAGE" >> $GITHUB_ENV
 
       - name: Comment test results in PR
-        if: matrix.php-version == '8.4'
+        if: matrix.php-version == '8.5'
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
           files: phpunit_report.xml

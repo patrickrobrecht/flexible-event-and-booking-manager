@@ -74,13 +74,13 @@ For development, we use
 - [PHPStan](https://phpstan.org/) with [Larastan](https://github.com/larastan/larastan) and [strict rules extension](https://github.com/phpstan/phpstan-strict-rules) for static analysis
 - [PHPUnit](https://docs.phpunit.de/) for Unit tests
 - [Stylelint](https://stylelint.io/) for the SASS code style check
-- [Vite](https://laravel.com/docs/11.x/vite#introduction) for compiling and copying assets
+- [Vite](https://laravel.com/docs/12.x/vite#introduction) for compiling and copying assets
 
 ### Code Style
 Run `composer cs` to check compliance with the code style
 and `composer csfix` to fix code style violations before every commit
 (see `composer.json` and `package.json` for commands to run the code style check/fix for just one language).
-- PHP code MUST follow the [Pint configuration](./pint.json), including [PSR-12 specification](https://www.php-fig.org/psr/psr-12/).
+- PHP code MUST follow the [Pint configuration](https://github.com/portavice/laravel-pint-config), including [PSR-12 specification](https://www.php-fig.org/psr/psr-12/).
 - Laravel code SHOULD follow the best practices from the list [by Alexey Mezenin](https://github.com/alexeymezenin/laravel-best-practices).
 - JavaScript code MUST follow [the default ESLint rules](https://eslint.org/docs/rules/).
 - CSS code MUST follow [the standard stylelint rules](https://stylelint.io/user-guide/rules).

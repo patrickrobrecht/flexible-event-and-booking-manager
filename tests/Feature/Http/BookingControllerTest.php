@@ -211,9 +211,10 @@ class BookingControllerTest extends TestCase
         Notification::fake();
 
         $data = $this->generateRandomBookingData($bookingOption);
-        $this->post("events/{$bookingOption->event->slug}/{$bookingOption->slug}/bookings", $data)
+        $this->from("events/{$bookingOption->event->slug}/{$bookingOption->slug}")
+            ->post("events/{$bookingOption->event->slug}/{$bookingOption->slug}/bookings", $data)
             ->assertSessionDoesntHaveErrors()
-            ->assertRedirect();
+            ->assertRedirect("events/{$bookingOption->event->slug}/{$bookingOption->slug}");
         self::assertCount(1, $bookingOption->refresh()->bookings);
         self::assertCount(1, $bookingOption->event->bookings);
 

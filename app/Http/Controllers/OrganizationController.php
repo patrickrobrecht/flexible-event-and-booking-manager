@@ -103,7 +103,7 @@ class OrganizationController extends Controller
     {
         $this->authorize('forceDelete', $organization);
 
-        if ($organization->delete()) {
+        if ($organization->delete() === true) {
             Session::flash('success', __(':name deleted successfully.', ['name' => $organization->name]));
             return redirect(route('organizations.index'));
         }

@@ -24,5 +24,3 @@ parameters:
         - database
         - routes
         - tests
-    strictRules:
-        booleansInConditions: false

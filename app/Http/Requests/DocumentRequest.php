@@ -68,10 +68,10 @@ class DocumentRequest extends FormRequest
             'approval_status' => [
                 (
                     $this->routeIs('*.documents.store')
-                    && $this->user()?->can('approve', Document::class)
+                    && ($this->user()?->can('approve', Document::class) ?? false)
                 ) || (
                     $this->routeIs('documents.update')
-                    && $this->user()?->can('approve', $this->document)
+                    && ($this->user()?->can('approve', $this->document) ?? false)
                 )
                     ? 'required'
                     : 'prohibited',

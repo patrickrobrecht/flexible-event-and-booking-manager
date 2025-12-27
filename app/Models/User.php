@@ -174,11 +174,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->scopeRelation($query, $userRoleId, 'userRoles', fn (Builder $q) => $q->where('user_role_id', '=', $userRoleId));
     }
 
-    public function deleteWithRelations(): ?bool
+    public function deleteWithRelations(): bool
     {
         $this->userRoles()->detach();
         $this->tokens()->delete();
-        return $this->delete();
+        return $this->delete() === true;
     }
 
     /**

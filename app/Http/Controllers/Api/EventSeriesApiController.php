@@ -49,7 +49,10 @@ class EventSeriesApiController extends Controller
 
     public function show(EventSeries $eventSeries, FormRequest $request): JsonResource
     {
-        if ($eventSeries->visibility === Visibility::Private && $request->user()?->tokenCant(Ability::ViewPrivateEventSeries->value)) {
+        if (
+            $eventSeries->visibility === Visibility::Private
+            && ($request->user()?->tokenCant(Ability::ViewPrivateEventSeries->value) ?? false)
+        ) {
             throw new MissingAbilityException(Ability::ViewPrivateEventSeries->value);
         }
 

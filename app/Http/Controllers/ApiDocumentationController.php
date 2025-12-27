@@ -29,7 +29,9 @@ class ApiDocumentationController extends Controller
 
     private static function getYamlFileContents(): string
     {
-        if (config('app.debug')) {
+        /** @var bool $isDebuggingEnabled */
+        $isDebuggingEnabled = config('app.debug');
+        if ($isDebuggingEnabled) {
             return CacheOpenApiDocListener::cacheConfigurationFile();
         }
 

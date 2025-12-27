@@ -23,7 +23,7 @@ class DocumentReviewController extends Controller
         $approvalStatus = $request->validated('approval_status');
         if ($approvalStatus !== null) {
             $approvalStatus = ApprovalStatus::tryFrom($approvalStatus);
-            if ($approvalStatus) {
+            if ($approvalStatus !== null) {
                 if ($document->approval_status === $approvalStatus) {
                     // Don't save approval status in review.
                     $validated['approval_status'] = null;

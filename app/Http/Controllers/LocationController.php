@@ -97,7 +97,7 @@ class LocationController extends Controller
     {
         $this->authorize('forceDelete', $location);
 
-        if ($location->delete()) {
+        if ($location->delete() === true) {
             Session::flash('success', __(':name deleted successfully.', ['name' => $location->nameOrAddress]));
             return redirect(route('locations.index'));
         }

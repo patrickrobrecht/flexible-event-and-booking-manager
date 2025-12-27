@@ -161,11 +161,11 @@ class BookingController extends Controller
 
             event(new BookingCompleted($booking));
 
-            if (Auth::user()?->can('update', $booking)) {
+            if (Auth::user()?->can('update', $booking) ?? false) {
                 return redirect(route('bookings.edit', $booking));
             }
 
-            if (Auth::user()?->can('view', $booking)) {
+            if (Auth::user()?->can('view', $booking) ?? false) {
                 return redirect(route('bookings.show', $booking));
             }
         }
@@ -205,7 +205,7 @@ class BookingController extends Controller
             ->update([
                 'paid_at' => $request->validated('paid_at'),
             ]);
-        if ($saved) {
+        if ($saved > 0) {
             Session::flash('success', __('Saved successfully.'));
         }
 
@@ -216,7 +216,7 @@ class BookingController extends Controller
     {
         $this->authorize('delete', $booking);
 
-        if ($booking->delete()) {
+        if ($booking->delete() === true) {
             Session::flash('success', __('Deleted successfully.'));
         }
 

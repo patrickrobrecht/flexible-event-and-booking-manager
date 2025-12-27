@@ -50,7 +50,10 @@ class EventApiController extends Controller
 
     public function show(Event $event, FormRequest $request): JsonResource
     {
-        if ($event->visibility === Visibility::Private && $request->user()?->tokenCant(Ability::ViewPrivateEvents->value)) {
+        if (
+            $event->visibility === Visibility::Private
+            && ($request->user()?->tokenCant(Ability::ViewPrivateEvents->value) ?? false)
+        ) {
             throw new MissingAbilityException(Ability::ViewPrivateEvents->value);
         }
 

@@ -63,7 +63,7 @@ class PersonalAccessTokenController extends Controller
     {
         $this->authorize('forceDelete', $personalAccessToken);
 
-        if ($personalAccessToken->forceDelete()) {
+        if ($personalAccessToken->forceDelete() === true) {
             Session::flash('success', __(':name deleted successfully.', ['name' => $personalAccessToken->name]));
             return redirect(route('personal-access-tokens.index'));
         }

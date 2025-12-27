@@ -98,6 +98,13 @@ class Document extends Model
         return $query->whereIn('reference_type', array_keys($modelTypes));
     }
 
+    public function deleteWithReviews(): bool
+    {
+        $this->documentReviews()->delete();
+        Storage::delete($this->path);
+        return $this->delete() === true;
+    }
+
     /**
      * @param array<string, mixed> $validatedData
      */
@@ -113,7 +120,7 @@ class Document extends Model
 
         /** @var ?UploadedFile $file */
         $file = $validatedData['file'] ?? null;
-        if ($file) {
+        if ($file !== null) {
             $this->file_type = FileType::tryFromExtension($file->getClientOriginalExtension()) ?? FileType::Text;
             $this->uploadedByUser()->associate(Auth::user());
 

@@ -71,10 +71,10 @@ class Material extends Model
         return $this->scopeRelation($query, $storageLocationId, 'storageLocations', fn (Builder $q) => $q->where('storage_location_id', '=', $storageLocationId));
     }
 
-    public function deleteAfterDetachingStorageLocations(): ?bool
+    public function deleteAfterDetachingStorageLocations(): bool
     {
         $this->storageLocations()->detach();
-        return $this->delete();
+        return $this->delete() === true;
     }
 
     /**
@@ -98,7 +98,7 @@ class Material extends Model
 
         foreach ($validatedData['storage_locations'] ?? [] as $id => $data) {
             $storageLocation = $this->storageLocations->firstWhere('pivot.id', $id);
-            if ($storageLocation) {
+            if ($storageLocation !== null) {
                 if (isset($data['remove']) && $data['remove'] === true) {
                     $storageLocation->pivot->delete();
                 } elseif ($storageLocation->id !== (int) $data['storage_location_id']) {

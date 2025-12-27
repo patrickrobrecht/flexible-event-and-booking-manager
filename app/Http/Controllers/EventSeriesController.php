@@ -138,7 +138,7 @@ class EventSeriesController extends Controller
     {
         $this->authorize('forceDelete', $eventSeries);
 
-        if ($eventSeries->delete()) {
+        if ($eventSeries->delete() === true) {
             Session::flash('success', __(':name deleted successfully.', ['name' => $eventSeries->name]));
             return redirect(route('event-series.index'));
         }

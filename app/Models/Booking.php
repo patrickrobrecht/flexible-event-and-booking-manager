@@ -285,13 +285,16 @@ class Booking extends Model
     {
         $value = $this->getFieldValue($formField);
 
+        if ($formField->isSingleCheckbox()) {
+            /** @phpstan-ignore-next-line cast.int */
+            $value = ((int) $value === 1)
+                ? __('Yes')
+                : __('No');
+        }
+
         if (isset($value)) {
             if (is_array($value)) {
                 return implode(',', $value);
-            }
-
-            if ($formField->isSingleCheckbox()) {
-                $value = $value ? __('Yes') : __('No');
             }
 
             $value = match ($formField->type) {

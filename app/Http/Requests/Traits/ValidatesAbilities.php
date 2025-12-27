@@ -28,10 +28,10 @@ trait ValidatesAbilities
 
         foreach ($abilities as $value) {
             $ability = Ability::tryFrom($value);
-            if ($ability) {
+            if ($ability !== null) {
                 $dependentAbility = $ability->dependsOnAbility();
                 if (
-                    $dependentAbility
+                    $dependentAbility !== null
                     // dependent ability is not selected yet
                     && !in_array($dependentAbility->value, $abilities, true)
                     // but is selectable

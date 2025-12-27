@@ -54,7 +54,7 @@ trait FiltersList
             'date_format:Y-m-d',
         ];
 
-        if ($afterOrEqual) {
+        if ($afterOrEqual !== null) {
             $rules[] = 'after_or_equal:' . $afterOrEqual;
         }
 

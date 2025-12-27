@@ -51,7 +51,10 @@ class GroupsExportSpreadsheet extends Spreadsheet
                 ->toArray();
         }
 
-        /** @var Collection<int, int> $rows */
+        /**
+         * @var Collection<int, int> $rows
+         * @phpstan-ignore-next-line varTag.type
+         */
         $rows = Collection::range(0, $rowCount - 1);
         self::fillSheetFromCollection(
             $this->getActiveSheet(),

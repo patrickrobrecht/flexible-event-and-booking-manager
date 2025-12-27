@@ -12,11 +12,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class FormFieldValueFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
@@ -33,17 +28,19 @@ class FormFieldValueFactory extends Factory
 
     public function randomValue(FormField $formField): mixed
     {
+        $allowedValues = $formField->allowed_values ?? [];
+
         return match ($formField->type) {
-            FormElementType::Checkbox => count($formField->allowed_values) === 1
+            FormElementType::Checkbox => count($allowedValues) === 1
                 ? (int) $this->faker->boolean()
-                : $this->faker->randomElements($formField->allowed_values, $this->faker->numberBetween(1, count($formField->allowed_values))),
+                : $this->faker->randomElements($allowedValues, $this->faker->numberBetween(1, count($allowedValues))),
             FormElementType::Date => $this->faker->date('Y-m-d'),
             FormElementType::DateTime => $this->faker->date('Y-m-d\TH:i'),
             FormElementType::Email => $this->faker->email(),
-            FormElementType::Hidden => $formField->allowed_values[0],
+            FormElementType::Hidden => $allowedValues[0],
             FormElementType::Number => $this->faker->numberBetween(0, 100),
             FormElementType::Radio,
-            FormElementType::Select => $this->faker->randomElement($formField->allowed_values),
+            FormElementType::Select => $this->faker->randomElement($allowedValues),
             FormElementType::Text => $this->faker->text(255),
             FormElementType::Textarea => $this->faker->text(1000),
             default => null,

@@ -63,7 +63,7 @@ class UserControllerTest extends TestCase
         $user = User::query()
             ->where('email', '=', 'test@example.com')
             ->first();
-        $this->assertNotNull($user);
+        self::assertNotNull($user);
 
         Notification::assertNothingSent();
     }
@@ -86,7 +86,7 @@ class UserControllerTest extends TestCase
         $createdUser = User::query()
             ->where('email', '=', 'test@example.com')
             ->first();
-        $this->assertNotNull($createdUser);
+        self::assertNotNull($createdUser);
 
         Notification::assertSentTo($createdUser, AccountCreatedNotification::class, static function ($notification) use ($adminUser, $createdUser) {
             $emailContent = $notification->toMail($createdUser)->render();

@@ -62,6 +62,9 @@ class FormField extends Model
         return $this->belongsTo(BookingOption::class);
     }
 
+    /**
+     * @return HasMany<FormFieldValue, $this>
+     */
     public function formFieldValues(): HasMany
     {
         return $this->hasMany(FormFieldValue::class);

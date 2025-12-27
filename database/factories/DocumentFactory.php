@@ -21,6 +21,7 @@ class DocumentFactory extends Factory
         /** @var FileType $fileType */
         $fileType = $this->faker->randomElement(FileType::cases());
         $baseName = $this->faker->bothify('????####');
+        /** @var string $extension */
         $extension = $this->faker->randomElement($fileType->getExtensions());
 
         return [

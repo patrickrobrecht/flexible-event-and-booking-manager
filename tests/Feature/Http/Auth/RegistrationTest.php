@@ -45,7 +45,7 @@ class RegistrationTest extends TestCase
         $registeredUser = User::query()
             ->where('email', $data['email'])
             ->first();
-        $this->assertNotNull($registeredUser);
+        self::assertNotNull($registeredUser);
     }
 
     public function testNewUserCannotRegisterWithoutAcceptingTheTerms(): void

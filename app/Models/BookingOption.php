@@ -66,6 +66,9 @@ class BookingOption extends Model
         'confirmation_text',
     ];
 
+    /**
+     * @return HasMany<Booking, $this>
+     */
     public function bookings(): HasMany
     {
         return $this->hasMany(Booking::class, 'booking_option_id');

@@ -13,9 +13,14 @@ class FormFieldFactory extends Factory
 {
     public function definition(): array
     {
-        return $this->definitionForType($this->faker->randomElement(FormElementType::casesForFields()));
+        /** @var FormElementType $type */
+        $type = $this->faker->randomElement(FormElementType::casesForFields());
+        return $this->definitionForType($type);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function definitionForType(FormElementType $type): array
     {
         $allowedValues = match ($type) {
@@ -49,6 +54,9 @@ class FormFieldFactory extends Factory
         ];
     }
 
+    /**
+     * @return array<int, string>
+     */
     private function arrayOfText(int $size): array
     {
         return array_map(fn () => $this->faker->text(20), range(1, $size));
@@ -57,9 +65,9 @@ class FormFieldFactory extends Factory
     public function forColumn(string $column): static
     {
         return $this->state(fn (array $attributes) => [
-            ...$this->definitionForType('column' === 'email' ? FormElementType::Email : FormElementType::Text),
+            ...$this->definitionForType($column === 'email' ? FormElementType::Email : FormElementType::Text),
             'column' => $column,
-            'required' => in_array($column, ['first_name', 'last_name', 'email']) ? true : $attributes['required'],
+            'required' => in_array($column, ['first_name', 'last_name', 'email'], true) ? true : $attributes['required'],
         ]);
     }
 

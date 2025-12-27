@@ -18,7 +18,7 @@ class AcceptLanguageMiddlewareTest extends TestCase
         $request = Request::create('/test', server: ['HTTP_ACCEPT_LANGUAGE' => $acceptLanguageHeader]);
         (new AcceptLanguageMiddleware())->handle($request, fn () => response()->json(['message' => 'Success']));
 
-        $this->assertEquals($preferredLocale, App::getLocale());
+        self::assertEquals($preferredLocale, App::getLocale());
     }
 
     /**

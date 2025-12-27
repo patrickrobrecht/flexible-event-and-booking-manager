@@ -22,9 +22,10 @@ class EventFactory extends Factory
 
     public function definition(): array
     {
+        /** @var string $name */
         $name = fake()->unique()->words(3, true);
         $startedAt = (new Carbon(fake()->dateTimeBetween('now', '+5 years')))
-            ->setMinutes(fake()->randomNumber(1, 3) * 15);
+            ->setMinutes(fake()->numberBetween(0, 3) * 15);
 
         return [
             'name' => $name,

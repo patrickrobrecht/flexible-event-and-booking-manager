@@ -20,7 +20,7 @@ class JsonApiMiddlewareTest extends TestCase
         $request = Request::create('/test');
         $response = (new JsonApiMiddleware())->handle($request, fn () => response()->json(['message' => 'Success']));
 
-        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+        self::assertEquals(Response::HTTP_OK, $response->getStatusCode());
     }
 
     #[DataProvider('validAcceptHeaders')]
@@ -29,7 +29,7 @@ class JsonApiMiddlewareTest extends TestCase
         $request = Request::create('/test', server: ['HTTP_ACCEPT' => $acceptHeader]);
         $response = (new JsonApiMiddleware())->handle($request, fn () => response()->json(['message' => 'Success']));
 
-        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+        self::assertEquals(Response::HTTP_OK, $response->getStatusCode());
     }
 
     /**

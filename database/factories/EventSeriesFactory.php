@@ -19,6 +19,7 @@ class EventSeriesFactory extends Factory
 
     public function definition(): array
     {
+        /** @var string $name */
         $name = fake()->unique()->words(3, true);
 
         return [

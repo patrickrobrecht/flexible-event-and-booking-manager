@@ -20,8 +20,8 @@ class CacheCommandsTest extends TestCase
         Artisan::call('config:clear');
 
         $result = Artisan::call('config:cache');
-        $this->assertEquals(Command::SUCCESS, $result);
-        $this->assertFileExists(base_path('bootstrap/cache/config.php'));
+        self::assertEquals(Command::SUCCESS, $result);
+        self::assertFileExists(base_path('bootstrap/cache/config.php'));
 
         Artisan::call('config:clear');
     }
@@ -32,7 +32,7 @@ class CacheCommandsTest extends TestCase
 
         event(new CommandFinished('config:cache', new ArrayInput([]), new NullOutput(), 0));
 
-        $this->assertNotNull(Cache::get('open-api-spec'));
+        self::assertNotNull(Cache::get('open-api-spec'));
     }
 
     public function testEventCache(): void
@@ -40,8 +40,8 @@ class CacheCommandsTest extends TestCase
         Artisan::call('event:clear');
 
         $result = Artisan::call('event:cache');
-        $this->assertEquals(Command::SUCCESS, $result);
-        $this->assertFileExists(base_path('bootstrap/cache/events.php'));
+        self::assertEquals(Command::SUCCESS, $result);
+        self::assertFileExists(base_path('bootstrap/cache/events.php'));
 
         Artisan::call('event:clear');
     }
@@ -51,8 +51,8 @@ class CacheCommandsTest extends TestCase
         Artisan::call('route:clear');
 
         $result = Artisan::call('route:cache');
-        $this->assertEquals(Command::SUCCESS, $result);
-        $this->assertFileExists(base_path('bootstrap/cache/routes-v7.php'));
+        self::assertEquals(Command::SUCCESS, $result);
+        self::assertFileExists(base_path('bootstrap/cache/routes-v7.php'));
 
         Artisan::call('route:clear');
     }
@@ -62,10 +62,10 @@ class CacheCommandsTest extends TestCase
         Artisan::call('view:clear');
 
         $result = Artisan::call('view:cache');
-        $this->assertEquals(Command::SUCCESS, $result);
+        self::assertEquals(Command::SUCCESS, $result);
         $cachedViewsPath = storage_path('framework/views');
-        $this->assertDirectoryExists($cachedViewsPath);
-        $this->assertGreaterThan(2, count(scandir($cachedViewsPath)), 'The view cache directory is empty.');
+        self::assertDirectoryExists($cachedViewsPath);
+        self::assertGreaterThan(2, count(scandir($cachedViewsPath)), 'The view cache directory is empty.');
 
         Artisan::call('view:clear');
     }

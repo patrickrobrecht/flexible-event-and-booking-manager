@@ -32,7 +32,7 @@ class DashboardControllerTest extends TestCase
         $user = $this->actingAsAnyUser();
         $eventsCount = fake()->numberBetween(1, 5);
         $events = $this->createEvents($user, $eventsCount);
-        $this->assertCount($eventsCount, $user->bookings);
+        self::assertCount($eventsCount, $user->bookings);
 
         $response = $this->get('/')
             ->assertOk()

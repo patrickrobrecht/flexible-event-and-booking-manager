@@ -55,7 +55,7 @@ class GroupControllerTest extends TestCase
         self::createGroups($parentEvent, 3);
 
         $childEvent = self::createChildEvent(Visibility::Private, $parentEvent);
-        $this->assertTrue($parentEvent->is($childEvent->parentEvent));
+        self::assertTrue($parentEvent->is($childEvent->parentEvent));
         self::createGroups($childEvent, 4);
 
         $this->assertUserCanGetOnlyWithAbility("/events/{$parentEvent->slug}/groups?output=export", Ability::ExportGroupsOfEvent);
@@ -73,8 +73,8 @@ class GroupControllerTest extends TestCase
     {
         $event = self::createEventWithBookingOptions(Visibility::Private);
 
-        $event->bookings->each(fn (Booking $booking) => $this->assertNull($booking->getGroup($event)));
-        $this->assertCount(0, $event->groups);
+        $event->bookings->each(fn (Booking $booking) => self::assertNull($booking->getGroup($event)));
+        self::assertCount(0, $event->groups);
 
         $this->actingAsUserWithAbility(Ability::ManageGroupsOfEvent);
         $formData = [
@@ -88,8 +88,8 @@ class GroupControllerTest extends TestCase
 
         $event->refresh()
             ->load('bookings.groups');
-        $this->assertCount(4, $event->groups);
-        $event->bookings->each(fn (Booking $booking) => $this->assertNotNull($booking->getGroup($event)));
+        self::assertCount(4, $event->groups);
+        $event->bookings->each(fn (Booking $booking) => self::assertNotNull($booking->getGroup($event)));
     }
 
     /**
@@ -105,13 +105,13 @@ class GroupControllerTest extends TestCase
     {
         $event = self::createEventWithBookingOptions(Visibility::Private);
         self::createGroups($event, 3);
-        $this->assertCount(3, $event->groups);
+        self::assertCount(3, $event->groups);
 
         $this->actingAsUserWithAbility(Ability::ManageGroupsOfEvent);
         $this->delete("/events/{$event->slug}/groups", $dataProvider($event))->assertRedirect();
 
         $event->refresh();
-        $this->assertCount($countAfterRequest, $event->groups);
+        self::assertCount($countAfterRequest, $event->groups);
     }
 
     /**

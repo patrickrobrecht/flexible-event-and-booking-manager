@@ -63,7 +63,7 @@ class BookingControllerTest extends TestCase
         $users->each(fn (User $user) => $response->assertSeeText($user->name));
 
         // Cleanup generated PDFs.
-        $this->assertTrue(Storage::disk('local')->deleteDirectory($bookingOption->getFilePath()));
+        self::assertTrue(Storage::disk('local')->deleteDirectory($bookingOption->getFilePath()));
     }
 
     public function testUserCanExportBookingsOfEventOnlyWithCorrectAbility(): void
@@ -99,7 +99,7 @@ class BookingControllerTest extends TestCase
         }
 
         // Cleanup generated files.
-        $this->assertTrue(Storage::disk('local')->deleteDirectory($bookingOption->getFilePath()));
+        self::assertTrue(Storage::disk('local')->deleteDirectory($bookingOption->getFilePath()));
     }
 
     public function testUserCanViewSingleBookingOnlyWithCorrectAbility(): void
@@ -114,7 +114,7 @@ class BookingControllerTest extends TestCase
             }));
 
         // Cleanup generated PDFs.
-        $this->assertTrue(Storage::disk('local')->deleteDirectory($bookingOption->getFilePath()));
+        self::assertTrue(Storage::disk('local')->deleteDirectory($bookingOption->getFilePath()));
     }
 
     public function testUserCanViewUploadedFileForBookingOnlyWithCorrectAbility(): void
@@ -133,7 +133,7 @@ class BookingControllerTest extends TestCase
         }
 
         // Cleanup generated files.
-        $this->assertTrue(Storage::disk('local')->deleteDirectory($bookingOption->getFilePath()));
+        self::assertTrue(Storage::disk('local')->deleteDirectory($bookingOption->getFilePath()));
     }
 
     public function testUserCanViewPaymentsOnlyWithCorrectAbility(): void
@@ -165,17 +165,17 @@ class BookingControllerTest extends TestCase
         Notification::fake();
 
         $bookingOption = self::createBookingOptionForEvent(Visibility::Public);
-        $this->assertCount(0, $user->bookings);
-        $this->assertCount(0, $bookingOption->bookings);
+        self::assertCount(0, $user->bookings);
+        self::assertCount(0, $bookingOption->bookings);
         $booking = Booking::factory()
             ->withoutDateOfBirth()
             ->makeOne();
         $this->post("events/{$bookingOption->event->slug}/{$bookingOption->slug}/bookings", $booking->toArray())
             ->assertSessionDoesntHaveErrors()
             ->assertRedirect();
-        $this->assertCount(1, $user->refresh()->bookings);
-        $this->assertCount(1, $bookingOption->refresh()->bookings);
-        $this->assertCount(1, $bookingOption->event->bookings);
+        self::assertCount(1, $user->refresh()->bookings);
+        self::assertCount(1, $bookingOption->refresh()->bookings);
+        self::assertCount(1, $bookingOption->event->bookings);
 
         Notification::assertSentTo(
             new AnonymousNotifiable(),
@@ -214,8 +214,8 @@ class BookingControllerTest extends TestCase
         $this->post("events/{$bookingOption->event->slug}/{$bookingOption->slug}/bookings", $data)
             ->assertSessionDoesntHaveErrors()
             ->assertRedirect();
-        $this->assertCount(1, $bookingOption->refresh()->bookings);
-        $this->assertCount(1, $bookingOption->event->bookings);
+        self::assertCount(1, $bookingOption->refresh()->bookings);
+        self::assertCount(1, $bookingOption->event->bookings);
 
         Notification::assertSentTo(
             new AnonymousNotifiable(),
@@ -283,8 +283,8 @@ class BookingControllerTest extends TestCase
 
         $editRoute = "/bookings/{$booking->id}/edit";
         $data = $this->generateRandomBookingData($booking->bookingOption);
-        $this->assertUserCanPutOnlyWithAbility("/bookings/{$booking->id}", $data, Ability::EditBookingsOfEvent, $editRoute, $editRoute);
-        $this->assertEquals($data['first_name'], $booking->refresh()->first_name);
+        self::assertUserCanPutOnlyWithAbility("/bookings/{$booking->id}", $data, Ability::EditBookingsOfEvent, $editRoute, $editRoute);
+        self::assertEquals($data['first_name'], $booking->refresh()->first_name);
     }
 
     public function testUserCanUpdatePaymentsOnlyWithCorrectAbility(): void
@@ -300,8 +300,10 @@ class BookingControllerTest extends TestCase
         ];
         $this->assertUserCanPutOnlyWithAbility($route, $data, Ability::EditPaymentStatus, $route, $route);
 
-        $this->assertEquals($bookings->count(), $bookingOption->bookings()->whereNotNull('paid_at')->count());
-        $this->assertEquals($bookings2->count(), $bookingOption->bookings()->whereNull('paid_at')->count());
+        /** @phpstan-ignore-next-line staticMethod.dynamicCall */
+        self::assertEquals($bookings->count(), $bookingOption->bookings()->whereNotNull('paid_at')->count());
+        /** @phpstan-ignore-next-line staticMethod.dynamicCall */
+        self::assertEquals($bookings2->count(), $bookingOption->bookings()->whereNull('paid_at')->count());
     }
 
     public function testUserCannotUpdatePaymentOfPaidBookings(): void
@@ -330,18 +332,18 @@ class BookingControllerTest extends TestCase
         $bookingOption = self::createBookingOptionForEvent();
         self::createBookingsForUser($bookingOption, User::factory()->create())
             ->each(function (Booking $booking) use ($user) {
-                $this->assertUserCan($user, 'delete', $booking);
-                $this->assertUserCannot($user, 'restore', $booking);
+                self::assertUserCan($user, 'delete', $booking);
+                self::assertUserCannot($user, 'restore', $booking);
 
                 $this->delete("bookings/{$booking->id}")->assertRedirect();
-                $this->assertSoftDeleted($booking);
+                self::assertSoftDeleted($booking);
 
                 $booking->refresh();
-                $this->assertUserCannot($user, 'delete', $booking);
-                $this->assertUserCan($user, 'restore', $booking);
+                self::assertUserCannot($user, 'delete', $booking);
+                self::assertUserCan($user, 'restore', $booking);
 
                 $this->patch("bookings/{$booking->id}/restore")->assertRedirect();
-                $this->assertNotSoftDeleted($booking);
+                self::assertNotSoftDeleted($booking);
             });
     }
 

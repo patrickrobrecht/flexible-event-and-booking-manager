@@ -97,7 +97,7 @@ class AuthenticationTest extends TestCase
         }
 
         // Check that the rate limiter is about to throttle.
-        $this->assertTrue(RateLimiter::tooManyAttempts($key, $maxAttempts));
+        self::assertTrue(RateLimiter::tooManyAttempts($key, $maxAttempts));
 
         // Simulate the throttled login attempt.
         $this->post('login', $wrongCredentials)

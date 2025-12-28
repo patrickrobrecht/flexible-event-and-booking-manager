@@ -125,7 +125,7 @@ class ManageGroups extends Component
     public function deleteGroup(int $groupId): void
     {
         $group = $this->getGroupById($groupId);
-        if ($group) {
+        if ($group !== null) {
             $this->authorize('forceDelete', $group);
             $group->bookings()->sync([]); // Required for soft-deleted bookings.
             $this->groups->forget($groupId);
@@ -178,10 +178,10 @@ class ManageGroups extends Component
     private function getDisplayOptions(): Options
     {
         $conditionalDisplayOptions = [];
-        if (Auth::user()?->can('viewAnyPaymentStatus', Booking::class)) {
+        if (Auth::user()?->can('viewAnyPaymentStatus', Booking::class) ?? false) {
             $conditionalDisplayOptions['paid_at'] = __('Payment status');
         }
-        if (Auth::user()?->can('updateAnyBookingComment', Booking::class)) {
+        if (Auth::user()?->can('updateAnyBookingComment', Booking::class) ?? false) {
             $conditionalDisplayOptions['comment'] = __('Comments');
         }
 

@@ -102,14 +102,14 @@ class ManageGroupsTest extends TestCase
         $event = self::createEventWithBookings();
         $this->actingAsUserWithAbility(Ability::ManageGroupsOfEvent);
 
-        $this->assertCount(0, $event->groups);
+        self::assertCount(0, $event->groups);
 
         Livewire::test(ManageGroups::class, ['event' => $event])
             ->set('form.name', 'Test Group')
             ->set('form.description', 'Test Description')
             ->call('createGroup');
 
-        $this->assertCount(1, $event->refresh()->groups);
+        self::assertCount(1, $event->refresh()->groups);
     }
 
     public function testGroupDeleted(): void
@@ -125,7 +125,7 @@ class ManageGroupsTest extends TestCase
                     ->count(8)
             )
             ->create();
-        $this->assertCount(8, $event->groups);
+        self::assertCount(8, $event->groups);
 
         $this->actingAsUserWithAbility(Ability::ManageGroupsOfEvent);
 
@@ -137,7 +137,7 @@ class ManageGroupsTest extends TestCase
             ]))
             ->assertDontSeeHtml('<h2 class="card-title">' . $group->name);
 
-        $this->assertCount(7, $event->refresh()->groups);
+        self::assertCount(7, $event->refresh()->groups);
     }
 
     public function testBookingMoved(): void
@@ -165,7 +165,7 @@ class ManageGroupsTest extends TestCase
         /** @var Booking $booking */
         $booking = $event->bookings->random();
         $booking->groups()->attach($group);
-        $this->assertEquals($group->id, $booking->getGroup($event)?->id);
+        self::assertEquals($group->id, $booking->getGroup($event)?->id);
 
         $newGroup = $event->groups->except([$group->id])->random();
 
@@ -174,6 +174,6 @@ class ManageGroupsTest extends TestCase
             ->call('moveBooking', $booking->id, $newGroup->id);
 
         $booking->refresh();
-        $this->assertEquals($newGroup->id, $booking->getGroup($event)?->id);
+        self::assertEquals($newGroup->id, $booking->getGroup($event)?->id);
     }
 }

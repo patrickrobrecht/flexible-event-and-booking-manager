@@ -90,7 +90,7 @@ class StorageLocationController extends Controller
     {
         $this->authorize('forceDelete', $storageLocation);
 
-        if ($storageLocation->delete()) {
+        if ($storageLocation->delete() === true) {
             Session::flash('success', __(':name deleted successfully.', ['name' => $storageLocation->name]));
             return redirect(route('storage-locations.index'));
         }

@@ -150,10 +150,10 @@ class Event extends Model
         };
     }
 
-    public function deleteWithGroups(): ?bool
+    public function deleteWithGroups(): bool
     {
         $this->groups()->delete();
-        return $this->delete();
+        return $this->delete() === true;
     }
 
     /**

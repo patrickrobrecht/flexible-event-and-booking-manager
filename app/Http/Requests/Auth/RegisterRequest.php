@@ -14,6 +14,8 @@ class RegisterRequest extends FormRequest
      */
     public function rules(): array
     {
+        $hasTermsAndConditions = config('app.urls.terms_and_conditions', '') !== '';
+
         return [
             'start_time' => [
                 'required',
@@ -60,7 +62,7 @@ class RegisterRequest extends FormRequest
                 Password::default(),
             ],
             'terms_and_conditions' => [
-                config('app.urls.terms_and_conditions') ? 'accepted' : 'nullable',
+                $hasTermsAndConditions ? 'accepted' : 'nullable',
             ],
         ];
     }

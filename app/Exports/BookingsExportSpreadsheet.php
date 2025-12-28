@@ -89,7 +89,7 @@ class BookingsExportSpreadsheet extends Spreadsheet
                 ? sprintf('%s %s', $booking->bookedByUser->first_name, $booking->bookedByUser->last_name)
                 : (string) __('Guest'),
             $booking->price ?? 0.00,
-            $booking->paid_at
+            $booking->paid_at !== null
                 ? $booking->paid_at->format('d.m.Y H:i')
                 : '',
             $booking->getGroup($this->event)->name ?? (string) __('none'),

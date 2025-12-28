@@ -31,7 +31,7 @@ class EditGroupTest extends TestCase
     public function testGroupUpdated(): void
     {
         $group = $this->fakeGroupWithEventAndSiblingGroup();
-        $this->assertNull($group->description);
+        self::assertNull($group->description);
 
         $this->actingAsUserWithAbility(Ability::ManageGroupsOfEvent);
 
@@ -39,14 +39,14 @@ class EditGroupTest extends TestCase
             ->set('form.description', 'Test Description');
 
         $group->refresh();
-        $this->assertEquals('Test Description', $group->description);
+        self::assertEquals('Test Description', $group->description);
 
         Livewire::test(EditGroup::class, ['group' => $group])
             ->set('form.name', 'Another Name')
             ->set('form.description');
         $group->refresh();
-        $this->assertEquals('Another Name', $group->name);
-        $this->assertNull($group->description);
+        self::assertEquals('Another Name', $group->name);
+        self::assertNull($group->description);
     }
 
     public function testGroupValidated(): void

@@ -49,7 +49,7 @@ class SearchUsersTest extends TestCase
 
         $component = Livewire::test(SearchUsers::class, ['selectedUsers' => Collection::empty()])
             ->call('addUser', $user->id);
-        $this->assertEquals($component->get('selectedUsers')->pluck('id')->toArray(), [$user->id]);
+        self::assertEquals($component->get('selectedUsers')->pluck('id')->toArray(), [$user->id]);
     }
 
     public function testNonExistingUsersCannotBeSelected(): void

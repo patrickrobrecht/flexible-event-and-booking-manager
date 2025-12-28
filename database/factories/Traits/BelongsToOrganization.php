@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @mixin Factory
+ *
+ * @phpstan-ignore-next-line missingType.generics
  */
 trait BelongsToOrganization
 {

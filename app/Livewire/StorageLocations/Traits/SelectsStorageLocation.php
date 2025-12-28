@@ -41,10 +41,10 @@ trait SelectsStorageLocation
 
     public function updateSelectedPathAndStorageLocation(int $index, ?string $storageLocationId): void
     {
-        if ($storageLocationId) {
+        if ($storageLocationId !== null) {
             $newStorageLocation = StorageLocation::query()->find((int) $storageLocationId);
 
-            if ($newStorageLocation) {
+            if ($newStorageLocation !== null) {
                 $this->selectedPath[$index] = $newStorageLocation;
                 array_splice($this->selectedPath, $index + 1);
             }

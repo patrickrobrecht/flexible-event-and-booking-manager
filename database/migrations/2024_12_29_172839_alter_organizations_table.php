@@ -25,9 +25,9 @@ return new class extends Migration
         Organization::query()
             ->update([
                 'slug' => DB::raw('id'),
-                'bank_account_holder' => env('BANK_ACCOUNT_HOLDER'),
-                'iban' => env('BANK_ACCOUNT_IBAN'),
-                'bank_name' => env('BANK_ACCOUNT_BANK_NAME'),
+                'bank_account_holder' => env('BANK_ACCOUNT_HOLDER'), // @phpstan-ignore larastan.noEnvCallsOutsideOfConfig
+                'iban' => env('BANK_ACCOUNT_IBAN'), // @phpstan-ignore larastan.noEnvCallsOutsideOfConfig
+                'bank_name' => env('BANK_ACCOUNT_BANK_NAME'), // @phpstan-ignore larastan.noEnvCallsOutsideOfConfig
             ]);
 
         Schema::table('organizations', static function (Blueprint $table) {

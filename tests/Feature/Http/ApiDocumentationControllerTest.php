@@ -41,7 +41,7 @@ class ApiDocumentationControllerTest extends TestCase
         Cache::forget('open-api-spec');
         $this->assertUserCanGetWithAbility('api-docs/spec', Ability::ViewApiDocumentation);
         // .yaml file contents is cached if and only if debugging is not enabled.
-        $this->assertEquals(!$isDebugEnabled, Cache::has('open-api-spec'));
+        self::assertEquals(!$isDebugEnabled, Cache::has('open-api-spec'));
     }
 
     /**

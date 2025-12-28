@@ -8,6 +8,7 @@ use App\Models\Location;
 use App\Models\Organization;
 use App\Models\User;
 use App\Models\UserRole;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -26,18 +27,25 @@ class DatabaseSeeder extends Seeder
                 ->create();
         }
 
+        /** @var Collection<int, Location> $locations */
         $locations = Location::factory(5)->create();
+        /** @var Location $randomLocation */
+        $randomLocation = fake()->randomElement($locations);
 
+        /** @var Collection<int, Organization> $organizations */
         $organizations = Organization::factory(5)
-            ->for(fake()->randomElement($locations))
+            ->for($randomLocation)
             ->create();
+        /** @var Organization $randomOrganization */
+        $randomOrganization = fake()->randomElement($organizations);
 
         Event::factory(5)
-            ->for(fake()->randomElement($locations))
-            ->hasAttached(fake()->randomElements($organizations, fake()->numberBetween(1, 3)))
+            ->for($randomLocation)
+            ->for($randomOrganization)
             ->create();
 
         EventSeries::factory(3)
+            ->for($randomOrganization)
             ->create();
     }
 }

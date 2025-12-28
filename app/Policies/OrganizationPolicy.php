@@ -104,6 +104,15 @@ class OrganizationPolicy
             );
         }
 
+        $materialsCount = $organization->materials_count ?? $organization->materials()->count();
+        if ($materialsCount >= 1) {
+            return $this->deny(
+                formatTransChoice(':name cannot be deleted because the organization has :count materials.', $materialsCount, [
+                    'name' => $organization->name,
+                ])
+            );
+        }
+
         return $this->requireAbility($user, Ability::DestroyOrganizations);
     }
 }

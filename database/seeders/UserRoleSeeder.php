@@ -19,11 +19,14 @@ class UserRoleSeeder extends Seeder
         ]);
     }
 
+    /**
+     * @param Ability[] $abilities
+     */
     private function createUserRole(string $name, array $abilities): void
     {
         $userRole = new UserRole();
         $userRole->name = $name;
-        $userRole->abilities = $abilities;
+        $userRole->abilities = Ability::values($abilities);
         $userRole->save();
     }
 }

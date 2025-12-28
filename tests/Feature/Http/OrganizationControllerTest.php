@@ -196,6 +196,7 @@ class OrganizationControllerTest extends TestCase
             [fn () => self::createEvent()->organization, 'kann nicht gelöscht werden, weil die Organisation von 1 Veranstaltung referenziert wird.'],
             [fn () => self::createEventSeries(eventsCount: 3)->organization, 'kann nicht gelöscht werden, weil die Organisation von 3 Veranstaltungen referenziert wird.'],
             [fn () => self::createEventSeries(eventsCount: 0)->organization, 'kann nicht gelöscht werden, weil die Organisation von 1 Veranstaltungsreihe referenziert wird'],
+            [fn () => self::createMaterial()->organization, 'kann nicht gelöscht werden, weil die Organisation 1 Material hat'],
         ];
     }
 

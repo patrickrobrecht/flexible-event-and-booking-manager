@@ -62,7 +62,7 @@ class MaterialsExportSpreadsheetTest extends TestCase
 
     private function assertHeaderRow(Worksheet $sheet): void
     {
-        $this->assertSame(__('Materials'), $sheet->getCell('A1')->getValue());
+        self::assertSame(__('Materials'), $sheet->getCell('A1')->getValue());
         $headers = [
             'A3' => __('Name'),
             'B3' => __('Description'),
@@ -73,22 +73,22 @@ class MaterialsExportSpreadsheetTest extends TestCase
             'G3' => __('Remarks'),
         ];
         foreach ($headers as $cell => $expected) {
-            $this->assertSame($expected, $sheet->getCell($cell)->getValue());
+            self::assertSame($expected, $sheet->getCell($cell)->getValue());
         }
     }
 
     public function assertMaterialInRow(Worksheet $sheet, Material $material, int $row): void
     {
-        $this->assertSame($material->name, $sheet->getCell('A' . $row)->getValue());
-        $this->assertSame($material->description, $sheet->getCell('B4')->getValue());
-        $this->assertSame($material->organization->name, $sheet->getCell('C4')->getValue());
+        self::assertSame($material->name, $sheet->getCell('A' . $row)->getValue());
+        self::assertSame($material->description, $sheet->getCell('B4')->getValue());
+        self::assertSame($material->organization->name, $sheet->getCell('C4')->getValue());
     }
 
     public function assertStorageLocationInRow(Worksheet $sheet, StorageLocation $location, int $row): void
     {
-        $this->assertSame($location->name, $sheet->getCell('D' . $row)->getValue());
-        $this->assertSame(__('checked'), $sheet->getCell('E' . $row)->getValue());
-        $this->assertSame($row + 6, $sheet->getCell('F' . $row)->getValue());
-        $this->assertSame('Remark ' . ($row - 3), $sheet->getCell('G' . $row)->getValue());
+        self::assertSame($location->name, $sheet->getCell('D' . $row)->getValue());
+        self::assertSame(__('checked'), $sheet->getCell('E' . $row)->getValue());
+        self::assertSame($row + 6, $sheet->getCell('F' . $row)->getValue());
+        self::assertSame('Remark ' . ($row - 3), $sheet->getCell('G' . $row)->getValue());
     }
 }

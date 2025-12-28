@@ -21,7 +21,7 @@ class DocumentReviewFactory extends Factory
     public function withApprovalStatus(): static
     {
         return $this->state(fn (array $attributes) => [
-            'approval_status' => $this->faker->randomElement(ApprovalStatus::cases())->value,
+            'approval_status' => $this->faker->randomElement(ApprovalStatus::cases()),
         ]);
     }
 }

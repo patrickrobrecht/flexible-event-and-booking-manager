@@ -32,7 +32,7 @@ class MaterialFactory extends Factory
             StorageLocation::factory()
                 ->count($count ?? $this->faker->numberBetween(0, 5)),
             [
-                'material_status' => $this->faker->randomElement(MaterialStatus::cases())->value,
+                'material_status' => $this->faker->randomElement(MaterialStatus::cases()),
                 'stock' => $this->faker->optional()->numberBetween(1, 100),
                 'remarks' => $this->faker->optional()->text(),
             ]

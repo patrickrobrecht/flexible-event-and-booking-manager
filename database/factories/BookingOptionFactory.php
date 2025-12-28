@@ -15,7 +15,7 @@ class BookingOptionFactory extends Factory
 {
     public function definition(): array
     {
-        $name = __('Booking option') . ' #' . Str::padLeft($this->faker->unique()->randomNumber(), 8, '0');
+        $name = __('Booking option') . ' #' . $this->faker->unique()->numerify('###########');
 
         return [
             'name' => $name,
@@ -32,6 +32,7 @@ class BookingOptionFactory extends Factory
     public function availabilityStartingInFuture(): static
     {
         return $this->state(function (array $attributes) {
+            /** @var Carbon $startDate */
             $startDate = Carbon::create($this->faker->dateTimeBetween('+1 days', '+5 days'));
             return [
                 'available_from' => $startDate,
@@ -43,6 +44,7 @@ class BookingOptionFactory extends Factory
     public function availabilityEndedInPast(): static
     {
         return $this->state(function (array $attributes) {
+            /** @var Carbon $endDate */
             $endDate = Carbon::create($this->faker->dateTimeBetween('-5 days', '-1 days'));
             return [
                 'available_from' => $endDate->subDays($this->faker->numberBetween(3, 31)),
@@ -58,6 +60,9 @@ class BookingOptionFactory extends Factory
         ]);
     }
 
+    /**
+     * @param BookingRestriction|BookingRestriction[] $bookingRestriction
+     */
     public function restriction(array|BookingRestriction $bookingRestriction): static
     {
         return $this->state(fn (array $attributes) => [

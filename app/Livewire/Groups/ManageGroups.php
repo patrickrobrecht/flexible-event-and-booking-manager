@@ -186,6 +186,7 @@ class ManageGroups extends Component
         }
 
         return Options::fromArray([
+            'id' => __('Booking no.'),
             'booked_at' => __('Booking date'),
             ...$conditionalDisplayOptions,
             'email' => __('E-mail'),

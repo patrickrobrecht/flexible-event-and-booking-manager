@@ -60,6 +60,11 @@ trait HasAddress
         return $this->scopeIncludeColumns($query, self::$addressFields, true, ...$searchTerms);
     }
 
+    public function scopePostalCode(Builder $query, string ...$postalCodes): Builder
+    {
+        return $this->scopeSearch($query, 'postal_code', false, ...$postalCodes);
+    }
+
     public function hasAnyFilledAddressField(): bool
     {
         return $this->street !== null

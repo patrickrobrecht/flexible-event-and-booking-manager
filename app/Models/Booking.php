@@ -146,6 +146,11 @@ class Booking extends Model
         );
     }
 
+    public function scopeName(Builder $query, string ...$searchTerms): Builder
+    {
+        return $this->scopeIncludeColumns($query, ['first_name', 'last_name'], true, ...$searchTerms);
+    }
+
     public function scopePaymentStatus(Builder $query, int|PaymentStatus $paymentStatus): Builder
     {
         $payment = is_int($paymentStatus)
@@ -157,11 +162,6 @@ class Booking extends Model
             PaymentStatus::NotPaid->value => $query->whereNull('paid_at')->whereNotNull('price'),
             default => $query,
         };
-    }
-
-    public function scopeSearchAll(Builder $query, string ...$searchTerms): Builder
-    {
-        return $this->scopeIncludeColumns($query, ['first_name', 'last_name'], true, ...$searchTerms);
     }
 
     /**
@@ -341,8 +341,10 @@ class Booking extends Model
     public static function allowedFilters(): array
     {
         return [
-            /** @see self::scopeSearchAll() */
-            AllowedFilter::scope('search', 'searchAll'),
+            /** @see self::scopeName() */
+            AllowedFilter::scope('name'),
+            /** @see self::scopePostalCode() */
+            AllowedFilter::scope('postal_code'),
             /** @see self::scopeGroup() */
             AllowedFilter::scope('group_id', 'group')
                 ->ignore(FilterValue::All->value),

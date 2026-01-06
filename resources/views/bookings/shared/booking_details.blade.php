@@ -7,6 +7,9 @@
 <div class="row">
     <div class="col-12 col-lg-6 vstack mb-3">
         <div>
+            <x-bs::badge variant="light"><i class="fa fw-fw fa-hashtag"></i> {{ $booking->id }}</x-bs::badge>
+        </div>
+        <div>
             <i class="fa fa-fw fa-clock" title="{{ __('Booking date') }}"></i>
             @isset($booking->booked_at)
                 {{ formatDateTime($booking->booked_at) }}

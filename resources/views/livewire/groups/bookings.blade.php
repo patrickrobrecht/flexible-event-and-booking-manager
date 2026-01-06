@@ -35,10 +35,13 @@
                                     ({{ $group->name }})
                                 @endisset
                             @endisset
+                            @if(in_array('id', $showBookingData, true))
+                                <x-bs::badge variant="light"><i class="fa fw-fw fa-hashtag"></i> {{ $booking->id }}</x-bs::badge>
+                            @endif
                         </span>
-                        @isset($booking->age)
+                        @isset($booking->date_of_birth, $booking->age)
                             <span>
-                                <x-bs::badge>{{ formatTransChoiceDecimal(':count years', $booking->age, 1) }}</x-bs::badge>
+                                <x-bs::badge title="{{ formatDate($booking->date_of_birth) }}">{{ formatTransChoiceDecimal(':count years', $booking->age, 1) }}</x-bs::badge>
                             </span>
                         @endisset
                     </div>

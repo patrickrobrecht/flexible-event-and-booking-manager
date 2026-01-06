@@ -70,6 +70,8 @@
                             if (isset($group)) {
                                 $optionName = sprintf('%s (%s)', $optionName, $group->name);
                             }
+
+                            $optionName .= sprintf('<span class="badge text-bg-light"><i class="fa fw-fw fa-hashtag"></i> %s</span>', $booking->id);
                         @endphp
                         <x-bs::list.item>
                             <div>
@@ -150,6 +152,7 @@
                                             @isset($group)
                                                 ({{ $group->name }})
                                             @endisset
+                                            <x-bs::badge variant="light"><i class="fa fw-fw fa-hashtag"></i> {{ $booking->id }}</x-bs::badge>
                                             @can('updateBookingComment', $booking)
                                                 @isset($booking->comment)
                                                     <div class="small">

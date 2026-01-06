@@ -45,8 +45,12 @@
     <x-form.filter>
         <div class="row">
             <div class="col-12 col-lg-3">
-                <x-bs::form.field id="search" name="filter[search]" type="text"
-                                  :from-query="true">{{ __('Search term') }}</x-bs::form.field>
+                <x-bs::form.field id="name" name="filter[name]" type="text"
+                                  :from-query="true">{{ __('Name') }}</x-bs::form.field>
+            </div>
+            <div class="col-12 col-lg-3">
+                <x-bs::form.field id="postal_code" name="filter[postal_code]" type="text"
+                                  :from-query="true">{{ __('Postal code') }}</x-bs::form.field>
             </div>
             @can('viewAnyPaymentStatus', \App\Models\Booking::class)
                 <div class="col-12 col-lg-3">
@@ -113,7 +117,9 @@
                                 {{ $booking->first_name }} <strong>{{ $booking->last_name }}</strong>
                             @endcan
                         </h2>
-                        <div class="card-subtitle">{{ $bookingOption->name }}</div>
+                        <div class="card-subtitle">
+                            <x-bs::badge variant="light"><i class="fa fw-fw fa-hashtag"></i> {{ $booking->id }}</x-bs::badge>
+                        </div>
                     </div>
                     <x-bs::list :flush="true">
                         @if($hasGroups)
@@ -169,7 +175,12 @@
                         @isset($booking->date_of_birth)
                             <x-bs::list.item>
                                 <span class="text-nowrap"><i class="fa fa-fw fa-cake-candles" title="{{ __('Date of birth') }}"></i></span>
-                                <span>{{ formatDate($booking->date_of_birth) }}</span>
+                                <span>
+                                    <span class="me-2">{{ formatDate($booking->date_of_birth) }}</span>
+                                    @isset($booking->age)
+                                        <x-bs::badge>{{ formatTransChoiceDecimal(':count years', $booking->age, 1) }}</x-bs::badge>
+                                    @endisset
+                                </span>
                             </x-bs::list.item>
                         @endisset
                         <x-bs::list.item>

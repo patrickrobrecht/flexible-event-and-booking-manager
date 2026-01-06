@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\BookingRestriction;
+use App\Enums\BookingStatus;
 use App\Enums\FormElementType;
 use App\Models\Traits\HasNameAndDescription;
 use App\Models\Traits\HasSlugForRouting;
@@ -28,7 +29,9 @@ use Spatie\Sluggable\SlugOptions;
  * @property mixed[] $price_conditions
  * @property ?int $payment_due_days
  * @property string[] $restrictions
- * @property string $confirmation_text
+ * @property ?string $confirmation_text
+ * @property ?int $waiting_list_places
+ * @property ?string $waiting_list_text
  * @property-read Booking[]|Collection $bookings {@see self::bookings()}
  * @property-read Event $event {@see self::event()}
  * @property-read Collection|FormField[] $formFields {@see self::formFields()}
@@ -50,6 +53,7 @@ class BookingOption extends Model
         'price_conditions' => 'json',
         'payment_due_days' => 'integer',
         'restrictions' => 'json', /* @see BookingRestriction */
+        'waiting_list_places' => 'integer',
     ];
 
     protected $fillable = [
@@ -64,6 +68,8 @@ class BookingOption extends Model
         'payment_due_days',
         'restrictions',
         'confirmation_text',
+        'waiting_list_places',
+        'waiting_list_text',
     ];
 
     /**
@@ -71,7 +77,14 @@ class BookingOption extends Model
      */
     public function bookings(): HasMany
     {
-        return $this->hasMany(Booking::class, 'booking_option_id');
+        return $this->hasMany(Booking::class, 'booking_option_id')
+            ->where('status', '=', BookingStatus::Confirmed);
+    }
+
+    public function bookingsOnWaitingList(): HasMany
+    {
+        return $this->hasMany(Booking::class, 'booking_option_id')
+            ->where('status', '=', BookingStatus::Waiting);
     }
 
     public function event(): BelongsTo

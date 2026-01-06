@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\BookingStatus;
 use App\Enums\DeletedFilter;
 use App\Enums\FilterValue;
 use App\Enums\FormElementType;
@@ -44,6 +45,7 @@ use Spatie\QueryBuilder\Enums\SortDirection;
  * @property ?Carbon $paid_at
  * @property ?string $comment
  * @property ?Carbon $deleted_at
+ * @property BookingStatus $status
  * @property-read int $booking_option_id
  * @property-read ?float $age {@see self::age()}
  * @property-read string $file_name {@see self::fileName()}
@@ -70,6 +72,7 @@ class Booking extends Model
         'price' => 'float',
         'paid_at' => 'datetime',
         'deleted_at' => 'datetime',
+        'status' => BookingStatus::class,
     ];
 
     protected $fillable = [
@@ -86,6 +89,7 @@ class Booking extends Model
         'booked_at',
         'paid_at',
         'comment',
+        'status',
     ];
 
     protected function age(): Attribute

@@ -119,6 +119,7 @@
                         </h2>
                         <div class="card-subtitle">
                             <x-bs::badge variant="light"><i class="fa fw-fw fa-hashtag"></i> {{ $booking->id }}</x-bs::badge>
+                            <x-badge.enum :case="$booking->status"/>
                         </div>
                     </div>
                     <x-bs::list :flush="true">

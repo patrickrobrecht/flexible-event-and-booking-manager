@@ -1,14 +1,16 @@
 @php
-    /** @var \App\Models\Event $event */
     /** @var \App\Models\BookingOption $bookingOption */
+    /** @var ?\App\Models\Booking $booking */
+    $price = $booking->price ?? $bookingOption->price;
+    /** @var \App\Models\Event $event */
     $organization = $event->organization;
 @endphp
 
-@if(isset($bookingOption->price) && $bookingOption->price)
+@if($price !== null)
     <x-bs::alert>
         {{ __('Please transfer :price to the following bank account by :date:', [
-            'price' => formatDecimal($bookingOption->price) . ' €',
-            'date' => formatDate($bookingOption->getPaymentDeadline()),
+            'price' => formatDecimal($price) . ' €',
+            'date' => formatDate($bookingOption->getPaymentDeadline($booking->booked_at ?? null)),
         ]) }}
         <ul>
             <li>{{ __('Account holder') }}: {{ $organization->bank_account_holder ?? $organization->name }}</li>

@@ -51,7 +51,7 @@ class GenerateGroupsRequest extends FormRequest
         );
 
         $bookingsCount = ($this->event->parentEvent ?? $this->event)
-            ->bookings()
+            ->bookingsConfirmed()
             ->whereIn('booking_option_id', $selectedBookingOptionIds)
             ->count();
         $maxGroupsCount = ceil($bookingsCount / 2) + 1;

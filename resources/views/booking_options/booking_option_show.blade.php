@@ -92,22 +92,26 @@
                         'canEdit' => $canBookResponse->allowed(),
                     ])
 
-                    @include('booking_options.shared.booking_option_payment')
-
                     @if($expectedStatus === BookingStatus::Waiting)
                         <div class="mb-3">
                             <x-bs::form.field name="confirm_waiting_list"
                                               type="checkbox" :options="Options::one(__('I understand that I am only placing my booking on the waiting list.'))"/>
                         </div>
+                    @else
+                        @include('booking_options.shared.booking_option_payment')
                     @endif
 
                     <x-button.save :disabled="$canBookResponse->denied()">
-                        @isset($bookingOption->price)
-                            {{ __('Book with costs') }}
-                            ({{ formatDecimal($bookingOption->price) }}&nbsp;€)
+                        @if($expectedStatus === BookingStatus::Waiting)
+                            {{ __('Join the waiting list') }}
                         @else
-                            {{ __('Book') }}
-                        @endisset
+                            @isset($bookingOption->price)
+                                {{ __('Book with costs') }}
+                                ({{ formatDecimal($bookingOption->price) }}&nbsp;€)
+                            @else
+                                {{ __('Book') }}
+                            @endisset
+                        @endif
                     </x-button.save>
                 </x-bs::form>
             @endif

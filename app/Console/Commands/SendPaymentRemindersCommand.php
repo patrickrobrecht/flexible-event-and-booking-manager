@@ -27,7 +27,7 @@ class SendPaymentRemindersCommand extends Command
         $bookingOptions = BookingOption::query()
             ->whereNotNull('payment_due_days')
             ->whereHas(
-                'bookings',
+                'bookingsConfirmed',
                 fn (Builder $bookings) => $bookings
                     ->whereNotNull('price')
                     ->whereNull('paid_at')
@@ -67,7 +67,7 @@ class SendPaymentRemindersCommand extends Command
         $bookedBefore = Carbon::today()->endOfDay()->subWeekdays($bookingOption->payment_due_days ?? 0);
 
         /** @var Collection<int, Booking> $bookingsReadyForReminder */
-        $bookingsReadyForReminder = $bookingOption->bookings()
+        $bookingsReadyForReminder = $bookingOption->bookingsConfirmed()
             ->whereNotNull('price')
             ->whereNull('paid_at')
             ->where('booked_at', '<=', $bookedBefore)

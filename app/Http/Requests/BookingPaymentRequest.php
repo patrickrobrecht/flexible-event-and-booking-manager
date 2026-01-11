@@ -22,7 +22,7 @@ class BookingPaymentRequest extends FormRequest
     public function rules(): array
     {
         /** @var int[] $bookingsNotPaidYet */
-        $bookingsNotPaidYet = $this->booking_option->bookings()
+        $bookingsNotPaidYet = $this->booking_option->bookingsConfirmed()
             ->whereNull('paid_at')
             ->pluck('id')
             ->toArray();

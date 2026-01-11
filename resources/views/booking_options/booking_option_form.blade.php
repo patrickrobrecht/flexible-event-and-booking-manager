@@ -81,7 +81,7 @@
                                   :value="$bookingOption->maximum_bookings ?? null">
                     {{ __('Maximum number of confirmed bookings') }}
                     @isset($bookingOption)
-                        <x-slot:hint>{{ formatTransChoice('There are currently :count confirmed bookings.', $bookingOption->bookings()->count()) }}</x-slot:hint>
+                        <x-slot:hint>{{ formatTransChoice('There are currently :count confirmed bookings.', $bookingOption->bookingsConfirmed()->count()) }}</x-slot:hint>
                     @endisset
                 </x-bs::form.field>
             </div>
@@ -93,7 +93,7 @@
         <div class="row">
             <div class="col-12 col-lg-3">
                 <x-bs::form.field name="waiting_list_places" type="number" min="0" step="1"
-                                  :value="$bookingOption->maximum_waiting_list_places ?? null">
+                                  :value="$bookingOption->waiting_list_places ?? null">
                     {{ __('Number of waiting list places') }}
                     @isset($bookingOption)
                         <x-slot:hint>{{ formatTransChoice('There are currently :count bookings on the waiting list.', $bookingOption->bookingsOnWaitingList()->count()) }}</x-slot:hint>

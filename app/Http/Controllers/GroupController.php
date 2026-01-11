@@ -10,7 +10,6 @@ use App\Http\Requests\GenerateGroupsRequest;
 use App\Models\Booking;
 use App\Models\Event;
 use App\Models\Group;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Validation\ValidationException;
@@ -41,12 +40,7 @@ class GroupController extends Controller
         $this->authorize('viewGroups', $event);
 
         return view('groups.group_index', [
-            'event' => $event
-                ->load([
-                    'bookingOptions' => fn (HasMany $bookingOptionsQuery) => $bookingOptionsQuery->withCount([
-                        'bookings',
-                    ]),
-                ]),
+            'event' => $event,
         ]);
     }
 

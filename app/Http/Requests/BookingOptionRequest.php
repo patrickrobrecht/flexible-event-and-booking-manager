@@ -33,7 +33,7 @@ class BookingOptionRequest extends FormRequest
     public function rules(): array
     {
         // If a booking option is updated, check for existing confirmed bookings and bookings on the waiting list.
-        $confirmedBookingsCount = $this->booking_option?->bookings()->count();
+        $confirmedBookingsCount = $this->booking_option?->bookingsConfirmed()->count();
         $bookingsOnWaitingListCount = $this->booking_option?->bookingsOnWaitingList()->count();
 
         return [

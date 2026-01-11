@@ -352,6 +352,8 @@ class Booking extends Model
             /** @see self::scopeGroup() */
             AllowedFilter::scope('group_id', 'group')
                 ->ignore(FilterValue::All->value),
+            AllowedFilter::exact('status')
+                ->ignore(FilterValue::All->value),
             /** @see self::scopePaymentStatus() */
             AllowedFilter::scope('payment_status', 'paymentStatus')
                 ->ignore(FilterValue::All->value),

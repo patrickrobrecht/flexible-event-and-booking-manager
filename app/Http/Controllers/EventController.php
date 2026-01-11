@@ -27,7 +27,8 @@ class EventController extends Controller
                 /** @phpstan-ignore-next-line argument.type */
                 ->with([
                     'bookingOptions' => static fn (HasMany $query) => $query->withCount([
-                        'bookings',
+                        'bookingsConfirmed',
+                        'bookingsOnWaitingList',
                     ]),
                     'eventSeries',
                     'location',
@@ -52,7 +53,8 @@ class EventController extends Controller
             'event' => $event
                 ->loadMissing([
                     'bookingOptions' => static fn (HasMany $query) => $query->withCount([
-                        'bookings',
+                        'bookingsConfirmed',
+                        'bookingsOnWaitingList',
                     ]),
                     'documents.reference',
                     'documents.uploadedByUser',

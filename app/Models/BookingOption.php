@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\BookingRestriction;
 use App\Enums\BookingStatus;
 use App\Enums\FormElementType;
+use App\Models\Traits\HasBookings;
 use App\Models\Traits\HasNameAndDescription;
 use App\Models\Traits\HasSlugForRouting;
 use Carbon\Carbon;
@@ -32,13 +33,13 @@ use Spatie\Sluggable\SlugOptions;
  * @property ?string $confirmation_text
  * @property ?int $waiting_list_places
  * @property ?string $waiting_list_text
- * @property-read Booking[]|Collection $bookings {@see self::bookings()}
  * @property-read Event $event {@see self::event()}
  * @property-read Collection|FormField[] $formFields {@see self::formFields()}
  * @property-read Collection|FormField[] $formFieldsForFiles {@see self::formFieldsForFiles()}
  */
 class BookingOption extends Model
 {
+    use HasBookings;
     use HasFactory;
     use HasNameAndDescription;
     use HasSlugForRouting {
@@ -77,19 +78,7 @@ class BookingOption extends Model
      */
     public function bookings(): HasMany
     {
-        return $this->hasMany(Booking::class, 'booking_option_id')
-            ->where('status', '=', BookingStatus::Confirmed);
-    }
-
-    public function bookingsIncludingWaitingList(): HasMany
-    {
         return $this->hasMany(Booking::class, 'booking_option_id');
-    }
-
-    public function bookingsOnWaitingList(): HasMany
-    {
-        return $this->hasMany(Booking::class, 'booking_option_id')
-            ->where('status', '=', BookingStatus::Waiting);
     }
 
     public function event(): BelongsTo

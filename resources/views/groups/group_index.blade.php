@@ -63,7 +63,7 @@
                                 fn (\App\Models\BookingOption $bookingOption) => sprintf(
                                     '%s (%s)',
                                     $bookingOption->name,
-                                    formatInt($bookingOption->bookings_count)
+                                    formatInt($bookingOption->bookings_confirmed_count)
                                 )
                             );
                         @endphp

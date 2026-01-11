@@ -32,6 +32,10 @@ class BookingOptionRequest extends FormRequest
      */
     public function rules(): array
     {
+        // If a booking option is updated, check for existing confirmed bookings and bookings on the waiting list.
+        $confirmedBookingsCount = $this->booking_option?->bookings()->count();
+        $bookingsOnWaitingListCount = $this->booking_option?->bookingsOnWaitingList()->count();
+
         return [
             'name' => [
                 'required',
@@ -49,11 +53,6 @@ class BookingOptionRequest extends FormRequest
             'description' => [
                 'nullable',
                 'string',
-            ],
-            'maximum_bookings' => [
-                'nullable',
-                'integer',
-                'gte:1',
             ],
             'available_from' => [
                 'nullable',
@@ -85,7 +84,25 @@ class BookingOptionRequest extends FormRequest
             'restrictions.*' => [
                 BookingRestriction::rule(),
             ],
+            'maximum_bookings' => [
+                'nullable',
+                'integer',
+                isset($confirmedBookingsCount)
+                    ? 'gte:' . $confirmedBookingsCount
+                    : 'gte:1',
+            ],
             'confirmation_text' => [
+                'nullable',
+                'string',
+            ],
+            'waiting_list_places' => [
+                'nullable',
+                'integer',
+                isset($bookingsOnWaitingListCount)
+                    ? 'gte:' . $bookingsOnWaitingListCount
+                    : 'gte:0',
+            ],
+            'waiting_list_text' => [
                 'nullable',
                 'string',
             ],

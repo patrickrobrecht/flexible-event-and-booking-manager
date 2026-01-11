@@ -8,6 +8,7 @@
     <div class="col-12 col-lg-6 vstack mb-3">
         <div>
             <x-bs::badge variant="light"><i class="fa fw-fw fa-hashtag"></i> {{ $booking->id }}</x-bs::badge>
+            <x-badge.enum :case="$booking->status"/>
         </div>
         <div>
             <i class="fa fa-fw fa-clock" title="{{ __('Booking date') }}"></i>
@@ -37,9 +38,11 @@
         @endcan
         <div>
             <i class="fa fa-fw fa-euro" title="{{ __('Price') }}"></i> @include('bookings.shared.payment-status')
-            <div class="mt-3">
-                @include('booking_options.shared.booking_option_payment')
-            </div>
+            @if($booking->status === \App\Enums\BookingStatus::Confirmed && !isset($booking->paid_at))
+                <div class="mt-3">
+                    @include('booking_options.shared.booking_option_payment')
+                </div>
+            @endif
         </div>
     </div>
     @can('viewGroups', $booking->bookingOption->event)

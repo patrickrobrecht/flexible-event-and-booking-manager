@@ -116,7 +116,7 @@ class BookingOptionControllerTest extends TestCase
             ],
             [
                 fn (BookingOptionFactory $factory) => $factory->maximumBookings(5)->has(Booking::factory()->count(5)),
-                fn (BookingOption $bookingOption) => __('The maximum number of bookings has been reached.'),
+                fn (BookingOption $bookingOption) => __('The maximum number of bookings has already been reached.'),
             ],
         ];
     }

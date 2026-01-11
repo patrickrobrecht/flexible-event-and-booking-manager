@@ -25,6 +25,7 @@
                 @isset($booking->booked_at)
                     <x-bs::badge variant="light">{{ formatDateTime($booking->booked_at) }}</x-bs::badge>
                 @endisset
+                <x-badge.enum :case="$booking->status"/>
                 @isset($booking->price)
                     <x-bs::badge :variant="$booking->price === $booking->bookingOption->price ? 'primary' : 'secondary'">{{ formatDecimal($booking->price) }}&nbsp;€</x-bs::badge>
                     @isset($booking->paid_at)

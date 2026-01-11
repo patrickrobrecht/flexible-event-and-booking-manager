@@ -2,10 +2,12 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\BookingStatus;
 use App\Enums\FormElementType;
 use App\Http\Requests\Traits\ValidatesAddressFields;
 use App\Models\Booking;
 use App\Models\BookingOption;
+use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -28,7 +30,7 @@ class BookingRequest extends FormRequest
     }
 
     /**
-     * @return array<string, array<int, string|Stringable|ValidationRule>>
+     * @return array<string, array<int, Closure|string|Stringable|ValidationRule>>
      */
     public function rules(): array
     {
@@ -73,6 +75,18 @@ class BookingRequest extends FormRequest
                     $user->can('updateBookingComment', $this->booking) ? 'nullable' : 'prohibited',
                     'string',
                 ],
+            ];
+        }
+
+        if ($this->routeIs('bookings.store')) {
+            $commonRules['confirm_waiting_list'] = [
+                match ($this->booking_option->calculateStatusForNextBooking()) {
+                    BookingStatus::Confirmed => 'prohibited',
+                    BookingStatus::Waiting => 'accepted',
+                    default => static function ($attribute, $value, $fail) {
+                        $fail();
+                    },
+                },
             ];
         }
 

@@ -3,8 +3,8 @@
 namespace App\Policies;
 
 use App\Enums\Ability;
-use App\Enums\BookingRestriction;
 use App\Enums\Visibility;
+use App\Models\Booking;
 use App\Models\BookingOption;
 use App\Models\Event;
 use App\Models\User;
@@ -42,48 +42,9 @@ class BookingOptionPolicy
 
     public function book(?User $user, BookingOption $bookingOption): Response
     {
-        if (
-            !isset($bookingOption->available_from)
-            || $bookingOption->available_from->isFuture()
-        ) {
-            if (isset($bookingOption->available_from)) {
-                $message = ' ' . __('The booking period starts at :date.', ['date' => formatDateTime($bookingOption->available_from)]);
-            }
-
-            return $this->deny(__('Bookings are not possible yet.') . ($message ?? ''));
-        }
-
-        if (isset($bookingOption->available_until) && $bookingOption->available_until->isPast()) {
-            return $this->deny(
-                __('The booking period ended at :date.', ['date' => formatDateTime($bookingOption->available_until)])
-                . ' '
-                . __('Bookings are not possible anymore.')
-            );
-        }
-
-        if ($bookingOption->hasReachedMaximumBookings()) {
-            return $this->deny(
-                __('The maximum number of bookings has been reached.')
-                . ' '
-                . __('Bookings are not possible anymore.')
-            );
-        }
-
-        if (
-            !isset($user)
-            && $bookingOption->isRestrictedBy(BookingRestriction::AccountRequired)
-        ) {
-            return $this->deny(__('Bookings are only available for logged-in users.'));
-        }
-
-        if (
-            (!isset($user) || $user->email_verified_at === null)
-            && $bookingOption->isRestrictedBy(BookingRestriction::VerifiedEmailAddressRequired)
-        ) {
-            return $this->deny(__('Bookings are only available for logged-in users with a verified email address.'));
-        }
-
-        return $this->allow();
+        return app(\Illuminate\Contracts\Auth\Access\Gate::class)
+            ->forUser($user)
+            ->inspect('create', [Booking::class, $bookingOption]);
     }
 
     /**

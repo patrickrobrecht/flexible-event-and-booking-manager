@@ -142,6 +142,9 @@ return [
     */
 
     'custom' => [
+        'confirm_waiting_list' => [
+            'accepted' => 'You must confirm that your booking will be placed on the waiting list.',
+        ],
         'terms_and_conditions' => [
             'accepted' => 'The terms and conditions must be accepted. Otherwise registration is not allowed.',
         ],

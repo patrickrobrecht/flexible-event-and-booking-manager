@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Enums\Ability;
+use App\Enums\BookingRestriction;
 use App\Models\Booking;
 use App\Models\BookingOption;
 use App\Models\User;
@@ -62,10 +63,55 @@ class BookingPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): Response
+    public function create(?User $user, BookingOption $bookingOption): Response
     {
-        /** @see BookingOptionPolicy::book() */
-        return $this->deny();
+        // No start of booking period defined or the start is in the future.
+        if (!isset($bookingOption->available_from) || $bookingOption->available_from->isFuture()) {
+            if (isset($bookingOption->available_from)) {
+                $message = ' ' . __('The booking period starts at :date.', ['date' => formatDateTime($bookingOption->available_from)]);
+            }
+
+            return $this->deny(__('Bookings are not possible yet.') . ($message ?? ''));
+        }
+
+        // End of the booking period set and it's over.
+        if (isset($bookingOption->available_until) && $bookingOption->available_until->isPast()) {
+            return $this->deny(
+                __('The booking period ended at :date.', ['date' => formatDateTime($bookingOption->available_until)])
+                . ' '
+                . __('Bookings are not possible anymore.')
+            );
+        }
+
+        // Guest user, but the booking option requires an account.
+        if (!isset($user) && $bookingOption->isRestrictedBy(BookingRestriction::AccountRequired)) {
+            return $this->deny(__('Bookings are only available for logged-in users.'));
+        }
+
+        // Guest user or user with unverified email address, but the booking option requires a verified address.
+        if (
+            (!isset($user) || $user->email_verified_at === null)
+            && $bookingOption->isRestrictedBy(BookingRestriction::VerifiedEmailAddressRequired)
+        ) {
+            return $this->deny(__('Bookings are only available for logged-in users with a verified email address.'));
+        }
+
+        $allowedBookingStatus = $bookingOption->calculateStatusForNextBooking();
+        if ($allowedBookingStatus === null) {
+            $message = __('Bookings are not possible anymore.');
+
+            if ($bookingOption->hasReachedMaximumBookings()) {
+                $message = __('The maximum number of bookings has already been reached.') . ' ' . $message;
+            }
+
+            if ($bookingOption->hasReachedMaximumWaitingListPlaces()) {
+                $message = __('All places on the waiting list have already been allocated.') . ' ' . $message;
+            }
+
+            return $this->deny($message);
+        }
+
+        return $this->allow();
     }
 
     /**

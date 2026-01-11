@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\BookingStatus;
 use App\Enums\FormElementType;
 use App\Events\BookingCompleted;
 use App\Exports\BookingsExportSpreadsheet;
@@ -37,7 +38,7 @@ class BookingController extends Controller
         ValueHelper::setDefaults(Booking::defaultValuesForQuery());
 
         /** @var \Illuminate\Database\Eloquent\Builder<Booking> $bookingsQuery */
-        $bookingsQuery = Booking::buildQueryFromRequest($bookingOption->bookings())
+        $bookingsQuery = Booking::buildQueryFromRequest($bookingOption->bookingsIncludingWaitingList())
             /** @phpstan-ignore-next-line argument.type */
             ->with([
                 'bookedByUser',
@@ -152,6 +153,8 @@ class BookingController extends Controller
         $booking->price = $bookingOption->price;
         $booking->bookedByUser()->associate(Auth::user());
         $booking->booked_at = Carbon::now();
+        // If the request contains a booking for the waiting list, validation ensures that the flag is set.
+        $booking->status = $request->boolean('confirm_waiting_list') ? BookingStatus::Waiting : BookingStatus::Confirmed;
 
         if ($booking->fillAndSave($request->validated())) {
             $message = __('Your booking has been saved successfully.')

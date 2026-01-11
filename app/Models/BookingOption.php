@@ -81,6 +81,11 @@ class BookingOption extends Model
             ->where('status', '=', BookingStatus::Confirmed);
     }
 
+    public function bookingsIncludingWaitingList(): HasMany
+    {
+        return $this->hasMany(Booking::class, 'booking_option_id');
+    }
+
     public function bookingsOnWaitingList(): HasMany
     {
         return $this->hasMany(Booking::class, 'booking_option_id')
@@ -102,6 +107,19 @@ class BookingOption extends Model
     {
         return $this->formFields()
             ->where('type', '=', FormElementType::File);
+    }
+
+    public function calculateStatusForNextBooking(): ?BookingStatus
+    {
+        if (!$this->hasReachedMaximumBookings()) {
+            return BookingStatus::Confirmed;
+        }
+
+        if (!$this->hasReachedMaximumWaitingListPlaces()) {
+            return BookingStatus::Waiting;
+        }
+
+        return null;
     }
 
     /**
@@ -138,6 +156,21 @@ class BookingOption extends Model
     {
         return isset($this->maximum_bookings)
             && $this->bookings->count() >= $this->maximum_bookings;
+    }
+
+    public function hasReachedMaximumWaitingListPlaces(): bool
+    {
+        // No waiting list places offered.
+        if ($this->waiting_list_places === 0) {
+            return true;
+        }
+
+        // No limit for waiting list places.
+        if ($this->waiting_list_places === null) {
+            return false;
+        }
+
+        return $this->bookingsOnWaitingList()->count() >= $this->waiting_list_places;
     }
 
     public function isRestrictedBy(BookingRestriction $restriction): bool

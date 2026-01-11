@@ -148,6 +148,10 @@ return [
         'booking_id' => [
             'required' => 'Mindestens eine Anmeldung muss ausgewählt werden.',
         ],
+        'confirm_waiting_list' => [
+            'accepted' => 'Du musst bestätigen, dass deine Anmeldung auf der Warteliste landet.',
+            'prohibited' => 'Aktuell ist doch noch ein Platz frei. Schicke das Formular einfach nochmal ab.',
+        ],
         'house_number' => [
             'regex' => ':attribute muss eine Zahl mit optionalem Buchstabenzusatz sein.',
         ],

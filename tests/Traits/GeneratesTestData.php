@@ -113,12 +113,12 @@ trait GeneratesTestData
     /**
      * @return Collection<int, Booking>
      */
-    protected static function createBookings(BookingOption $bookingOption): Collection
+    protected static function createBookings(BookingOption $bookingOption, ?int $count = null): Collection
     {
         return Booking::factory()
             ->for($bookingOption)
             ->has(User::factory(), 'bookedByUser')
-            ->count(fake()->numberBetween(5, 42))
+            ->count($count ?? fake()->numberBetween(5, 42))
             ->create([
                 'price' => $bookingOption->price,
             ]);

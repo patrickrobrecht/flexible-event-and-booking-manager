@@ -52,6 +52,11 @@
                 <x-bs::form.field id="postal_code" name="filter[postal_code]" type="text"
                                   :from-query="true">{{ __('Postal code') }}</x-bs::form.field>
             </div>
+            <div class="col-12 col-lg-3">
+                <x-bs::form.field id="status" name="filter[status]" type="select"
+                                  :options="\App\Enums\BookingStatus::toOptionsWithAll()"
+                                  :from-query="true">{{ __('Status of the booking') }}</x-bs::form.field>
+            </div>
             @can('viewAnyPaymentStatus', \App\Models\Booking::class)
                 <div class="col-12 col-lg-3">
                     <x-bs::form.field id="payment_status" name="filter[payment_status]" type="select"
@@ -60,6 +65,11 @@
                                       :from-query="true"><i class="fa fa-fw fa-euro"></i> {{ __('Payment status') }}</x-bs::form.field>
                 </div>
             @endcan
+            <div class="col-12 col-lg-3">
+                <x-bs::form.field id="trashed" name="filter[trashed]" type="select"
+                                  :options="\App\Enums\DeletedFilter::toOptions()"
+                                  :from-query="true"><i class="fa fa-fw fa-trash"></i> {{ __('Show trashed?') }}</x-bs::form.field>
+            </div>
             @if($hasGroups)
                 <div class="col-12 col-lg-3">
                     <x-bs::form.field id="group_id" name="filter[group_id]" type="select"
@@ -67,11 +77,6 @@
                                       :from-query="true"><i class="fa fa-fw fa-people-group"></i> {{ __('Group') }}</x-bs::form.field>
                 </div>
             @endif
-            <div class="col-12 col-lg-3">
-                <x-bs::form.field id="trashed" name="filter[trashed]" type="select"
-                                  :options="\App\Enums\DeletedFilter::toOptions()"
-                                  :from-query="true"><i class="fa fa-fw fa-trash"></i> {{ __('Show trashed?') }}</x-bs::form.field>
-            </div>
             <div class="col-12 col-lg-3">
                 <x-bs::form.field name="sort" type="select"
                                   :options="\App\Models\Booking::sortOptions()->getNamesWithLabels()"
@@ -119,6 +124,7 @@
                         </h2>
                         <div class="card-subtitle">
                             <x-bs::badge variant="light"><i class="fa fw-fw fa-hashtag"></i> {{ $booking->id }}</x-bs::badge>
+                            <x-badge.enum :case="$booking->status"/>
                         </div>
                     </div>
                     <x-bs::list :flush="true">

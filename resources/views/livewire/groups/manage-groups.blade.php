@@ -23,7 +23,7 @@
                             '<span class="text-nowrap"><a href="%s" target="_blank">%s</a> (%s)</span>',
                             route('bookings.index', [$event->parentEvent ?? $event, $bookingOption]),
                             $bookingOption->name,
-                            formatInt($bookingOption->bookings_count ?? $bookingOption->bookings()->count())
+                            formatInt($bookingOption->bookings_confirmed_count ?? $bookingOption->bookingsConfirmed()->count())
                         )
                     ]);
                 @endphp

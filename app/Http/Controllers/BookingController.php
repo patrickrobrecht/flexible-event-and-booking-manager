@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\BookingStatus;
 use App\Enums\FormElementType;
 use App\Events\BookingCompleted;
 use App\Exports\BookingsExportSpreadsheet;
@@ -105,7 +106,7 @@ class BookingController extends Controller
         return view('bookings.booking_index_payments', [
             'event' => $event,
             'bookingOption' => $bookingOption->load([
-                'bookings.groups',
+                'bookingsConfirmed.groups',
             ]),
         ]);
     }
@@ -152,11 +153,18 @@ class BookingController extends Controller
         $booking->price = $bookingOption->price;
         $booking->bookedByUser()->associate(Auth::user());
         $booking->booked_at = Carbon::now();
+        // If the request contains a booking for the waiting list, validation ensures that the flag is set.
+        $booking->status = $request->boolean('confirm_waiting_list') ? BookingStatus::Waiting : BookingStatus::Confirmed;
 
         if ($booking->fillAndSave($request->validated())) {
-            $message = __('Your booking has been saved successfully.')
-                . ' ' . __('We will send you a confirmation by e-mail shortly.')
-                . ' ' . ($bookingOption->confirmation_text ?? '');
+            $message = match ($booking->status) {
+                BookingStatus::Confirmed => __('Your booking has been saved successfully.')
+                    . ' ' . __('We will send you a confirmation by e-mail shortly.')
+                    . ' ' . ($bookingOption->confirmation_text ?? ''),
+                BookingStatus::Waiting => __('Your booking is on the waiting list.')
+                    . ' ' . __('We will send you a confirmation by e-mail shortly.')
+                    . ' ' . ($bookingOption->waiting_list_text ?? ''),
+            };
             Session::flash('success', $message);
 
             event(new BookingCompleted($booking));

@@ -4,8 +4,8 @@
     /** @var \App\Models\Event $event */
     /** @var \App\Models\BookingOption $bookingOption */
 
-    $unpaidBookings = $bookingOption->bookings->whereNotNull('price')->whereNull('paid_at');
-    $paidBookings = $bookingOption->bookings->whereNotNull('paid_at')->sortBy('paid_at');
+    $unpaidBookings = $bookingOption->bookingsConfirmed->whereNotNull('price')->whereNull('paid_at');
+    $paidBookings = $bookingOption->bookingsConfirmed->whereNotNull('paid_at')->sortBy('paid_at');
     $noErrors = new \Illuminate\Support\ViewErrorBag();
 @endphp
 

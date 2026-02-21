@@ -10,12 +10,12 @@
                 : formatDateTime($booking->paid_at) }})</x-bs::badge>
         @else
             <x-bs::badge variant="danger">{{ __('not paid yet') }}</x-bs::badge>
-            @isset($booking->payment_deadline)
+            @if($booking->status === \App\Enums\BookingStatus::Confirmed && isset($booking->payment_deadline))
                 <span @class([
                     'text-nowrap',
                     'text-danger' => $booking->payment_deadline->isPast(),
                 ])>({{ __('Payment deadline') }}: {{ formatDate($booking->payment_deadline) }})</span>
-            @endisset
+            @endif
         @endisset
     @endcan
 @else

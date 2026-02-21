@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use App\Enums\BookingRestriction;
+use App\Enums\BookingStatus;
 use App\Enums\FormElementType;
+use App\Models\Traits\HasBookings;
 use App\Models\Traits\HasNameAndDescription;
 use App\Models\Traits\HasSlugForRouting;
 use Carbon\Carbon;
@@ -28,14 +30,16 @@ use Spatie\Sluggable\SlugOptions;
  * @property mixed[] $price_conditions
  * @property ?int $payment_due_days
  * @property string[] $restrictions
- * @property string $confirmation_text
- * @property-read Booking[]|Collection $bookings {@see self::bookings()}
+ * @property ?string $confirmation_text
+ * @property ?int $waiting_list_places
+ * @property ?string $waiting_list_text
  * @property-read Event $event {@see self::event()}
  * @property-read Collection|FormField[] $formFields {@see self::formFields()}
  * @property-read Collection|FormField[] $formFieldsForFiles {@see self::formFieldsForFiles()}
  */
 class BookingOption extends Model
 {
+    use HasBookings;
     use HasFactory;
     use HasNameAndDescription;
     use HasSlugForRouting {
@@ -50,6 +54,7 @@ class BookingOption extends Model
         'price_conditions' => 'json',
         'payment_due_days' => 'integer',
         'restrictions' => 'json', /* @see BookingRestriction */
+        'waiting_list_places' => 'integer',
     ];
 
     protected $fillable = [
@@ -64,6 +69,8 @@ class BookingOption extends Model
         'payment_due_days',
         'restrictions',
         'confirmation_text',
+        'waiting_list_places',
+        'waiting_list_text',
     ];
 
     /**
@@ -89,6 +96,19 @@ class BookingOption extends Model
     {
         return $this->formFields()
             ->where('type', '=', FormElementType::File);
+    }
+
+    public function calculateStatusForNextBooking(): ?BookingStatus
+    {
+        if (!$this->hasReachedMaximumBookings()) {
+            return BookingStatus::Confirmed;
+        }
+
+        if (!$this->hasReachedMaximumWaitingListPlaces()) {
+            return BookingStatus::Waiting;
+        }
+
+        return null;
     }
 
     /**
@@ -125,6 +145,21 @@ class BookingOption extends Model
     {
         return isset($this->maximum_bookings)
             && $this->bookings->count() >= $this->maximum_bookings;
+    }
+
+    public function hasReachedMaximumWaitingListPlaces(): bool
+    {
+        // No waiting list places offered.
+        if ($this->waiting_list_places === 0) {
+            return true;
+        }
+
+        // No limit for waiting list places.
+        if ($this->waiting_list_places === null) {
+            return false;
+        }
+
+        return $this->bookingsOnWaitingList()->count() >= $this->waiting_list_places;
     }
 
     public function isRestrictedBy(BookingRestriction $restriction): bool

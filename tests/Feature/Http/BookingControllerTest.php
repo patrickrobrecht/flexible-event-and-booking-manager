@@ -3,6 +3,7 @@
 namespace Tests\Feature\Http;
 
 use App\Enums\Ability;
+use App\Enums\BookingStatus;
 use App\Enums\DeletedFilter;
 use App\Enums\FilterValue;
 use App\Enums\FormElementType;
@@ -39,6 +40,7 @@ use Tests\TestCase;
 #[CoversClass(BookingPaymentRequest::class)]
 #[CoversClass(BookingPolicy::class)]
 #[CoversClass(BookingRequest::class)]
+#[CoversClass(BookingStatus::class)]
 #[CoversClass(BookingsExportSpreadsheet::class)]
 #[CoversClass(DeletedFilter::class)]
 #[CoversClass(FilterValue::class)]
@@ -164,9 +166,10 @@ class BookingControllerTest extends TestCase
 
         Notification::fake();
 
-        $bookingOption = self::createBookingOptionForEvent(Visibility::Public);
-        self::assertCount(0, $user->bookings);
-        self::assertCount(0, $bookingOption->bookings);
+        /** @var BookingOption&object{confirmation_text: string} $bookingOption */
+        $bookingOption = self::createBookingOptionForEvent(Visibility::Public, [
+            'confirmation_text' => 'Congratulations, we received your booking.',
+        ]);
         $booking = Booking::factory()
             ->withoutDateOfBirth()
             ->makeOne();
@@ -175,19 +178,96 @@ class BookingControllerTest extends TestCase
             ->assertRedirect();
         self::assertCount(1, $user->refresh()->bookings);
         self::assertCount(1, $bookingOption->refresh()->bookings);
-        self::assertCount(1, $bookingOption->event->bookings);
+        self::assertEquals(BookingStatus::Confirmed, $bookingOption->bookings->first()?->status);
 
         Notification::assertSentTo(
             new AnonymousNotifiable(),
             BookingConfirmation::class,
-            static function ($notification, $channels, $notifiable) use ($booking, $bookingOption) {
+            static function (BookingConfirmation $notification, $channels, $notifiable) use ($booking, $bookingOption) {
                 $mailContent = $notification->toMail(new AnonymousNotifiable())->render();
-                return $notifiable->routes['mail'] === $booking->email
-                    && str_contains($mailContent, $booking->first_name)
+                self::assertStringContainsString($booking->first_name, $mailContent);
+                /** @phpstan-ignore argument.type */
+                self::assertStringContainsString(formatDecimal($bookingOption->price) . ' €', $mailContent);
+                /** @phpstan-ignore argument.type */
+                self::assertStringContainsString($bookingOption->event->organization->iban, $mailContent);
+                self::assertStringContainsString($bookingOption->confirmation_text, $mailContent);
+
+                return $notifiable->routes['mail'] === $booking->email;
+            }
+        );
+    }
+
+    public function testUserCanSubmitBookingOnWaitingListAndReceivesConfirmationViaMail(): void
+    {
+        $user = $this->actingAsAnyUser();
+
+        Notification::fake();
+
+        $maximumBookingsCount = $this->faker->numberBetween(5, 10);
+        /** @var BookingOption&object{confirmation_text: string, waiting_list_text: string} $bookingOption */
+        $bookingOption = self::createBookingOptionForEvent(Visibility::Public, [
+            'maximum_bookings' => $maximumBookingsCount,
+            'confirmation_text' => 'Welcome to the event!',
+            'waiting_list_places' => 5,
+            'waiting_list_text' => 'Welcome to the waiting list!',
+        ]);
+        self::createBookings($bookingOption, $maximumBookingsCount - 1);
+
+        // Sent the last booking that is confirmed.
+        $bookingData1 = Booking::factory()
+            ->withoutDateOfBirth()
+            ->makeOne();
+        $this->post("events/{$bookingOption->event->slug}/{$bookingOption->slug}/bookings", $bookingData1->toArray())
+            ->assertSessionDoesntHaveErrors()
+            ->assertRedirect();
+        self::assertCount(1, $user->refresh()->bookings);
+        self::assertCount($maximumBookingsCount, $bookingOption->refresh()->bookings);
+        self::assertEquals(BookingStatus::Confirmed, $bookingOption->bookings->last()?->status);
+
+        Notification::assertSentTo(
+            new AnonymousNotifiable(),
+            BookingConfirmation::class,
+            static function (BookingConfirmation $notification, $channels, $notifiable) use ($bookingData1, $bookingOption) {
+                $mailContent = $notification->toMail(new AnonymousNotifiable())->render();
+                return $notifiable->routes['mail'] === $bookingData1->email
+                    && str_contains($mailContent, $bookingData1->first_name)
+                    && str_contains($mailContent, $bookingOption->confirmation_text)
                     /** @phpstan-ignore argument.type */
                     && str_contains($mailContent, formatDecimal($bookingOption->price) . ' €')
                     /** @phpstan-ignore argument.type */
-                    && str_contains($mailContent, $bookingOption->event->organization->iban);
+                    && str_contains($mailContent, $bookingOption->event->organization->iban)
+                    && !str_contains($mailContent, $bookingOption->waiting_list_text);
+            }
+        );
+
+        // Sent the first booking that is placed on the waiting list.
+        $bookingData2 = Booking::factory()
+            ->withoutDateOfBirth()
+            ->makeOne();
+        $bookingDataForWaitingList = [
+            ...$bookingData2->toArray(),
+            'confirm_waiting_list' => 1,
+        ];
+        $this->post("events/{$bookingOption->event->slug}/{$bookingOption->slug}/bookings", $bookingDataForWaitingList)
+            ->assertSessionDoesntHaveErrors()
+            ->assertRedirect();
+        self::assertCount(2, $user->refresh()->bookings);
+        self::assertCount($maximumBookingsCount + 1, $bookingOption->refresh()->bookings);
+        self::assertEquals(BookingStatus::Waiting, $bookingOption->bookings->last()?->status);
+
+        Notification::assertSentTo(
+            new AnonymousNotifiable(),
+            BookingConfirmation::class,
+            static function (BookingConfirmation $notification, $channels, $notifiable) use ($bookingData2, $bookingOption) {
+                $mailContent = $notification->toMail(new AnonymousNotifiable())->render();
+                return $notifiable->routes['mail'] === $bookingData2->email
+                    && str_contains($mailContent, $bookingData2->first_name)
+                    && !str_contains($mailContent, $bookingOption->confirmation_text)
+                    /** @phpstan-ignore argument.type */
+                    && !str_contains($mailContent, formatDecimal($bookingOption->price) . ' €')
+                    /** @phpstan-ignore argument.type */
+                    && !str_contains($mailContent, $bookingOption->event->organization->iban)
+                    && str_contains($mailContent, $bookingOption->waiting_list_text);
             }
         );
     }

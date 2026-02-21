@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Enums\BookingStatus;
 use App\Models\Booking;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -36,17 +37,33 @@ class BookingConfirmation extends Notification
             $mail->line(($this->booking->postal_code ?? '') . ' ' . ($this->booking->city ?? ''));
         }
 
-        if (isset($this->booking->price) && $this->booking->price > 0) {
-            $mail->line(__('Please transfer :price to the following bank account by :date:', [
-                'price' => formatDecimal($this->booking->price) . ' €',
-                /** @phpstan-ignore-next-line argument.type */
-                'date' => formatDate($this->booking->payment_deadline),
-            ]));
-            $mail->lines($this->booking->bookingOption->event->organization->bank_account_lines);
-        }
+        if ($this->booking->status === BookingStatus::Confirmed) {
+            if (isset($this->booking->price) && $this->booking->price > 0) {
+                $mail->line(__('Please transfer :price to the following bank account by :date:', [
+                    'price' => formatDecimal($this->booking->price) . ' €',
+                    /** @phpstan-ignore-next-line argument.type */
+                    'date' => formatDate($this->booking->payment_deadline),
+                ]));
+                $mail->lines($this->booking->bookingOption->event->organization->bank_account_lines);
+            }
 
-        if (isset($this->booking->bookingOption->confirmation_text)) {
-            $mail->line($this->booking->bookingOption->confirmation_text);
+            if (isset($this->booking->bookingOption->confirmation_text)) {
+                $mail->line($this->booking->bookingOption->confirmation_text);
+            }
+        } elseif ($this->booking->status === BookingStatus::Waiting) {
+            $mail->line(
+                __('Your booking is on the waiting list.')
+                . ' '
+                . __('Only if someone else cancels can your registration still be confirmed. In this case, you will receive an email notification.')
+            );
+            if (isset($this->booking->price) && $this->booking->price > 0) {
+                $mail->line(__('Please do not transfer any money yet. You will the receive bank details once your booking has been confirmed.', [
+                    'price' => formatDecimal($this->booking->price) . ' €',
+                ]));
+            }
+            if (isset($this->booking->bookingOption->waiting_list_text)) {
+                $mail->line($this->booking->bookingOption->waiting_list_text);
+            }
         }
 
         return $mail;

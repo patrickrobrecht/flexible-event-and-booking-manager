@@ -148,6 +148,10 @@ return [
         'booking_id' => [
             'required' => 'Mindestens eine Anmeldung muss ausgewählt werden.',
         ],
+        'confirm_waiting_list' => [
+            'accepted' => 'Du musst bestätigen, dass deine Anmeldung auf der Warteliste landet.',
+            'prohibited' => 'Aktuell ist doch noch ein Platz frei. Schicke das Formular einfach nochmal ab.',
+        ],
         'house_number' => [
             'regex' => ':attribute muss eine Zahl mit optionalem Buchstabenzusatz sein.',
         ],
@@ -182,7 +186,7 @@ return [
         'booking_option_id' => 'Anmeldeoption',
         'city' => 'Stadt',
         'comment' => 'Kommentar',
-        'confirmation_text' => 'Bestätigungstext',
+        'confirmation_text' => 'Text für bestätigte Anmeldung',
         'country' => 'Land',
         'current_password' => 'Derzeitiges Passwort',
         'date' => 'Datum',
@@ -208,7 +212,7 @@ return [
         'iban' => 'IBAN',
         'last_name' => 'Nachname',
         'location_id' => 'Standort',
-        'maximum_bookings' => 'Maximale Anmeldungen',
+        'maximum_bookings' => 'Maximale Anzahl an bestätigten Anmeldungen',
         'method' => 'Methode',
         'minute' => 'Minute',
         'month' => 'Monat',
@@ -249,6 +253,8 @@ return [
         'unit' => 'Einheit',
         'user_role_id' => 'Benutzerrolle',
         'visibility' => 'Sichtbarkeit',
+        'waiting_list_places' => 'Anzahl der Wartelistenplätze',
+        'waiting_list_text' => 'Text für einen Wartelistenplatz',
         'website_url' => 'Webauftritt',
         'width' => 'Breite',
         'year' => 'Jahr',

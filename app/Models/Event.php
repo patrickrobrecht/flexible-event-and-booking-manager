@@ -11,6 +11,7 @@ use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\BelongsToLocation;
 use App\Models\Traits\BelongsToOrganization;
 use App\Models\Traits\FiltersByRelationExistence;
+use App\Models\Traits\HasBookings;
 use App\Models\Traits\HasDocuments;
 use App\Models\Traits\HasNameAndDescription;
 use App\Models\Traits\HasResponsibleUsers;
@@ -37,7 +38,6 @@ use Spatie\QueryBuilder\Enums\SortDirection;
  * @property ?Carbon $finished_at
  * @property ?string $website_url
  * @property-read BookingOption[]|Collection $bookingOptions {@see self::bookingOptions()}
- * @property-read Booking[]|Collection $bookings {@see self::bookings()}
  * @property-read ?EventSeries $eventSeries {@see self::eventSeries()}
  * @property-read Collection|Group[] $groups {@see self::groups()}
  * @property-read ?Event $parentEvent {@see self::parentEvent()}
@@ -49,6 +49,7 @@ class Event extends Model
     use BelongsToOrganization;
     use BuildsQueryFromRequest;
     use FiltersByRelationExistence;
+    use HasBookings;
     use HasDocuments;
     use HasFactory;
     use HasNameAndDescription;
@@ -200,7 +201,7 @@ class Event extends Model
 
         $this->loadMissing([
             'bookingOptions' => fn (HasMany $bookingOptionsQuery) => $bookingOptionsQuery->withCount([
-                'bookings',
+                'bookingsConfirmed',
             ]),
         ]);
 
@@ -217,11 +218,11 @@ class Event extends Model
         }
 
         $this->loadMissing([
-            'bookings.bookingOption',
-            'bookings.groups',
+            'bookingsConfirmed.bookingOption',
+            'bookingsConfirmed.groups',
         ]);
 
-        return $this->bookings;
+        return $this->bookingsConfirmed;
     }
 
     public function getRoute(): string

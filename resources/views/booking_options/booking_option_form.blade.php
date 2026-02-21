@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @php
+    use App\Enums\BookingStatus;
+
     /** @var \App\Models\Event $event */
     /** @var ?\App\Models\BookingOption $bookingOption */
 @endphp
@@ -42,22 +44,9 @@
                                   :value="$bookingOption->description ?? null">{{ __('Description') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-lg-6">
-                <div class="row">
-                    <div class="col-12 col-lg-6">
-                        <x-bs::form.field name="maximum_bookings" type="number" min="1" step="1"
-                                          :value="$bookingOption->maximum_bookings ?? null">
-                            {{ __('Maximum bookings') }}
-                            @isset($bookingOption)
-                                <x-slot:hint>{{ formatTransChoice('Currently :count bookings', $bookingOption->bookings()->count()) }}</x-slot:hint>
-                            @endisset
-                        </x-bs::form.field>
-                    </div>
-                    <div class="col-12 col-lg-6">
-                        <x-bs::form.field id="restrictions" name="restrictions[]" type="switch"
-                                          :options="\App\Enums\BookingRestriction::toOptions()"
-                                          :value="$bookingOption->restrictions ?? null">{{ __('Restrictions') }}</x-bs::form.field>
-                    </div>
-                </div>
+                <x-bs::form.field id="restrictions" name="restrictions[]" type="switch"
+                                  :options="\App\Enums\BookingRestriction::toOptions()"
+                                  :value="$bookingOption->restrictions ?? null">{{ __('Restrictions') }}</x-bs::form.field>
                 <div class="row">
                     <div class="col-12 col-lg-6">
                         <x-bs::form.field name="available_from" type="datetime-local"
@@ -84,8 +73,36 @@
                         </x-bs::form.field>
                     </div>
                 </div>
-                <x-bs::form.field name="confirmation_text" type="textarea"
-                                  :value="$bookingOption->confirmation_text ?? null">{{ __('Confirmation text') }}</x-bs::form.field>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-lg-3">
+                <x-bs::form.field name="maximum_bookings" type="number" min="1" step="1"
+                                  :value="$bookingOption->maximum_bookings ?? null">
+                    {{ __('Maximum number of confirmed bookings') }}
+                    @isset($bookingOption)
+                        <x-slot:hint>{{ formatTransChoice('There are currently :count confirmed bookings.', $bookingOption->bookingsConfirmed()->count()) }}</x-slot:hint>
+                    @endisset
+                </x-bs::form.field>
+            </div>
+            <div class="col-12 col-lg-9">
+                <x-bs::form.field name="confirmation_text" type="textarea" rows="5"
+                                  :value="$bookingOption->confirmation_text ?? null">{{ __('Text for confirmed booking') }}</x-bs::form.field>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-lg-3">
+                <x-bs::form.field name="waiting_list_places" type="number" min="0" step="1"
+                                  :value="$bookingOption->waiting_list_places ?? null">
+                    {{ __('Number of waiting list places') }}
+                    @isset($bookingOption)
+                        <x-slot:hint>{{ formatTransChoice('There are currently :count bookings on the waiting list.', $bookingOption->bookingsOnWaitingList()->count()) }}</x-slot:hint>
+                    @endisset
+                </x-bs::form.field>
+            </div>
+            <div class="col-12 col-lg-9">
+                <x-bs::form.field name="waiting_list_text" type="textarea" rows="5"
+                                  :value="$bookingOption->waiting_list_text ?? null">{{ __('Text for place on the waiting list') }}</x-bs::form.field>
             </div>
         </div>
 

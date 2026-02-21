@@ -27,11 +27,18 @@
                 @can('viewBookings', $bookingOption)
                     <x-bs::button.link variant="secondary" href="{{ route('bookings.index', [$event, $bookingOption]) }}">
                         <i class="fa fa-fw fa-file-contract"></i> {{ __('Bookings') }}
-                        <x-bs::badge variant="danger">{{ formatInt($bookingOption->bookings_count ?? 0) }}&nbsp;/&nbsp;{{
-                            isset($bookingOption->maximum_bookings)
-                                ? formatInt($bookingOption->maximum_bookings)
-                                : __('unlimited')
-                        }}</x-bs::badge>
+                        <x-bs::badge :variant="\App\Enums\BookingStatus::Confirmed->getBadgeVariant()">
+                            <i class="{{ \App\Enums\BookingStatus::Confirmed->getIcon() }}"></i>
+                            {{ formatInt($bookingOption->bookings_confirmed_count ?? 0) }}&nbsp;/&nbsp;{{
+                                isset($bookingOption->maximum_bookings) ? formatInt($bookingOption->maximum_bookings) : __('unlimited') }}
+                        </x-bs::badge>
+                        @if($bookingOption->waiting_list_places !== 0)
+                            <x-bs::badge :variant="\App\Enums\BookingStatus::Waiting->getBadgeVariant()">
+                                <i class="{{ \App\Enums\BookingStatus::Waiting->getIcon() }}"></i>
+                                {{ formatInt($bookingOption->bookings_on_waiting_list_count ?? 0) }}&nbsp;/&nbsp;{{
+                                    isset($bookingOption->waiting_list_places) ? formatInt($bookingOption->waiting_list_places) : __('unlimited') }}
+                            </x-bs::badge>
+                        @endif
                     </x-bs::button.link>
                 @endcan
                 @can('update', $bookingOption)

@@ -1,10 +1,14 @@
 @extends('layouts.app')
 
 @php
+    use App\Enums\BookingStatus;
+    use Portavice\Bladestrap\Support\Options;
+
     /** @var \App\Models\Event $event */
     /** @var \App\Models\BookingOption $bookingOption */
 
     $loggedInUser = \Illuminate\Support\Facades\Auth::user();
+    $expectedStatus = $bookingOption->calculateStatusForNextBooking();
 @endphp
 
 @section('title')
@@ -73,6 +77,13 @@
                         {{ __('You may only register yourself for this event. It is not allowed to fill out this registration form on behalf of other people.') }}
                     </x-bs::alert>
                 @endif
+                @if($expectedStatus === BookingStatus::Waiting)
+                    <x-bs::alert variant="warning">
+                        {{ __('The maximum number of bookings has already been reached.') }}
+                        {{ __('You can add your booking to the waiting list.') }}
+                        <strong>{{ __('Only if someone else cancels can your registration still be confirmed. In this case, you will receive an email notification.') }}</strong>
+                    </x-bs::alert>
+                @endif
 
                 <x-bs::form method="POST" action="{{ route('bookings.store', [$event, $bookingOption]) }}" enctype="multipart/form-data">
                     @include('bookings.booking_form_fields', [
@@ -81,17 +92,49 @@
                         'canEdit' => $canBookResponse->allowed(),
                     ])
 
-                    @include('booking_options.shared.booking_option_payment')
+                    @if($expectedStatus === BookingStatus::Waiting)
+                        <div class="mb-3">
+                            <x-bs::form.field name="confirm_waiting_list"
+                                              type="checkbox" :options="Options::one(__('I understand that I am only placing my booking on the waiting list.'))"/>
+                        </div>
+                    @else
+                        @include('booking_options.shared.booking_option_payment')
+                    @endif
 
                     <x-button.save :disabled="$canBookResponse->denied()">
-                        @isset($bookingOption->price)
-                            {{ __('Book with costs') }}
-                            ({{ formatDecimal($bookingOption->price) }}&nbsp;€)
+                        @if($expectedStatus === BookingStatus::Waiting)
+                            {{ __('Join the waiting list') }}
                         @else
-                            {{ __('Book') }}
-                        @endisset
+                            @isset($bookingOption->price)
+                                {{ __('Book with costs') }}
+                                ({{ formatDecimal($bookingOption->price) }}&nbsp;€)
+                            @else
+                                {{ __('Book') }}
+                            @endisset
+                        @endif
                     </x-button.save>
                 </x-bs::form>
+            @endif
+            @if($errors->any())
+                <x-bs::modal id="validationErrorModal"
+                             :static-backdrop="true" :centered="true" :close-button="false">
+                    <x-slot:title container="strong">{{ $bookingOption->name }}</x-slot:title>
+                    <p>{{ __('Please correct the following fields:') }}</p>
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                    <x-slot:footer>
+                        <x-bs::button data-bs-dismiss="modal">{{ __('Correct my inputs') }}</x-bs::button>
+                    </x-slot:footer>
+                </x-bs::modal>
+                <script>
+                    document.addEventListener('DOMContentLoaded', () => {
+                        const modal = new bootstrap.Modal(document.getElementById('validationErrorModal'));
+                        modal.show();
+                    });
+                </script>
             @endif
         </div>
     </div>

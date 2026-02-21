@@ -5,12 +5,13 @@
 @endsection
 
 @section('main')
-    <rapi-doc spec-url="{{ route('api-docs.spec') }}"
-              mono-font="var(--bs-font-monospace)" load-fonts="false" regular-font="var(--bs-body-font-family)"
-              render-style="read" show-header="false">
-    </rapi-doc>
+    <div id="swagger-ui" data-spec-url="{{ route('api-docs.spec') }}"></div>
 @endsection
 
 @push('scripts')
-    @vite(['node_modules/rapidoc/dist/rapidoc-min.js'])
+    <script src="{{ Vite::asset('node_modules/swagger-ui-dist/swagger-ui-bundle.js') }}"></script>
+    @vite([
+        'resources/js/swagger-ui.js',
+        'node_modules/swagger-ui-dist/swagger-ui.css',
+    ])
 @endpush

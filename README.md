@@ -54,7 +54,7 @@ To get started, you need to install the following software:
 - [Laravel Query Builder](https://spatie.be/docs/laravel-query-builder/v6/introduction) for custom filtering and sorting
 - [Laravel Zipstream](https://github.com/stechstudio/laravel-zipstream) to create and stream zip files
 - [PhpSpreadsheet](https://phpspreadsheet.readthedocs.io/en/stable/) for Excel exports
-- [https://github.com/rapi-doc/RapiDoc](RapiDoc) for Open API documentation
+- [Swagger UI](https://swagger.io/docs/open-source-tools/swagger-ui/usage/installation/) for Open API documentation
 
 ### How to develop
 To setup/update your development environment:

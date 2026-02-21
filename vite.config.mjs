@@ -8,7 +8,8 @@ import crypto from 'crypto';
 const filesFromLibraries = {
     'node_modules/alpinejs/dist/cdn.min.js': 'alpinejs',
     'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js': 'bootstrap.bundle',
-    'node_modules/rapidoc/dist/rapidoc-min.js': 'rapidoc',
+    'node_modules/swagger-ui-dist/swagger-ui-bundle.js': 'swagger-ui-bundle',
+    'node_modules/swagger-ui-dist/swagger-ui.css': 'swagger-ui',
 };
 
 const filesFromLibrariesForConfiguration = [];
@@ -41,7 +42,6 @@ export default defineConfig(({ mode }) => {
             // Compile SCSS to CSS, JavaScript files.
             laravel({
                 input: [
-                    'resources/js/app.js',
                     'resources/sass/app.scss',
                     ...fs.readdirSync('resources/js', {withFileTypes: true})
                         .filter(f => !f.isDirectory())

@@ -3,6 +3,7 @@
 namespace Tests\Feature\Console\Commands;
 
 use App\Console\Commands\SendPaymentRemindersCommand;
+use App\Enums\BookingStatus;
 use App\Models\Booking;
 use App\Notifications\PaymentReminderNotification;
 use Carbon\Carbon;
@@ -60,6 +61,31 @@ class SendPaymentRemindersCommandTest extends TestCase
             ->expectsOutputToContain("Reminder to {$booking->email} for booking {$booking->id} not sent because it's a dry run.")
             ->assertSuccessful();
         Notification::assertNothingSent();
+    }
+
+    public function testCommandDoesNotSendPaymentRemindersForWaitingListBookings(): void
+    {
+        Notification::fake();
+
+        // One overdue booking confirmed -> should get reminder
+        $confirmedBooking = $this->fakeUnpaidBooking();
+
+        // One overdue booking on waiting list -> should NOT get reminder
+        $waitingListBooking = $this->fakeUnpaidBooking();
+        $waitingListBooking->update(['status' => BookingStatus::Waiting]);
+
+        /** @phpstan-ignore method.nonObject */
+        $this->artisan('app:send-payment-reminders')
+            ->expectsOutputToContain("Sent reminder to {$confirmedBooking->email} for booking {$confirmedBooking->id}.")
+            ->doesntExpectOutputToContain("Sent reminder to {$waitingListBooking->email} for booking {$waitingListBooking->id}.")
+            ->assertSuccessful();
+
+        Notification::assertSentToTimes(new AnonymousNotifiable(), PaymentReminderNotification::class, 1);
+        Notification::assertNotSentTo(
+            new AnonymousNotifiable(),
+            PaymentReminderNotification::class,
+            static fn (PaymentReminderNotification $notification) => $notification->booking->id === $waitingListBooking->id
+        );
     }
 
     private function fakeUnpaidBooking(): Booking

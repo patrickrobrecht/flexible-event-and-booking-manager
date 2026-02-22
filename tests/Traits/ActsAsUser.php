@@ -264,7 +264,7 @@ trait ActsAsUser
 
         if (!isset($this->userRoles[$userRoleName])) {
             $this->userRoles[$userRoleName] = new UserRole([
-                'name' => $userRoleName,
+                'name' => substr($userRoleName, 0, 255),
                 'abilities' => $abilities,
             ]);
             $this->userRoles[$userRoleName]->save();

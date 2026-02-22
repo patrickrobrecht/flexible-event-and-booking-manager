@@ -38,9 +38,11 @@ This application allows to manage events, their booking forms and bookings via a
 
 ### Requirements
 To get started, you need to install the following software:
-- [Composer](https://getcomposer.org/) to manage PHP dependencies,
-- [PHP](https://www.php.net/), and the PDO extension for the database of your choice,
-- a relational database, such as [MariaDB](https://mariadb.org/download/)
+- [Composer](https://getcomposer.org/) and [npm](https://docs.npmjs.com/about-npm) to manage dependencies,
+- [PHP](https://www.php.net/) and the PDO extension for the database of your choice,
+- a relational database,
+  - [MariaDB](https://mariadb.org/download/) or [MySQL](https://dev.mysql.com/downloads/mysql/) (recommended)
+  - [PostgreSQL](https://www.postgresql.org/download/) or [SQLite](https://sqlite.org/download.html) (unofficially supported).
 
 ### Used technologies
 - [Alpine.js](https://alpinejs.dev/) to extend Livewire with some additional JavaScript
@@ -54,7 +56,7 @@ To get started, you need to install the following software:
 - [Laravel Query Builder](https://spatie.be/docs/laravel-query-builder/v6/introduction) for custom filtering and sorting
 - [Laravel Zipstream](https://github.com/stechstudio/laravel-zipstream) to create and stream zip files
 - [PhpSpreadsheet](https://phpspreadsheet.readthedocs.io/en/stable/) for Excel exports
-- [https://github.com/rapi-doc/RapiDoc](RapiDoc) for Open API documentation
+- [RapiDoc](https://github.com/rapi-doc/RapiDoc) for Open API documentation
 
 ### How to develop
 To setup/update your development environment:
@@ -68,13 +70,13 @@ To setup/update your development environment:
 
 For development, we use
 - [ESlint](https://eslint.org/) for the JavaScript code style check
-- [Laravel Debugbar](https://github.com/barryvdh/laravel-debugbar) for debugging utility
+- [Laravel Debugbar](https://github.com/fruitcake/laravel-debugbar) for debugging utility
 - [Laravel Pint](https://laravel.com/docs/12.x/pint) for the PHP code style check
-- [Laravel Translatable String Exporter](https://github.com/kkomelin/laravel-translatable-string-exporter)
+- [Laravel Translatable String Exporter](https://github.com/kkomelin/laravel-translatable-string-exporter) to extract translations strings from PHP and Blade
 - [PHPStan](https://phpstan.org/) with [Larastan](https://github.com/larastan/larastan) and [strict rules extension](https://github.com/phpstan/phpstan-strict-rules) for static analysis
 - [PHPUnit](https://docs.phpunit.de/) for Unit tests
 - [Stylelint](https://stylelint.io/) for the SASS code style check
-- [Vite](https://laravel.com/docs/12.x/vite#introduction) for compiling and copying assets
+- [Vite](https://laravel.com/docs/12.x/vite#introduction) with [Laravel](https://github.com/laravel/vite-plugin) and [static copy plugin](https://github.com/sapphi-red/vite-plugin-static-copy) for compiling and copying assets
 
 ### Code Style
 Run `composer cs` to check compliance with the code style
@@ -90,7 +92,7 @@ Use `composer translate` to extract them to `lang/de.json`.
 
 ### How to release
 - Update version in `CHANGELOG.md` and `config/app.php`.
-- Create a tag in Git and publish corresponding release notes in GitLab.
+- Create a tag in Git and publish corresponding release notes.
 
 ### How to deploy
 - Run `composer production` to remove development dependencies.

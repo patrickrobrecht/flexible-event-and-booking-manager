@@ -112,7 +112,7 @@ class MaterialControllerTest extends TestCase
             'material_id' => $material->id,
             'storage_location_id' => $data['storage_locations'][$storageLocationToExchange->pivot->id]['storage_location_id'],
         ]);
-        $this->assertDatabaseMissing('material_storage_location', ['id' => $storageLocationToDelete]);
+        $this->assertDatabaseMissing('material_storage_location', ['id' => $storageLocationToDelete->pivot->id]);
     }
 
     public function testUserCanDeleteMaterialOnlyWithCorrectAbility(): void

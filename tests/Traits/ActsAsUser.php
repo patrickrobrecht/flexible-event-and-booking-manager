@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\CoversClass;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @mixin Assert
@@ -143,10 +144,10 @@ trait ActsAsUser
     /**
      * @param Ability|Ability[] $ability
      */
-    protected function assertUserCannotGetDespiteAbility(string $route, Ability|array $ability): TestResponse
+    protected function assertUserCannotGetDespiteAbility(string $route, Ability|array $ability, ?int $statusCode = null): TestResponse
     {
         $this->actingAsUserWithAbility($ability);
-        return $this->get($route)->assertForbidden();
+        return $this->get($route)->assertStatus($statusCode ?? Response::HTTP_FORBIDDEN);
     }
 
     /**

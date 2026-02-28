@@ -121,6 +121,11 @@ class Organization extends Model
         return route('organizations.show', $this);
     }
 
+    public function getRouteForGallery(): string
+    {
+        return route('organizations.gallery', $this);
+    }
+
     public function getStoragePath(): string
     {
         return 'organizations/' . $this->id;

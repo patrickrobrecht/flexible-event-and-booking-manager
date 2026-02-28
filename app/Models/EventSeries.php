@@ -117,6 +117,11 @@ class EventSeries extends Model
         return route('event-series.show', $this);
     }
 
+    public function getRouteForGallery(): string
+    {
+        return route('event-series.gallery', $this);
+    }
+
     public function getStoragePath(): string
     {
         return 'event-series/' . $this->id;

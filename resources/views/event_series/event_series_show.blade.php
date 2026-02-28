@@ -93,7 +93,14 @@
                 <section id="documents" @class([
                     'mt-4' => !$responsibilitySectionEmpty,
                 ])>
-                    <h2><i class="fa fa-fw fa-file"></i> {{ __('Documents') }}</h2>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h2><i class="fa fa-fw fa-file"></i> {{ __('Documents') }}</h2>
+                        @if($eventSeries->hasImages())
+                            <x-bs::button.link href="{{ route('event-series.gallery', $eventSeries) }}" variant="secondary">
+                                <i class="fa fa-fw fa-images"></i> {{ __('Image gallery') }}
+                            </x-bs::button.link>
+                        @endif
+                    </div>
                     @can('viewAny', [\App\Models\Document::class, $eventSeries])
                         @include('documents.shared.document_list', [
                             'documents' => $eventSeries->documents,

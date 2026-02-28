@@ -230,6 +230,11 @@ class Event extends Model
         return route('events.show', $this);
     }
 
+    public function getRouteForGallery(): string
+    {
+        return route('events.gallery', $this);
+    }
+
     public function getStoragePath(): string
     {
         return 'events/' . $this->id;

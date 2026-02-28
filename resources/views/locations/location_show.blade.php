@@ -38,7 +38,14 @@
         <div class="col-12 col-md-8">
             @canany(['viewAny', 'create'], [\App\Models\Document::class, $location])
                 <section id="documents">
-                    <h2><i class="fa fa-fw fa-file"></i> {{ __('Documents') }}</h2>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h2><i class="fa fa-fw fa-file"></i> {{ __('Documents') }}</h2>
+                        @if($location->hasImages())
+                            <x-bs::button.link href="{{ route('locations.gallery', $location) }}" variant="secondary">
+                                <i class="fa fa-fw fa-images"></i> {{ __('Image gallery') }}
+                            </x-bs::button.link>
+                        @endif
+                    </div>
                     @can('viewAny', [\App\Models\Document::class, $location])
                         @include('documents.shared.document_list', [
                             'documents' => $location->documents,

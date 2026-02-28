@@ -98,6 +98,11 @@ class Location extends Model
         return route('locations.show', $this);
     }
 
+    public function getRouteForGallery(): string
+    {
+        return route('locations.gallery', $this);
+    }
+
     public function getStoragePath(): string
     {
         return 'locations/' . $this->id;

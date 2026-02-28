@@ -59,6 +59,12 @@
 }
 
 .carousel-caption {
+    bottom: 2.5em;
+    left: 50%;
+    width: fit-content;
+    max-width: 90%;
+    transform: translateX(-50%);
+    padding: 0.5rem 1rem;
     background: rgba(0, 0, 0, 0.5);
     border-radius: 10px;
 }

@@ -37,12 +37,12 @@
                     'active' => $loop->first
                 ])>
                     <img src="{{ route('documents.stream', $image) }}" class="d-block w-100" alt="{{ $image->title }}">
-                    @if($image->title || $image->description)
-                        <div class="carousel-caption d-none d-md-block">
-                            <h5>{{ $image->title }}</h5>
-                            <p>{{ $image->description }}</p>
-                        </div>
-                    @endif
+                    <div class="carousel-caption d-none d-md-block">
+                        <strong class="fs-6">{{ $image->title }}</strong>
+                        @if($image->description)
+                            <p class="small mb-0">{{ $image->description }}</p>
+                        @endif
+                    </div>
                 </div>
             @endforeach
         </div>

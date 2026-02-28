@@ -9,7 +9,9 @@
 @endsection
 
 @section('breadcrumbs')
-    @include('documents.shared.document_breadcrumbs')
+    @include('documents.shared.document_breadcrumbs', [
+        'reference' => $document->reference,
+    ])
     @can('view', $document)
         <x-bs::breadcrumb.item href="{{ route('documents.show', $document) }}">{{ $document->title }}</x-bs::breadcrumb.item>
     @else

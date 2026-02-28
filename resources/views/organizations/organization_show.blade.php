@@ -45,7 +45,17 @@
 
             @canany(['viewAny', 'create'], [\App\Models\Document::class, $organization])
                 <section id="documents" class="mt-4">
-                    <h2><i class="fa fa-fw fa-file"></i> {{ __('Documents') }}</h2>
+                    @php
+                        $hasImages = $organization->hasImages();
+                    @endphp
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h2><i class="fa fa-fw fa-file"></i> {{ __('Documents') }}</h2>
+                        @if($organization->hasImages())
+                            <x-bs::button.link href="{{ route('organizations.gallery', $organization) }}" variant="secondary">
+                                <i class="fa fa-fw fa-images"></i> {{ __('Image gallery') }}
+                            </x-bs::button.link>
+                        @endif
+                    </div>
                     @can('viewAny', [\App\Models\Document::class, $organization])
                         @include('documents.shared.document_list', [
                             'documents' => $organization->documents,

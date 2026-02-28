@@ -49,3 +49,35 @@
         margin-left: #{$i * 2}rem !important;
     }
 }
+
+/*
+ * Image gallery
+ */
+.carousel-inner img {
+    max-height: 80vh;
+    object-fit: contain;
+}
+
+.carousel-caption {
+    bottom: 2.5em;
+    left: 50%;
+    width: fit-content;
+    max-width: 90%;
+    transform: translateX(-50%);
+    padding: 0.5rem 1rem;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+}
+
+.gallery-thumbnails {
+    --bs-gutter-x: 0.5rem;
+
+    .card-body {
+        padding: 0.2em;
+    }
+
+    img {
+        height: 150px;
+        object-fit: cover;
+    }
+}

@@ -132,4 +132,37 @@ class DocumentController extends Controller
 
         return redirect($document->reference->getRoute());
     }
+
+    public function galleryForEvent(Event $event): View
+    {
+        return $this->gallery($event);
+    }
+
+    public function galleryForEventSeries(EventSeries $eventSeries): View
+    {
+        return $this->gallery($eventSeries);
+    }
+
+    public function galleryForLocation(Location $location): View
+    {
+        return $this->gallery($location);
+    }
+
+    public function galleryForOrganization(Organization $organization): View
+    {
+        return $this->gallery($organization);
+    }
+
+    private function gallery(Event|EventSeries|Location|Organization $reference): View
+    {
+        $this->authorize('viewAny', [Document::class, $reference]);
+
+        if (!$reference->hasImages()) {
+            abort(404);
+        }
+
+        return view('documents.document_gallery', [
+            'reference' => $reference,
+        ]);
+    }
 }

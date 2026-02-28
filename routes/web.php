@@ -88,6 +88,8 @@ Route::middleware('auth')->group(static function () {
 
         Route::post('documents', [DocumentController::class, 'storeForEvent'])
             ->name('events.documents.store');
+        Route::get('gallery', [DocumentController::class, 'galleryForEvent'])
+            ->name('events.gallery');
     });
 
     Route::model('event_series', EventSeries::class);
@@ -96,6 +98,8 @@ Route::middleware('auth')->group(static function () {
     Route::prefix('event-series/{event_series:slug}')->group(function () {
         Route::post('documents', [DocumentController::class, 'storeForEventSeries'])
             ->name('event-series.documents.store');
+        Route::get('gallery', [DocumentController::class, 'galleryForEventSeries'])
+            ->name('event-series.gallery');
     });
 
     Route::model('material', Material::class);
@@ -110,6 +114,8 @@ Route::middleware('auth')->group(static function () {
     Route::prefix('locations/{location}')->group(function () {
         Route::post('documents', [DocumentController::class, 'storeForLocation'])
             ->name('locations.documents.store');
+        Route::get('gallery', [DocumentController::class, 'galleryForLocation'])
+            ->name('locations.gallery');
     });
 
     Route::model('organization', Organization::class);
@@ -118,6 +124,8 @@ Route::middleware('auth')->group(static function () {
     Route::prefix('organizations/{organization:slug}')->group(function () {
         Route::post('documents', [DocumentController::class, 'storeForOrganization'])
             ->name('organizations.documents.store');
+        Route::get('gallery', [DocumentController::class, 'galleryForOrganization'])
+            ->name('organizations.gallery');
     });
 
     Route::model('personal_access_token', PersonalAccessToken::class);

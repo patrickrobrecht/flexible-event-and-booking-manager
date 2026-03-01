@@ -15,7 +15,7 @@
                     @else
                         {{ $document->title }}
                     @endcan
-                    <x-badge.approval-status :approval-status="$document->approval_status" class="ms-2"/>
+                    <x-badge.enum :case="$document->approval_status" class="ms-2"/>
                 </div>
                 @isset($document->description)
                     <div class="text-muted">{{ $document->description }}</div>

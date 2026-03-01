@@ -103,9 +103,7 @@
                         <x-bs::list.item>
                             <span class="text-nowrap"><i class="fa fa-fw fa-circle-question"></i> {{ __('Status') }}</span>
                             <x-slot:end>
-                                <span class="text-end">
-                                    <x-badge.active-status :active="$user->status"/>
-                                </span>
+                                <x-badge.enum :case="$user->status"/>
                             </x-slot:end>
                         </x-bs::list.item>
                         <x-bs::list.item>

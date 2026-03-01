@@ -2,7 +2,7 @@
     /** @var \App\Models\User $user */
 @endphp
 <div class="my-1">
-    <span class="text-nowrap me-3"><x-badge.active-status :active="$user->status"/></span>
+    <span class="text-nowrap me-3"><x-badge.enum :case="$user->status"/></span>
     <span class="text-nowrap me-3"><i class="fa fa-fw fa-sign-in-alt"></i> {{ __('Last login') }}
         {{ $user->last_login_at ? formatDateTime($user->last_login_at) : __('never') }}</span>
     @if($user->userRoles->isNotEmpty())

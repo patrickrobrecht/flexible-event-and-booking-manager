@@ -17,7 +17,7 @@
                     <strong><a href="{{ route('event-series.show', $eventSeriesItem->slug) }}">{{ $eventSeriesItem->name }}</a></strong>
                     <div>
                         @if($showVisibility)
-                            <x-badge.visibility :visibility="$eventSeriesItem->visibility"/>
+                            <x-badge.enum :case="$eventSeriesItem->visibility"/>
                         @endif
                         @if($showParentEventSeries && isset($eventSeriesItem->parentEventSeries))
                             <x-bs::badge variant="primary">

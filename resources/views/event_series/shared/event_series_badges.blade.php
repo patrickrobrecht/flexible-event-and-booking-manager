@@ -4,7 +4,7 @@
     $showParentEventSeries = $showParentEventSeries ?? true;
 @endphp
 @if($showVisibility)
-    <x-badge.visibility :visibility="$eventSeries->visibility"/>
+    <x-badge.enum :case="$eventSeries->visibility"/>
 @endif
 @if($showParentEventSeries && isset($eventSeries->parentEventSeries))
     <x-bs::badge variant="primary">

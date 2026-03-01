@@ -27,7 +27,7 @@
 @section('content')
     @include('documents.shared.document_delete_modal')
 
-    <x-badge.approval-status :approval-status="$document->approval_status"/>
+    <x-badge.enum :case="$document->approval_status"/>
     <x-bs::badge>
         <i class="fa fa-fw fa-user"></i>
         @include('documents.shared.document_uploaded_by', [
@@ -69,7 +69,7 @@
                                     <div>
                                         <i class="fa fa-fw fa-circle-question"></i>
                                         @isset($documentReview->approval_status)
-                                            <x-badge.approval-status :approval-status="$documentReview->approval_status"/>
+                                            <x-badge.enum :case="$documentReview->approval_status"/>
                                         @else
                                             {{ __('Approval status unchanged') }}
                                         @endisset

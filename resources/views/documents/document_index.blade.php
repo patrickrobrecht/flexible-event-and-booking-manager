@@ -94,7 +94,7 @@
                         </x-bs::list.item>
                         <x-bs::list.item>
                             <i class="fa fa-fw fa-circle-question"></i>
-                            <x-badge.approval-status :approval-status="$document->approval_status"/>
+                            <x-badge.enum :case="$document->approval_status"/>
                         </x-bs::list.item>
                     </x-bs::list>
                     @canany(['download', 'update'], $document)

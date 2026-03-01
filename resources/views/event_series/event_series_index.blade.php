@@ -76,7 +76,7 @@
                     <x-bs::list :flush="true">
                         <x-bs::list.item>
                             <i class="fa fa-fw fa-eye" title="{{ __('Visibility') }}"></i>
-                            <x-badge.visibility :visibility="$eventSeriesItem->visibility"/>
+                            <x-badge.enum :case="$eventSeriesItem->visibility"/>
                         </x-bs::list.item>
                         <x-bs::list.item>
                             <span class="text-nowrap"><i class="fa fa-fw fa-sitemap"></i> {{ __('Organization') }}</span>

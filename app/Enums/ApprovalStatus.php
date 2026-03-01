@@ -2,9 +2,10 @@
 
 namespace App\Enums;
 
+use App\Enums\Interfaces\MakesBadges;
 use App\Enums\Traits\NamedOption;
 
-enum ApprovalStatus: int
+enum ApprovalStatus: int implements MakesBadges
 {
     use NamedOption;
 
@@ -25,10 +26,10 @@ enum ApprovalStatus: int
 
     public function getIcon(): string
     {
-        return match ($this) {
-            self::WaitingForApproval, self::UnderReview => 'fa fa-fw fa-question',
-            self::Approved => 'fa fa-fw fa-thumbs-up',
-            self::ChangesRequested => 'fa fa-fw fa-thumbs-down',
+        return 'fa fa-fw ' . match ($this) {
+            self::WaitingForApproval, self::UnderReview => 'fa-question',
+            self::Approved => 'fa-thumbs-up',
+            self::ChangesRequested => 'fa-thumbs-down',
         };
     }
 

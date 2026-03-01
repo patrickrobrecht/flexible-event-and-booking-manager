@@ -95,7 +95,7 @@
                         @endisset
                         <x-bs::list.item>
                             <i class="fa fa-fw fa-eye" title="{{ __('Visibility') }}"></i>
-                            <x-badge.visibility :visibility="$event->visibility"/>
+                            <x-badge.enum :case="$event->visibility"/>
                         </x-bs::list.item>
                         <x-bs::list.item>
                             <i class="fa fa-fw fa-clock" title="{{ __('Date') }}"></i>

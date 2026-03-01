@@ -20,6 +20,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Tests\TestCase;
 
@@ -177,5 +178,29 @@ class DocumentControllerTest extends TestCase
             [fn () => self::createLocation(), Ability::DestroyDocumentsOfLocations],
             [fn () => self::createOrganization(), Ability::DestroyDocumentsOfOrganizations],
         ];
+    }
+
+    #[DataProvider('referenceClassesWithViewAbility')]
+    public function testUserCanViewGalleryWithCorrectAbility(Closure $referenceProvider, Ability $viewDocumentsAbility): void
+    {
+        /** @var Event|EventSeries|Location|Organization $reference */
+        $reference = $referenceProvider();
+        Document::factory()->create([
+            'reference_type' => $reference->getMorphClass(),
+            'reference_id' => $reference->id,
+            'file_type' => FileType::Image,
+            'uploaded_by_user_id' => self::actingAsAnyUser()->id,
+        ]);
+
+        $this->assertUserCanGetOnlyWithAbility($reference->getRouteForGallery(), $viewDocumentsAbility);
+    }
+
+    #[DataProvider('referenceClassesWithViewAbility')]
+    public function testUserCannotViewEmptyGalleryDespiteCorrectAbility(Closure $referenceProvider, Ability $viewDocumentsAbility): void
+    {
+        /** @var Event|EventSeries|Location|Organization $reference */
+        $reference = $referenceProvider();
+
+        $this->assertUserCannotGetDespiteAbility($reference->getRouteForGallery(), $viewDocumentsAbility, Response::HTTP_NOT_FOUND);
     }
 }

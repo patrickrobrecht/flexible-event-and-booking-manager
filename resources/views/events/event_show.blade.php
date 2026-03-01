@@ -98,7 +98,14 @@
                 <section id="documents" @class([
                     'mt-4' => $bookingOptionsToShow || !$responsibilitySectionEmpty,
                 ])>
-                    <h2><i class="fa fa-fw fa-file"></i> {{ __('Documents') }}</h2>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h2><i class="fa fa-fw fa-file"></i> {{ __('Documents') }}</h2>
+                        @if($event->hasImages())
+                            <x-bs::button.link href="{{ route('events.gallery', $event) }}" variant="secondary">
+                                <i class="fa fa-fw fa-images"></i> {{ __('Image gallery') }}
+                            </x-bs::button.link>
+                        @endif
+                    </div>
                     @can('viewAny', [\App\Models\Document::class, $event])
                         @include('documents.shared.document_list', [
                             'documents' => $event->documents,

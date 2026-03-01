@@ -9,7 +9,9 @@
 @endsection
 
 @section('breadcrumbs')
-    @include('documents.shared.document_breadcrumbs')
+    @include('documents.shared.document_breadcrumbs', [
+        'reference' => $document->reference,
+    ])
     <x-bs::breadcrumb.item>{{ $document->title }}</x-bs::breadcrumb.item>
 @endsection
 

@@ -1,20 +1,31 @@
 @php
-    /** @var \App\Models\Document $document */
+    use App\Enums\FileType;
+    use App\Models\Event;
+    use App\Models\EventSeries;
+    use App\Models\Location;
+    use App\Models\Organization;
+
+    /** @var Event|EventSeries|Location|Organization $reference */
 @endphp
-@if($document->reference::class === \App\Models\Event::class)
+@if($reference::class === Event::class)
     @include('events.shared.event_breadcrumbs', [
-        'event' => $document->reference,
+        'event' => $reference,
     ])
-@elseif($document->reference::class === \App\Models\EventSeries::class)
+@elseif($reference::class === EventSeries::class)
     @include('event_series.shared.event_series_breadcrumbs', [
-        'eventSeries' => $document->reference,
+        'eventSeries' => $reference,
     ])
-@elseif($document->reference::class === \App\Models\Location::class)
+@elseif($reference::class === Location::class)
     @include('locations.shared.location_breadcrumbs', [
-        'location' => $document->reference,
+        'location' => $reference,
     ])
-@elseif($document->reference::class === \App\Models\Organization::class)
+@elseif($reference::class === Organization::class)
     @include('organizations.shared.organization_breadcrumbs', [
-        'organization' => $document->reference,
+        'organization' => $reference,
     ])
 @endif
+@isset($document)
+    @if($document->file_type === FileType::Image)
+        <x-bs::breadcrumb.item href="{{ $document->reference->getRouteForGallery() }}">{{ __('Image gallery') }}</x-bs::breadcrumb.item>
+    @endif
+@endisset

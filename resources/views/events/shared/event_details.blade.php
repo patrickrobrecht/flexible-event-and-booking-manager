@@ -16,8 +16,10 @@
         </span>
         <div>
             @foreach($event->location->fullAddressBlock as $line)
-                {{ $line }}@if(!$loop->last)
-                    <br>
+                @if($loop->first && \Illuminate\Support\Facades\Auth::user()?->can('view', $event->location))
+                    <a href="{{ route('locations.show', $event->location) }}">{{ $line }}</a>
+                @else
+                    <div>{{ $line }}</div>
                 @endif
             @endforeach
         </div>

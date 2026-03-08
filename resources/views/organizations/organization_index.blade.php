@@ -77,7 +77,11 @@
                             <span class="d-inline-block">
                                 <div class="d-flex flex-column">
                                     @foreach($organization->location->fullAddressBlock as $line)
-                                        <div>{{ $line }}</div>
+                                        @if($loop->first && \Illuminate\Support\Facades\Auth::user()?->can('view', $organization->location))
+                                            <a href="{{ route('locations.show', $organization->location) }}">{{ $line }}</a>
+                                        @else
+                                            <div>{{ $line }}</div>
+                                        @endif
                                     @endforeach
                                 </div>
                             </span>

@@ -7,8 +7,10 @@
         <span class="me-3"><i class="fa fa-fw fa-location-pin" title="{{ __('Address') }}"></i></span>
         <div>
             @foreach($organization->location->fullAddressBlock as $line)
-                {{ $line }}@if(!$loop->last)
-                    <br>
+                @if($loop->first && \Illuminate\Support\Facades\Auth::user()?->can('view', $organization->location))
+                    <a href="{{ route('locations.show', $organization->location) }}">{{ $line }}</a>
+                @else
+                    <div>{{ $line }}</div>
                 @endif
             @endforeach
         </div>

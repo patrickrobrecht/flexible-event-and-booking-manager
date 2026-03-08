@@ -33,7 +33,11 @@
                     </div>
                     <div>
                         <i class="fa fa-fw fa-location-pin"></i>
-                        {{ $event->location->nameOrAddress }}
+                        @can('view', $event->location)
+                            <a href="{{ route('locations.show', $event->location) }}">{{ $event->location->nameOrAddress }}</a>
+                        @else
+                            {{ $event->location->nameOrAddress }}
+                        @endif
                     </div>
                     @isset($event->website_url)
                         <div>

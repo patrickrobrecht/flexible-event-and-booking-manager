@@ -78,6 +78,14 @@
                                         {{ $document->reference->name }}
                                     @endcan
                                     @break
+                                @case(\App\Models\Location::class)
+                                    <i class="fa fa-fw fa-location-pin"></i>
+                                    @can('view', $document->reference)
+                                        <a href="{{ route('locations.show', $document->reference) }}">{{ $document->reference->nameOrAddress }}</a>
+                                    @else
+                                        {{ $document->reference->nameOrAddress }}
+                                    @endcan
+                                    @break
                                 @case(\App\Models\Organization::class)
                                     <i class="fa fa-fw fa-sitemap"></i>
                                     @can('view', $document->reference)

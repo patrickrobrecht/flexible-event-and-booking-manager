@@ -10,20 +10,20 @@
         "barryvdh/laravel-dompdf": "^3.1",
         "guzzlehttp/guzzle": "^7.10",
         "intervention/validation": "^4.6",
-        "laravel/framework": "^12.52",
+        "laravel/framework": "^13.3",
         "laravel/sanctum": "^4.3",
-        "laravel/tinker": "^2.11",
-        "livewire/livewire": "^3.7",
-        "phpoffice/phpspreadsheet": "^5.4",
-        "portavice/bladestrap": "^1.5",
+        "laravel/tinker": "^3.0",
+        "livewire/livewire": "^4.2",
+        "phpoffice/phpspreadsheet": "^5.5",
+        "portavice/bladestrap": "^1.6",
         "spatie/laravel-query-builder": "^6.4",
         "spatie/laravel-sluggable": "^3.8",
-        "stechstudio/laravel-zipstream": "^5.7"
+        "stechstudio/laravel-zipstream": "^5.10"
     },
     "require-dev": {
         "fakerphp/faker": "^1.24",
-        "fruitcake/laravel-debugbar": "^4.0",
-        "kkomelin/laravel-translatable-string-exporter": "^1.25",
+        "fruitcake/laravel-debugbar": "^4.2",
+        "kkomelin/laravel-translatable-string-exporter": "^1.26",
         "larastan/larastan": "^3.9",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.9",
@@ -31,7 +31,7 @@
         "phpstan/phpstan-strict-rules": "^2.0",
         "phpunit/phpunit": "^12.5",
         "portavice/laravel-pint-config": "^3.0",
-        "spatie/laravel-ignition": "^2.10"
+        "spatie/laravel-ignition": "^2.12"
     },
     "autoload": {
         "files": [
@@ -101,7 +101,5 @@
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true
-    },
-    "minimum-stability": "stable",
-    "prefer-stable": true
+    }
 }

@@ -44,9 +44,10 @@ class GenerateGroupsRequest extends FormRequest
      */
     public function rules(): array
     {
+        /** @phpstan-ignore-next-line argument.type */
         $selectedBookingOptionIds = array_intersect(
             /** @phpstan-ignore-next-line argument.type */
-            $this->input('booking_option_id'),
+            array_map(static fn ($i) => is_numeric($i) ? (int) $i : null, $this->input('booking_option_id', [])),
             $this->event->getBookingOptions()->pluck('id')->toArray()
         );
 

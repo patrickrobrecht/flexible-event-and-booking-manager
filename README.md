@@ -49,7 +49,7 @@ To get started, you need to install the following software:
 - [Bladestrap](https://github.com/portavice/bladestrap), Blade components for Bootstrap
 - [Bootstrap](https://getbootstrap.com/), a front-end toolkit
 - [Font Awesome](https://github.com/FortAwesome/Font-Awesome) for [icons](https://fontawesome.com/icons?d=gallery&m=free)
-- [Laravel](https://laravel.com/docs/12.x) framework
+- [Laravel](https://laravel.com/docs/13.x) framework
 - [Laravel Dompdf](https://github.com/barryvdh/laravel-dompdf) for PDF export
 - [Laravel Livewire](https://livewire.laravel.com/docs/) for dynamic UI without leading PHP
 - [Laravel Sluggable](https://github.com/spatie/laravel-sluggable) to autogenerate slugs
@@ -71,12 +71,12 @@ To setup/update your development environment:
 For development, we use
 - [ESlint](https://eslint.org/) for the JavaScript code style check
 - [Laravel Debugbar](https://github.com/fruitcake/laravel-debugbar) for debugging utility
-- [Laravel Pint](https://laravel.com/docs/12.x/pint) for the PHP code style check
+- [Laravel Pint](https://laravel.com/docs/13.x/pint) for the PHP code style check
 - [Laravel Translatable String Exporter](https://github.com/kkomelin/laravel-translatable-string-exporter) to extract translations strings from PHP and Blade
 - [PHPStan](https://phpstan.org/) with [Larastan](https://github.com/larastan/larastan) and [strict rules extension](https://github.com/phpstan/phpstan-strict-rules) for static analysis
 - [PHPUnit](https://docs.phpunit.de/) for Unit tests
 - [Stylelint](https://stylelint.io/) for the SASS code style check
-- [Vite](https://laravel.com/docs/12.x/vite#introduction) with [Laravel](https://github.com/laravel/vite-plugin) and [static copy plugin](https://github.com/sapphi-red/vite-plugin-static-copy) for compiling and copying assets
+- [Vite](https://laravel.com/docs/13.x/vite#introduction) with [Laravel](https://github.com/laravel/vite-plugin) and [static copy plugin](https://github.com/sapphi-red/vite-plugin-static-copy) for compiling and copying assets
 
 ### Code Style
 Run `composer cs` to check compliance with the code style

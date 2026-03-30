@@ -298,6 +298,7 @@ class Booking extends Model
 
         if (isset($value)) {
             if (is_array($value)) {
+                /** @var string[] $value */
                 return implode(',', $value);
             }
 

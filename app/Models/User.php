@@ -109,8 +109,8 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function bookingsTrashed(): HasMany
     {
-        /** @phpstan-ignore-next-line method.notFound */
         return $this->bookings()
+            /** @phpstan-ignore-next-line method.notFound */
             ->onlyTrashed();
     }
 

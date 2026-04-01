@@ -20,7 +20,7 @@ trait Sortable
             $countColumn,
             static fn (Builder $query, bool $descending, string $property) => $query
                 ->withCount($relation)
-                ->orderBy($countColumn, $descending ? SortDirection::DESCENDING : SortDirection::ASCENDING),
+                ->orderBy($countColumn, self::sortDirection($descending)),
         );
     }
 
@@ -61,6 +61,11 @@ trait Sortable
         }
 
         return null;
+    }
+
+    public static function sortDirection(bool $descending): string
+    {
+        return $descending ? SortDirection::Descending->value : SortDirection::Ascending->value;
     }
 
     public static function sortOptions(): SortOptions

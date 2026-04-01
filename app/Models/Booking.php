@@ -31,7 +31,6 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedSort;
-use Spatie\QueryBuilder\Enums\SortDirection;
 
 /**
  * @property-read int $id
@@ -388,8 +387,8 @@ class Booking extends Model
                 AllowedSort::callback(
                     'name',
                     static fn (Builder $query, bool $descending, string $property) => $query
-                        ->orderBy('last_name', $descending ? SortDirection::DESCENDING : SortDirection::ASCENDING)
-                        ->orderBy('first_name', $descending ? SortDirection::DESCENDING : SortDirection::ASCENDING)
+                        ->orderBy('last_name', self::sortDirection($descending))
+                        ->orderBy('first_name', self::sortDirection($descending))
                 ),
                 true
             )

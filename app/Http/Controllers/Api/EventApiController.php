@@ -35,6 +35,7 @@ class EventApiController extends Controller
         return [
             'eventSeries',
             'location',
+            'organization',
             'organization.location',
             'parentEvent',
             'subEvents',

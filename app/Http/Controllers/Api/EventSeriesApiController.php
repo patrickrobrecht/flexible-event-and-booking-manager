@@ -34,6 +34,7 @@ class EventSeriesApiController extends Controller
     protected function allowedIncludeRelations(): array
     {
         return [
+            'organization',
             'organization.location',
             'parentEventSeries',
             'subEventSeries',

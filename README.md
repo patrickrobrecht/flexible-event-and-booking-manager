@@ -53,7 +53,7 @@ To get started, you need to install the following software:
 - [Laravel Dompdf](https://github.com/barryvdh/laravel-dompdf) for PDF export
 - [Laravel Livewire](https://livewire.laravel.com/docs/) for dynamic UI without leading PHP
 - [Laravel Sluggable](https://github.com/spatie/laravel-sluggable) to autogenerate slugs
-- [Laravel Query Builder](https://spatie.be/docs/laravel-query-builder/v6/introduction) for custom filtering and sorting
+- [Laravel Query Builder](https://spatie.be/docs/laravel-query-builder/v7/introduction) for custom filtering and sorting
 - [Laravel Zipstream](https://github.com/stechstudio/laravel-zipstream) to create and stream zip files
 - [PhpSpreadsheet](https://phpspreadsheet.readthedocs.io/en/stable/) for Excel exports
 - [RapiDoc](https://github.com/rapi-doc/RapiDoc) for Open API documentation

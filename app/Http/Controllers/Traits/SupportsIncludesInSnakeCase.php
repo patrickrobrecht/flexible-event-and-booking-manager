@@ -31,17 +31,12 @@ trait SupportsIncludesInSnakeCase
     }
 
     /**
-     * @return array<int, Collection<int, AllowedInclude>>
+     * @return array<int, AllowedInclude>
      */
     protected function allowedIncludeCountsToSnake(): array
     {
         return array_map(
-            static function (string $relationName) {
-                return AllowedInclude::count(
-                    Str::snake($relationName . 'Count'),
-                    $relationName
-                );
-            },
+            static fn (string $relationName) => AllowedInclude::count(Str::snake($relationName . 'Count'), $relationName),
             $this->allowedIncludeCounts()
         );
     }
@@ -55,31 +50,18 @@ trait SupportsIncludesInSnakeCase
     }
 
     /**
-     * @return array<int, Collection<int, AllowedInclude>>
+     * @return array<int, AllowedInclude>
      */
     protected function allowedIncludeRelationsToSnake(): array
     {
         return array_map(
-            static function (string $relationName) {
-                /** @var Collection<int, AllowedInclude> $includesForRelation */
-                $includesForRelation = AllowedInclude::relationship(
-                    Str::snake($relationName),
-                    $relationName
-                );
-                return $includesForRelation
-                    ->filter(
-                        /** @phpstan-ignore argument.type */
-                        fn (AllowedInclude $allowedInclude) => !str_ends_with($allowedInclude->getName(), config('query-builder.count_suffix'))
-                            /** @phpstan-ignore argument.type */
-                            && !str_ends_with($allowedInclude->getName(), config('query-builder.exists_suffix'))
-                    );
-            },
+            static fn (string $relationName) => AllowedInclude::relationship(Str::snake($relationName), $relationName),
             $this->allowedIncludeRelations()
         );
     }
 
     /**
-     * @return array<int, Collection<int, AllowedInclude>>
+     * @return array<int, AllowedInclude>
      */
     protected function allowedIncludesToSnake(): array
     {
@@ -99,7 +81,7 @@ trait SupportsIncludesInSnakeCase
     protected function loadPaginatedListWithIncludes(FormRequest $request, QueryBuilder $query): LengthAwarePaginator
     {
         return $query
-            ->allowedIncludes($this->allowedIncludesToSnake())
+            ->allowedIncludes(...$this->allowedIncludesToSnake())
             ->paginate()
             ->appends($request->query());
     }

@@ -5,7 +5,7 @@ namespace App\Traits;
 use Illuminate\Support\Facades\Session;
 
 /**
- * @property-read array<string,string> $propertiesSavedInSession
+ * @property-read array<string,string>|null $propertiesSavedInSession
  */
 trait LoadsPropertiesFromSession
 {
@@ -30,7 +30,7 @@ trait LoadsPropertiesFromSession
 
     public function loadSettingsFromSession(): void
     {
-        foreach ($this->propertiesSavedInSession ?? [] as $propertyName => $expectedType) {
+        foreach ($this->propertiesSavedInSession as $propertyName => $expectedType) {
             $value = $this->getValidatedValue($propertyName, $expectedType);
             if (isset($value)) {
                 /** @phpstan-ignore property.dynamicName */
@@ -41,7 +41,7 @@ trait LoadsPropertiesFromSession
 
     public function storeSettingsInSession(): void
     {
-        foreach (array_keys($this->propertiesSavedInSession ?? []) as $propertyName) {
+        foreach (array_keys($this->propertiesSavedInSession) as $propertyName) {
             /** @phpstan-ignore property.dynamicName */
             Session::put($this->getSessionKey($propertyName), $this->{$propertyName});
         }

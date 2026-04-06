@@ -25,8 +25,8 @@ class SendPaymentRemindersCommandTest extends TestCase
 
     public function testCommandRunsWithNoOverdueBookings(): void
     {
-        /** @phpstan-ignore method.nonObject */
         $this->artisan('app:send-payment-reminders')
+            /** @phpstan-ignore method.nonObject */
             ->expectsOutput('There are no booking options with unpaid bookings to check.')
             ->assertSuccessful();
     }
@@ -38,8 +38,8 @@ class SendPaymentRemindersCommandTest extends TestCase
 
         $booking = $this->fakeUnpaidBooking();
 
-        /** @phpstan-ignore method.nonObject */
         $this->artisan('app:send-payment-reminders')
+            /** @phpstan-ignore method.nonObject */
             ->expectsOutputToContain("Sent reminder to {$booking->email} for booking {$booking->id}.")
             ->assertSuccessful();
         Notification::assertSentTo(new AnonymousNotifiable(), PaymentReminderNotification::class, static function ($notification) use ($booking) {
@@ -56,8 +56,8 @@ class SendPaymentRemindersCommandTest extends TestCase
 
         $booking = $this->fakeUnpaidBooking();
 
-        /** @phpstan-ignore method.nonObject */
         $this->artisan('app:send-payment-reminders --dry-run')
+            /** @phpstan-ignore method.nonObject */
             ->expectsOutputToContain("Reminder to {$booking->email} for booking {$booking->id} not sent because it's a dry run.")
             ->assertSuccessful();
         Notification::assertNothingSent();
@@ -74,8 +74,8 @@ class SendPaymentRemindersCommandTest extends TestCase
         $waitingListBooking = $this->fakeUnpaidBooking();
         $waitingListBooking->update(['status' => BookingStatus::Waiting]);
 
-        /** @phpstan-ignore method.nonObject */
         $this->artisan('app:send-payment-reminders')
+            /** @phpstan-ignore method.nonObject */
             ->expectsOutputToContain("Sent reminder to {$confirmedBooking->email} for booking {$confirmedBooking->id}.")
             ->doesntExpectOutputToContain("Sent reminder to {$waitingListBooking->email} for booking {$waitingListBooking->id}.")
             ->assertSuccessful();

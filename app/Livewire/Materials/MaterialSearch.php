@@ -42,7 +42,7 @@ class MaterialSearch extends Component
             $materialQuery = Material::query()
                 /** @see Material::scopeNameAndDescription() */
                 ->nameAndDescription(...$searchTerms);
-            if (isset($this->organization_id) && $this->organization_id !== FilterValue::All->value) {
+            if ($this->organization_id !== FilterValue::All->value) {
                 $materialQuery->where('organization_id', '=', $this->organization_id);
             }
             $materials = $materialQuery

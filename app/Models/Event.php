@@ -289,10 +289,10 @@ class Event extends Model
                 AllowedSort::callback(
                     'period',
                     static fn (Builder $query, bool $descending, string $property) => $query
-                        ->orderBy('started_at', $descending ? SortDirection::DESCENDING : SortDirection::ASCENDING)
-                        ->orderBy('finished_at', $descending ? SortDirection::DESCENDING : SortDirection::ASCENDING)
+                        ->orderBy('started_at', self::sortDirection($descending))
+                        ->orderBy('finished_at', self::sortDirection($descending))
                 )
-                ->defaultDirection(SortDirection::DESCENDING),
+                ->defaultDirection(SortDirection::Descending),
                 true
             );
     }

@@ -28,15 +28,15 @@ trait BuildsQueryFromRequest
     {
         $defaultSorts = self::defaultSorts();
         if (count($defaultSorts) === 0) {
-            $defaultSorts = self::firstAllowedSort();
+            $defaultSorts = [self::firstAllowedSort()];
         }
-        /** @phpstan-var AllowedSort|non-empty-array<AllowedSort> $defaultSorts */
+        /** @phpstan-var non-empty-array<AllowedSort|string> $defaultSorts */
 
         /** @phpstan-ignore-next-line argument.type */
         return QueryBuilder::for($subject ?? self::class)
-            ->allowedFilters(self::allowedFilters())
-            ->allowedSorts(self::allowedSorts())
-            ->defaultSorts($defaultSorts);
+            ->allowedFilters(...self::allowedFilters())
+            ->allowedSorts(...self::allowedSorts())
+            ->defaultSorts(...$defaultSorts);
     }
 
     /**

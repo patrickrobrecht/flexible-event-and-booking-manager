@@ -32,9 +32,9 @@ class ManageGroupsTest extends TestCase
         $event = self::createEventWithBookingOptions();
         $this->actingAsUserWithAbility(Ability::ManageGroupsOfEvent);
 
-        /** @phpstan-ignore method.notFound */
         $testComponent = Livewire::test(ManageGroups::class, ['event' => $event])
             ->assertOk()
+            /** @phpstan-ignore method.notFound */
             ->assertSet('sort', 'name')
             ->assertSet('bookingOptionIds', $event->bookingOptions->pluck('id')->toArray())
             ->assertSet('showBookingData', ['booked_at'])
@@ -61,9 +61,9 @@ class ManageGroupsTest extends TestCase
         Session::put('groups-settings-' . $event->id . '-bookingOptionIds', $selectedBookingOptionIds);
         Session::put('groups-settings-' . $event->id . '-showBookingData', ['comment', 'email']);
 
-        /** @phpstan-ignore method.notFound */
         $testComponent = Livewire::test(ManageGroups::class, ['event' => $event])
             ->assertOk()
+            /** @phpstan-ignore method.notFound */
             ->assertSet('sort', 'date_of_birth')
             ->assertSet('bookingOptionIds', $selectedBookingOptionIds)
             ->assertSet('showBookingData', ['comment', 'email'])

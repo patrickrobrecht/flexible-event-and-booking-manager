@@ -37,7 +37,10 @@ class BookingFilterRequest extends FormRequest
         }
 
         return [
-            'filter.search' => $this->ruleForText(),
+            'filter.name' => $this->ruleForText(),
+            'filter.phone' => $this->ruleForText(),
+            'filter.email' => $this->ruleForText(),
+            'filter.postal_code' => $this->ruleForText(),
             'filter.payment_status' => $this->ruleForAllowedOrExistsInEnum(PaymentStatus::class, [FilterValue::All->value]),
             'filter.group_id' => $this->ruleForAllowedOrExistsInDatabase($groupQuery, [FilterValue::All->value]),
             'filter.trashed' => [

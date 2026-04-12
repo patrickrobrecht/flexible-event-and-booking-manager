@@ -31,8 +31,16 @@
                                   :from-query="true">{{ __('Name') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-sm-6 col-xl-3">
+                <x-bs::form.field id="phone" name="filter[phone]" type="text"
+                                  :from-query="true"><i class="fa fa-fw fa-phone"></i> {{ __('Phone number') }}</x-bs::form.field>
+            </div>
+            <div class="col-12 col-sm-6 col-xl-3">
                 <x-bs::form.field id="email" name="filter[email]" type="text"
                                   :from-query="true"><i class="fa fa-fw fa-at"></i> {{ __('E-mail') }}</x-bs::form.field>
+            </div>
+            <div class="col-12 col-sm-6 col-xl-3">
+                <x-bs::form.field id="postal_code" name="filter[postal_code]" type="text"
+                                  :from-query="true">{{ __('Postal code') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-sm-6 col-xl-3">
                 <x-bs::form.field id="user_role_id" name="filter[user_role_id]" type="select"

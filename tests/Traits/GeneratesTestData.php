@@ -345,6 +345,15 @@ trait GeneratesTestData
             ->create();
     }
 
+    /**
+     * @param array<string, mixed> $attributes
+     */
+    public static function createUser(array $attributes = []): User
+    {
+        return User::factory()
+            ->create($attributes);
+    }
+
     public static function createUserResponsibleFor(Event|EventSeries|Organization $responsibleFor): User
     {
         return User::factory()

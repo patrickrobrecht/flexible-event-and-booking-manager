@@ -312,8 +312,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             /** @see User::scopeName() */
             AllowedFilter::scope('name'),
+            AllowedFilter::partial('phone'),
             /** @see User::scopeEmail() */
             AllowedFilter::scope('email'),
+            /** @see self::scopePostalCode() */
+            AllowedFilter::scope('postal_code'),
             /** @see User::scopeUserRole() */
             AllowedFilter::scope('user_role_id', 'userRole')
                 ->default(FilterValue::All->value),

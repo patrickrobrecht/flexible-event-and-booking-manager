@@ -25,7 +25,9 @@ class UserFilterRequest extends FormRequest
     {
         return [
             'filter.name' => $this->ruleForText(),
+            'filter.phone' => $this->ruleForText(),
             'filter.email' => $this->ruleForText(),
+            'filter.postal_code' => $this->ruleForText(),
             'filter.user_role_id' => $this->ruleForAllowedOrExistsInDatabase(UserRole::query(), FilterValue::values()),
             'filter.status' => $this->ruleForAllowedOrExistsInEnum(ActiveStatus::class, [FilterValue::All->value]),
             'sort' => [

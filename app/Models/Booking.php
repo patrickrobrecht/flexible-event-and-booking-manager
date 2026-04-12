@@ -347,6 +347,8 @@ class Booking extends Model
         return [
             /** @see self::scopeName() */
             AllowedFilter::scope('name'),
+            AllowedFilter::partial('phone'),
+            AllowedFilter::partial('email'),
             /** @see self::scopePostalCode() */
             AllowedFilter::scope('postal_code'),
             /** @see self::scopeGroup() */

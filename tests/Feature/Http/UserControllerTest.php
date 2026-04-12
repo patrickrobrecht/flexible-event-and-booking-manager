@@ -16,6 +16,7 @@ use Closure;
 use Illuminate\Support\Facades\Notification;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Tests\Feature\Http\Traits\FiltersUsers;
 use Tests\TestCase;
 
 #[CoversClass(AccountCreatedNotification::class)]
@@ -29,14 +30,33 @@ use Tests\TestCase;
 #[CoversClass(UserRole::class)]
 class UserControllerTest extends TestCase
 {
+    use FiltersUsers;
+
     public function testUserCanViewUsersOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('/users', Ability::ViewUsers);
     }
 
+    /**
+     * @param list<string>|string $assertSee
+     * @param list<string>|string $assertDontSee
+     */
+    #[DataProvider('userFilters')]
+    public function testUserCanFilterUsers(string $filter, array|string $assertSee, array|string $assertDontSee): void
+    {
+        $this->actingAsUserWithAbility(Ability::ViewUsers);
+        array_map(static fn (array $data) => self::createUser($data), self::exampleUserData());
+
+        $this->get("/users?{$filter}")
+            ->assertOk()
+            ->assertSeeText($assertSee)
+            ->assertDontSeeText($assertDontSee);
+    }
+
     public function testUserCanViewSingleUserOnlyWithCorrectAbility(): void
     {
-        $this->assertUserCanGetOnlyWithAbility("/users/{$this->createRandomUser()->id}", Ability::ViewUsers);
+        $user = self::createUser();
+        $this->assertUserCanGetOnlyWithAbility("/users/{$user->id}", Ability::ViewUsers);
     }
 
     public function testUserCanOpenCreateUserFormOnlyWithCorrectAbility(): void
@@ -96,12 +116,13 @@ class UserControllerTest extends TestCase
 
     public function testUserCanOpenEditUserFormOnlyWithCorrectAbility(): void
     {
-        $this->assertUserCanGetOnlyWithAbility("/users/{$this->createRandomUser()->id}/edit", Ability::EditUsers);
+        $user = self::createUser();
+        $this->assertUserCanGetOnlyWithAbility("/users/{$user->id}/edit", Ability::EditUsers);
     }
 
     public function testUserCanUpdateUserOnlyWithCorrectAbility(): void
     {
-        $user = $this->createRandomUser();
+        $user = self::createUser();
         $data = self::makeData(User::factory());
 
         $this->assertUserCanPutOnlyWithAbility(
@@ -162,10 +183,5 @@ class UserControllerTest extends TestCase
             [fn () => self::createUserResponsibleFor(self::createEventSeries()), 'kann nicht gelöscht werden, weil er/sie für 1 Veranstaltungsreihe verantwortlich ist.'],
             [fn () => self::createUserResponsibleFor(self::createOrganization()), 'kann nicht gelöscht werden, weil er/sie für 1 Organisation verantwortlich ist.  '],
         ];
-    }
-
-    private function createRandomUser(): User
-    {
-        return User::factory()->create();
     }
 }

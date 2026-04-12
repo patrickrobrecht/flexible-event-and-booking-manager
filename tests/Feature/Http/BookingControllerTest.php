@@ -29,6 +29,8 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Tests\Feature\Http\Traits\FiltersUsers;
 use Tests\TestCase;
 
 #[CoversClass(Booking::class)]
@@ -51,6 +53,8 @@ use Tests\TestCase;
 #[CoversClass(SendBookingConfirmation::class)]
 class BookingControllerTest extends TestCase
 {
+    use FiltersUsers;
+
     public function testUserCanViewBookingsOfEventOnlyWithCorrectAbility(): void
     {
         $bookingOption = self::createBookingOptionForEvent();
@@ -66,6 +70,23 @@ class BookingControllerTest extends TestCase
 
         // Cleanup generated PDFs.
         self::assertTrue(Storage::disk('local')->deleteDirectory($bookingOption->getFilePath()));
+    }
+
+    /**
+     * @param list<string>|string $assertSee
+     * @param list<string>|string $assertDontSee
+     */
+    #[DataProvider('userFilters')]
+    public function testUserCanFilterBookings(string $filter, array|string $assertSee, array|string $assertDontSee): void
+    {
+        $this->actingAsUserWithAbility(Ability::ViewBookingsOfEvent);
+        $bookingOption = self::createBookingOptionForEvent();
+        array_map(static fn (array $data) => self::createBooking($bookingOption, $data), self::exampleUserData());
+
+        $this->get("/events/{$bookingOption->event->slug}/{$bookingOption->slug}/bookings?{$filter}")
+            ->assertOk()
+            ->assertSeeText($assertSee)
+            ->assertDontSeeText($assertDontSee);
     }
 
     public function testUserCanExportBookingsOfEventOnlyWithCorrectAbility(): void

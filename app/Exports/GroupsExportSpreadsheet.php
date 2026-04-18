@@ -53,7 +53,6 @@ class GroupsExportSpreadsheet extends Spreadsheet
 
         /**
          * @var Collection<int, int> $rows
-         * @phpstan-ignore-next-line varTag.type
          */
         $rows = Collection::range(0, $rowCount - 1);
         self::fillSheetFromCollection(

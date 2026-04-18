@@ -25,7 +25,7 @@ class BookingFactory extends Factory
             'city' => fake()->city(),
             'country' => fake()->country(),
             'phone' => fake()->phoneNumber(),
-            'email' => sprintf('%s.%s@%s', Str::slug($firstName), Str::slug($lastName), fake()->unique()->domainName()),
+            'email' => sprintf('%s.%s@%s', Str::slug($firstName), Str::slug($lastName), fake()->domainName()),
             'date_of_birth' => fake()->date(),
             'booked_at' => $this->faker->dateTime(),
             'comment' => $this->faker->optional()->text(),

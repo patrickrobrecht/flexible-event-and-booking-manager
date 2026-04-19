@@ -3,7 +3,9 @@
 namespace Tests\Feature\Http;
 
 use App\Enums\Ability;
+use App\Exports\StorageLocationsExportSpreadsheet;
 use App\Http\Controllers\StorageLocationController;
+use App\Http\Requests\Filters\StorageLocationFilterRequest;
 use App\Http\Requests\StorageLocationRequest;
 use App\Models\StorageLocation;
 use App\Policies\StorageLocationPolicy;
@@ -15,6 +17,8 @@ use Tests\TestCase;
 
 #[CoversClass(StorageLocation::class)]
 #[CoversClass(StorageLocationController::class)]
+#[CoversClass(StorageLocationsExportSpreadsheet::class)]
+#[CoversClass(StorageLocationFilterRequest::class)]
 #[CoversClass(StorageLocationPolicy::class)]
 #[CoversClass(StorageLocationRequest::class)]
 class StorageLocationControllerTest extends TestCase
@@ -24,6 +28,13 @@ class StorageLocationControllerTest extends TestCase
     public function testUserCanViewStorageLocationsOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('/storage-locations', Ability::ViewStorageLocations);
+    }
+
+    public function testUserCanExportStorageLocationsOnlyWithCorrectAbility(): void
+    {
+        $this->assertUserCanGetOnlyWithAbility('/storage-locations?output=export', Ability::ViewStorageLocations)
+            ->assertHeader('content-type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            ->assertHeader('content-disposition', "attachment; filename=Lagerplatze.xlsx; filename*=utf-8''Lagerpl%C3%A4tze.xlsx");
     }
 
     public function testUserCanViewSingleStorageLocationOnlyWithCorrectAbility(): void

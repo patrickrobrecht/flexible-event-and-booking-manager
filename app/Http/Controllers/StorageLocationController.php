@@ -2,28 +2,53 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\StorageLocationsExportSpreadsheet;
+use App\Http\Controllers\Traits\StreamsExport;
+use App\Http\Requests\Filters\StorageLocationFilterRequest;
 use App\Http\Requests\StorageLocationRequest;
 use App\Models\StorageLocation;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
 use Portavice\Bladestrap\Support\ValueHelper;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class StorageLocationController extends Controller
 {
-    public function index(): View
+    use StreamsExport;
+
+    public function index(StorageLocationFilterRequest $request): StreamedResponse|View
     {
         $this->authorize('viewAny', StorageLocation::class);
         ValueHelper::setDefaults(StorageLocation::defaultValuesForQuery());
 
+        /** @var Builder<StorageLocation> $storageLocationsQuery */
+        $storageLocationsQuery = StorageLocation::buildQueryFromRequest()
+            ->with(StorageLocation::relationsForChildStorageLocationsAndMaterial());
+
+        $output = $request->query('output');
+        if ($output === 'export') {
+            return $this->streamExcelExport(
+                new StorageLocationsExportSpreadsheet(
+                    $storageLocationsQuery
+                        ->whereNull('parent_storage_location_id')
+                        ->with([
+                            'parentStorageLocation',
+                            'materials',
+                        ])
+                        ->get()
+                ),
+                __('Storage locations') . '.xlsx',
+            );
+        }
+
         return view('storage_locations.storage_location_index', [
-            'storageLocations' => StorageLocation::buildQueryFromRequest()
-                ->whereNull('parent_storage_location_id')
-                ->with(StorageLocation::relationsForChildStorageLocationsAndMaterial())
+            'storageLocations' => $storageLocationsQuery
                 ->withCount([
                     'materials',
                 ])
-                ->paginate(5),
+                ->paginate(ValueHelper::getFromQueryOrDefault('sort') === StorageLocation::HIERARCHICAL ? 5 : 20),
         ]);
     }
 

@@ -326,10 +326,14 @@ trait GeneratesTestData
             ->create();
     }
 
+    /**
+     * @param array<string, mixed> $attributes
+     */
     protected static function createStorageLocation(
         ?StorageLocation $parentStorageLocation = null,
         int $childStorageLocationsCount = 0,
         int $materialsCount = 0,
+        array $attributes = [],
     ): StorageLocation {
         return StorageLocation::factory()
             ->has(
@@ -342,7 +346,7 @@ trait GeneratesTestData
                 'materials'
             )
             ->forParentStorageLocation($parentStorageLocation)
-            ->create();
+            ->create($attributes);
     }
 
     /**

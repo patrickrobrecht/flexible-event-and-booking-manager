@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Enums\FilterValue;
 use App\Enums\MaterialStatus;
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
+use App\Models\QueryBuilder\SortOptions;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,8 +14,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Arr;
 use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\AllowedSort;
 
 /**
  * @property-read int $id
@@ -33,6 +35,8 @@ class StorageLocation extends Model
 {
     use BuildsQueryFromRequest;
     use HasFactory;
+
+    public const string HIERARCHICAL = 'hierarchical';
 
     public const int MAX_CHILD_LEVELS = 5;
 
@@ -125,14 +129,16 @@ class StorageLocation extends Model
      */
     public function getDescendants(): array
     {
-        $descendants = [
-            $this->childStorageLocations,
-        ];
+        $descendants = [];
         foreach ($this->childStorageLocations as $childStorageLocation) {
-            $descendants[] = $childStorageLocation->getDescendants();
+            $descendants = [
+                ...$descendants,
+                $childStorageLocation,
+                ...$childStorageLocation->getDescendants(),
+            ];
         }
 
-        return Arr::flatten($descendants);
+        return $descendants;
     }
 
     /**
@@ -176,16 +182,6 @@ class StorageLocation extends Model
     }
 
     /**
-     * @return array<int, string>
-     */
-    public static function defaultSorts(): array
-    {
-        return [
-            'name',
-        ];
-    }
-
-    /**
      * @return array<string, string>
      */
     public static function filterOptions(): array
@@ -198,6 +194,26 @@ class StorageLocation extends Model
     }
 
     /**
+     * @param Collection<int, self> $collection
+     *
+     * @return Collection<int, self>
+     */
+    public static function flatten(Collection $collection): Collection
+    {
+        $result = [];
+
+        foreach ($collection as $storageLocation) {
+            $result = [
+                ...$result,
+                $storageLocation,
+                ...$storageLocation->getDescendants(),
+            ];
+        }
+
+        return Collection::make($result);
+    }
+
+    /**
      * @return array<int, string>
      */
     public static function relationsForChildStorageLocationsAndMaterial(): array
@@ -205,5 +221,20 @@ class StorageLocation extends Model
         return \Illuminate\Support\Collection::make(range(0, self::MAX_CHILD_LEVELS))
             ->map(fn ($i) => str_repeat('childStorageLocations.', self::MAX_CHILD_LEVELS - $i) . 'materials')
             ->all();
+    }
+
+    public static function sortOptions(): SortOptions
+    {
+        return self::sortOptionsForNameAndTimeStamps()
+            ->addAscending(
+                __('hierarchical'),
+                AllowedSort::callback(
+                    self::HIERARCHICAL,
+                    static fn (Builder $query, bool $ascending, string $property) => $query
+                        ->whereNull('parent_storage_location_id')
+                        ->orderBy('name')
+                ),
+                true
+            );
     }
 }

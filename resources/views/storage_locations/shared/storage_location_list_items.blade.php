@@ -2,11 +2,12 @@
     use App\Models\StorageLocation;
     use Illuminate\Database\Eloquent\Collection;
 
-    /** @var Collection<StorageLocation> $storageLocations */
-
     /* @var int $marginLevel */
     $headlineLevel = $marginLevel + 2;
     $headlineTag = $headlineLevel <= 6 ? "h{$headlineLevel}" : 'strong';
+
+    /** @var Collection<StorageLocation> $storageLocations */
+    /** @var bool $showChildren */
 @endphp
 
 @foreach($storageLocations as $storageLocation)
@@ -49,8 +50,11 @@
             <x-text.updated-human-diff :model="$storageLocation"/>
         </div>
     </x-bs::list.item>
-    @include('storage_locations.shared.storage_location_list_items', [
-        'storageLocations' => $storageLocation->childStorageLocations,
-        'marginLevel' => $marginLevel + 1,
-    ])
+    @if($showChildren)
+        @include('storage_locations.shared.storage_location_list_items', [
+            'storageLocations' => $storageLocation->childStorageLocations,
+            'marginLevel' => $marginLevel + 1,
+            'showChildren' => $showChildren,
+        ])
+    @endif
 @endforeach

@@ -19,6 +19,7 @@ class StorageLocationsExportSpreadsheet extends Spreadsheet
 
         $this->setMetaData(__('Storage locations'));
 
+        $worksheet = $this->getActiveSheet();
         self::fillSheetFromCollection(
             $this->getActiveSheet(),
             __('Storage locations'),
@@ -26,6 +27,13 @@ class StorageLocationsExportSpreadsheet extends Spreadsheet
             $this->getHeaderColumns(),
             fn (StorageLocation $storageLocation) => $this->getColumnsForRow($storageLocation)
         );
+        self::setColumnWidths($worksheet, [
+            'A' => 5,
+            'B' => 5,
+            'C' => 4,
+            'D' => 4,
+            'E' => 8,
+        ]);
     }
 
     /**

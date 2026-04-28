@@ -99,6 +99,7 @@
                 @include('storage_locations.shared.storage_location_list_items', [
                     'marginLevel' => 0,
                     'storageLocations' => $storageLocation->childStorageLocations,
+                    'showChildren' => true,
                 ])
             </x-bs::list>
         </section>

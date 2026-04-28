@@ -6,7 +6,6 @@ use App\Enums\MaterialStatus;
 use App\Exports\MaterialsExportSpreadsheet;
 use App\Models\Material;
 use App\Models\StorageLocation;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
@@ -14,8 +13,6 @@ use Tests\TestCase;
 #[CoversClass(MaterialsExportSpreadsheet::class)]
 class MaterialsExportSpreadsheetTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testSpreadsheetContainsMaterialWhichDoesNotHaveAnyStorageLocation(): void
     {
         $material = self::createMaterial(0);

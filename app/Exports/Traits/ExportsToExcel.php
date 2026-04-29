@@ -5,6 +5,7 @@ namespace App\Exports\Traits;
 use Closure;
 use Illuminate\Support\Collection;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 /**
@@ -33,21 +34,21 @@ trait ExportsToExcel
         Collection $collection,
         array $headerColumns,
         Closure $rowProvider
-    ): Worksheet {
-        $worksheet->setTitle(substr(str_replace(['*', ':', '/', '\\', '?', '[', ']'], '', $title), 0, 31));
+    ): void {
+        self::setTitle($worksheet, $title);
+        self::setPageLayout($worksheet);
+
         $worksheet->fromArray([
-            [$title],
+            [$title], // Row 1
             [],
-            $headerColumns,
+            $headerColumns, // Row 3
             ...$collection->map($rowProvider),
         ]);
 
         $columnCount = count($headerColumns);
         self::formatHeadline($worksheet, $columnCount);
-        $worksheet->setAutoFilter([1, 3, $columnCount, 3]);
-        self::setAutoSizeForColumns($worksheet, $columnCount);
-
-        return $worksheet;
+        self::formatHeaderColumns($worksheet, $columnCount);
+        self::setTextWrapping($worksheet, $columnCount, $collection->count() + 3);
     }
 
     public static function formatHeadline(Worksheet $worksheet, int $columnCount): void
@@ -58,10 +59,56 @@ trait ExportsToExcel
         $worksheet->getCell('A1')->getStyle()->getFont()->getColor()->setRGB('44546A');
     }
 
+    public static function formatHeaderColumns(Worksheet $worksheet, int $columnCount): void
+    {
+        self::formatBold($worksheet, 3, $columnCount);
+        $worksheet->setAutoFilter([1, 3, $columnCount, 3]);
+    }
+
+    public static function formatBold(Worksheet $worksheet, int $rowIndex, int $columnCount): void
+    {
+        $worksheet->getStyle([1, $rowIndex, $columnCount, $rowIndex])
+            ->getFont()
+            ->setBold(true);
+    }
+
+    /**
+     * @param array<string, float|int> $columns
+     */
+    public static function setColumnWidths(Worksheet $worksheet, array $columns): void
+    {
+        foreach ($columns as $column => $width) {
+            $worksheet->getColumnDimension($column)->setAutoSize(false);
+            $worksheet->getColumnDimension($column)->setWidth($width, 'cm');
+        }
+    }
+
     public static function setAutoSizeForColumns(Worksheet $worksheet, int $columnCount): void
     {
         foreach (range(1, $columnCount) as $column) {
             $worksheet->getColumnDimensionByColumn($column)->setAutoSize(true);
         }
+    }
+
+    public static function setPageLayout(Worksheet $worksheet): void
+    {
+        $worksheet->getPageSetup()
+            ->setPaperSize(PageSetup::PAPERSIZE_A4)
+            ->setOrientation(PageSetup::ORIENTATION_LANDSCAPE);
+        $worksheet->getPageMargins()
+            ->setLeft(0.39) // ~1cm
+            ->setRight(0.39);
+    }
+
+    public static function setTextWrapping(Worksheet $worksheet, int $columnCount, int $rowCount): void
+    {
+        $worksheet->getStyle([1, 1, $columnCount, $rowCount])
+            ->getAlignment()
+            ->setWrapText(true);
+    }
+
+    public static function setTitle(Worksheet $worksheet, string $title): void
+    {
+        $worksheet->setTitle(substr(str_replace(['*', ':', '/', '\\', '?', '[', ']'], '', $title), 0, 31));
     }
 }

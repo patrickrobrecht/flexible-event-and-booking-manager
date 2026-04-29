@@ -33,8 +33,9 @@ class MaterialsExportSpreadsheet extends Spreadsheet
             }
         }
 
+        $worksheet = $this->getActiveSheet();
         self::fillSheetFromCollection(
-            $this->getActiveSheet(),
+            $worksheet,
             __('Materials'),
             $materialsWithStorageData,
             $this->getHeaderColumns(),
@@ -43,6 +44,15 @@ class MaterialsExportSpreadsheet extends Spreadsheet
                 return $this->getColumnsForRow($material, $storageLocation);
             }
         );
+        self::setColumnWidths($worksheet, [
+            'A' => 5.5,
+            'B' => 4.5,
+            'C' => 3,
+            'D' => 5,
+            'E' => 2,
+            'F' => 2,
+            'G' => 4,
+        ]);
     }
 
     /**

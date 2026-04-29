@@ -23,13 +23,16 @@ class BookingsExportSpreadsheet extends Spreadsheet
     ) {
         parent::__construct();
 
+        $headerColumns = $this->getHeaderColumns();
+        $worksheet = $this->getActiveSheet();
         self::fillSheetFromCollection(
-            $this->getActiveSheet(),
+            $worksheet,
             $this->bookingOption->name,
             $this->bookings,
-            $this->getHeaderColumns(),
+            $headerColumns,
             fn (Booking $booking) => $this->getColumnsForRow($booking)
         );
+        self::setAutoSizeForColumns($worksheet, count($headerColumns));
     }
 
     /**

@@ -6,12 +6,13 @@ use App\Exports\Traits\ExportsToExcel;
 use App\Models\Booking;
 use App\Models\Event;
 use App\Models\Group;
-use Illuminate\Support\Collection;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 class GroupsExportSpreadsheet extends Spreadsheet
 {
     use ExportsToExcel;
+
+    private const int COLUMN_COUNT = 5;
 
     public function __construct(
         private readonly Event $event,
@@ -24,15 +25,60 @@ class GroupsExportSpreadsheet extends Spreadsheet
             'groups.bookings',
         ]);
 
-        /** @var int $rowCount */
-        $rowCount = $this->event->groups
-            ->max(fn (Group $group) => $group->bookings->count());
+        $worksheet = $this->getActiveSheet();
+        self::setTitle($worksheet, $this->event->name);
 
+        $worksheet->setCellValue('A1', $this->event->name);
+        self::formatHeadline($worksheet, self::COLUMN_COUNT);
+
+        $currentReportRow = 3;
+        $bookings = $this->prepareBookings();
+        $chunks = $this->event->groups->chunk(self::COLUMN_COUNT);
+        foreach ($chunks as $chunk) {
+            // Header row
+            $worksheet->fromArray([$chunk->map(fn (Group $group) => $group->name)->toArray()], startCell: 'A' . $currentReportRow);
+            self::formatBold($worksheet, $currentReportRow, self::COLUMN_COUNT);
+            $currentReportRow++;
+
+            // Rows for the bookings
+            /** @phpstan-ignore-next-line cast.int count(array) is an integer. */
+            $maxBookingsInChunk = (int) $chunk->max(fn (Group $group) => count($bookings[$group->id]));
+            for ($i = 0; $i < $maxBookingsInChunk; $i++) {
+                $col = 1;
+                foreach ($chunk as $group) {
+                    $name = $bookings[$group->id][$i] ?? null;
+                    if ($name !== null) {
+                        $worksheet->getCell([$col, $currentReportRow])->setValue($name);
+                    }
+                    $col++;
+                }
+                $currentReportRow++;
+            }
+
+            // Empty row.
+            $currentReportRow++;
+        }
+
+        self::setPageLayout($worksheet);
+        self::setColumnWidths($worksheet, [
+            'A' => 5.2,
+            'B' => 5.2,
+            'C' => 5.2,
+            'D' => 5.2,
+            'E' => 5.2,
+        ]);
+    }
+
+    /**
+     * @return array<int, string[]>
+     */
+    private function prepareBookings(): array
+    {
         $parentEvent = $this->event->parentEvent;
-
         $bookings = [];
         foreach ($this->event->groups as $group) {
-            $bookings[$group->id] = Booking::sort($group->bookings, $this->sort)
+            /** @var string[] $groupMembers */
+            $groupMembers = Booking::sort($group->bookings, $this->sort)
                 ->map(
                     function (Booking $booking) use ($group, $parentEvent) {
                         $name = $booking->first_name . ' ' . $booking->last_name;
@@ -49,23 +95,9 @@ class GroupsExportSpreadsheet extends Spreadsheet
                 )
                 ->values()
                 ->toArray();
+            $bookings[$group->id] = $groupMembers;
         }
 
-        /**
-         * @var Collection<int, int> $rows
-         */
-        $rows = Collection::range(0, $rowCount - 1);
-        self::fillSheetFromCollection(
-            $this->getActiveSheet(),
-            $this->event->name,
-            $rows,
-            /** @phpstan-ignore-next-line argument.type */
-            $this->event->groups
-                ->map(fn (Group $group) => $group->name)
-                ->toArray(),
-            fn (int $row) => $this->event->groups
-                ->map(fn (Group $group) => $bookings[$group->id][$row] ?? null)
-                ->toArray(),
-        );
+        return $bookings;
     }
 }

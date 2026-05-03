@@ -4,6 +4,7 @@ namespace Tests\Feature\Http;
 
 use App\Enums\Ability;
 use App\Enums\ActiveStatus;
+use App\Enums\FileType;
 use App\Enums\FilterValue;
 use App\Http\Controllers\UserController;
 use App\Http\Requests\Filters\UserFilterRequest;
@@ -11,6 +12,7 @@ use App\Http\Requests\UserRequest;
 use App\Models\User;
 use App\Models\UserRole;
 use App\Notifications\AccountCreatedNotification;
+use App\Policies\DocumentPolicy;
 use App\Policies\UserPolicy;
 use Closure;
 use Illuminate\Support\Facades\Notification;
@@ -57,6 +59,47 @@ class UserControllerTest extends TestCase
     {
         $user = self::createUser();
         $this->assertUserCanGetOnlyWithAbility("/users/{$user->id}", Ability::ViewUsers);
+    }
+
+    public function testUserCanViewAbilitiesOfUser(): void
+    {
+        $user = self::createUser();
+        $this->assertUserCanGetOnlyWithAbility("/users/{$user->id}/abilities", [Ability::ViewUsers, Ability::ViewUserRoles]);
+    }
+
+    public function testUserCanViewBookingsOfUser(): void
+    {
+        $user = self::createUser();
+        $noBookingsMessage = __(':name does not have any bookings yet.', [
+            'name' => $user->name,
+        ]);
+        $this->assertUserCanGetOnlyWithAbility("/users/{$user->id}/bookings", Ability::ViewBookingsOfEvent)
+            ->assertSee($noBookingsMessage);
+
+        $bookingOption = self::createBookingOptionForEvent();
+        self::createBookingsForUser($bookingOption, $user);
+        $this->assertUserCanGetOnlyWithAbility("/users/{$user->id}/bookings", Ability::ViewBookingsOfEvent)
+            ->assertDontSee($noBookingsMessage)
+            ->assertSee($bookingOption->event->name);
+    }
+
+    public function testUserCanViewDocumentsOfUser(): void
+    {
+        $user = self::createUser();
+        $document = self::createDocument(static fn () => self::createEvent(), uploadedByUser: $user);
+        $documentUploadedByAnotherUser = self::createDocument(static fn () => self::createEvent());
+
+        $this->assertUserCanGetOnlyWithAbility("/users/{$user->id}/documents", array_values(DocumentPolicy::VIEW_DOCUMENTS_ABILITIES))
+            ->assertOk()
+            ->assertSee(__('Documents by :name', ['name' => $user->name]))
+            ->assertSee($document->title)
+            ->assertDontSee($documentUploadedByAnotherUser->title);
+
+        /** @var FileType $anotherFileType */
+        $anotherFileType = $this->faker->randomElement(FileType::casesExcept($document->file_type));
+        $this->get("/users/{$user->id}/documents?filter[file_type]={$anotherFileType->value}")
+            ->assertDontSee($document->title)
+            ->assertDontSee($documentUploadedByAnotherUser->title);
     }
 
     public function testUserCanOpenCreateUserFormOnlyWithCorrectAbility(): void

@@ -32,7 +32,7 @@ class DashboardController extends Controller
         if (isset($user)) {
             $bookings = $user->bookings()
                 ->orderByDesc('booked_at')
-                ->limit(10)
+                ->limit(5)
                 ->with([
                     'bookingOption.event.location',
                 ])

@@ -188,11 +188,11 @@ trait GeneratesTestData
     /**
      * @param Closure(): (Event|EventSeries|Location|Organization) $referenceProvider
      */
-    protected static function createDocument(Closure $referenceProvider): Document
+    protected static function createDocument(Closure $referenceProvider, ?User $uploadedByUser = null): Document
     {
         return Document::factory()
             ->forReference($referenceProvider())
-            ->for(User::factory()->create(), 'uploadedByUser')
+            ->for($uploadedByUser ?? User::factory()->create(), 'uploadedByUser')
             ->create();
     }
 

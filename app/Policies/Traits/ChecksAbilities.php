@@ -17,6 +17,22 @@ trait ChecksAbilities
         return $allowed ? $this->allow() : $this->deny();
     }
 
+    /**
+     * @param Ability[] $abilities
+     */
+    public function requireAbilities(?User $user, array $abilities): Response
+    {
+        if (!isset($user)) {
+            return $this->deny();
+        }
+
+        if (array_any($abilities, fn ($ability) => !$user->hasAbility($ability))) {
+            return $this->deny();
+        }
+
+        return $this->allow();
+    }
+
     public function requireAbility(?User $user, Ability $ability): Response
     {
         if (!isset($user)) {
@@ -35,10 +51,8 @@ trait ChecksAbilities
             return $this->deny();
         }
 
-        foreach ($abilities as $ability) {
-            if ($user->hasAbility($ability)) {
-                return $this->allow();
-            }
+        if (array_any($abilities, fn ($ability) => $user->hasAbility($ability))) {
+            return $this->allow();
         }
 
         return $this->deny();

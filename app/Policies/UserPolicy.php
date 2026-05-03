@@ -31,6 +31,11 @@ class UserPolicy
         return $this->viewAny($user);
     }
 
+    public function viewAbilities(User $user, User $model): Response
+    {
+        return $this->requireAbilities($user, [Ability::ViewUsers, Ability::ViewUserRoles]);
+    }
+
     /**
      * Determine whether the user can create models.
      */
@@ -131,7 +136,7 @@ class UserPolicy
         return $this->requireAbility($user, Ability::ViewAccount);
     }
 
-    public function viewAbilities(User $user): Response
+    public function viewAccountAbilities(User $user): Response
     {
         return $this->requireAbility($user, Ability::ViewAbilities);
     }

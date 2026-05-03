@@ -25,7 +25,7 @@ class DocumentFactory extends Factory
         $extension = $this->faker->randomElement($fileType->getExtensions());
 
         return [
-            'title' => $this->faker->words($this->faker->numberBetween(1, 5), true),
+            'title' => $this->faker->words($this->faker->numberBetween(3, 5), true),
             'description' => $this->faker->boolean(75)
                 ? $this->faker->paragraph()
                 : null,

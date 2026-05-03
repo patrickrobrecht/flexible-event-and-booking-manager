@@ -15,11 +15,15 @@ const filesFromLibrariesForConfiguration = [];
 const filesFromLibrariesForManifest = [];
 for (const [sourceFilePath, fileName] of Object.entries(filesFromLibraries)) {
     let hashedFileNameWithExtension = generateHashedFileName(fileName, sourceFilePath);
+    let rename = {
+        name: hashedFileNameWithExtension,
+        stripBase: true,
+    };
     filesFromLibrariesForConfiguration.push({
         src: sourceFilePath,
         dest: 'lib',
         // rename relevant for viteStaticCopy configuration!
-        rename: () => hashedFileNameWithExtension,
+        rename: () => rename,
     });
     filesFromLibrariesForManifest[sourceFilePath] = {
         file: `lib/${hashedFileNameWithExtension}`,
@@ -70,6 +74,9 @@ export default defineConfig(({ mode }) => {
                     {
                         src: 'node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2',
                         dest: 'lib',
+                        rename: {
+                            stripBase: true,
+                        }
                     }
                 ]
             }),

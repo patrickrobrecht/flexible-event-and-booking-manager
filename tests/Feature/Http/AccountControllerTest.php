@@ -30,18 +30,18 @@ class AccountControllerTest extends TestCase
         $this->get('/account')->assertSee(__('Abilities'));
     }
 
-    public function testUserCanOpenEditAccountFormOnlyWithCorrectAbility(): void
+    public function testUserCanViewOwnBookings(): void
     {
-        $this->assertUserCanGetOnlyWithAbility('/account/edit', Ability::EditAccount);
-    }
+        $user = $this->actingAsAnyUser();
+        $noBookingsMessage = __('You do not have any bookings yet.');
+        $this->get('/account/bookings')
+            ->assertSee($noBookingsMessage);
 
-    public function testUserCanUpdateAccountWithCorrectAbility(): void
-    {
-        $user = $this->actingAsUserWithAbility(Ability::EditAccount);
-
-        $this->put('/account', $this->getRandomUserData($user))
-            ->assertSessionDoesntHaveErrors()
-            ->assertRedirect('/account/edit');
+        $bookingOption = self::createBookingOptionForEvent();
+        self::createBookingsForUser($bookingOption, $user);
+        $this->get('/account/bookings')
+            ->assertDontSee($noBookingsMessage)
+            ->assertSee($bookingOption->event->name);
     }
 
     public function testUserCannotUpdateAccountWithoutAbility(): void

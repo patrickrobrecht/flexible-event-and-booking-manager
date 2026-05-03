@@ -99,6 +99,9 @@ class User extends Authenticatable implements MustVerifyEmail
         'remember_token',
     ];
 
+    /**
+     * @return HasMany<Booking, $this>
+     */
     public function bookings(): HasMany
     {
         return $this->hasMany(Booking::class, 'booked_by_user_id')
@@ -109,7 +112,6 @@ class User extends Authenticatable implements MustVerifyEmail
     public function bookingsTrashed(): HasMany
     {
         return $this->bookings()
-            /** @phpstan-ignore-next-line method.notFound */
             ->onlyTrashed();
     }
 
@@ -249,7 +251,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function loadProfileData(): self
     {
         $this->load([
-            'bookings.bookingOption.event.location',
+            'bookings' => fn (HasMany $q) => $q
+                ->limit(5)
+                ->with([
+                    'bookingOption.event.location',
+                ]),
             'documents.reference',
             'responsibleForEvents' => fn (MorphToMany $events) => $events
                 /** @phpstan-ignore argument.type */

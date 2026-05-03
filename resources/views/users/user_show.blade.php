@@ -27,7 +27,13 @@
 @section('content')
     @include('users.shared.user_profile_data')
 
-    @include('users.shared.user_profile_responsibilities')
+    <div class="row">
+        @include('users.shared.user_profile_responsibilities')
+        @include('users.shared.user_profile_bookings', [
+            'allBookingsLink' => route('users.bookings', $user),
+        ])
+        @include('users.shared.user_profile_documents')
+    </div>
 
     @can('viewAny', \App\Models\UserRole::class)
         <section id="abilities" class="mt-3">

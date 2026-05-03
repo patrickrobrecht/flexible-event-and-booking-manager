@@ -28,7 +28,14 @@
     ])
     @include('account.shared.unverified_email')
 
-    @include('users.shared.user_profile_responsibilities', [
-        'user' => $user,
-    ])
+    @php
+        /** @var \App\Models\User $user */
+    @endphp
+    <div class="row">
+        @include('users.shared.user_profile_responsibilities')
+        @include('users.shared.user_profile_bookings', [
+            'allBookingsLink' => route('account.bookings'),
+        ])
+        @include('users.shared.user_profile_documents')
+    </div>
 @endsection

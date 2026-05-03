@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Filters\UserFilterRequest;
 use App\Http\Requests\UserRequest;
+use App\Models\Booking;
 use App\Models\User;
 use App\Models\UserRole;
 use Illuminate\Http\RedirectResponse;
@@ -70,6 +71,23 @@ class UserController extends Controller
 
         return view('users.user_show', [
             'user' => $user->loadProfileData(),
+        ]);
+    }
+
+    public function showBookings(User $user): View
+    {
+        $this->authorize('viewAny', Booking::class);
+
+        $bookings = $user->bookings()
+            ->with([
+                'bookingOption.event.location',
+            ])
+            ->paginate(12);
+        $bookings->each(fn (Booking $booking) => $booking->setRelation('bookedByUser', $user));
+
+        return view('users.user_show_bookings', [
+            'user' => $user,
+            'bookings' => $bookings,
         ]);
     }
 

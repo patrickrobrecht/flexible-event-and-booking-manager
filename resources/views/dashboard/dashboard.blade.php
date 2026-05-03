@@ -23,8 +23,14 @@
         </div>
         @if($bookings !== null)
             <div class="col-12 col-md-6 mt-3 mt-md-0">
-                <h2><i class="fa fa-fw fa-file-contract"></i>{{ __('My bookings') }}</h2>
-                @include('bookings.shared.booking_list')
+                <h2><i class="fa fa-fw fa-file-contract"></i> <a href="{{ route('account.bookings') }}">{{ __('My bookings') }}</a></h2>
+                @if($bookings->isEmpty())
+                    <x-bs::alert variant="info">
+                        {{ __('You do not have any bookings yet.') }}
+                    </x-bs::alert>
+                @else
+                    @include('bookings.shared.booking_list')
+                @endif
             </div>
         @endif
     </div>

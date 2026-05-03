@@ -139,6 +139,10 @@ Route::middleware('auth')->group(static function () {
     Route::model('user', User::class);
     Route::resource('users', UserController::class)
         ->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
+    Route::prefix('users/{user}')->group(function () {
+        Route::get('bookings', [UserController::class, 'showBookings'])
+            ->name('users.bookings');
+    });
 
     Route::model('user_role', UserRole::class);
     Route::resource('user-roles', UserRoleController::class)
@@ -149,6 +153,8 @@ Route::middleware('auth')->group(static function () {
         ->name('account.show');
     Route::get('account/abilities', [AccountController::class, 'showAbilities'])
         ->name('account.show.abilities');
+    Route::get('account/bookings', [AccountController::class, 'showBookings'])
+        ->name('account.bookings');
     Route::get('account/edit', [AccountController::class, 'edit'])
         ->name('account.edit');
     Route::put('account', [AccountController::class, 'update'])

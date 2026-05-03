@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRequest;
+use App\Models\Booking;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
@@ -23,6 +24,23 @@ class AccountController extends Controller
         $this->authorize('viewAbilities', User::class);
 
         return view('account.account_show_abilities');
+    }
+
+    public function showBookings(): View
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        $bookings = $user->bookings()
+            ->with([
+                'bookingOption.event.location',
+            ])
+            ->paginate(12);
+        $bookings->each(fn (Booking $booking) => $booking->setRelation('bookedByUser', $user));
+
+        return view('account.account_show_bookings', [
+            'bookings' => $bookings,
+        ]);
     }
 
     public function edit(): View

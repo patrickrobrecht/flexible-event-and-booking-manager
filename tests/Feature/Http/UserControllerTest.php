@@ -59,6 +59,22 @@ class UserControllerTest extends TestCase
         $this->assertUserCanGetOnlyWithAbility("/users/{$user->id}", Ability::ViewUsers);
     }
 
+    public function testUserCanViewBookingsOfUser(): void
+    {
+        $user = self::createUser();
+        $noBookingsMessage = __(':name does not have any bookings yet.', [
+            'name' => $user->name,
+        ]);
+        $this->assertUserCanGetOnlyWithAbility("/users/{$user->id}/bookings", Ability::ViewBookingsOfEvent)
+            ->assertSee($noBookingsMessage);
+
+        $bookingOption = self::createBookingOptionForEvent();
+        self::createBookingsForUser($bookingOption, $user);
+        $this->assertUserCanGetOnlyWithAbility("/users/{$user->id}/bookings", Ability::ViewBookingsOfEvent)
+            ->assertDontSee($noBookingsMessage)
+            ->assertSee($bookingOption->event->name);
+    }
+
     public function testUserCanOpenCreateUserFormOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('/users/create', Ability::CreateUsers);

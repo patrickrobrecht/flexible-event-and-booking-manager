@@ -1,8 +1,11 @@
 @extends('layouts.app')
 
 @php
-    /** @var \App\Models\User $user */
-    $user = \Illuminate\Support\Facades\Auth::user()->loadProfileData();
+    use App\Models\User;
+    use Illuminate\Support\Facades\Auth;
+
+    /** @var User $user */
+    $user = Auth::user()->loadProfileData();
 @endphp
 
 @section('title')
@@ -14,10 +17,10 @@
 @endsection
 
 @section('headline-buttons')
-    @can('viewAbilities', \App\Models\User::class)
-        <x-bs::button.link variant="secondary" href="{{ route('account.show.abilities') }}"><i class="fa fa-fw fa-user-shield"></i> {{ __('Abilities') }}</x-bs::button.link>
+    @can('viewAccountAbilities', User::class)
+        <x-bs::button.link variant="secondary" href="{{ route('account.abilities') }}"><i class="fa fa-fw fa-user-shield"></i> {{ __('Abilities') }}</x-bs::button.link>
     @endif
-    @can('editAccount', \App\Models\User::class)
+    @can('editAccount', User::class)
         <x-bs::button.link href="{{ route('account.edit') }}"><i class="fa fa-fw fa-user-pen"></i> {{ __('Edit my account') }}</x-bs::button.link>
     @endif
 @endsection
@@ -28,9 +31,6 @@
     ])
     @include('account.shared.unverified_email')
 
-    @php
-        /** @var \App\Models\User $user */
-    @endphp
     <div class="row">
         @include('users.shared.user_profile_responsibilities')
         @include('users.shared.user_profile_bookings', [

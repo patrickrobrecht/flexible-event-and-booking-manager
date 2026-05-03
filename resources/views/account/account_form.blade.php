@@ -1,8 +1,11 @@
 @extends('layouts.app')
 
 @php
-    /** @var \App\Models\User $user */
-    $user = \Illuminate\Support\Facades\Auth::user();
+    use App\Models\User;
+    use Illuminate\Support\Facades\Auth;
+
+    /** @var User $user */
+    $user = Auth::user();
 @endphp
 
 @section('title')
@@ -10,14 +13,14 @@
 @endsection
 
 @section('breadcrumbs')
-    @can('viewAccount', \App\Models\User::class)
+    @can('viewAccount', User::class)
         <x-bs::breadcrumb.item href="{{ route('account.show') }}">{{ __('My account') }}</x-bs::breadcrumb.item>
     @endcan
 @endsection
 
 @section('headline-buttons')
-    @can('viewAbilities', \App\Models\User::class)
-        <x-bs::button.link variant="secondary" href="{{ route('account.show.abilities') }}"><i class="fa fa-fw fa-user-shield"></i> {{ __('Abilities') }}</x-bs::button.link>
+    @can('viewAccountAbilities', User::class)
+        <x-bs::button.link variant="secondary" href="{{ route('account.abilities') }}"><i class="fa fa-fw fa-user-shield"></i> {{ __('Abilities') }}</x-bs::button.link>
     @endcan
 @endsection
 

@@ -3,32 +3,29 @@
 @php
     use App\Enums\AbilityGroup;
     use App\Models\User;
-    use Illuminate\Support\Facades\Auth;
 
     /** @var User $user */
-    $user = Auth::user();
 @endphp
 
 @section('title')
-    {{ __('My account') }}: {{ $user->name }}
+    {{ __('Abilities by :name', [
+        'name' => $user->name,
+    ]) }}
 @endsection
 
 @section('breadcrumbs')
-    @can('viewAccount', User::class)
-        <x-bs::breadcrumb.item href="{{ route('account.show') }}">{{ __('My account') }}</x-bs::breadcrumb.item>
-    @endcan
+    @include('users.shared.user_breadcrumbs')
+    <x-bs::breadcrumb.item>{{ __('Abilities') }}</x-bs::breadcrumb.item>
 @endsection
 
 @section('headline-buttons')
-    @can('editAccount', User::class)
-        <x-bs::button.link href="{{ route('account.edit') }}"><i class="fa fa-fw fa-user-pen"></i> {{ __('Edit my account') }}</x-bs::button.link>
+    @can('edit', $user)
+        <x-bs::button.link href="{{ route('users.edit', $user) }}"><i class="fa fa-fw fa-edit"></i> {{ __('Edit') }}</x-bs::button.link>
     @endif
 @endsection
 
 @section('content')
-    @include('users.shared.user_profile_data', [
-        'user' => $user,
-    ])
+    @include('users.shared.user_profile_data')
 
     <section>
         <h2 class="mt-3"><i class="fa fa-fw fa-user-shield"></i> {{ __('Abilities') }}</h2>

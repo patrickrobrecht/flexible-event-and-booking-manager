@@ -140,6 +140,8 @@ Route::middleware('auth')->group(static function () {
     Route::resource('users', UserController::class)
         ->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
     Route::prefix('users/{user}')->group(function () {
+        Route::get('abilities', [UserController::class, 'showAbilities'])
+            ->name('users.abilities');
         Route::get('bookings', [UserController::class, 'showBookings'])
             ->name('users.bookings');
         Route::get('documents', [UserController::class, 'showDocuments'])
@@ -155,7 +157,7 @@ Route::middleware('auth')->group(static function () {
         Route::get('', [AccountController::class, 'show'])
             ->name('account.show');
         Route::get('abilities', [AccountController::class, 'showAbilities'])
-            ->name('account.show.abilities');
+            ->name('account.abilities');
         Route::get('bookings', [AccountController::class, 'showBookings'])
             ->name('account.bookings');
         Route::get('documents', [AccountController::class, 'showDocuments'])

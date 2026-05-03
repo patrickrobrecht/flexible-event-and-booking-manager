@@ -76,6 +76,15 @@ class UserController extends Controller
         ]);
     }
 
+    public function showAbilities(User $user): View
+    {
+        $this->authorize('viewAbilities', $user);
+
+        return view('users.user_show_abilities', [
+            'user' => $user->loadProfileData(),
+        ]);
+    }
+
     public function showBookings(User $user): View
     {
         $this->authorize('viewAny', Booking::class);

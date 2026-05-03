@@ -8,7 +8,7 @@
     use Portavice\Bladestrap\Support\Options;
 
     /** @var ?User $editedUser */
-    /** @var Collection|UserRole[] $userRoles */
+    /** @var Collection<int, UserRole> $userRoles */
 @endphp
 
 @section('title')
@@ -36,6 +36,9 @@
 
 @section('headline-buttons')
     @isset($editedUser)
+        @can('viewAbilities', $editedUser)
+            <x-bs::button.link variant="secondary" href="{{ route('users.abilities', $editedUser) }}"><i class="fa fa-fw fa-user-shield"></i> {{ __('Abilities') }}</x-bs::button.link>
+        @endcan
         @include('users.shared.user_delete_button', [
             'user' => $editedUser,
         ])

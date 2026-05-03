@@ -1,7 +1,10 @@
 @extends('layouts.app')
 
 @php
-    /** @var \App\Models\User $user */
+    use App\Enums\AbilityGroup;
+    use App\Models\User;
+
+    /** @var User $user */
 @endphp
 
 @section('title')
@@ -9,7 +12,7 @@
 @endsection
 
 @section('breadcrumbs')
-    @can('viewAny', \App\Models\User::class)
+    @can('viewAny', User::class)
         <x-bs::breadcrumb.item href="{{ route('users.index') }}">{{ __('Users') }}</x-bs::breadcrumb.item>
     @else
         <x-bs::breadcrumb.item>{{ __('Users') }}</x-bs::breadcrumb.item>
@@ -18,6 +21,9 @@
 @endsection
 
 @section('headline-buttons')
+    @can('viewAbilities', $user)
+        <x-bs::button.link variant="secondary" href="{{ route('users.abilities', $user) }}"><i class="fa fa-fw fa-user-shield"></i> {{ __('Abilities') }}</x-bs::button.link>
+    @endcan
     @can('update', $user)
         <x-button.edit href="{{ route('users.edit', $user) }}"/>
     @endcan
@@ -36,20 +42,6 @@
             'allDocumentsLink' => route('users.documents', $user),
         ])
     </div>
-
-    @can('viewAny', \App\Models\UserRole::class)
-        <section id="abilities" class="mt-3">
-            <h2><i class="fa fa-fw fa-user-shield"></i> {{ __('Abilities') }}</h2>
-            <div class="cols-lg-2 cols-xxl-3 mb-3">
-                @include('user_roles.ability_group', [
-                    'selectedAbilities' => $user->getAbilitiesAsStrings()->toArray(),
-                    'abilityGroups' => \App\Enums\AbilityGroup::casesAtRootLevel(),
-                    'editable' => false,
-                    'headlineLevel' => 3,
-                ])
-            </div>
-        </section>
-    @endcan
 
     <x-text.timestamp :model="$user ?? null"/>
 @endsection

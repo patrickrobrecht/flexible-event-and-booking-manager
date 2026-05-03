@@ -23,7 +23,7 @@ class AccountController extends Controller
 
     public function showAbilities(): View
     {
-        $this->authorize('viewAbilities', User::class);
+        $this->authorize('viewAccountAbilities', User::class);
 
         return view('account.account_show_abilities');
     }

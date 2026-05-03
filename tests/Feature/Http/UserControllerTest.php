@@ -61,6 +61,12 @@ class UserControllerTest extends TestCase
         $this->assertUserCanGetOnlyWithAbility("/users/{$user->id}", Ability::ViewUsers);
     }
 
+    public function testUserCanViewAbilitiesOfUser(): void
+    {
+        $user = self::createUser();
+        $this->assertUserCanGetOnlyWithAbility("/users/{$user->id}/abilities", [Ability::ViewUsers, Ability::ViewUserRoles]);
+    }
+
     public function testUserCanViewBookingsOfUser(): void
     {
         $user = self::createUser();

@@ -32,7 +32,9 @@
         @include('users.shared.user_profile_bookings', [
             'allBookingsLink' => route('users.bookings', $user),
         ])
-        @include('users.shared.user_profile_documents')
+        @include('users.shared.user_profile_documents', [
+            'allDocumentsLink' => route('users.documents', $user),
+        ])
     </div>
 
     @can('viewAny', \App\Models\UserRole::class)

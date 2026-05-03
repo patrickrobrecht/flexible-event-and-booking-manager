@@ -115,10 +115,13 @@ class User extends Authenticatable implements MustVerifyEmail
             ->onlyTrashed();
     }
 
+    /**
+     * @return HasMany<Document, $this>
+     */
     public function documents(): HasMany
     {
         return $this->hasMany(Document::class, 'uploaded_by_user_id')
-            ->orderBy('title');
+            ->orderByDesc('created_at');
     }
 
     /**
@@ -256,7 +259,11 @@ class User extends Authenticatable implements MustVerifyEmail
                 ->with([
                     'bookingOption.event.location',
                 ]),
-            'documents.reference',
+            'documents' => fn (HasMany $q) => $q
+                ->limit(5)
+                ->with([
+                    'reference',
+                ]),
             'responsibleForEvents' => fn (MorphToMany $events) => $events
                 /** @phpstan-ignore argument.type */
                 ->with([

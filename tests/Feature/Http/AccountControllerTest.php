@@ -44,6 +44,17 @@ class AccountControllerTest extends TestCase
             ->assertSee($bookingOption->event->name);
     }
 
+    public function testUserCanViewOwnDocuments(): void
+    {
+        $user = $this->actingAsAnyUser();
+        $document = self::createDocument(static fn () => self::createEvent(), uploadedByUser: $user);
+        $documentUploadedByAnotherUser = self::createDocument(static fn () => self::createEvent()); // uploaded by another user
+
+        $this->get('/account/documents')
+            ->assertSee($document->title)
+            ->assertDontSee($documentUploadedByAnotherUser->title);
+    }
+
     public function testUserCannotUpdateAccountWithoutAbility(): void
     {
         $user = $this->actingAsUserWithAbility(Ability::ViewAccount);

@@ -2,17 +2,21 @@
 
 @php
     use App\Models\Document;
+    use App\Models\User;
     use Illuminate\Pagination\LengthAwarePaginator;
 
     /** @var LengthAwarePaginator<int, Document> $documents */
 @endphp
 
 @section('title')
-    {{ __('Documents') }}
+    {{ __('My documents') }}
 @endsection
 
 @section('breadcrumbs')
-    <x-bs::breadcrumb.item>{{ __('Documents') }}</x-bs::breadcrumb.item>
+    @can('viewAccount', User::class)
+        <x-bs::breadcrumb.item href="{{ route('account.show') }}">{{ __('My account') }}</x-bs::breadcrumb.item>
+    @endcan
+    <x-bs::breadcrumb.item>{{ __('My documents') }}</x-bs::breadcrumb.item>
 @endsection
 
 @section('content')
@@ -22,7 +26,7 @@
 
     <div class="row my-3">
         @foreach($documents as $document)
-            <div class="col-12 col-md-6 col-xxl-4 mb-3">
+            <div class="col-12 col-md-6 col-lg-4 col-xxl-3 mb-3">
                 @include('documents.shared.document_card')
             </div>
         @endforeach

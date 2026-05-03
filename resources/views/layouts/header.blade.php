@@ -149,6 +149,9 @@
                                     <x-bs::dropdown.item href="{{ route('account.bookings') }}">
                                         <i class="fa fa-fw fa-file-contract"></i> {{ __('My bookings') }}
                                     </x-bs::dropdown.item>
+                                    <x-bs::dropdown.item href="{{ route('account.documents') }}">
+                                        <i class="fa fa-fw fa-file"></i> {{ __('My documents') }}
+                                    </x-bs::dropdown.item>
                                 @elsecan('editAccount', \App\Models\User::class)
                                     <x-bs::dropdown.item href="{{ route('account.edit') }}">
                                         <i class="fa fa-fw fa-user-pen"></i> {{ __('Edit my account') }}

@@ -36,6 +36,8 @@
         @include('users.shared.user_profile_bookings', [
             'allBookingsLink' => route('account.bookings'),
         ])
-        @include('users.shared.user_profile_documents')
+        @include('users.shared.user_profile_documents', [
+            'allDocumentsLink' => route('account.documents'),
+        ])
     </div>
 @endsection

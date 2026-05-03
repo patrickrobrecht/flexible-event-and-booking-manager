@@ -142,6 +142,8 @@ Route::middleware('auth')->group(static function () {
     Route::prefix('users/{user}')->group(function () {
         Route::get('bookings', [UserController::class, 'showBookings'])
             ->name('users.bookings');
+        Route::get('documents', [UserController::class, 'showDocuments'])
+            ->name('users.documents');
     });
 
     Route::model('user_role', UserRole::class);
@@ -149,16 +151,20 @@ Route::middleware('auth')->group(static function () {
         ->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
 
     // My Account
-    Route::get('account', [AccountController::class, 'show'])
-        ->name('account.show');
-    Route::get('account/abilities', [AccountController::class, 'showAbilities'])
-        ->name('account.show.abilities');
-    Route::get('account/bookings', [AccountController::class, 'showBookings'])
-        ->name('account.bookings');
-    Route::get('account/edit', [AccountController::class, 'edit'])
-        ->name('account.edit');
-    Route::put('account', [AccountController::class, 'update'])
-        ->name('account.update');
+    Route::prefix('account')->group(function () {
+        Route::get('', [AccountController::class, 'show'])
+            ->name('account.show');
+        Route::get('abilities', [AccountController::class, 'showAbilities'])
+            ->name('account.show.abilities');
+        Route::get('bookings', [AccountController::class, 'showBookings'])
+            ->name('account.bookings');
+        Route::get('documents', [AccountController::class, 'showDocuments'])
+            ->name('account.documents');
+        Route::get('edit', [AccountController::class, 'edit'])
+            ->name('account.edit');
+        Route::put('', [AccountController::class, 'update'])
+            ->name('account.update');
+    });
 
     // API Documentation
     Route::get('api-docs', [ApiDocumentationController::class, 'index'])

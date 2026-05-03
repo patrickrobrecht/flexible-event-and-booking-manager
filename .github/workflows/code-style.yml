@@ -32,6 +32,9 @@ jobs:
       - name: Check code style for PHP
         run: composer csPHP
 
+      - name: Verify PSR-4 compliance of all PHP classes
+        run: composer dump-autoload --strict-psr --no-scripts
+
       - name: Run static analysis for PHP
         run: composer stan
 

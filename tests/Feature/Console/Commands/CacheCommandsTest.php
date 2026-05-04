@@ -7,12 +7,14 @@ use Illuminate\Console\Events\CommandFinished;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Tests\TestCase;
 
 #[CoversClass(CacheOpenApiDocListener::class)]
+#[Group('serial')]
 class CacheCommandsTest extends TestCase
 {
     public function testConfigCache(): void

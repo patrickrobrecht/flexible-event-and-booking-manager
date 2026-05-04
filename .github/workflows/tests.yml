@@ -46,11 +46,15 @@ jobs:
 
       - name: Run tests (older supported PHP versions)
         if: matrix.php-version != '8.5'
-        run: composer test
+        run: |
+          vendor/bin/paratest --exclude-group serial
+          vendor/bin/phpunit --group serial
 
       - name: Run tests with coverage (latest PHP version only)
         if: matrix.php-version == '8.5'
-        run: composer test -- --coverage-clover=phpunit_coverage.xml --log-junit=phpunit_report.xml
+        run: |
+          vendor/bin/paratest --exclude-group serial --coverage-clover phpunit_coverage.xml --log-junit phpunit_report.xml
+          vendor/bin/phpunit --group serial
 
       - name: Upload coverage report to GitHub Artifacts
         id: artifact-upload-step

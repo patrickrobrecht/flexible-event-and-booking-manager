@@ -67,7 +67,7 @@ To setup/update your development environment:
 - Create/update the `.env` configuration if necessary (see [Configuration](#configuration) below).
 - Run `php artisan migrate` to migrate the database to the latest version.
 - Run `composer stan` to run static analysis with PHPStan.
-- Run `composer test` to execute all PHPUnit tests.
+- Run `composer test` (`composer test-with-coverage`) to execute all PHPUnit tests (with coverage).
 
 For development, we use
 - [ESlint](https://eslint.org/) for the JavaScript code style check
@@ -75,7 +75,7 @@ For development, we use
 - [Laravel Pint](https://laravel.com/docs/13.x/pint) for the PHP code style check
 - [Laravel Translatable String Exporter](https://github.com/kkomelin/laravel-translatable-string-exporter) to extract translations strings from PHP and Blade
 - [PHPStan](https://phpstan.org/) with [Larastan](https://github.com/larastan/larastan) and [strict rules extension](https://github.com/phpstan/phpstan-strict-rules) for static analysis
-- [PHPUnit](https://docs.phpunit.de/) for Unit tests
+- [PHPUnit](https://docs.phpunit.de/) with [ParaTest](https://github.com/paratestphp/paratest) for Unit tests
 - [Stylelint](https://stylelint.io/) for the SASS code style check
 - [Vite](https://laravel.com/docs/13.x/vite#introduction) with [Laravel](https://github.com/laravel/vite-plugin) and [static copy plugin](https://github.com/sapphi-red/vite-plugin-static-copy) for compiling and copying assets
 

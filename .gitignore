@@ -1,5 +1,6 @@
 /.idea
 /.phpunit.cache
+/.phpunit.coverage
 /.vscode
 /node_modules
 /public/build

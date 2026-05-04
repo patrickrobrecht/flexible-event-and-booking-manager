@@ -2,8 +2,10 @@
 
 namespace Tests\Feature\Console\Commands;
 
+use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
 
+#[Group('serial')]
 class DatabaseCommandsTest extends TestCase
 {
     public function testMigrationsAndRollback(): void

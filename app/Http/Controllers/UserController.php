@@ -54,7 +54,7 @@ class UserController extends Controller
         $user = new User();
         if ($user->fillAndSave($request->validated())) {
             Session::flash('success', __(':name created successfully.', ['name' => $user->name]));
-            if ($request->validated('send_notification') !== null) {
+            if ($request->validated('send_notification') === true) {
                 $user->sendAccountCreatedNotification();
             }
             return $this->actionAwareRedirect(

@@ -23,8 +23,7 @@ class DocumentController extends Controller
 
         return view('documents.document_index', [
             'documents' => Document::buildQueryFromRequest()
-                /** @see Document::scopeVisibleForUser() */
-                ->visibleForUser()
+                ->visibleForUser() /** @see Document::scopeVisibleForUser() */
                 ->with([
                     'reference',
                     'uploadedByUser',

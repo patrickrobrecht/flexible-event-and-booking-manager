@@ -7,17 +7,18 @@ parameters:
     checkUnionTypes: true
     editorUrl: 'phpstorm://open?file=%%file%%&line=%%line%%'
     ignoreErrors:
-         - '#Class App\\Models\\.* uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types: TFactory#'
-         - '#Method App\\Models\\.*::\w+\(\) return type with generic class Illuminate\\Database\\Eloquent\\Casts\\Attribute does not specify its types: TGet, TSet#'
-         - '#Method App\\Models\\.*::\w+\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\\w+ does not specify its types: \w+#'
-         - '#Method App\\Models\\.*::scope\w+\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types#'
-         - '#Method App\\Models\\.*::scope\w+\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types: TModel#'
-         - '#return type with generic class Illuminate\\Testing\\TestResponse does not specify its types: TResponse#'
-         - # Ignore dynamic calls for methods annotated with @method
-             identifier: staticMethod.dynamicCall
-             paths:
-                - app
-                - tests/Feature/Livewire/*
+        - '#Class App\\Models\\.* uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types: TFactory#'
+        - '#Method App\\Models\\.*::\w+\(\) return type with generic class Illuminate\\Database\\Eloquent\\Casts\\Attribute does not specify its types: TGet, TSet#'
+        - '#Method App\\Models\\.*::\w+\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\\w+ does not specify its types: \w+#'
+        - '#Method App\\Models\\.*::scope\w+\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types#'
+        - '#Method App\\Models\\.*::scope\w+\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types: TModel#'
+        - '#return type with generic class Illuminate\\Testing\\TestResponse does not specify its types: TResponse#'
+        - # Ignore false positives for Eloquent Builder, Request and TestResponse.
+            identifier: staticMethod.dynamicCall
+            messages:
+                - '#^Dynamic call to static method Illuminate\\Database\\Eloquent\\Builder<.*>::(.*)\(\)\.$#'
+                - '#^Dynamic call to static method Illuminate\\Http\\Request::validate\(\)\.$#'
+                - '#^Dynamic call to static method Illuminate\\Testing\\TestResponse<.*>::assert.*\(\).$#'
     level: 9
     paths:
         - app

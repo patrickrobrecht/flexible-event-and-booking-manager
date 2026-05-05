@@ -235,6 +235,7 @@ class BookingController extends Controller
     {
         $this->authorize('restore', $booking);
 
+        /** @phpstan-ignore-next-line staticMethod.dynamicCall */
         if ($booking->restore()) {
             Session::flash('success', __('Restored successfully.'));
         }

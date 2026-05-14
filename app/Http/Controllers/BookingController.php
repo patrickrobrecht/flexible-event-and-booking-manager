@@ -39,7 +39,7 @@ class BookingController extends Controller
 
         /** @var \Illuminate\Database\Eloquent\Builder<Booking> $bookingsQuery */
         $bookingsQuery = Booking::buildQueryFromRequest($bookingOption->bookings())
-            /** @phpstan-ignore-next-line argument.type */
+            /** @phpstan-ignore argument.type */
             ->with([
                 'bookedByUser',
                 'groups' => fn (BelongsToMany $groups) => $groups->where('event_id', '=', $event->id),
@@ -235,7 +235,7 @@ class BookingController extends Controller
     {
         $this->authorize('restore', $booking);
 
-        /** @phpstan-ignore-next-line staticMethod.dynamicCall */
+        /** @phpstan-ignore staticMethod.dynamicCall */
         if ($booking->restore()) {
             Session::flash('success', __('Restored successfully.'));
         }

@@ -19,7 +19,7 @@ trait NamedOption
      */
     private function valueOrName(): int|string
     {
-        /** @phpstan-ignore-next-line property.notFound */
+        /** @phpstan-ignore property.notFound */
         return $this->value ?? $this->name;
     }
 
@@ -49,7 +49,7 @@ trait NamedOption
 
     public static function exists(int|string $value): bool
     {
-        /** @phpstan-ignore-next-line staticMethod.notFound */
+        /** @phpstan-ignore staticMethod.notFound */
         return self::tryFrom($value) !== null;
     }
 
@@ -80,7 +80,7 @@ trait NamedOption
      */
     public static function values(?array $array = null): array
     {
-        /** @phpstan-ignore-next-line return.type */
+        /** @phpstan-ignore return.type */
         return array_map(
             static fn (self $enumCase) => $enumCase->valueOrName(),
             $array ?? self::cases()

@@ -30,7 +30,7 @@ class GroupController extends Controller
             return $this->streamExcelExport(
                 new GroupsExportSpreadsheet(
                     $event,
-                    /** @phpstan-ignore-next-line argument.type */
+                    /** @phpstan-ignore argument.type */
                     $request->validated('sort', 'name')
                 ),
                 str_replace(' ', '-', $fileName) . '.xlsx',
@@ -48,9 +48,9 @@ class GroupController extends Controller
     {
         $this->authorize('create', Group::class);
 
-        /** @phpstan-ignore-next-line argument.type */
+        /** @phpstan-ignore argument.type */
         $method = GroupGenerationMethod::from($request->validated('method'));
-        /** @phpstan-ignore-next-line cast.int */
+        /** @phpstan-ignore cast.int */
         $groupsCount = (int) $request->validated('groups_count');
 
         /** @var int[] $bookingOptionIds */

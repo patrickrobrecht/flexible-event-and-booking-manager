@@ -105,16 +105,16 @@ class Handler extends ExceptionHandler
 
             // Handle 429 (Too Many Requests) errors.
             if ($e instanceof ThrottleRequestsException) {
-                /** @phpstan-ignore-next-line argument.type */
+                /** @phpstan-ignore argument.type */
                 $tokenId = (int) strtok($request->bearerToken(), '|');
                 Log::info(sprintf('API: Too many requests for token %s', $tokenId));
                 return $this->renderApiError(
                     Response::HTTP_TOO_MANY_REQUESTS,
                     sprintf(
                         __('Access limited to %d request(s) per %d minute(s).'),
-                        /** @phpstan-ignore-next-line argument.type */
+                        /** @phpstan-ignore argument.type */
                         config('api.throttle.max_attempts', 60),
-                        /** @phpstan-ignore-next-line argument.type */
+                        /** @phpstan-ignore argument.type */
                         config('api.throttle.decay_minutes', 1)
                     ),
                     headers: $e->getHeaders()

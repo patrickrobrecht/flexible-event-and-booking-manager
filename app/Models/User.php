@@ -226,7 +226,7 @@ class User extends Authenticatable implements MustVerifyEmail
             $abilities->add($userRole->abilities);
         }
 
-        /** @phpstan-ignore-next-line return.type */
+        /** @phpstan-ignore return.type */
         return $abilities->flatten()
             ->unique();
     }

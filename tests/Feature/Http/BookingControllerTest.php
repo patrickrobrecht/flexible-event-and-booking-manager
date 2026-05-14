@@ -402,9 +402,9 @@ class BookingControllerTest extends TestCase
         ];
         $this->assertUserCanPutOnlyWithAbility($route, $data, Ability::EditPaymentStatus, $route, $route);
 
-        /** @phpstan-ignore-next-line staticMethod.dynamicCall */
+        /** @phpstan-ignore staticMethod.dynamicCall */
         self::assertEquals($bookings->count(), $bookingOption->bookings()->whereNotNull('paid_at')->count());
-        /** @phpstan-ignore-next-line staticMethod.dynamicCall */
+        /** @phpstan-ignore staticMethod.dynamicCall */
         self::assertEquals($bookings2->count(), $bookingOption->bookings()->whereNull('paid_at')->count());
     }
 

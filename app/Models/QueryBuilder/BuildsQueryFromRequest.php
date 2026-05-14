@@ -32,7 +32,7 @@ trait BuildsQueryFromRequest
         }
         /** @phpstan-var non-empty-array<AllowedSort|string> $defaultSorts */
 
-        /** @phpstan-ignore-next-line argument.type */
+        /** @phpstan-ignore argument.type */
         return QueryBuilder::for($subject ?? self::class)
             ->allowedFilters(...self::allowedFilters())
             ->allowedSorts(...self::allowedSorts())
@@ -48,7 +48,7 @@ trait BuildsQueryFromRequest
 
         return [
             ...self::defaultValuesForFilters(),
-            /** @phpstan-ignore-next-line array.invalidKey */
+            /** @phpstan-ignore array.invalidKey */
             config('query-builder.parameters.sort') => $defaultSort instanceof AllowedSort ? $defaultSort->getName() : null,
         ];
     }

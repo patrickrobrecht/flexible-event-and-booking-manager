@@ -131,7 +131,7 @@ class MaterialControllerTest extends TestCase
     {
         return [
             'storage_location_id' => self::createStorageLocation()->id,
-            /** @phpstan-ignore-next-line property.nonObject */
+            /** @phpstan-ignore property.nonObject */
             'material_status' => $this->faker->randomElement(MaterialStatus::cases())->value,
             'stock' => $this->faker->optional()->numberBetween(1, 100),
             'remarks' => $this->faker->optional()->text(),

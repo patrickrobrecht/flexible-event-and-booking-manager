@@ -28,13 +28,9 @@ trait HasSlugForRouting
         return 'slug';
     }
 
-    /**
-     * @param int|string $value
-     *
-     * @phpstan-ignore-next-line method.childParameterType
-     */
-    public function resolveRouteBinding($value, $field = null): static
+    public function resolveRouteBinding($value, $field = null): ?static
     {
+        /** @var int|string $value */
         try {
             return static::query()
                  ->where('slug', '=', $value)

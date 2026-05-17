@@ -22,7 +22,7 @@ trait ResolvesSeederDependencies
             $this->call($seederClass);
         }
 
-        /** @phpstan-ignore-next-line return.type */
+        /** @phpstan-ignore return.type */
         return $modelClass::all();
     }
 }

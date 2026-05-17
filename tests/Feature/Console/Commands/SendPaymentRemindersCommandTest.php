@@ -5,6 +5,7 @@ namespace Tests\Feature\Console\Commands;
 use App\Console\Commands\SendPaymentRemindersCommand;
 use App\Enums\BookingStatus;
 use App\Models\Booking;
+use App\Models\User;
 use App\Notifications\PaymentReminderNotification;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -42,9 +43,11 @@ class SendPaymentRemindersCommandTest extends TestCase
             /** @phpstan-ignore method.nonObject */
             ->expectsOutputToContain("Sent reminder to {$booking->email} for booking {$booking->id}.")
             ->assertSuccessful();
-        Notification::assertSentTo(new AnonymousNotifiable(), PaymentReminderNotification::class, static function ($notification) use ($booking) {
-            /** @phpstan-ignore-next-line argument.type */
-            return str_contains($notification->toMail($booking->bookedByUser)->render(), $booking->bookedByUser->greeting);
+
+        /** @var User $user */
+        $user = $booking->bookedByUser;
+        Notification::assertSentTo(new AnonymousNotifiable(), PaymentReminderNotification::class, static function ($notification) use ($user) {
+            return str_contains($notification->toMail($user)->render(), $user->greeting);
         });
         Notification::assertCount(1);
     }
@@ -97,7 +100,7 @@ class SendPaymentRemindersCommandTest extends TestCase
         return self::createBooking($bookingOption, [
             'paid_at' => null,
             'deleted_at' => null,
-            /** @phpstan-ignore-next-line method.nonObject */
+            /** @phpstan-ignore method.notFound */
             'booked_at' => Carbon::today()->subWeekDays(11),
         ]);
     }

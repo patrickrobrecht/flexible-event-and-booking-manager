@@ -16,7 +16,7 @@ trait ExportsToExcel
     public function setMetaData(string $title): void
     {
         $this->getProperties()
-            /** @phpstan-ignore-next-line binaryOp.invalid */
+            /** @phpstan-ignore binaryOp.invalid, binaryOp.invalid */
             ->setCreator(config('app.name') . ' - ' . config('app.owner'))
             ->setTitle($title);
     }

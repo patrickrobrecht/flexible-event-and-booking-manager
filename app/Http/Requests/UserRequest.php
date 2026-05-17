@@ -21,6 +21,11 @@ class UserRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
+        if ($this->routeIs('users.store')) {
+            $this->merge([
+                'send_notification' => $this->boolean('send_notification'),
+            ]);
+        }
         $this->merge([
             'user_role_id' => $this->input('user_role_id', []), // Force array!
         ]);

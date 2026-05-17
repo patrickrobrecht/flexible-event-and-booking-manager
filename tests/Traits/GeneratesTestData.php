@@ -202,7 +202,7 @@ trait GeneratesTestData
     protected static function createDocuments(): Collection
     {
         return Document::factory()
-            /** @phpstan-ignore-next-line argument.type */
+            /** @phpstan-ignore argument.type */
             ->for(fake()->randomElement([
                 self::createEvent(Visibility::Public),
                 self::createEventSeries(Visibility::Private),
@@ -361,7 +361,7 @@ trait GeneratesTestData
     public static function createUserResponsibleFor(Event|EventSeries|Organization $responsibleFor): User
     {
         return User::factory()
-            /** @phpstan-ignore-next-line match.unhandled */
+            /** @phpstan-ignore match.unhandled */
             ->hasAttached($responsibleFor, ['publicly_visible' => true], match ($responsibleFor::class) {
                 Event::class => 'responsibleForEvents',
                 EventSeries::class => 'responsibleForEventSeries',

@@ -56,10 +56,8 @@ class SearchUsers extends Component
         return User::query()
             ->where(
                 fn (Builder $query) => $query
-                    /** @see User::scopeName() */
-                    ->name(...$searchTerms)
-                    /** @see User::scopeEmail() */
-                    ->orWhere(fn (Builder $query2) => $query2->email(...$searchTerms))
+                    ->name(...$searchTerms) /** @see User::scopeName() */
+                    ->orWhere(fn (Builder $query2) => $query2->email(...$searchTerms)) /** @see User::scopeEmail() */
             )
             ->whereNotIn('id', $this->selectedUsers->keys())
             ->orderBy('last_name')

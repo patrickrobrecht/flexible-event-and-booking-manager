@@ -61,7 +61,7 @@ class ManageGroups extends Component
     {
         $this->event = $event;
         $this->loadData();
-        /** @phpstan-ignore-next-line assign.propertyType */
+        /** @phpstan-ignore assign.propertyType */
         $this->bookingOptionIds = $this->event->getBookingOptions()->pluck('id')->toArray();
 
         $this->loadSettingsFromSession();
@@ -223,7 +223,7 @@ class ManageGroups extends Component
     {
         $bookings = $this->event->getBookings();
         if (count($this->showFields) > 0) {
-            /** @phpstan-ignore-next-line argument.type */
+            /** @phpstan-ignore argument.type */
             $bookings->load([
                 'formFieldValues' => fn (HasMany $formFieldValues) => $formFieldValues
                     ->whereIn('form_field_id', $this->showFields),
@@ -232,7 +232,7 @@ class ManageGroups extends Component
         $this->groups = $this->groups
             ->map(function (Group $group) use ($bookings) {
                 $group['bookings'] = $this->sortBookingsInGroup(
-                    /** @phpstan-ignore-next-line argument.type */
+                    /** @phpstan-ignore argument.type */
                     $bookings->filter(fn (Booking $booking) => $booking->getGroup($this->event)?->is($group))
                 );
 

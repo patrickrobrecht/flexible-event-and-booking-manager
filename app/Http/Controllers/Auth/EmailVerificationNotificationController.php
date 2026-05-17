@@ -13,13 +13,11 @@ class EmailVerificationNotificationController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        /** @phpstan-ignore-next-line property.nonObject */
-        if ($request->user()->hasVerifiedEmail()) {
+        if ($request->user()?->hasVerifiedEmail() === true) {
             return redirect()->intended(route('dashboard'));
         }
 
-        /** @phpstan-ignore-next-line property.nonObject */
-        $request->user()->sendEmailVerificationNotification();
+        $request->user()?->sendEmailVerificationNotification();
 
         return back()
             ->with('success', __('A new verification link has been sent to the e-mail address you provided during registration.'));

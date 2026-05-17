@@ -44,9 +44,9 @@ class GenerateGroupsRequest extends FormRequest
      */
     public function rules(): array
     {
-        /** @phpstan-ignore-next-line argument.type */
+        /** @phpstan-ignore argument.type */
         $selectedBookingOptionIds = array_intersect(
-            /** @phpstan-ignore-next-line argument.type */
+            /** @phpstan-ignore argument.type */
             array_map(static fn ($i) => is_numeric($i) ? (int) $i : null, $this->input('booking_option_id', [])),
             $this->event->getBookingOptions()->pluck('id')->toArray()
         );
@@ -101,7 +101,7 @@ class GenerateGroupsRequest extends FormRequest
             'exclude_parent_group_id' => __('Exclude members of groups'),
         ];
 
-        /** @phpstan-ignore-next-line argument.type */
+        /** @phpstan-ignore argument.type */
         foreach (range(0, count($this->input('exclude_parent_group_id')) - 1) as $id) {
             $attributes['exclude_parent_group_id.' . $id] = __('Exclude members of groups');
         }

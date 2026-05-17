@@ -102,14 +102,14 @@ class BookingOptionControllerTest extends TestCase
                 fn (BookingOptionFactory $factory) => $factory->availabilityStartingInFuture(),
                 fn (BookingOption $bookingOption) => [
                     __('Bookings are not possible yet.'),
-                    /** @phpstan-ignore-next-line argument.type */
+                    /** @phpstan-ignore argument.type */
                     __('The booking period starts at :date.', ['date' => formatDateTime($bookingOption->available_from)]),
                 ],
             ],
             [
                 fn (BookingOptionFactory $factory) => $factory->availabilityEndedInPast(),
                 fn (BookingOption $bookingOption) => [
-                    /** @phpstan-ignore-next-line argument.type */
+                    /** @phpstan-ignore argument.type */
                     __('The booking period ended at :date.', ['date' => formatDateTime($bookingOption->available_until)]),
                     __('Bookings are not possible anymore.'),
                 ],

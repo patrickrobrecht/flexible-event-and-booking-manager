@@ -178,7 +178,7 @@ class Event extends Model
 
     public function findOrCreateGroup(int|string $groupIndex): Group
     {
-        /** @phpstan-ignore-next-line */
+        /** @phpstan-ignore return.type */
         return $this->groups()
             ->firstOrCreate([
                 'name' => __('Group') . ' ' . $groupIndex,
@@ -304,7 +304,7 @@ class Event extends Model
     {
         return [
             ...self::defaultValuesForFilters(),
-            /** @phpstan-ignore-next-line array.invalidKey */
+            /** @phpstan-ignore array.invalidKey */
             config('query-builder.parameters.sort') => '-period',
         ];
     }

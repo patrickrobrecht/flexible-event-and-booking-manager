@@ -167,13 +167,9 @@ class BookingOption extends Model
         return in_array($restriction->value, $this->restrictions ?? [], true);
     }
 
-    /**
-     * @param int|string $value
-     *
-     * @phpstan-ignore-next-line method.childParameterType
-     */
     public function resolveRouteBinding($value, $field = null): static
     {
+        /** @var int|string $value */
         /** @var Event $event */
         $event = request()->route('event');
 

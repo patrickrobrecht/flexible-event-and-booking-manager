@@ -263,7 +263,7 @@ class Booking extends Model
         }
 
         $formFieldValue->forceCast();
-        /** @phpstan-ignore-next-line assign.propertyType */
+        /** @phpstan-ignore assign.propertyType */
         $formFieldValue->value = $value;
         return $formFieldValue->save();
     }
@@ -289,7 +289,7 @@ class Booking extends Model
         $value = $this->getFieldValue($formField);
 
         if ($formField->isSingleCheckbox()) {
-            /** @phpstan-ignore-next-line cast.int */
+            /** @phpstan-ignore cast.int */
             $value = ((int) $value === 1)
                 ? __('Yes')
                 : __('No');
@@ -302,15 +302,15 @@ class Booking extends Model
             }
 
             $value = match ($formField->type) {
-                /** @phpstan-ignore-next-line argument.type */
+                /** @phpstan-ignore argument.type */
                 FormElementType::Date => formatDate($value),
-                /** @phpstan-ignore-next-line argument.type */
+                /** @phpstan-ignore argument.type */
                 FormElementType::DateTime => formatDateTime($value),
                 default => $value,
             };
         }
 
-        /** @phpstan-ignore-next-line return.type */
+        /** @phpstan-ignore return.type */
         return $value;
     }
 
@@ -325,7 +325,7 @@ class Booking extends Model
                 'bookingOption.formFields',
             ]),
         ])
-            /** @phpstan-ignore-next-line argument.type */
+            /** @phpstan-ignore argument.type */
             ->addInfo([
                 'Author' => config('app.owner'),
                 'Title' => implode(' ', [

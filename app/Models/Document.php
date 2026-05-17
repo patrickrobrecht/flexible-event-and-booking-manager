@@ -112,7 +112,7 @@ class Document extends Model
     {
         $this->fill($validatedData);
 
-        /** @phpstan-ignore-next-line identical.alwaysFalse */
+        /** @phpstan-ignore identical.alwaysFalse */
         if ($this->approval_status === null) {
             // Set the approval status to the default value if not contained in the request.
             $this->approval_status = ApprovalStatus::WaitingForApproval;
@@ -126,11 +126,11 @@ class Document extends Model
 
             $targetDirectory = $this->reference->getDocumentStoragePath();
             if ($this->exists) {
-                /** @phpstan-ignore-next-line */
+                /** @phpstan-ignore assign.propertyType */
                 $this->path = $file->storeAs($targetDirectory, $this->id . '-' . $file->getClientOriginalName());
             } else {
                 $tempFileName = 'tmp-' . Carbon::now()->format('Ymd-His') . '-' . $file->getClientOriginalName();
-                /** @phpstan-ignore-next-line */
+                /** @phpstan-ignore assign.propertyType */
                 $this->path = $file->storeAs($targetDirectory, $tempFileName);
                 $this->save();
 

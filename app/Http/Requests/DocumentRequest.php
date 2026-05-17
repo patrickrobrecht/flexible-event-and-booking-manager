@@ -83,27 +83,27 @@ class DocumentRequest extends FormRequest
     private function getReference(): Model
     {
         if ($this->routeIs('documents.update')) {
-            /** @phpstan-ignore-next-line property.nonObject */
+            /** @phpstan-ignore property.nonObject */
             return $this->document->reference;
         }
 
         if ($this->routeIs('events.documents.store')) {
-            /** @phpstan-ignore-next-line return.type */
+            /** @phpstan-ignore return.type */
             return $this->event;
         }
 
         if ($this->routeIs('event-series.documents.store')) {
-            /** @phpstan-ignore-next-line return.type */
+            /** @phpstan-ignore return.type */
             return $this->event_series;
         }
 
         if ($this->routeIs('locations.documents.store')) {
-            /** @phpstan-ignore-next-line return.type */
+            /** @phpstan-ignore return.type */
             return $this->location;
         }
 
         if ($this->routeIs('organizations.documents.store')) {
-            /** @phpstan-ignore-next-line return.type */
+            /** @phpstan-ignore return.type */
             return $this->organization;
         }
 

@@ -48,11 +48,7 @@ class DashboardController extends Controller
             }
 
             if ($user->documents()->exists()) {
-                $myDocumentsByStatus = $user->documents()
-                    ->selectRaw('count(*) as count, approval_status')
-                    ->groupBy('approval_status')
-                    ->reorder()
-                    ->pluck('count', 'approval_status');
+                $myDocumentsByStatus = $user->documents_by_status;
             }
 
             $myEventsWithoutDocuments = $user->responsibleForEvents()

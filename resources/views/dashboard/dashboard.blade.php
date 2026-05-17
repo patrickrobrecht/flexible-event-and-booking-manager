@@ -2,17 +2,19 @@
 
 @php
     use App\Models\Booking;
+    use App\Enums\ApprovalStatus;
     use App\Models\Event;
     use App\Models\EventSeries;
     use App\Models\Organization;
     use App\Models\User;
     use Illuminate\Database\Eloquent\Collection;
+    use Illuminate\Support\Collection as SupportCollection;
     use Illuminate\Support\Facades\Auth;
 
     /** @var Collection<int, Event> $events */
     /** @var Collection<int, Booking>|null $bookings */
-    /** @var Collection<int, int>|null $allDocumentsByStatus */
-    /** @var Collection<int, int>|null $myDocumentsByStatus */
+    /** @var SupportCollection<value-of<ApprovalStatus>, int>|null $allDocumentsByStatus */
+    /** @var SupportCollection<value-of<ApprovalStatus>, int>|null $myDocumentsByStatus */
     /** @var Collection<int, Event>|null $myEventsWithoutDocuments */
     /** @var Collection<int, EventSeries>|null $myEventSeriesWithoutDocuments */
     /** @var Collection<int, Organization>|null $myOrganizationsWithoutDocuments */
@@ -62,17 +64,17 @@
             <div id="documents" class="{{ $colClass }} mt-4 mt-xl-0">
                 <h2><i class="fa fa-fw fa-file"></i> <a href="{{ route('documents.index') }}">{{ __('Documents') }}</a></h2>
                 @if($allDocumentsByStatus !== null)
-                    @include('dashboard.documents_by_status', [
+                    @include('documents.shared.documents_by_status', [
                         'documentsByStatus' => $allDocumentsByStatus,
-                        'routeName' => 'documents.index',
+                        'route' => route('documents.index'),
                     ])
                 @endif
 
                 @if($myDocumentsByStatus !== null)
                     <h3 class="mt-4"><a href="{{ route('account.documents') }}">{{ __('My documents') }}</a></h3>
-                    @include('dashboard.documents_by_status', [
+                    @include('documents.shared.documents_by_status', [
                         'documentsByStatus' => $myDocumentsByStatus,
-                        'routeName' => 'account.documents',
+                        'route' => route('account.documents'),
                     ])
                 @endif
 

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\Ability;
 use App\Enums\ActiveStatus;
+use App\Enums\ApprovalStatus;
 use App\Enums\FilterValue;
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
@@ -19,6 +20,7 @@ use App\Policies\DocumentPolicy;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -27,6 +29,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Laravel\Sanctum\HasApiTokens;
@@ -45,6 +48,7 @@ use Spatie\QueryBuilder\AllowedSort;
  * @property ?string $password
  * @property ActiveStatus $status
  * @property ?Carbon $last_login_at
+ * @property-read SupportCollection<value-of<ApprovalStatus>, int> $documents_by_status {@see self::documentsByStatus()}
  * @property-read Booking[]|Collection $bookings {@see self::bookings()}
  * @property-read Booking[]|Collection $bookingsTrashed {@see self::bookingsTrashed()}
  * @property-read Collection|Document[] $documents {@see self::documents()}
@@ -99,6 +103,17 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'remember_token',
     ];
+
+    protected function documentsByStatus(): Attribute
+    {
+        return Attribute::get(
+            fn () => $this->documents()
+                ->selectRaw('count(*) as count, approval_status')
+                ->groupBy('approval_status')
+                ->reorder()
+                ->pluck('count', 'approval_status')
+        );
+    }
 
     /**
      * @return HasMany<Booking, $this>
@@ -218,11 +233,11 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * @return \Illuminate\Support\Collection<int, string>
+     * @return SupportCollection<int, string>
      */
-    public function getAbilitiesAsStrings(): \Illuminate\Support\Collection
+    public function getAbilitiesAsStrings(): SupportCollection
     {
-        $abilities = \Illuminate\Support\Collection::empty();
+        $abilities = SupportCollection::empty();
         foreach ($this->userRoles as $userRole) {
             $abilities->add($userRole->abilities);
         }
@@ -285,15 +300,19 @@ class User extends Authenticatable implements MustVerifyEmail
                         ->withCount([
                             'bookings',
                         ]),
+                    'eventSeries',
+                    'location',
+                    'parentEvent',
+                    'organization',
                 ])
                 ->withCount([
                     'documents',
                     'groups',
                 ]),
-            'responsibleForEvents.eventSeries',
-            'responsibleForEvents.location',
-            'responsibleForEvents.parentEvent',
             'responsibleForEventSeries' => fn (MorphToMany $eventSeries) => $eventSeries
+                ->with([
+                    'organization',
+                ])
                 ->withCount([
                     'documents',
                     'events',

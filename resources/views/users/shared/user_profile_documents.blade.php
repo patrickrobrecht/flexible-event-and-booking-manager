@@ -8,6 +8,13 @@
         <x-bs::alert class="danger">{{ __(':name has not uploaded any documents yet.', [
             'name' => $user->first_name,
         ]) }}</x-bs::alert>
+    @else
+        <div class="mb-3">
+            @include('documents.shared.documents_by_status', [
+                'documentsByStatus' => $documentsByStatus,
+                'route' => $allDocumentsLink,
+            ])
+        </div>
     @endif
     @include('documents.shared.document_list', [
         'documents' => $user->documents,

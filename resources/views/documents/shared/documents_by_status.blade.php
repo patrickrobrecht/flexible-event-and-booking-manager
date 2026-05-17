@@ -1,14 +1,14 @@
 @php
     use App\Enums\ApprovalStatus;
-    use Illuminate\Database\Eloquent\Collection;
+    use Illuminate\Support\Collection as SupportCollection;
 
-    /** @var Collection<int, int> $documentsByStatus */
+    /** @var SupportCollection<value-of<ApprovalStatus>, int> $documentsByStatus */
 @endphp
 <x-bs::list>
     @foreach(ApprovalStatus::cases() as $approvalStatus)
         @php
             $count = $documentsByStatus[$approvalStatus->value] ?? 0;
-            $link = route($routeName, [
+            $link = $route . '?' . http_build_query([
                 'filter[approval_status]' => $approvalStatus->value,
             ]);
         @endphp

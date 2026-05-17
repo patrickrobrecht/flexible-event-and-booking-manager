@@ -46,12 +46,34 @@ class DashboardController extends Controller
                     ->visibleForUser() /** @see Document::scopeVisibleForUser() */
                     ->pluck('count', 'approval_status');
             }
+
+            if ($user->documents()->exists()) {
+                $myDocumentsByStatus = $user->documents()
+                    ->selectRaw('count(*) as count, approval_status')
+                    ->groupBy('approval_status')
+                    ->reorder()
+                    ->pluck('count', 'approval_status');
+            }
+
+            $myEventsWithoutDocuments = $user->responsibleForEvents()
+                ->whereDoesntHave('documents')
+                ->get();
+            $myEventSeriesWithoutDocuments = $user->responsibleForEventSeries()
+                ->whereDoesntHave('documents')
+                ->get();
+            $myOrganizationsWithoutDocuments = $user->responsibleForOrganizations()
+                ->whereDoesntHave('documents')
+                ->get();
         }
 
         return view('dashboard.dashboard', [
             'events' => $events,
             'bookings' => $bookings ?? null,
             'allDocumentsByStatus' => $allDocumentsByStatus ?? null,
+            'myDocumentsByStatus' => $myDocumentsByStatus ?? null,
+            'myEventsWithoutDocuments' => $myEventsWithoutDocuments ?? null,
+            'myEventSeriesWithoutDocuments' => $myEventSeriesWithoutDocuments ?? null,
+            'myOrganizationsWithoutDocuments' => $myOrganizationsWithoutDocuments ?? null,
         ]);
     }
 }

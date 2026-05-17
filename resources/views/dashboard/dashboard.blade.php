@@ -3,6 +3,8 @@
 @php
     use App\Models\Booking;
     use App\Models\Event;
+    use App\Models\EventSeries;
+    use App\Models\Organization;
     use App\Models\User;
     use Illuminate\Database\Eloquent\Collection;
     use Illuminate\Support\Facades\Auth;
@@ -10,9 +12,17 @@
     /** @var Collection<int, Event> $events */
     /** @var Collection<int, Booking>|null $bookings */
     /** @var Collection<int, int>|null $allDocumentsByStatus */
+    /** @var Collection<int, int>|null $myDocumentsByStatus */
+    /** @var Collection<int, Event>|null $myEventsWithoutDocuments */
+    /** @var Collection<int, EventSeries>|null $myEventSeriesWithoutDocuments */
+    /** @var Collection<int, Organization>|null $myOrganizationsWithoutDocuments */
 
     $showBookingsColumn = $bookings !== null;
-    $showDocumentsColumn = $allDocumentsByStatus !== null;
+    $showMissingDocuments = array_any(
+        [$myEventsWithoutDocuments, $myEventSeriesWithoutDocuments, $myOrganizationsWithoutDocuments],
+        fn ($collection) => $collection !== null && $collection->isNotEmpty()
+    );
+    $showDocumentsColumn = $allDocumentsByStatus !== null || $myDocumentsByStatus !== null || $showMissingDocuments;
 
     $colClass = 'col-12 col-md-6';
     if ($showBookingsColumn && $showDocumentsColumn) {
@@ -51,9 +61,50 @@
         @if($showDocumentsColumn)
             <div id="documents" class="{{ $colClass }} mt-4 mt-xl-0">
                 <h2><i class="fa fa-fw fa-file"></i> <a href="{{ route('documents.index') }}">{{ __('Documents') }}</a></h2>
-                @include('dashboard.documents_by_status', [
-                    'documentsByStatus' => $allDocumentsByStatus,
-                ])
+                @if($allDocumentsByStatus !== null)
+                    @include('dashboard.documents_by_status', [
+                        'documentsByStatus' => $allDocumentsByStatus,
+                        'routeName' => 'documents.index',
+                    ])
+                @endif
+
+                @if($myDocumentsByStatus !== null)
+                    <h3 class="mt-4"><a href="{{ route('account.documents') }}">{{ __('My documents') }}</a></h3>
+                    @include('dashboard.documents_by_status', [
+                        'documentsByStatus' => $myDocumentsByStatus,
+                        'routeName' => 'account.documents',
+                    ])
+                @endif
+
+                @if($showMissingDocuments)
+                    <h3 class="mt-4">{{ __('Missing documents') }}</h3>
+                    <x-bs::list>
+                        @if($myEventsWithoutDocuments !== null && $myEventsWithoutDocuments->isNotEmpty())
+                            <x-bs::list.item class="fw-bold">{{ __('Events') }}</x-bs::list.item>
+                            @foreach($myEventsWithoutDocuments as $event)
+                                <x-bs::list.item>
+                                    <a href="{{ route('events.show', $event) }}">{{ $event->name }}</a>
+                                </x-bs::list.item>
+                            @endforeach
+                        @endif
+                        @if($myEventSeriesWithoutDocuments !== null && $myEventSeriesWithoutDocuments->isNotEmpty())
+                            <x-bs::list.item class="fw-bold">{{ __('Event series') }}</x-bs::list.item>
+                            @foreach($myEventSeriesWithoutDocuments as $eventSeries)
+                                <x-bs::list.item>
+                                    <a href="{{ route('event-series.show', $eventSeries) }}">{{ $eventSeries->name }}</a>
+                                </x-bs::list.item>
+                            @endforeach
+                        @endif
+                        @if($myOrganizationsWithoutDocuments !== null && $myOrganizationsWithoutDocuments->isNotEmpty())
+                            <x-bs::list.item class="fw-bold">{{ __('Organizations') }}</x-bs::list.item>
+                            @foreach($myOrganizationsWithoutDocuments as $organization)
+                                <x-bs::list.item>
+                                    <a href="{{ route('organizations.show', $organization) }}">{{ $organization->name }}</a>
+                                </x-bs::list.item>
+                            @endforeach
+                        @endif
+                    </x-bs::list>
+                @endif
             </div>
         @endif
     </div>

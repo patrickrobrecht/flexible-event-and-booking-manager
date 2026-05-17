@@ -8,7 +8,7 @@
     @foreach(ApprovalStatus::cases() as $approvalStatus)
         @php
             $count = $documentsByStatus[$approvalStatus->value] ?? 0;
-            $link = route('documents.index', [
+            $link = route($routeName, [
                 'filter[approval_status]' => $approvalStatus->value,
             ]);
         @endphp

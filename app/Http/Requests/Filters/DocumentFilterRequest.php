@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Filters;
 
 use App\Enums\ApprovalStatus;
+use App\Enums\DocumentReferenceType;
 use App\Enums\FileType;
 use App\Enums\FilterValue;
 use App\Http\Requests\Traits\FiltersList;
@@ -27,6 +28,7 @@ class DocumentFilterRequest extends FormRequest
         return [
             'filter.search' => $this->ruleForText(),
             'filter.file_type' => $this->ruleForAllowedOrExistsInEnum(FileType::class, [FilterValue::All->value]),
+            'filter.reference_type' => $this->ruleForAllowedOrExistsInEnum(DocumentReferenceType::class, [FilterValue::All->value]),
             'filter.approval_status' => $this->ruleForAllowedOrExistsInEnum(ApprovalStatus::class, [FilterValue::All->value]),
             'sort' => [
                 'nullable',

@@ -234,6 +234,7 @@ return [
         'price' => 'Preis',
         'publicly_visible' => 'öffentlich sichtbar',
         'register_entry' => 'Registereintrag',
+        'reference type' => 'Dokument zu',
         'representatives' => 'Vertreter',
         'restrictions' => 'Einschränkungen',
         'search' => 'Suchbegriff',

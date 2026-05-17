@@ -15,6 +15,7 @@ use App\Models\Traits\Searchable;
 use App\Notifications\AccountCreatedNotification;
 use App\Notifications\ResetPasswordNotification;
 use App\Notifications\VerifyEmailNotification;
+use App\Policies\DocumentPolicy;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
@@ -229,6 +230,19 @@ class User extends Authenticatable implements MustVerifyEmail
         /** @phpstan-ignore return.type */
         return $abilities->flatten()
             ->unique();
+    }
+
+    /**
+     * @return array<class-string>
+     */
+    public function getVisibleDocumentReferenceTypes(): array
+    {
+        return array_keys(
+            array_filter(
+                DocumentPolicy::VIEW_DOCUMENTS_ABILITIES,
+                fn (Ability $ability) => $this->hasAbility($ability)
+            )
+        );
     }
 
     public function hasAbility(Ability $ability): bool

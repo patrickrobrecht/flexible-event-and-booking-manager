@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @php
+    use App\Enums\DocumentReferenceType;
     use App\Models\Document;
     use App\Models\User;
     use Illuminate\Pagination\LengthAwarePaginator;
@@ -21,7 +22,9 @@
 @endsection
 
 @section('content')
-    @include('documents.shared.document_filters')
+    @include('documents.shared.document_filters', [
+        'documentReferenceTypes' => DocumentReferenceType::casesVisibleForModels($user->getVisibleDocumentReferenceTypes()),
+    ])
 
     <x-alert.count class="mt-3" :count="$documents->total()"/>
 

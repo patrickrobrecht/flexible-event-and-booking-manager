@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\Visibility;
+use App\Models\Document;
 use App\Models\Event;
 use App\Models\User;
 use Carbon\Carbon;
@@ -37,11 +38,20 @@ class DashboardController extends Controller
                     'bookingOption.event.location',
                 ])
                 ->get();
+
+            if ($user->can('viewAny', Document::class)) {
+                $allDocumentsByStatus = Document::query()
+                    ->selectRaw('count(*) as count, approval_status')
+                    ->groupBy('approval_status')
+                    ->visibleForUser() /** @see Document::scopeVisibleForUser() */
+                    ->pluck('count', 'approval_status');
+            }
         }
 
         return view('dashboard.dashboard', [
-            'bookings' => $bookings ?? null,
             'events' => $events,
+            'bookings' => $bookings ?? null,
+            'allDocumentsByStatus' => $allDocumentsByStatus ?? null,
         ]);
     }
 }

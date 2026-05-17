@@ -42,4 +42,10 @@ enum ApprovalStatus: int implements MakesBadges
             self::ChangesRequested => __('changes requested'),
         };
     }
+
+    public function isNotDecided(): bool
+    {
+        return $this === self::WaitingForApproval
+            || $this === self::UnderReview;
+    }
 }

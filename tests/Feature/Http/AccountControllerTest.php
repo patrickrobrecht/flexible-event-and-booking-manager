@@ -3,6 +3,7 @@
 namespace Tests\Feature\Http;
 
 use App\Enums\Ability;
+use App\Enums\ApprovalStatus;
 use App\Http\Controllers\AccountController;
 use App\Http\Requests\UserRequest;
 use App\Models\User;
@@ -10,6 +11,7 @@ use App\Policies\UserPolicy;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 
+#[CoversClass(ApprovalStatus::class)]
 #[CoversClass(AccountController::class)]
 #[CoversClass(User::class)]
 #[CoversClass(UserPolicy::class)]
@@ -19,6 +21,29 @@ class AccountControllerTest extends TestCase
     public function testUserCanViewAccountOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('/account', [Ability::ViewAccount, Ability::ViewAbilities]);
+    }
+
+    public function testUserCanViewAccountWithMissingDocuments(): void
+    {
+        $user = $this->actingAsUserWithAbility(Ability::ViewAccount);
+
+        $event = self::createEvent();
+        $eventSeries = self::createEventSeries();
+        $organization = self::createOrganization();
+        foreach ([$event, $eventSeries, $organization] as $object) {
+            $object->saveResponsibleUsers([
+                'responsible_user_id' => [$user->id],
+            ]);
+        }
+
+        $this->get('/account')
+            ->assertOk()
+            ->assertSeeInOrder([
+                __('Missing documents'),
+                $event->name,
+                $eventSeries->name,
+                $organization->name,
+            ]);
     }
 
     public function testUserCanViewAbilitiesOnlyWithCorrectAbility(): void

@@ -18,7 +18,13 @@ class AccountController extends Controller
     {
         $this->authorize('viewAccount', User::class);
 
-        return view('account.account_show');
+        /** @var User $user */
+        $user = Auth::user();
+
+        return view('account.account_show', [
+            'user' => $user->loadProfileData(),
+            ...$user->getMissingDocuments(),
+        ]);
     }
 
     public function showAbilities(): View

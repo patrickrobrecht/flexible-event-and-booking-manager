@@ -2,14 +2,13 @@
 
 namespace App\Models;
 
-use App\Enums\Ability;
 use App\Enums\ApprovalStatus;
+use App\Enums\DocumentReferenceType;
 use App\Enums\FileType;
 use App\Enums\FilterValue;
 use App\Models\QueryBuilder\BuildsQueryFromRequest;
 use App\Models\QueryBuilder\SortOptions;
 use App\Models\Traits\Searchable;
-use App\Policies\DocumentPolicy;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -79,6 +78,16 @@ class Document extends Model
         return $this->belongsTo(User::class, 'uploaded_by_user_id');
     }
 
+    public function scopeReferenceType(Builder $query, string $referenceType): Builder
+    {
+        $documentReferenceType = DocumentReferenceType::tryFrom($referenceType);
+        if ($documentReferenceType !== null) {
+            $referenceType = $documentReferenceType->getClass();
+        }
+
+        return $query->where('reference_type', $referenceType);
+    }
+
     public function scopeSearchTitleAndDescription(Builder $query, string ...$searchTerms): Builder
     {
         return $this->scopeIncludeColumns($query, ['title', 'description'], true, ...$searchTerms);
@@ -91,11 +100,7 @@ class Document extends Model
             return $query;
         }
 
-        $modelTypes = array_filter(
-            DocumentPolicy::VIEW_DOCUMENTS_ABILITIES,
-            static fn (Ability $ability) => $user->hasAbility($ability)
-        );
-        return $query->whereIn('reference_type', array_keys($modelTypes));
+        return $query->whereIn('reference_type', $user->getVisibleDocumentReferenceTypes());
     }
 
     public function deleteWithReviews(): bool
@@ -162,6 +167,9 @@ class Document extends Model
             /** @see self::scopeSearchTitleAndDescription() */
             AllowedFilter::scope('search', 'searchTitleAndDescription'),
             AllowedFilter::exact('file_type')
+                ->ignore(FilterValue::All->value),
+            /** @see self::scopeReferenceType() */
+            AllowedFilter::scope('reference_type')
                 ->ignore(FilterValue::All->value),
             AllowedFilter::exact('approval_status')
                 ->ignore(FilterValue::All->value),

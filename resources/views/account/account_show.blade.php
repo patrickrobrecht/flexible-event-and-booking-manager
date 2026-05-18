@@ -5,7 +5,6 @@
     use Illuminate\Support\Facades\Auth;
 
     /** @var User $user */
-    $user = Auth::user()->loadProfileData();
 @endphp
 
 @section('title')
@@ -38,6 +37,7 @@
         ])
         @include('users.shared.user_profile_documents', [
             'allDocumentsLink' => route('account.documents'),
+            'documentsByStatus' => $user->documents_by_status,
         ])
     </div>
 @endsection

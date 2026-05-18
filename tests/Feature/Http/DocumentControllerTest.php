@@ -4,6 +4,7 @@ namespace Tests\Feature\Http;
 
 use App\Enums\Ability;
 use App\Enums\ApprovalStatus;
+use App\Enums\DocumentReferenceType;
 use App\Enums\FileType;
 use App\Enums\Visibility;
 use App\Http\Controllers\DocumentController;
@@ -17,6 +18,7 @@ use App\Models\Organization;
 use App\Policies\DocumentPolicy;
 use Closure;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -29,14 +31,30 @@ use Tests\TestCase;
 #[CoversClass(DocumentController::class)]
 #[CoversClass(DocumentFilterRequest::class)]
 #[CoversClass(DocumentPolicy::class)]
+#[CoversClass(DocumentReferenceType::class)]
 #[CoversClass(DocumentRequest::class)]
 #[CoversClass(FileType::class)]
 class DocumentControllerTest extends TestCase
 {
     public function testUserCanViewAllDocumentsWithCorrectAbility(): void
     {
+        $referenceClasses = self::referenceClassesWithViewAbility();
+        /** @var array<string, list<Document>> $documentsByAbility */
+        $documentsByAbility = [];
+        foreach ($referenceClasses as [$referenceProvider, $viewAbility]) {
+            $documentsByAbility[$viewAbility->value] ??= [];
+            $documentsByAbility[$viewAbility->value][] = self::createDocument($referenceProvider);
+        }
+
         foreach (DocumentPolicy::VIEW_DOCUMENTS_ABILITIES as $ability) {
-            $this->assertUserCanGetWithAbility('/documents', $ability);
+            $toTitle = static fn (Document $d) => $d->title;
+            $documentsVisibleWithAbility = $documentsByAbility[$ability->value];
+            /** @var list<Document> $otherDocuments */
+            $otherDocuments = Arr::flatten(Arr::except($documentsByAbility, $ability->value));
+
+            $this->assertUserCanGetWithAbility('/documents', $ability)
+                ->assertSee(array_map($toTitle, $documentsVisibleWithAbility))
+                ->assertDontSee(array_map($toTitle, $otherDocuments));
         }
         $this->assertUserCannotGetDespiteAbility('/documents', Ability::casesExcept(DocumentPolicy::VIEW_DOCUMENTS_ABILITIES));
     }

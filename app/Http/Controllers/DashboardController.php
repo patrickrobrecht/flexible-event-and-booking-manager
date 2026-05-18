@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\Visibility;
+use App\Models\Document;
 use App\Models\Event;
 use App\Models\User;
 use Carbon\Carbon;
@@ -29,6 +30,11 @@ class DashboardController extends Controller
 
         /** @var ?User $user */
         $user = Auth::user();
+        $missingDocuments = [
+            'eventsWithoutDocuments' => null,
+            'eventSeriesWithoutDocuments' => null,
+            'organizationsWithoutDocuments' => null,
+        ];
         if (isset($user)) {
             $bookings = $user->bookings()
                 ->orderByDesc('booked_at')
@@ -37,11 +43,28 @@ class DashboardController extends Controller
                     'bookingOption.event.location',
                 ])
                 ->get();
+
+            if ($user->can('viewAny', Document::class)) {
+                $allDocumentsByStatus = Document::query()
+                    ->selectRaw('count(*) as count, approval_status')
+                    ->groupBy('approval_status')
+                    ->visibleForUser() /** @see Document::scopeVisibleForUser() */
+                    ->pluck('count', 'approval_status');
+            }
+
+            if ($user->documents()->exists()) {
+                $myDocumentsByStatus = $user->documents_by_status;
+            }
+
+            $missingDocuments = $user->getMissingDocuments();
         }
 
         return view('dashboard.dashboard', [
-            'bookings' => $bookings ?? null,
             'events' => $events,
+            'bookings' => $bookings ?? null,
+            'allDocumentsByStatus' => $allDocumentsByStatus ?? null,
+            'myDocumentsByStatus' => $myDocumentsByStatus ?? null,
+            ...$missingDocuments,
         ]);
     }
 }

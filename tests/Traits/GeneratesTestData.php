@@ -187,13 +187,14 @@ trait GeneratesTestData
 
     /**
      * @param Closure(): (Event|EventSeries|Location|Organization) $referenceProvider
+     * @param array<string, mixed> $attributes
      */
-    protected static function createDocument(Closure $referenceProvider, ?User $uploadedByUser = null): Document
+    protected static function createDocument(Closure $referenceProvider, ?User $uploadedByUser = null, array $attributes = []): Document
     {
         return Document::factory()
             ->forReference($referenceProvider())
             ->for($uploadedByUser ?? User::factory()->create(), 'uploadedByUser')
-            ->create();
+            ->create($attributes);
     }
 
     /**

@@ -40,6 +40,7 @@
         ])
         @include('users.shared.user_profile_documents', [
             'allDocumentsLink' => route('users.documents', $user),
+            'documentsByStatus' => $user->documents_by_status,
         ])
     </div>
 

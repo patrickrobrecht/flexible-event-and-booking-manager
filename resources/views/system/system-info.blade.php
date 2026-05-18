@@ -1,5 +1,12 @@
 @extends('layouts.app')
 
+@php
+    use Illuminate\Support\Facades\DB;
+    use Illuminate\Support\Number;
+
+    Number::useLocale(App::getLocale());
+@endphp
+
 @section('title')
     {{ __('System information') }}
 @endsection
@@ -202,6 +209,12 @@
                         <span class="me-3">{{ __('Server type and version') }}</span>
                         <x-slot:end>
                             <span class="text-end">{{ DB::getDriverTitle() }} {{ DB::getServerVersion() }}</span>
+                        </x-slot:end>
+                    </x-bs::list.item>
+                    <x-bs::list.item class="flex-wrap">
+                        <span class="me-3">{{ __('Size') }}</span>
+                        <x-slot:end>
+                            <span class="text-end">{{ Number::fileSize($databaseSize, 1) }}</span>
                         </x-slot:end>
                     </x-bs::list.item>
                 </x-bs::list>

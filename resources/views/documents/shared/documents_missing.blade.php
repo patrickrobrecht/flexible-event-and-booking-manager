@@ -20,7 +20,11 @@
             <x-bs::list.item class="fw-bold">{{ __('Events') }}</x-bs::list.item>
             @foreach($eventsWithoutDocuments as $event)
                 <x-bs::list.item>
-                    <a href="{{ route('events.show', $event) }}">{{ $event->name }}</a>
+                    @can('view', $event)
+                        <a href="{{ route('events.show', $event) }}">{{ $event->name }}</a>
+                    @else
+                        {{ $event->name }}
+                    @endcan
                 </x-bs::list.item>
             @endforeach
         @endif
@@ -28,7 +32,11 @@
             <x-bs::list.item class="fw-bold">{{ __('Event series') }}</x-bs::list.item>
             @foreach($eventSeriesWithoutDocuments as $eventSeries)
                 <x-bs::list.item>
-                    <a href="{{ route('event-series.show', $eventSeries) }}">{{ $eventSeries->name }}</a>
+                    @can('view', $eventSeries)
+                        <a href="{{ route('event-series.show', $eventSeries) }}">{{ $eventSeries->name }}</a>
+                    @else
+                        {{ $eventSeries->name }}
+                    @endcan
                 </x-bs::list.item>
             @endforeach
         @endif
@@ -36,7 +44,11 @@
             <x-bs::list.item class="fw-bold">{{ __('Organizations') }}</x-bs::list.item>
             @foreach($organizationsWithoutDocuments as $organization)
                 <x-bs::list.item>
-                    <a href="{{ route('organizations.show', $organization) }}">{{ $organization->name }}</a>
+                    @can('view', $organization)
+                        <a href="{{ route('organizations.show', $organization) }}">{{ $organization->name }}</a>
+                    @else
+                        {{ $organization->name }}
+                    @endif
                 </x-bs::list.item>
             @endforeach
         @endif

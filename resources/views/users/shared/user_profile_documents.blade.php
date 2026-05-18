@@ -19,4 +19,6 @@
     @include('documents.shared.document_list', [
         'documents' => $user->documents,
     ])
+
+    @include('documents.shared.documents_missing')
 </div>

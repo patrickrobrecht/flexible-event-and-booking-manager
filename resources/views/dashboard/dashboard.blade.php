@@ -15,13 +15,13 @@
     /** @var Collection<int, Booking>|null $bookings */
     /** @var SupportCollection<value-of<ApprovalStatus>, int>|null $allDocumentsByStatus */
     /** @var SupportCollection<value-of<ApprovalStatus>, int>|null $myDocumentsByStatus */
-    /** @var Collection<int, Event>|null $myEventsWithoutDocuments */
-    /** @var Collection<int, EventSeries>|null $myEventSeriesWithoutDocuments */
-    /** @var Collection<int, Organization>|null $myOrganizationsWithoutDocuments */
+    /** @var Collection<int, Event>|null $eventsWithoutDocuments */
+    /** @var Collection<int, EventSeries>|null $eventSeriesWithoutDocuments */
+    /** @var Collection<int, Organization>|null $organizationsWithoutDocuments */
 
     $showBookingsColumn = $bookings !== null;
     $showMissingDocuments = array_any(
-        [$myEventsWithoutDocuments, $myEventSeriesWithoutDocuments, $myOrganizationsWithoutDocuments],
+        [$eventsWithoutDocuments, $eventSeriesWithoutDocuments, $organizationsWithoutDocuments],
         fn ($collection) => $collection !== null && $collection->isNotEmpty()
     );
     $showDocumentsColumn = $allDocumentsByStatus !== null || $myDocumentsByStatus !== null || $showMissingDocuments;
@@ -78,35 +78,7 @@
                     ])
                 @endif
 
-                @if($showMissingDocuments)
-                    <h3 class="mt-4">{{ __('Missing documents') }}</h3>
-                    <x-bs::list>
-                        @if($myEventsWithoutDocuments !== null && $myEventsWithoutDocuments->isNotEmpty())
-                            <x-bs::list.item class="fw-bold">{{ __('Events') }}</x-bs::list.item>
-                            @foreach($myEventsWithoutDocuments as $event)
-                                <x-bs::list.item>
-                                    <a href="{{ route('events.show', $event) }}">{{ $event->name }}</a>
-                                </x-bs::list.item>
-                            @endforeach
-                        @endif
-                        @if($myEventSeriesWithoutDocuments !== null && $myEventSeriesWithoutDocuments->isNotEmpty())
-                            <x-bs::list.item class="fw-bold">{{ __('Event series') }}</x-bs::list.item>
-                            @foreach($myEventSeriesWithoutDocuments as $eventSeries)
-                                <x-bs::list.item>
-                                    <a href="{{ route('event-series.show', $eventSeries) }}">{{ $eventSeries->name }}</a>
-                                </x-bs::list.item>
-                            @endforeach
-                        @endif
-                        @if($myOrganizationsWithoutDocuments !== null && $myOrganizationsWithoutDocuments->isNotEmpty())
-                            <x-bs::list.item class="fw-bold">{{ __('Organizations') }}</x-bs::list.item>
-                            @foreach($myOrganizationsWithoutDocuments as $organization)
-                                <x-bs::list.item>
-                                    <a href="{{ route('organizations.show', $organization) }}">{{ $organization->name }}</a>
-                                </x-bs::list.item>
-                            @endforeach
-                        @endif
-                    </x-bs::list>
-                @endif
+                @include('documents.shared.documents_missing')
             </div>
         @endif
     </div>

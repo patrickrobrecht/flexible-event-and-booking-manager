@@ -30,6 +30,11 @@ class DashboardController extends Controller
 
         /** @var ?User $user */
         $user = Auth::user();
+        $missingDocuments = [
+            'eventsWithoutDocuments' => null,
+            'eventSeriesWithoutDocuments' => null,
+            'organizationsWithoutDocuments' => null,
+        ];
         if (isset($user)) {
             $bookings = $user->bookings()
                 ->orderByDesc('booked_at')
@@ -51,15 +56,7 @@ class DashboardController extends Controller
                 $myDocumentsByStatus = $user->documents_by_status;
             }
 
-            $myEventsWithoutDocuments = $user->responsibleForEvents()
-                ->whereDoesntHave('documents')
-                ->get();
-            $myEventSeriesWithoutDocuments = $user->responsibleForEventSeries()
-                ->whereDoesntHave('documents')
-                ->get();
-            $myOrganizationsWithoutDocuments = $user->responsibleForOrganizations()
-                ->whereDoesntHave('documents')
-                ->get();
+            $missingDocuments = $user->getMissingDocuments();
         }
 
         return view('dashboard.dashboard', [
@@ -67,9 +64,7 @@ class DashboardController extends Controller
             'bookings' => $bookings ?? null,
             'allDocumentsByStatus' => $allDocumentsByStatus ?? null,
             'myDocumentsByStatus' => $myDocumentsByStatus ?? null,
-            'myEventsWithoutDocuments' => $myEventsWithoutDocuments ?? null,
-            'myEventSeriesWithoutDocuments' => $myEventSeriesWithoutDocuments ?? null,
-            'myOrganizationsWithoutDocuments' => $myOrganizationsWithoutDocuments ?? null,
+            ...$missingDocuments,
         ]);
     }
 }

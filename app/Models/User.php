@@ -153,6 +153,9 @@ class User extends Authenticatable implements MustVerifyEmail
             ]);
     }
 
+    /**
+     * @return MorphToMany<Event, $this>
+     */
     public function responsibleForEvents(): MorphToMany
     {
         return $this->responsibleFor(Event::class)
@@ -161,12 +164,18 @@ class User extends Authenticatable implements MustVerifyEmail
             ->orderBy('name');
     }
 
+    /**
+     * @return MorphToMany<EventSeries, $this>
+     */
     public function responsibleForEventSeries(): MorphToMany
     {
         return $this->responsibleFor(EventSeries::class)
             ->orderBy('name');
     }
 
+    /**
+     * @return MorphToMany<Organization, $this>
+     */
     public function responsibleForOrganizations(): MorphToMany
     {
         return $this->responsibleFor(Organization::class)
@@ -245,6 +254,28 @@ class User extends Authenticatable implements MustVerifyEmail
         /** @phpstan-ignore return.type */
         return $abilities->flatten()
             ->unique();
+    }
+
+    /**
+     * @return array{
+     *     eventsWithoutDocuments: Collection<int, Event>,
+     *     eventSeriesWithoutDocuments: Collection<int, EventSeries>,
+     *     organizationsWithoutDocuments: Collection<int, Organization>,
+     * }
+     */
+    public function getMissingDocuments(): array
+    {
+        return [
+            'eventsWithoutDocuments' => $this->responsibleForEvents()
+                ->whereDoesntHave('documents')
+                ->get(),
+            'eventSeriesWithoutDocuments' => $this->responsibleForEventSeries()
+                ->whereDoesntHave('documents')
+                ->get(),
+            'organizationsWithoutDocuments' => $this->responsibleForOrganizations()
+                ->whereDoesntHave('documents')
+                ->get(),
+        ];
     }
 
     /**

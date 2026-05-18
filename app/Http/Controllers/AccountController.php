@@ -23,6 +23,7 @@ class AccountController extends Controller
 
         return view('account.account_show', [
             'user' => $user->loadProfileData(),
+            ...$user->getMissingDocuments(),
         ]);
     }
 

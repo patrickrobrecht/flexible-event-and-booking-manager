@@ -93,6 +93,7 @@ class DashboardControllerTest extends TestCase
         $this->get('/')
             ->assertOk()
             ->assertSeeInOrder([
+                __('Missing documents'),
                 $event->name,
                 $eventSeries->name,
                 $organization->name,

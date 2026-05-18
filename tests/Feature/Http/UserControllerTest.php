@@ -67,6 +67,31 @@ class UserControllerTest extends TestCase
         $this->assertUserCanGetOnlyWithAbility("/users/{$user->id}", Ability::ViewUsers);
     }
 
+    public function testUserCanViewAccountWithMissingDocuments(): void
+    {
+        $this->actingAsUserWithAbility(Ability::ViewUsers);
+
+        $user = self::createUser();
+
+        $event = self::createEvent();
+        $eventSeries = self::createEventSeries();
+        $organization = self::createOrganization();
+        foreach ([$event, $eventSeries, $organization] as $object) {
+            $object->saveResponsibleUsers([
+                'responsible_user_id' => [$user->id],
+            ]);
+        }
+
+        $this->get("/users/{$user->id}")
+            ->assertOk()
+            ->assertSeeInOrder([
+                __('Missing documents'),
+                $event->name,
+                $eventSeries->name,
+                $organization->name,
+            ]);
+    }
+
     public function testUserCanViewAbilitiesOfUser(): void
     {
         $user = self::createUser();

@@ -73,6 +73,7 @@ class UserController extends Controller
 
         return view('users.user_show', [
             'user' => $user->loadProfileData(),
+            ...$user->getMissingDocuments(),
         ]);
     }
 

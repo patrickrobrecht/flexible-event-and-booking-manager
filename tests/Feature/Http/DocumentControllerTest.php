@@ -4,6 +4,7 @@ namespace Tests\Feature\Http;
 
 use App\Enums\Ability;
 use App\Enums\ApprovalStatus;
+use App\Enums\DocumentReferenceType;
 use App\Enums\FileType;
 use App\Enums\Visibility;
 use App\Http\Controllers\DocumentController;
@@ -30,6 +31,7 @@ use Tests\TestCase;
 #[CoversClass(DocumentController::class)]
 #[CoversClass(DocumentFilterRequest::class)]
 #[CoversClass(DocumentPolicy::class)]
+#[CoversClass(DocumentReferenceType::class)]
 #[CoversClass(DocumentRequest::class)]
 #[CoversClass(FileType::class)]
 class DocumentControllerTest extends TestCase

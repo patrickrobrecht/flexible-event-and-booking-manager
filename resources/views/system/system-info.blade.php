@@ -1,5 +1,13 @@
 @extends('layouts.app')
 
+@php
+    use Illuminate\Support\Facades\DB;
+    use Illuminate\Support\Number;
+    use Illuminate\Support\Facades\App;
+
+    Number::useLocale(App::getLocale());
+@endphp
+
 @section('title')
     {{ __('System information') }}
 @endsection
@@ -11,7 +19,7 @@
                 <div class="card-header">{{ __('Application') }}</div>
                 <x-bs::list :flush="true">
                     <x-bs::list.item>
-                        <span class="me-3">Flexible Event and Booking Manager</span>
+                        <span class="me-3">{{ __('Version') }}</span>
                         <x-slot:end>
                             <span class="text-end">{{ config('app.version') }}</span>
                         </x-slot:end>
@@ -78,23 +86,30 @@
                                 $webServer = 'Apache ' . $apacheVersion;
                             }
                         }
+                        if (is_string($webServer)) {
+                            $webServer = str_replace('/', ' ', $webServer);
+                        }
                     @endphp
                     <x-bs::list.item>
                         <span class="me-3">{{ __('Webserver') }}</span>
                         <x-slot:end>
-                            <span class="text-end">{{ $webServer ?? __('-') }}</span>
+                            <span class="text-end">{{ $webServer ?? __('not available') }}</span>
                         </x-slot:end>
                     </x-bs::list.item>
                     <x-bs::list.item>
-                        <span class="me-3">{{ __('PHP version') }}</span>
+                        <span class="me-3">{{ __(':name version', ['name' => 'PHP']) }}</span>
                         <x-slot:end>
-                            <span class="text-end">{{ phpversion() }} ({{ PHP_INT_SIZE === 8 ? '64' : '32' }}bit), {{ php_sapi_name() }}</span>
+                            <span class="text-end">{{ phpversion() }} ({{ PHP_INT_SIZE === 8 ? '64' : '32' }}bit, {{ ZEND_THREAD_SAFE ? 'ts' : 'nts' }}, {{ php_sapi_name() }})</span>
                         </x-slot:end>
                     </x-bs::list.item>
                     <x-bs::list.item class="flex-wrap">
                         <span class="me-3">{{ __('PHP Extensions') }}</span>
                         <x-slot:end>
-                            <span class="text-end">{{ implode(', ', get_loaded_extensions()) }}</span>
+                            @php
+                                $extensions = get_loaded_extensions();
+                                sort($extensions, SORT_NATURAL | SORT_FLAG_CASE);
+                            @endphp
+                            <span class="text-end">{{ implode(', ', $extensions) }}</span>
                         </x-slot:end>
                     </x-bs::list.item>
                     <x-bs::list.item class="flex-wrap">
@@ -145,10 +160,25 @@
                             <span class="text-end">{{ ini_get('file_uploads') ? __('Yes') : __('No') }}</span>
                         </x-slot:end>
                     </x-bs::list.item>
-                    <x-bs::list.item class="flex-wrap">
-                        <span class="me-3">cURL-Version</span>
+                    <x-bs::list.item>
+                        <span class="me-3">{{ __(':name version', ['name' => 'cURL']) }}</span>
                         <x-slot:end>
-                            <span class="text-end">{{ function_exists('curl_version') ? curl_version()['version'] . ' ' . curl_version()['ssl_version'] : __('not available') }}</span>
+                            <span class="text-end">{{ function_exists('curl_version') ? curl_version()['version'] : __('not available') }}</span>
+                        </x-slot:end>
+                    </x-bs::list.item>
+                    <x-bs::list.item>
+                        <span class="me-3">{{ __(':name version', ['name' => 'OpenSSL']) }}</span>
+                        <x-slot:end>
+                            @php
+                                $version = __('not available');
+                                if (defined('OPENSSL_VERSION_TEXT')) {
+                                    $version = OPENSSL_VERSION_TEXT;
+                                    if (preg_match('/OpenSSL\s+([^\s]+)/', $version, $matches)) {
+                                        $version = $matches[1];
+                                    }
+                                }
+                            @endphp
+                            <span class="text-end">{{ $version }}</span>
                         </x-slot:end>
                     </x-bs::list.item>
                 </x-bs::list>
@@ -159,13 +189,13 @@
                 <div class="card-header">{{ __('Database') }}</div>
                 <x-bs::list :flush="true">
                     <x-bs::list.item class="flex-wrap">
-                        <span class="me-3">{{ __('Database name') }}</span>
+                        <span class="me-3">{{ __('Name') }}</span>
                         <x-slot:end>
                             <span class="text-end">{{ DB::getDatabaseName() }}</span>
                         </x-slot:end>
                     </x-bs::list.item>
                     <x-bs::list.item class="flex-wrap">
-                        <span class="me-3">{{ __('Database host') }}</span>
+                        <span class="me-3">{{ __('Host') }}</span>
                         <x-slot:end>
                             <span class="text-end">{{ DB::getConfig('host') }}:{{ DB::getConfig('port') }}</span>
                         </x-slot:end>
@@ -177,9 +207,15 @@
                         </x-slot:end>
                     </x-bs::list.item>
                     <x-bs::list.item class="flex-wrap">
-                        <span class="me-3">{{ __('Database server type and version') }}</span>
+                        <span class="me-3">{{ __('Server type and version') }}</span>
                         <x-slot:end>
                             <span class="text-end">{{ DB::getDriverTitle() }} {{ DB::getServerVersion() }}</span>
+                        </x-slot:end>
+                    </x-bs::list.item>
+                    <x-bs::list.item class="flex-wrap">
+                        <span class="me-3">{{ __('Size') }}</span>
+                        <x-slot:end>
+                            <span class="text-end">{{ Number::fileSize($databaseSize, 1) }}</span>
                         </x-slot:end>
                     </x-bs::list.item>
                 </x-bs::list>

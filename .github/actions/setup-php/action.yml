@@ -5,7 +5,6 @@ inputs:
     description: PHP version
     required: false
     default: '8.5'
-
   coverage:
     description: Coverage driver, for example xdebug, pcov or none
     required: false
@@ -27,7 +26,7 @@ runs:
       run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
 
     - name: Cache Composer dependencies
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ${{ steps.composer-cache.outputs.dir }}
         key: ${{ runner.os }}-composer-${{ inputs.php-version }}-${{ hashFiles('**/composer.lock') }}

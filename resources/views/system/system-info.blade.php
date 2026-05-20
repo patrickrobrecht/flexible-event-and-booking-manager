@@ -3,6 +3,7 @@
 @php
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Number;
+    use Illuminate\Support\Facades\App;
 
     Number::useLocale(App::getLocale());
 @endphp
@@ -18,7 +19,7 @@
                 <div class="card-header">{{ __('Application') }}</div>
                 <x-bs::list :flush="true">
                     <x-bs::list.item>
-                        <span class="me-3">Flexible Event and Booking Manager</span>
+                        <span class="me-3">{{ __('Version') }}</span>
                         <x-slot:end>
                             <span class="text-end">{{ config('app.version') }}</span>
                         </x-slot:end>

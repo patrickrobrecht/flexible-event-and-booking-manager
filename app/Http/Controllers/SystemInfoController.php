@@ -30,7 +30,7 @@ class SystemInfoController extends Controller
         /** @var object{size: numeric-string} $result */
         $result = match ($driver) {
             'pgsql' => DB::selectOne('SELECT pg_database_size(?) AS size', [$databaseName]),
-            'sqlsrv' => DB::selectOne('SELECT SUM(size) * 8 * 1024 AS size FROM sys.database_files'), // uses database of current connection
+            'sqlsrv' => DB::selectOne('SELECT CAST(SUM(CAST(size AS BIGINT)) AS BIGINT) * 8192 AS size FROM sys.database_files'), // uses database of current connection
             default => DB::selectOne('SELECT SUM(data_length + index_length) AS size FROM information_schema.TABLES WHERE table_schema = ?', [$databaseName]),
         };
         return (int) $result->size;

@@ -10,7 +10,7 @@ use Tests\TestCase;
 #[CoversClass(SystemInfoController::class)]
 class SystemInfoControllerTest extends TestCase
 {
-    public function testUserCanViewApiDocumentationOnlyWithCorrectAbility(): void
+    public function testUserCanViewSystemInformationOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('system-info', Ability::ViewSystemInformation);
     }

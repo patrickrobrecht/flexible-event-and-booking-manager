@@ -1,0 +1,15 @@
+name: Setup Node dependencies
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Node
+      uses: actions/setup-node@v6
+      with:
+        node-version: 24
+        cache: npm
+        cache-dependency-path: package-lock.json
+
+    - name: Install npm dependencies
+      shell: bash
+      run: npm clean-install

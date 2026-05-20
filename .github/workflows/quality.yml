@@ -122,3 +122,22 @@ jobs:
           files: phpunit_report.xml
           check_run: false # disabled because of https://github.com/EnricoMi/publish-unit-test-result-action/issues/12
           comment_title: "Test results (coverage: ${{ env.COVERAGE }}%)"
+
+  translations:
+    name: Translations
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Setup PHP project
+        uses: ./.github/actions/setup-php
+
+      - name: Extract translations and fail if this caused a diff
+        run: |
+          composer translate
+          git diff --exit-code lang/

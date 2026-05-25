@@ -1,8 +1,9 @@
 # Flexible Event and Booking Manager
 
-![PHP](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fpatrickrobrecht%2Fflexible-event-and-booking-manager%2Fmaster%2Fcomposer.json&query=%24.require.php&label=PHP)
-[![Code style](https://github.com/patrickrobrecht/flexible-event-and-booking-manager/actions/workflows/code-style.yml/badge.svg)](https://github.com/patrickrobrecht/flexible-event-and-booking-manager/actions/workflows/code-style.yml)
-[![Tests](https://github.com/patrickrobrecht/flexible-event-and-booking-manager/actions/workflows/tests.yml/badge.svg)](https://github.com/patrickrobrecht/flexible-event-and-booking-manager/actions/workflows/tests.yml)
+![PHP](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fpatrickrobrecht%2Fflexible-event-and-booking-manager%2Fmain%2Fcomposer.json&query=%24.require.php&label=PHP)
+![PHPStan](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fpatrickrobrecht%2Fflexible-event-and-booking-manager%2Frefs%2Fheads%2Fmain%2Fphpstan.neon&query=parameters.level&label=PHPStan%20Level)
+[![Quality](https://github.com/patrickrobrecht/flexible-event-and-booking-manager/actions/workflows/quality.yml/badge.svg)](https://github.com/patrickrobrecht/flexible-event-and-booking-manager/actions/workflows/quality.yml)
+![Release](https://img.shields.io/github/v/tag/patrickrobrecht/flexible-event-and-booking-manager?label=Release)
 
 This application allows to manage events, their booking forms and bookings via a web-based platform.
 

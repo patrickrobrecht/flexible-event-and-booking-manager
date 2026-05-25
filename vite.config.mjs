@@ -45,12 +45,11 @@ export default defineConfig(({ mode }) => {
             // Compile SCSS to CSS, JavaScript files.
             laravel({
                 input: [
-                    'resources/js/app.js',
-                    'resources/sass/app.scss',
                     ...fs.readdirSync('resources/js', {withFileTypes: true})
                         .filter(f => !f.isDirectory())
                         .map(f => f.name)
                         .map(f => `resources/js/${f}`),
+                    'resources/sass/app.scss',
                 ],
                 // Refresh pages when compiled assets have changed.
                 refresh: true,
@@ -69,16 +68,7 @@ export default defineConfig(({ mode }) => {
             },
             // Copy static files from libraries...
             viteStaticCopy({
-                targets: [
-                    ...filesFromLibrariesForConfiguration,
-                    {
-                        src: 'node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2',
-                        dest: 'lib',
-                        rename: {
-                            stripBase: true,
-                        }
-                    }
-                ]
+                targets: filesFromLibrariesForConfiguration,
             }),
             // ... and add their hash-based file names to the manifest file.
             {
@@ -102,10 +92,6 @@ export default defineConfig(({ mode }) => {
                         // Bootstrap framework is still using deprecated syntax.
                         'import',
                     ],
-                    additionalData: (content) => {
-                        const rootDir = mode === 'production' ? '/build/lib' : '/lib';
-                        return `$root-directory: '${rootDir}';\n${content}`;
-                    },
                 },
             },
         },

@@ -63,6 +63,9 @@ trait Sortable
         return null;
     }
 
+    /**
+     * @return 'asc'|'desc'
+     */
     public static function sortDirection(bool $descending): string
     {
         return $descending ? SortDirection::Descending->value : SortDirection::Ascending->value;

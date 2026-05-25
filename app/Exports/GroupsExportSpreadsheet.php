@@ -41,8 +41,7 @@ class GroupsExportSpreadsheet extends Spreadsheet
             $currentReportRow++;
 
             // Rows for the bookings
-            /** @phpstan-ignore cast.int (count(array) is an integer) */
-            $maxBookingsInChunk = (int) $chunk->max(fn (Group $group) => count($bookings[$group->id]));
+            $maxBookingsInChunk = $chunk->max(fn (Group $group) => count($bookings[$group->id]));
             for ($i = 0; $i < $maxBookingsInChunk; $i++) {
                 $col = 1;
                 foreach ($chunk as $group) {

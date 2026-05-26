@@ -12,6 +12,7 @@ trait ValidatesAddressFields
         return [
             'street' => [
                 $default,
+                'required_with:house_number',
                 'string',
                 'max:255',
             ],
@@ -29,6 +30,7 @@ trait ValidatesAddressFields
             ],
             'city' => [
                 $default,
+                'required_with:postal_code',
                 'string',
                 'max:255',
             ],

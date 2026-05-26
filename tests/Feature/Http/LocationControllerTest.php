@@ -43,6 +43,46 @@ class LocationControllerTest extends TestCase
         $this->assertUserCanPostOnlyWithAbility('locations', $data, Ability::CreateLocations, null);
     }
 
+    #[DataProvider('invalidLocationData')]
+    public function testUserCannotStoreInvalidLocationDespiteAbility(Closure $dataProvider, string $errorMessage): void
+    {
+        $this->assertUserCannotPostDespiteAbility('locations', $dataProvider(), Ability::CreateLocations, 'locations/create', 'locations/create');
+        $this->get('locations/create')
+            ->assertSee($errorMessage);
+    }
+
+    /**
+     * @return list<array{Closure(): array<string, mixed>, string}>
+     */
+    public static function invalidLocationData(): array
+    {
+        return [
+            [
+                fn () => [],
+                'Name muss ausgefüllt werden, wenn Straße nicht ausgefüllt wurde.',
+            ],
+            [
+                fn () => [
+                    ...Location::factory()->makeOne()->toArray(),
+                    'street' => '',
+                ],
+                'Straße muss ausgefüllt werden, wenn Hausnummer ausgefüllt wurde.',
+            ],
+            [
+                fn () => [
+                    ...Location::factory()->makeOne()->toArray(),
+                    'city' => '',
+                ],
+                'Stadt muss ausgefüllt werden, wenn Postleitzahl ausgefüllt wurde.',
+            ],
+        ];
+    }
+
+    public function testUserCanViewLocationOnlyWithCorrectAbility(): void
+    {
+        $this->assertUserCanGetOnlyWithAbility("/locations/{$this->createRandomLocation()->id}", Ability::ViewLocations);
+    }
+
     public function testUserCanViewEditLocationFormOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility("/locations/{$this->createRandomLocation()->id}/edit", Ability::EditLocations);

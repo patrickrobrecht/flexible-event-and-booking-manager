@@ -23,6 +23,7 @@ class LocationRequest extends FormRequest
         return [
             'name' => [
                 'nullable',
+                'required_without:street',
                 'string',
                 'max:255',
             ],

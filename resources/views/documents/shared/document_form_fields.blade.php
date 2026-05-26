@@ -6,7 +6,7 @@
         @php
             $maxFileSizeAsText = \App\Http\Requests\DocumentRequest::getMaxFileSizeInMegaBytes() . ' MB';
         @endphp
-        <x-bs::form.field name="file"
+        <x-bs::form.field name="file" :required="!isset($document)"
                           type="file" :accept="\App\Enums\FileType::extensionsForHtmlAccept()"
                           data-max-file-size="{{ \App\Http\Requests\DocumentRequest::getMaxFileSizeInBytes() }}"
                           x-ref="file" @change="() => {
@@ -49,7 +49,7 @@
         <x-bs::alert variant="danger" x-show="alert !== false" x-text="alert"></x-bs::alert>
     </div>
     <div class="col-12 col-xl-6">
-        <x-bs::form.field name="title" type="text"
+        <x-bs::form.field name="title" type="text" :required="true"
                           :value="$document->title ?? null"
                           x-ref="title">{{ __('Title') }}</x-bs::form.field>
         <x-bs::form.field name="description" type="textarea"

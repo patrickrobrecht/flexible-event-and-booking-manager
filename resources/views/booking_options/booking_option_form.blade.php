@@ -28,7 +28,7 @@
                 action="{{ isset($bookingOption) ? route('booking-options.update', [$event, $bookingOption]) : route('booking-options.store', $event) }}">
         <div class="row">
             <div class="col-12 col-lg-6">
-                <x-bs::form.field name="name" type="text"
+                <x-bs::form.field name="name" type="text" :required="true"
                                   :value="$bookingOption->name ?? null">{{ __('Name') }}</x-bs::form.field>
                 <x-bs::form.field name="slug" type="text" :value="$bookingOption->slug ?? null">
                     {{ __('Slug') }}

@@ -67,6 +67,7 @@ class GenerateGroupsRequest extends FormRequest
                 GroupGenerationMethod::rule(),
             ],
             'groups_count' => [
+                'required',
                 'integer',
                 'gte:1',
                 'lte:' . $maxGroupsCount,

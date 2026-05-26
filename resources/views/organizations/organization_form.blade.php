@@ -31,7 +31,7 @@
                 action="{{ isset($organization) ? route('organizations.update', $organization) : route('organizations.store') }}">
         <div class="row">
             <div class="col-12 col-md-6">
-                <x-bs::form.field name="name" type="text"
+                <x-bs::form.field name="name" type="text" :required="true"
                                   :value="$organization->name ?? null">{{ __('Name') }}</x-bs::form.field>
                 <x-bs::form.field name="slug" type="text"
                                   :value="$organization->slug ?? null">
@@ -44,7 +44,7 @@
                         ]) !!}
                     </x-slot:hint>
                 </x-bs::form.field>
-                <x-bs::form.field name="status" type="select"
+                <x-bs::form.field name="status" type="select" :required="true"
                                   :options="\App\Enums\ActiveStatus::toOptions()"
                                   :value="$organization->status->value ?? null"><i class="fa fa-fw fa-circle-question"></i> {{ __('Status') }}</x-bs::form.field>
                 <x-bs::form.field name="register_entry" type="text"
@@ -55,7 +55,7 @@
                                   :value="$organization->phone ?? null"><i class="fa fa-fw fa-phone"></i> {{ __('Phone number') }}</x-bs::form.field>
                 <x-bs::form.field name="email" type="email"
                                   :value="$organization->email ?? null"><i class="fa fa-fw fa-at"></i> {{ __('E-mail') }}</x-bs::form.field>
-                <x-bs::form.field name="location_id" type="select" :options="$locations->pluck('nameOrAddress', 'id')"
+                <x-bs::form.field name="location_id" type="select" :options="$locations->pluck('nameOrAddress', 'id')" :required="true"
                                   :value="$organization->location->id ?? null"><i class="fa fa-fw fa-location-pin"></i> {{ __('Location') }}</x-bs::form.field>
             </div>
             <div class="col-12 col-md-6">

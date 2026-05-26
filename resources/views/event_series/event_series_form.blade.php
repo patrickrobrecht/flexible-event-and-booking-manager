@@ -42,7 +42,7 @@
         <div class="col-12 col-md-6">
             <x-bs::form method="{{ isset($eventSeries) ? 'PUT' : 'POST' }}"
                         action="{{ isset($eventSeries) ? route('event-series.update', $eventSeries) : route('event-series.store') }}">
-                <x-bs::form.field name="name" type="text"
+                <x-bs::form.field name="name" type="text" :required="true"
                                   :value="$eventSeries->name ?? null">{{ __('Name') }}</x-bs::form.field>
                 <x-bs::form.field name="slug" type="text" aria-describedby="slugHint"
                                   :value="$eventSeries->slug ?? null">
@@ -55,10 +55,10 @@
                         ]) !!}
                     </x-slot:hint>
                 </x-bs::form.field>
-                <x-bs::form.field name="visibility" type="select"
+                <x-bs::form.field name="visibility" type="select" :required="true"
                                   :options="\App\Enums\Visibility::toOptions()"
                                   :value="$eventSeries->visibility->value ?? null"><i class="fa fa-fw fa-eye"></i> {{ __('Visibility') }}</x-bs::form.field>
-                <x-bs::form.field name="organization_id" type="radio"
+                <x-bs::form.field name="organization_id" type="radio" :required="true"
                                   :options="Options::fromModels($organizations, 'name')"
                                   :value="$eventSeries->organization_id ?? null"
                                   :from-query="$isCreateForm"><i class="fa fa-fw fa-sitemap"></i> {{ __('Organization') }}</x-bs::form.field>

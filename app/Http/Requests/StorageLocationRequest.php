@@ -26,7 +26,7 @@ class StorageLocationRequest extends FormRequest
 
         return [
             'name' => [
-                'nullable',
+                'required',
                 'string',
                 'max:255',
                 Rule::unique('storage_locations', 'name')

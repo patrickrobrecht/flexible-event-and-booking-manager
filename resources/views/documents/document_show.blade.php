@@ -103,7 +103,7 @@
                         <div class="mt-3 d-print-none">
                             <h3>{{ __('Add comment') }}</h3>
                             <x-bs::form method="POST" action="{{ route('reviews.store', $document) }}">
-                                <x-bs::form.field name="comment" type="textarea" rows="5">
+                                <x-bs::form.field name="comment" type="textarea" rows="5" :required="true">
                                     <i class="fa fa-fw fa-comment"></i> {{ __('Comment') }}
                                 </x-bs::form.field>
                                 @can('approve', $document)

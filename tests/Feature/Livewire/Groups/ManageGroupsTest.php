@@ -77,7 +77,7 @@ class ManageGroupsTest extends TestCase
             $testComponent->assertSeeHtml($bookingOptionListItemHtml . $bookingOption->name);
             $bookingOption->bookings->each(
                 fn (Booking $booking) => $testComponent
-                    ->assertSeeHtml($booking->first_name . ' <strong>' . $booking->last_name)
+                    ->assertSeeHtml('wire:key="booking' . $booking->id . '"')
                     /** @phpstan-ignore argument.type */
                     ->assertDontSeeText(formatDate($booking->booked_at))
                     ->assertSeeText($booking->comment)
@@ -89,8 +89,9 @@ class ManageGroupsTest extends TestCase
         foreach ($event->bookingOptions->whereNotIn('id', $selectedBookingOptionIds) as $bookingOption) {
             $testComponent->assertDontSeeHtml($bookingOptionListItemHtml . $bookingOption->name);
             $bookingOption->bookings->each(
+                // Note: Only the booking's wire:key uniquely identifies the booking in the rendered HTML, names may contain duplicates.
                 fn (Booking $booking) => $testComponent
-                    ->assertDontSeeHtml($booking->first_name . ' <strong>' . $booking->last_name)
+                    ->assertDontSeeHtml('wire:key="booking' . $booking->id . '"')
                     ->assertDontSeeText($booking->comment)
                     ->assertDontSeeText($booking->email)
             );

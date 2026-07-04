@@ -28,6 +28,10 @@ class DocumentController extends Controller
                     'reference',
                     'uploadedByUser',
                 ])
+                ->withCount([
+                    'documentReviews',
+                ])
+                ->withMax('documentReviews', 'updated_at')
                 ->paginate(20),
         ]);
     }

@@ -46,6 +46,8 @@ class Document extends Model
         'file_type' => FileType::class,
         'uploaded_by_user_id' => 'integer',
         'approval_status' => ApprovalStatus::class,
+        'document_reviews_count' => 'integer',
+        'document_reviews_max_updated_at' => 'datetime',
     ];
 
     protected $fillable = [

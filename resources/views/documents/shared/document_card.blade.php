@@ -62,6 +62,20 @@
             <i class="fa fa-fw fa-circle-question"></i>
             <x-badge.enum :case="$document->approval_status"/>
         </x-bs::list.item>
+        @can('viewAny', [\App\Models\DocumentReview::class, $document])
+            <x-bs::list.item>
+                <span>
+                    <i class="fa fa-fw fa-comment"></i>
+                    <a href="{{ $document->getRouteForComments() }}">{{ __('Comments') }}</a>
+                    @isset($document->document_reviews_max_updated_at)
+                        <span class="small text-muted">({{ __('last commented at :date', ['date' => formatDateTime($document->document_reviews_max_updated_at)]) }})</span>
+                    @endisset
+                </span>
+                <x-slot:end>
+                    <x-bs::badge>{{ formatInt($document->document_reviews_count) }}</x-bs::badge>
+                </x-slot:end>
+            </x-bs::list.item>
+        @endcan
     </x-bs::list>
     @canany(['download', 'update'], $document)
         <div class="card-body d-flex flex-wrap gap-1 d-print-none">

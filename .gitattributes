@@ -8,6 +8,7 @@
 *.json text diff=json
 *.md text diff=markdown
 *.mjs text diff=javascript
+*.neon text diff=yaml
 *.php text diff=php
 *.scss text diff=css
 *.txt text diff=text

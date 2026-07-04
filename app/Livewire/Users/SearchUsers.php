@@ -23,12 +23,34 @@ class SearchUsers extends Component
     public $selectedUsers;
 
     /**
+     * Pivot data of the selected users, keyed by user ID.
+     *
+     * This is tracked separately from $selectedUsers because Livewire rehydrates Eloquent
+     * collections by re-querying the models by ID, which drops dynamically attached pivot
+     * data — without this, position/sort would be lost whenever a user is added or removed.
+     *
+     * @var array<int, array{publicly_visible?: ?bool, position?: ?string, sort?: ?int}>
+     */
+    #[Locked]
+    public array $selectedUserData = [];
+
+    /**
      * @param Collection<int, User> $selectedUsers
      */
     public function mount($selectedUsers): void
     {
         // Key selected users by their ID.
         $this->selectedUsers = $selectedUsers->keyBy('id');
+
+        foreach ($this->selectedUsers as $id => $selectedUser) {
+            /** @phpstan-ignore property.notFound */
+            $pivot = $selectedUser->pivot;
+            $this->selectedUserData[$id] = [
+                'publicly_visible' => $pivot->publicly_visible ?? null,
+                'position' => $pivot->position ?? null,
+                'sort' => $pivot->sort ?? null,
+            ];
+        }
     }
 
     public function render(): View
@@ -69,11 +91,12 @@ class SearchUsers extends Component
         $user = User::find($userId);
         if (isset($user)) {
             $this->selectedUsers[$userId] = $user;
+            $this->selectedUserData[$userId] ??= [];
         }
     }
 
     public function removeUser(int $userId): void
     {
-        unset($this->selectedUsers[$userId]);
+        unset($this->selectedUsers[$userId], $this->selectedUserData[$userId]);
     }
 }

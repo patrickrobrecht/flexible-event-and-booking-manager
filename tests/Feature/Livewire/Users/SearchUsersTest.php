@@ -3,8 +3,10 @@
 namespace Tests\Feature\Livewire\Users;
 
 use App\Livewire\Users\SearchUsers;
+use App\Models\Event;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
+use Livewire\Features\SupportTesting\Testable;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
@@ -24,9 +26,9 @@ class SearchUsersTest extends TestCase
 
     public function testUsersCanBeSearched(): void
     {
-        $user1 = User::factory()->create(['first_name' => 'John', 'last_name' => 'Doe', 'email' => 'john.doe@example.com']);
-        $user2 = User::factory()->create(['first_name' => 'Jane', 'last_name' => 'Smith', 'email' => 'jane.smith@example.com']);
-        User::factory()->create(['first_name' => 'Jake', 'last_name' => 'Doe', 'email' => 'jake.doe@example.com']);
+        $user1 = self::createUser(['first_name' => 'John', 'last_name' => 'Doe', 'email' => 'john.doe@example.com']);
+        $user2 = self::createUser(['first_name' => 'Jane', 'last_name' => 'Smith', 'email' => 'jane.smith@example.com']);
+        self::createUser(['first_name' => 'Jake', 'last_name' => 'Doe', 'email' => 'jake.doe@example.com']);
 
         $component = Livewire::test(SearchUsers::class, ['selectedUsers' => Collection::empty()])
             ->set('searchTerm', 'John, jane.smith@example.com');
@@ -35,8 +37,8 @@ class SearchUsersTest extends TestCase
 
     public function testSelectedUsersAreNotInSearchResults(): void
     {
-        $user = User::factory()->create(['first_name' => 'John', 'last_name' => 'Doe']);
-        $selectedUser = User::factory()->create(['first_name' => 'Jake', 'last_name' => 'Doe']);
+        $user = self::createUser(['first_name' => 'John', 'last_name' => 'Doe']);
+        $selectedUser = self::createUser(['first_name' => 'Jake', 'last_name' => 'Doe']);
 
         $component = Livewire::test(SearchUsers::class, ['selectedUsers' => Collection::make([$selectedUser])])
             ->set('searchTerm', 'John, Jake');
@@ -45,7 +47,7 @@ class SearchUsersTest extends TestCase
 
     public function testUsersCanBeSelected(): void
     {
-        $user = User::factory()->create();
+        $user = self::createUser();
 
         $component = Livewire::test(SearchUsers::class, ['selectedUsers' => Collection::empty()])
             ->call('addUser', $user->id);
@@ -61,10 +63,56 @@ class SearchUsersTest extends TestCase
 
     public function testSelectedUsersCanBeRemoved(): void
     {
-        $selectedUser = User::factory()->create();
+        $selectedUser = self::createUser();
 
         $component = Livewire::test(SearchUsers::class, ['selectedUsers' => Collection::make([$selectedUser])])
             ->call('removeUser', $selectedUser->id);
         $component->assertSet('selectedUsers', Collection::empty());
+    }
+
+    public function testPositionAndSortOfOtherUsersArePreservedAfterAddingAUser(): void
+    {
+        $event = self::createEvent();
+        $existingUser = self::createUser();
+        self::attachResponsibleUser($event, $existingUser, 'Chairperson', 1);
+        $userToAdd = self::createUser();
+
+        $component = Livewire::test(SearchUsers::class, ['selectedUsers' => $event->responsibleUsers])
+            ->call('addUser', $userToAdd->id);
+
+        self::assertPositionAndSortArePreserved($component, $existingUser, 'Chairperson', 1);
+    }
+
+    public function testPositionAndSortOfOtherUsersArePreservedAfterRemovingAUser(): void
+    {
+        $event = self::createEvent();
+        $remainingUser = self::createUser();
+        self::attachResponsibleUser($event, $remainingUser, 'Chairperson', 1);
+        $userToRemove = self::createUser();
+        self::attachResponsibleUser($event, $userToRemove, 'Secretary', 2);
+
+        $component = Livewire::test(SearchUsers::class, ['selectedUsers' => $event->responsibleUsers])
+            ->call('removeUser', $userToRemove->id);
+
+        self::assertPositionAndSortArePreserved($component, $remainingUser, 'Chairperson', 1);
+    }
+
+    private static function attachResponsibleUser(Event $event, User $user, string $position, int $sort): void
+    {
+        $event->responsibleUsers()->attach($user->id, [
+            'publicly_visible' => true,
+            'position' => $position,
+            'sort' => $sort,
+        ]);
+    }
+
+    /**
+     * @param Testable<SearchUsers> $component
+     */
+    private static function assertPositionAndSortArePreserved(Testable $component, User $user, string $position, int $sort): void
+    {
+        self::assertSame($position, $component->get('selectedUserData')[$user->id]['position'] ?? null);
+        self::assertSame($sort, $component->get('selectedUserData')[$user->id]['sort'] ?? null);
+        $component->assertSeeHtml('value="' . $position . '"');
     }
 }

@@ -15,7 +15,6 @@
 
 @section('breadcrumbs')
     @include('documents.shared.document_breadcrumbs')
-    <x-bs::breadcrumb.item href="{{ $reference->getRoute() }}">{{ $reference->name }}</x-bs::breadcrumb.item>
     <x-bs::breadcrumb.item>{{ __('Image gallery') }}</x-bs::breadcrumb.item>
 @endsection
 

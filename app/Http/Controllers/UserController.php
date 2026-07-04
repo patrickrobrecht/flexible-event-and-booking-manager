@@ -112,6 +112,10 @@ class UserController extends Controller
                 'reference',
                 'uploadedByUser',
             ])
+            ->withCount([
+                'documentReviews',
+            ])
+            ->withMax('documentReviews', 'updated_at')
             ->paginate(12);
         $documents->each(fn (Document $document) => $document->setRelation('uploadedByUser', $user));
 

@@ -59,6 +59,10 @@ class AccountController extends Controller
             ->with([
                 'reference',
             ])
+            ->withCount([
+                'documentReviews',
+            ])
+            ->withMax('documentReviews', 'updated_at')
             ->paginate(12);
         $documents->each(fn (Document $document) => $document->setRelation('uploadedByUser', $user));
 

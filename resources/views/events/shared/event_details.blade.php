@@ -8,7 +8,7 @@
     @endisset
     <x-bs::list.item class="d-flex">
         <span class="me-3"><i class="fa fa-fw fa-clock" title="{{ __('Date') }}"></i></span>
-        @include('events.shared.event_dates')
+        {{ $event->formatDateRange() }}
     </x-bs::list.item>
     <x-bs::list.item class="d-flex">
         <span class="me-3">

@@ -50,6 +50,19 @@ trait HasResponsibleUsers
         return $this->getPubliclyVisibleResponsibleUsers();
     }
 
+    public function getResponsibleUsersVisibleForCurrentUserAsText(): string
+    {
+        $responsibleUserNames = $this->getResponsibleUsersVisibleForCurrentUser()
+            ->map(fn (User $user) => $user->name)
+            ->implode(', ');
+
+        if ($responsibleUserNames === '') {
+            return '';
+        }
+
+        return __('Responsibilities') . ': ' . $responsibleUserNames;
+    }
+
     /**
      * @return Collection<int, User>
      */

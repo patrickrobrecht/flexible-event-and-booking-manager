@@ -227,6 +227,42 @@ class Event extends Model
         return $this->bookingsConfirmed;
     }
 
+    public function formatDateRange(): string
+    {
+        if (isset($this->started_at, $this->finished_at)) {
+            return __(':start until :end', [
+                'start' => $this->started_at->isMidnight()
+                    ? formatDate($this->started_at)
+                    : formatDateTime($this->started_at),
+                'end' => $this->started_at->isSameDay($this->finished_at)
+                    ? formatTime($this->finished_at)
+                    : (
+                        $this->finished_at->isMidnight()
+                            ? formatDate($this->finished_at)
+                            : formatDateTime($this->finished_at)
+                    ),
+            ]);
+        }
+
+        if (isset($this->started_at)) {
+            return __('starting :start', [
+                'start' => $this->started_at->isMidnight()
+                    ? formatDate($this->started_at)
+                    : formatDateTime($this->started_at),
+            ]);
+        }
+
+        if (isset($this->finished_at)) {
+            return __('until :end', [
+                'end' => $this->finished_at->isMidnight()
+                    ? formatDate($this->finished_at)
+                    : formatDateTime($this->finished_at),
+            ]);
+        }
+
+        return __('unknown');
+    }
+
     public function getRoute(): string
     {
         return route('events.show', $this);

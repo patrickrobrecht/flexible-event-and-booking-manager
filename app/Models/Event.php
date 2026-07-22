@@ -176,12 +176,14 @@ class Event extends Model
         return true;
     }
 
-    public function findOrCreateGroup(int|string $groupIndex): Group
+    public function findOrCreateGroup(int $groupIndex, int $groupsCount = 1): Group
     {
+        $digits = strlen((string) $groupsCount);
+
         /** @phpstan-ignore return.type */
         return $this->groups()
             ->firstOrCreate([
-                'name' => __('Group') . ' ' . $groupIndex,
+                'name' => __('Group') . ' ' . str_pad((string) $groupIndex, $digits, '0', STR_PAD_LEFT),
             ]);
     }
 

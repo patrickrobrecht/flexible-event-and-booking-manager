@@ -71,7 +71,7 @@ class GroupController extends Controller
 
         $generatedGroups = $method->generateGroups($groupsCount, $bookings);
         foreach ($generatedGroups as $groupIndex => $groupMembers) {
-            $group = $event->findOrCreateGroup($groupIndex);
+            $group = $event->findOrCreateGroup($groupIndex, $groupsCount);
 
             /** @var Booking $groupMember */
             foreach ($groupMembers as $groupMember) {

@@ -297,7 +297,7 @@ trait GeneratesTestData
     {
         $groups = [];
         foreach (range(1, $count) as $groupIndex) {
-            $group = $event->findOrCreateGroup($groupIndex);
+            $group = $event->findOrCreateGroup($groupIndex, $count);
             $groups[] = $group->id;
         }
 

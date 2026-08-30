@@ -99,7 +99,7 @@
                         </x-bs::list.item>
                         <x-bs::list.item>
                             <i class="fa fa-fw fa-clock" title="{{ __('Date') }}"></i>
-                            <span class="text-end">@include('events.shared.event_dates')</span>
+                            <span class="text-end">{{ $event->formatDateRange() }}</span>
                         </x-bs::list.item>
                         <x-bs::list.item>
                             <i class="fa fa-fw fa-location-pin" title="{{ __('Location') }}"></i>

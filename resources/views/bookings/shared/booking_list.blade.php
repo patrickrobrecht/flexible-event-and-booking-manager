@@ -20,7 +20,7 @@
             </div>
             <div>
                 <i class="fa fa-fw fa-clock"></i>
-                @include('events.shared.event_dates')
+                {{ $event->formatDateRange() }}
             </div>
             <div>
                 <i class="fa fa-fw fa-location-pin"></i>

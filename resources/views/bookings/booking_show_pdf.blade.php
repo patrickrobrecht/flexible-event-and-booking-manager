@@ -55,7 +55,7 @@
             <tr>
                 <td class="label">{{ __('Event') }}</td>
                 <td>{{ $event->name }}
-                    <br>@include('events.shared.event_dates')
+                    <br>{{ $event->formatDateRange() }}
                     <br>@foreach($event->location->fullAddressBlock as $line)
                         {{ $line }}@if(!$loop->last)
                             <br>

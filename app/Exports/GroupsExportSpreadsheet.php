@@ -31,7 +31,10 @@ class GroupsExportSpreadsheet extends Spreadsheet
         $worksheet->setCellValue('A1', $this->event->name);
         self::formatHeadline($worksheet, self::COLUMN_COUNT);
 
-        $currentReportRow = 3;
+        $worksheet->setCellValue('A2', $this->getSubHeadline());
+        $worksheet->mergeCells([1, 2, self::COLUMN_COUNT, 2]);
+
+        $currentReportRow = 4;
         $bookings = $this->prepareBookings();
         $chunks = $this->event->groups->chunk(self::COLUMN_COUNT);
         foreach ($chunks as $chunk) {
@@ -66,6 +69,16 @@ class GroupsExportSpreadsheet extends Spreadsheet
             'D' => 5.2,
             'E' => 5.2,
         ]);
+    }
+
+    private function getSubHeadline(): string
+    {
+        $parts = array_filter([
+            $this->event->formatDateRange(),
+            $this->event->getResponsibleUsersVisibleForCurrentUserAsText(),
+        ], static fn (string $part) => $part !== '');
+
+        return implode(' · ', $parts);
     }
 
     /**

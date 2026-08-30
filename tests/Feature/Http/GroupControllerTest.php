@@ -100,6 +100,32 @@ class GroupControllerTest extends TestCase
         return array_map(static fn (GroupGenerationMethod $method) => [$method], GroupGenerationMethod::cases());
     }
 
+    #[DataProvider('findOrCreateGroupTestCases')]
+    public function testFindOrCreateGroupPadsNameForAlphabeticalSorting(
+        int $groupIndex,
+        int $groupsCount,
+        string $expectedName
+    ): void {
+        $event = self::createEvent(Visibility::Private);
+
+        $group = $event->findOrCreateGroup($groupIndex, $groupsCount);
+
+        self::assertSame($expectedName, $group->name);
+    }
+
+    /**
+     * @return array<string, array{int, int, string}>
+     */
+    public static function findOrCreateGroupTestCases(): array
+    {
+        return [
+            'single-digit group count is not padded' => [3, 4, 'Gruppe 3'],
+            'index is padded to the width of the largest index' => [9, 12, 'Gruppe 09'],
+            'group count of exactly 100 requires three digits' => [1, 100, 'Gruppe 001'],
+            'group count above 100 requires three digits' => [7, 101, 'Gruppe 007'],
+        ];
+    }
+
     #[DataProvider('deleteGroupTestCases')]
     public function testUserCanDeleteGroupsWithCorrectAbility(Closure $dataProvider, int $countAfterRequest): void
     {

@@ -159,6 +159,46 @@ class BookingControllerTest extends TestCase
         self::assertTrue(Storage::disk('local')->deleteDirectory($bookingOption->getFilePath()));
     }
 
+    public function testDownloadFileReturnsNotFoundForNonFileFormField(): void
+    {
+        $this->actingAsUserWithAbility(Ability::ViewBookingsOfEvent);
+
+        $bookingOption = self::createBookingOptionForEventWithCustomFormFields()->refresh();
+        $booking = self::createBooking($bookingOption)->refresh();
+
+        /** @var FormFieldValue $formFieldValue */
+        $formFieldValue = $booking->formFieldValues->first(
+            fn (FormFieldValue $formFieldValue) => $formFieldValue->formField->type !== FormElementType::File
+        );
+
+        $this->get("bookings/{$booking->id}/file/{$formFieldValue->id}")
+            ->assertNotFound();
+
+        // Cleanup generated files.
+        self::assertTrue(Storage::disk('local')->deleteDirectory($bookingOption->getFilePath()));
+    }
+
+    public function testDownloadFileReturnsNotFoundForFormFieldValueOfAnotherBooking(): void
+    {
+        $this->actingAsUserWithAbility(Ability::ViewBookingsOfEvent);
+
+        $bookingOption = self::createBookingOptionForEventWithCustomFormFields()->refresh();
+        $booking = self::createBooking($bookingOption)->refresh();
+        $anotherBooking = self::createBooking($bookingOption)->refresh();
+
+        $formFieldForFile = $bookingOption->formFieldsForFiles->first();
+        self::assertNotNull($formFieldForFile);
+
+        /** @var FormFieldValue $formFieldValue */
+        $formFieldValue = $anotherBooking->formFieldValues->firstWhere('form_field_id', $formFieldForFile->id);
+
+        $this->get("bookings/{$booking->id}/file/{$formFieldValue->id}")
+            ->assertNotFound();
+
+        // Cleanup generated files.
+        self::assertTrue(Storage::disk('local')->deleteDirectory($bookingOption->getFilePath()));
+    }
+
     public function testUserCanViewPaymentsOnlyWithCorrectAbility(): void
     {
         $bookingOption = self::createBookingOptionForEvent();

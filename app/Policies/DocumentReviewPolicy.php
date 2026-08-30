@@ -77,8 +77,8 @@ class DocumentReviewPolicy
         if (
             /**
              * Every user can add comments to document if
-             * - they are responsible for the event, event series or organization the document was uploaded to.
              * - they uploaded the document.
+             * - they are responsible for the event, event series or organization the document was uploaded to.
              */
             $user->is($document->uploadedByUser)
             || (!$document->reference instanceof Location && $user->isResponsibleFor($document->reference))

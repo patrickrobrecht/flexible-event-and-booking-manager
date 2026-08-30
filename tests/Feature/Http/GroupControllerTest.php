@@ -100,6 +100,69 @@ class GroupControllerTest extends TestCase
         return array_map(static fn (GroupGenerationMethod $method) => [$method], GroupGenerationMethod::cases());
     }
 
+    public function testUserCanGenerateGroupsForChildEventExcludingParentGroupMembers(): void
+    {
+        $parentEvent = self::createEventWithBookingOptions(Visibility::Private, bookingOptionCount: 1);
+        $bookings = $parentEvent->getBookings();
+        self::assertGreaterThanOrEqual(2, $bookings->count());
+
+        $excludedGroup = $parentEvent->findOrCreateGroup(1, 2);
+        $excludedBooking = $bookings->first();
+        self::assertNotNull($excludedBooking);
+        $excludedBooking->groups()->attach($excludedGroup);
+
+        $includedGroup = $parentEvent->findOrCreateGroup(2, 2);
+        $includedBooking = $bookings->last();
+        self::assertNotNull($includedBooking);
+        $includedBooking->groups()->attach($includedGroup);
+
+        $childEvent = self::createChildEvent(Visibility::Private, $parentEvent);
+
+        $this->actingAsUserWithAbility(Ability::ManageGroupsOfEvent);
+        $formData = [
+            'method' => GroupGenerationMethod::Randomized->value,
+            'groups_count' => 1,
+            'booking_option_id' => $parentEvent->bookingOptions->pluck('id')->toArray(),
+            'exclude_parent_group_id' => [$excludedGroup->id],
+        ];
+        $this->post("/events/{$childEvent->slug}/groups/generate", $formData)
+            ->assertSessionDoesntHaveErrors()
+            ->assertRedirect();
+
+        // The booking whose parent-event group was excluded must not be assigned to the newly generated group.
+        self::assertNull($excludedBooking->refresh()->getGroup($childEvent));
+        // Other bookings must still be assigned to the newly generated group.
+        self::assertNotNull($includedBooking->refresh()->getGroup($childEvent));
+    }
+
+    public function testUserCanRegenerateGroupsDetachingPreviousGroupMembership(): void
+    {
+        $event = self::createEventWithBookingOptions(Visibility::Private, bookingOptionCount: 1);
+        $bookings = $event->getBookings();
+        self::assertGreaterThanOrEqual(1, $bookings->count());
+
+        // Simulate a previous group generation run with more groups than generated in the second run.
+        $staleGroup = $event->findOrCreateGroup(3);
+        $bookings->each(fn (Booking $booking) => $booking->groups()->attach($staleGroup));
+
+        $this->actingAsUserWithAbility(Ability::ManageGroupsOfEvent);
+        $formData = [
+            'method' => GroupGenerationMethod::Randomized->value,
+            'groups_count' => 2,
+            'booking_option_id' => $event->bookingOptions->pluck('id')->toArray(),
+        ];
+        $this->post("/events/{$event->slug}/groups/generate", $formData)
+            ->assertSessionDoesntHaveErrors()
+            ->assertRedirect();
+
+        // The stale group must be empty again since every booking was moved to the newly generated group.
+        self::assertCount(0, $staleGroup->refresh()->bookings);
+        $bookings->each(function (Booking $booking) use ($event) {
+            // Each booking must belong to exactly one group of this event, not both the stale and the new one.
+            self::assertCount(1, $booking->refresh()->groups()->where('event_id', $event->id)->get());
+        });
+    }
+
     #[DataProvider('findOrCreateGroupTestCases')]
     public function testFindOrCreateGroupPadsNameForAlphabeticalSorting(
         int $groupIndex,

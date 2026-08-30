@@ -96,6 +96,67 @@ class DocumentReviewControllerTest extends TestCase
     }
 
     #[DataProvider('referenceClasses')]
+    public function testDocumentUploaderCanAddCommentWithoutCommentAbility(Closure $referenceProvider, Ability $commentAbility): void
+    {
+        $reference = $referenceProvider();
+        $viewAbility = DocumentPolicy::VIEW_DOCUMENTS_ABILITIES[$reference::class];
+        $user = $this->actingAsUserWithAbility($viewAbility);
+        $document = self::createDocument(static fn () => $reference, $user);
+
+        $this->get("documents/{$document->id}")
+            ->assertOk()
+            ->assertSee('Kommentar hinzufügen');
+
+        $data = DocumentReview::factory()->makeOne()->toArray();
+        $this->post("documents/{$document->id}/reviews", $data)
+            ->assertRedirect($document->getRouteForComments())
+            ->assertSessionHasNoErrors();
+    }
+
+    #[DataProvider('responsibleReferenceClasses')]
+    public function testResponsibleUserCanAddCommentWithoutAnyAbility(Closure $referenceProvider): void
+    {
+        $reference = $referenceProvider();
+        $user = self::createUserResponsibleFor($reference);
+        $this->actingAs($user);
+        $document = self::createDocument(static fn () => $reference);
+
+        $this->get("documents/{$document->id}")
+            ->assertOk()
+            ->assertSee('Kommentar hinzufügen');
+
+        $data = DocumentReview::factory()->makeOne()->toArray();
+        $this->post("documents/{$document->id}/reviews", $data)
+            ->assertRedirect($document->getRouteForComments())
+            ->assertSessionHasNoErrors();
+    }
+
+    /**
+     * @return array<int, array{Closure}>
+     */
+    public static function responsibleReferenceClasses(): array
+    {
+        return [
+            [fn () => self::createEvent(Visibility::Public)],
+            [fn () => self::createEvent(Visibility::Private)],
+            [fn () => self::createEventSeries(Visibility::Public)],
+            [fn () => self::createEventSeries(Visibility::Private)],
+            [fn () => self::createOrganization()],
+        ];
+    }
+
+    public function testUserCannotUpdateAnotherUsersDocumentReview(): void
+    {
+        $author = self::createUser();
+        $documentReview = self::createDocumentWithReview(fn () => self::createEvent(Visibility::Public), $author);
+
+        $this->actingAsUserWithAbility(Ability::CommentOnDocumentsOfEvents);
+        $data = DocumentReview::factory()->makeOne()->toArray();
+        $this->put("documents/{$documentReview->document->id}/reviews/{$documentReview->id}", $data)
+            ->assertForbidden();
+    }
+
+    #[DataProvider('referenceClasses')]
     public function testUserCanUpdateDocumentReviewOnlyWithCorrectAbility(Closure $referenceProvider, Ability $ability): void
     {
         $user = $this->actingAsUserWithAbility($ability);

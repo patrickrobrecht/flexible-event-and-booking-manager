@@ -49,6 +49,16 @@ class EventSeriesApiControllerTest extends TestCase
         $this->assertTokenCanGetOnlyWithAbility("api/event-series/{$eventSeries->slug}", [Ability::ViewEventSeries, Ability::ViewPrivateEventSeries]);
     }
 
+    public function testSingleEventSeriesCanBeRequestedWithIncludes(): void
+    {
+        $eventSeries = self::createEventSeries(Visibility::Public);
+
+        $this->withHeadersForApiRequestWithAbility(Ability::ViewEventSeries)
+            ->getJson("api/event-series/{$eventSeries->slug}?include=organization")
+            ->assertOk()
+            ->assertJsonPath('data.organization.name', $eventSeries->organization->name);
+    }
+
     public function testNotExistingEventSlugResultsInNotFound(): void
     {
         $this->assertTokenCannotGetDespiteAbility('api/event-series/not-existing-slug', Ability::ViewEvents, Response::HTTP_NOT_FOUND)

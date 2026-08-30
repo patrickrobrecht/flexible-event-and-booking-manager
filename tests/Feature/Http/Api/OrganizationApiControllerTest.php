@@ -40,6 +40,16 @@ class OrganizationApiControllerTest extends TestCase
         $this->assertTokenCanGetOnlyWithAbility("api/organizations/{$organization->slug}", Ability::ViewOrganizations);
     }
 
+    public function testSingleOrganizationCanBeRequestedWithIncludes(): void
+    {
+        $organization = self::createOrganization();
+
+        $this->withHeadersForApiRequestWithAbility(Ability::ViewOrganizations)
+            ->getJson("api/organizations/{$organization->slug}?include=location")
+            ->assertOk()
+            ->assertJsonPath('data.location.street', $organization->location->street);
+    }
+
     public function testNotExistingOrganisationSlugResultsInNotFound(): void
     {
         $this->assertTokenCannotGetDespiteAbility('api/organizations/not-existing-slug', Ability::ViewEvents, Response::HTTP_NOT_FOUND)

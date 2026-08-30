@@ -84,6 +84,16 @@ class EventApiControllerTest extends TestCase
         $this->assertTokenCanGetOnlyWithAbility("api/events/{$event->slug}", [Ability::ViewEvents, Ability::ViewPrivateEvents]);
     }
 
+    public function testSingleEventCanBeRequestedWithIncludes(): void
+    {
+        $event = self::createEvent(Visibility::Public);
+
+        $this->withHeadersForApiRequestWithAbility(Ability::ViewEvents)
+            ->getJson("api/events/{$event->slug}?include=organization")
+            ->assertOk()
+            ->assertJsonPath('data.organization.name', $event->organization->name);
+    }
+
     public function testNotExistingEventSlugResultsInNotFound(): void
     {
         $this->assertTokenCannotGetDespiteAbility('api/events/not-existing-slug', Ability::ViewEvents, Response::HTTP_NOT_FOUND)

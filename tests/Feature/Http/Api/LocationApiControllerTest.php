@@ -40,6 +40,17 @@ class LocationApiControllerTest extends TestCase
         $this->assertTokenCanGetOnlyWithAbility("api/locations/{$location->id}", Ability::ViewLocations);
     }
 
+    public function testSingleLocationCanBeRequestedWithIncludes(): void
+    {
+        $organization = self::createOrganization();
+        $location = $organization->location;
+
+        $this->withHeadersForApiRequestWithAbility(Ability::ViewLocations)
+            ->getJson("api/locations/{$location->id}?include=organizations")
+            ->assertOk()
+            ->assertJsonPath('data.organizations.0.name', $organization->name);
+    }
+
     public function testNotExistingLocationSlugResultsInNotFound(): void
     {
         $this->assertTokenCannotGetDespiteAbility('api/locations/42', Ability::ViewEvents, Response::HTTP_NOT_FOUND)

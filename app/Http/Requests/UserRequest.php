@@ -103,6 +103,7 @@ class UserRequest extends FormRequest
         if ($this->routeIs('account.update')) {
             $rules = array_replace($rules, [
                 'current_password' => [
+                    'nullable',
                     'current_password',
                     'required_with:password',
                     Rule::requiredIf(function () {

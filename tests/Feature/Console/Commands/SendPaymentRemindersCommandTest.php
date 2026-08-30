@@ -52,6 +52,18 @@ class SendPaymentRemindersCommandTest extends TestCase
         Notification::assertCount(1);
     }
 
+    public function testCommandSendsNoPaymentRemindersIfDueDateHasNotBeenReached(): void
+    {
+        Log::shouldReceive('info')->never();
+
+        $this->fakeUnpaidBooking(-2);
+
+        $this->artisan('app:send-payment-reminders')
+            /** @phpstan-ignore method.nonObject */
+            ->expectsOutputToContain('No reminders to send.')
+            ->assertSuccessful();
+    }
+
     public function testCommandOutputsLogDataDuringDryRun(): void
     {
         Notification::fake();
@@ -91,17 +103,18 @@ class SendPaymentRemindersCommandTest extends TestCase
         );
     }
 
-    private function fakeUnpaidBooking(): Booking
+    private function fakeUnpaidBooking(int $daysAfterDueDate = 1): Booking
     {
+        $paymentDueDays = $this->faker->numberBetween(5, 10);
         $bookingOption = self::createBookingOptionForEvent(attributes: [
             'price' => 5,
-            'payment_due_days' => 10,
+            'payment_due_days' => $paymentDueDays,
         ]);
         return self::createBooking($bookingOption, [
             'paid_at' => null,
             'deleted_at' => null,
             /** @phpstan-ignore method.notFound */
-            'booked_at' => Carbon::today()->subWeekDays(11),
+            'booked_at' => Carbon::today()->subWeekDays($paymentDueDays + $daysAfterDueDate),
         ]);
     }
 }

@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Http\Middleware;
 
-use App;
 use App\Http\Middleware\AcceptLanguageMiddleware;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;

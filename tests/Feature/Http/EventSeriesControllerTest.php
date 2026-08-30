@@ -60,7 +60,7 @@ class EventSeriesControllerTest extends TestCase
 
     public function testUserCanStoreEventSeriesOnlyWithCorrectAbility(): void
     {
-        $data = $this->generateRandomEventSeriesData();
+        $data = self::generateRandomEventSeriesData();
 
         $this->assertUserCanPostOnlyWithAbility('event-series', $data, Ability::CreateEventSeries, null);
     }
@@ -75,7 +75,7 @@ class EventSeriesControllerTest extends TestCase
     {
         $eventSeries = self::createEventSeries();
         /** @var array{slug: string} $data */
-        $data = $this->generateRandomEventSeriesData();
+        $data = self::generateRandomEventSeriesData();
 
         $this->assertUserCanPutOnlyWithAbility(
             "/event-series/{$eventSeries->slug}",
@@ -84,6 +84,38 @@ class EventSeriesControllerTest extends TestCase
             "/event-series/{$eventSeries->slug}/edit",
             "/event-series/{$data['slug']}"
         );
+    }
+
+    public function testEventSeriesCannotHaveItselfAsParent(): void
+    {
+        $eventSeries = self::createEventSeries(eventsCount: 0);
+        $data = array_merge(self::generateRandomEventSeriesData(), [
+            'organization_id' => $eventSeries->organization_id,
+            'parent_event_series_id' => $eventSeries->id,
+        ]);
+
+        $this->actingAsUserWithAbility(Ability::EditEventSeries);
+        $this->put("/event-series/{$eventSeries->slug}", $data)
+            ->assertSessionHasErrors([
+                'parent_event_series_id' => 'Der gewählte Wert für Teil der Veranstaltungsreihe ist ungültig.',
+            ]);
+    }
+
+    public function testEventSeriesParentMustBelongToSameOrganizationAsSubmittedEventSeries(): void
+    {
+        $parentEventSeries = self::createEventSeries(eventsCount: 0);
+        $otherOrganization = self::createOrganization();
+
+        $data = array_merge(self::generateRandomEventSeriesData(), [
+            'organization_id' => $otherOrganization->id,
+            'parent_event_series_id' => $parentEventSeries->id,
+        ]);
+
+        $this->actingAsUserWithAbility(Ability::CreateEventSeries);
+        $this->post('event-series', $data)
+            ->assertSessionHasErrors([
+                'parent_event_series_id' => "Teil der Veranstaltungsreihe muss zur Organisation {$otherOrganization->name} gehören.",
+            ]);
     }
 
     public function testUserCanDeleteEventSeriesOnlyWithCorrectAbility(): void
@@ -121,7 +153,7 @@ class EventSeriesControllerTest extends TestCase
     /**
      * @return array<string, mixed>
      */
-    private function generateRandomEventSeriesData(): array
+    private static function generateRandomEventSeriesData(): array
     {
         $eventData = Event::factory()->makeOne();
         return [

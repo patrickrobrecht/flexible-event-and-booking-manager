@@ -60,7 +60,7 @@ class EventControllerTest extends TestCase
 
     public function testUserCanStoreEventOnlyWithCorrectAbility(): void
     {
-        $data = $this->generateRandomEventData();
+        $data = self::generateRandomEventData();
 
         $this->assertUserCanPostOnlyWithAbility('events', $data, Ability::CreateEvents, null);
     }
@@ -75,7 +75,7 @@ class EventControllerTest extends TestCase
     {
         $event = self::createEvent();
         /** @var array{slug: string} $data */
-        $data = $this->generateRandomEventData();
+        $data = self::generateRandomEventData();
 
         $this->assertUserCanPutOnlyWithAbility(
             "/events/{$event->slug}",
@@ -84,6 +84,95 @@ class EventControllerTest extends TestCase
             "/events/{$event->slug}/edit",
             "/events/{$data['slug']}"
         );
+    }
+
+    public function testEventCannotHaveItselfAsParent(): void
+    {
+        $event = self::createEvent();
+        $data = array_merge(self::generateRandomEventData(), [
+            'organization_id' => $event->organization_id,
+            'parent_event_id' => $event->id,
+        ]);
+
+        $this->actingAsUserWithAbility(Ability::EditEvents);
+        $this->put("/events/{$event->slug}", $data)
+            ->assertSessionHasErrors([
+                'parent_event_id' => 'Der gewählte Wert für Teil der Veranstaltung ist ungültig.',
+            ]);
+    }
+
+    /**
+     * @param Closure(): array{data: array<string, mixed>, errors: array<string, string>} $scenario
+     */
+    #[DataProvider('eventCannotBeStoredWithInvalidParentOrEventSeriesReferenceCases')]
+    public function testEventCannotBeStoredWithInvalidParentOrEventSeriesReference(Closure $scenario): void
+    {
+        ['data' => $data, 'errors' => $errors] = $scenario();
+
+        $this->actingAsUserWithAbility(Ability::CreateEvents);
+        $this->post('events', $data)
+            ->assertSessionHasErrors($errors);
+    }
+
+    /**
+     * @return array<string, array{Closure(): array{data: array<string, mixed>, errors: array<string, string>}}>
+     */
+    public static function eventCannotBeStoredWithInvalidParentOrEventSeriesReferenceCases(): array
+    {
+        return [
+            'parent event already has a parent' => [
+                function () {
+                    $parentEvent = self::createEvent();
+                    $childEvent = self::createChildEvent(Visibility::Public, $parentEvent);
+                    return [
+                        'data' => array_merge(self::generateRandomEventData(), [
+                            'organization_id' => $childEvent->organization_id,
+                            'parent_event_id' => $childEvent->id,
+                        ]),
+                        'errors' => ['parent_event_id' => 'Der gewählte Wert für Teil der Veranstaltung ist ungültig.'],
+                    ];
+                },
+            ],
+            'parent event belongs to another organization' => [
+                function () {
+                    $parentEvent = self::createEvent();
+                    $otherOrganization = self::createOrganization();
+                    return [
+                        'data' => array_merge(self::generateRandomEventData(), [
+                            'organization_id' => $otherOrganization->id,
+                            'parent_event_id' => $parentEvent->id,
+                        ]),
+                        'errors' => ['parent_event_id' => "Teil der Veranstaltung muss zur Organisation {$otherOrganization->name} gehören."],
+                    ];
+                },
+            ],
+            'event series does not exist' => [
+                function () {
+                    $eventSeries = self::createEventSeries(eventsCount: 0);
+                    $notExistingEventSeriesId = $eventSeries->id;
+                    $eventSeries->delete();
+                    return [
+                        'data' => array_merge(self::generateRandomEventData(), [
+                            'event_series_id' => $notExistingEventSeriesId,
+                        ]),
+                        'errors' => ['event_series_id' => 'Der gewählte Wert für Teil der Veranstaltungsreihe ist ungültig.'],
+                    ];
+                },
+            ],
+            'event series belongs to another organization' => [
+                function () {
+                    $eventSeries = self::createEventSeries();
+                    $otherOrganization = self::createOrganization();
+                    return [
+                        'data' => array_merge(self::generateRandomEventData(), [
+                            'organization_id' => $otherOrganization->id,
+                            'event_series_id' => $eventSeries->id,
+                        ]),
+                        'errors' => ['event_series_id' => "Teil der Veranstaltungsreihe muss zur Organisation {$otherOrganization->name} gehören."],
+                    ];
+                },
+            ],
+        ];
     }
 
     public function testUserCanDeleteEventsOnlyWithCorrectAbility(): void
@@ -124,7 +213,7 @@ class EventControllerTest extends TestCase
     /**
      * @return array<string, mixed>
      */
-    private function generateRandomEventData(): array
+    private static function generateRandomEventData(): array
     {
         /** @var Event $eventData */
         $eventData = Event::factory()->makeOne();

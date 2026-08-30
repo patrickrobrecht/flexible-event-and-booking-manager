@@ -92,7 +92,7 @@
         ],
         "test-with-coverage": [
             "Composer\\Config::disableProcessTimeout",
-            "vendor/bin/paratest --exclude-group serial --coverage-html .phpunit.coverage"
+            "vendor/bin/paratest --exclude-group serial --coverage-html .phpunit.coverage --coverage-clover phpunit_coverage.xml"
         ],
         "translate": [
             "@php artisan translatable:export de"

@@ -61,7 +61,7 @@
                     @foreach($groups as $group)
                         <x-bs::list.item>
                             @can('viewGroups', $group->event)
-                                <a href="{{ route('groups.index', $event) }}">{{ $group->name }}</a>
+                                <a href="{{ route('groups.index', $group->event) }}">{{ $group->name }}</a>
                             @else
                                 {{ $group->name }}
                             @endcan

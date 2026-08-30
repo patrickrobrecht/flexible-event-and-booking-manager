@@ -74,7 +74,7 @@ export default defineConfig(({ mode }) => {
             {
                 name: 'add-copied-files-to-manifest',
                 closeBundle() {
-                    const manifestPath = path.resolve(__dirname, 'public/build/manifest.json');
+                    const manifestPath = path.resolve(import.meta.dirname, 'public/build/manifest.json');
                     let manifest = {
                         ...JSON.parse(fs.readFileSync(manifestPath, 'utf-8')),
                         ...filesFromLibrariesForManifest

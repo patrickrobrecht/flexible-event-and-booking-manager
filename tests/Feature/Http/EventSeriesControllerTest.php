@@ -3,31 +3,13 @@
 namespace Tests\Feature\Http;
 
 use App\Enums\Ability;
-use App\Enums\EventSeriesType;
-use App\Enums\FilterValue;
 use App\Enums\Visibility;
-use App\Http\Controllers\EventSeriesController;
-use App\Http\Requests\EventSeriesRequest;
-use App\Http\Requests\Filters\EventSeriesFilterRequest;
-use App\Models\Document;
 use App\Models\Event;
 use App\Models\EventSeries;
-use App\Policies\EventSeriesPolicy;
 use Closure;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
-#[CoversClass(Document::class)]
-#[CoversClass(Event::class)]
-#[CoversClass(EventSeries::class)]
-#[CoversClass(EventSeriesController::class)]
-#[CoversClass(EventSeriesFilterRequest::class)]
-#[CoversClass(EventSeriesPolicy::class)]
-#[CoversClass(EventSeriesRequest::class)]
-#[CoversClass(EventSeriesType::class)]
-#[CoversClass(FilterValue::class)]
-#[CoversClass(Visibility::class)]
 class EventSeriesControllerTest extends TestCase
 {
     public function testUserCanViewEventSeriesOnlyWithCorrectAbility(): void

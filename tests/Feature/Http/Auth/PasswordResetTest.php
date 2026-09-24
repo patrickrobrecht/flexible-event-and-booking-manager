@@ -2,19 +2,12 @@
 
 namespace Tests\Feature\Http\Auth;
 
-use App\Http\Controllers\Auth\NewPasswordController;
-use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Models\User;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
-use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 
-#[CoversClass(NewPasswordController::class)]
-#[CoversClass(PasswordResetLinkController::class)]
-#[CoversClass(ResetPasswordNotification::class)]
-#[CoversClass(User::class)]
 class PasswordResetTest extends TestCase
 {
     use RefreshDatabase;

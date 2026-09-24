@@ -4,24 +4,12 @@ namespace Tests\Feature\Http\Api;
 
 use App\Enums\Ability;
 use App\Enums\Visibility;
-use App\Exceptions\Handler;
-use App\Http\Controllers\Api\EventSeriesApiController;
-use App\Http\Requests\Filters\EventSeriesFilterRequest;
-use App\Http\Resources\EventSeriesResource;
 use App\Models\EventSeries;
-use App\Models\QueryBuilder\SortOptions;
-use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
 use Tests\Traits\ActsWithToken;
 use Tests\Traits\GeneratesTestData;
 
-#[CoversClass(EventSeries::class)]
-#[CoversClass(EventSeriesApiController::class)]
-#[CoversClass(EventSeriesFilterRequest::class)]
-#[CoversClass(EventSeriesResource::class)]
-#[CoversClass(Handler::class)]
-#[CoversClass(SortOptions::class)]
 class EventSeriesApiControllerTest extends TestCase
 {
     use ActsWithToken;

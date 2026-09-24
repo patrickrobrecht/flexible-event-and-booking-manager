@@ -5,26 +5,17 @@ namespace Tests\Feature\Http;
 use App\Enums\Ability;
 use App\Enums\BookingRestriction;
 use App\Enums\Visibility;
-use App\Http\Controllers\BookingOptionController;
-use App\Http\Requests\BookingOptionRequest;
 use App\Models\Booking;
 use App\Models\BookingOption;
 use App\Models\Event;
 use App\Models\User;
-use App\Policies\BookingOptionPolicy;
 use Carbon\Carbon;
 use Closure;
 use Database\Factories\BookingOptionFactory;
 use Database\Factories\UserFactory;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
-#[CoversClass(BookingOption::class)]
-#[CoversClass(BookingOptionController::class)]
-#[CoversClass(BookingOptionPolicy::class)]
-#[CoversClass(BookingOptionRequest::class)]
-#[CoversClass(BookingRestriction::class)]
 class BookingOptionControllerTest extends TestCase
 {
     public function testGuestCanViewBookingOptionOfPublicEvent(): void

@@ -3,26 +3,9 @@
 namespace Tests\Feature\Http;
 
 use App\Enums\Ability;
-use App\Enums\AbilityGroup;
-use App\Enums\FilterValue;
-use App\Http\Controllers\UserRoleController;
-use App\Http\Requests\Filters\UserRoleFilterRequest;
-use App\Http\Requests\UserRoleRequest;
-use App\Models\User;
 use App\Models\UserRole;
-use App\Policies\UserRolePolicy;
-use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 
-#[CoversClass(Ability::class)]
-#[CoversClass(AbilityGroup::class)]
-#[CoversClass(FilterValue::class)]
-#[CoversClass(User::class)]
-#[CoversClass(UserRole::class)]
-#[CoversClass(UserRoleController::class)]
-#[CoversClass(UserRoleFilterRequest::class)]
-#[CoversClass(UserRolePolicy::class)]
-#[CoversClass(UserRoleRequest::class)]
 class UserRoleControllerTest extends TestCase
 {
     public function testUserCanViewUserRolesOnlyWithCorrectAbility(): void

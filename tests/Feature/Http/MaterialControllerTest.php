@@ -4,21 +4,10 @@ namespace Tests\Feature\Http;
 
 use App\Enums\Ability;
 use App\Enums\MaterialStatus;
-use App\Http\Controllers\MaterialController;
-use App\Http\Requests\Filters\MaterialFilterRequest;
-use App\Http\Requests\MaterialRequest;
 use App\Models\Material;
-use App\Policies\MaterialPolicy;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 
-#[CoversClass(Material::class)]
-#[CoversClass(MaterialController::class)]
-#[CoversClass(MaterialFilterRequest::class)]
-#[CoversClass(MaterialPolicy::class)]
-#[CoversClass(MaterialRequest::class)]
-#[CoversClass(MaterialStatus::class)]
 class MaterialControllerTest extends TestCase
 {
     use RefreshDatabase;

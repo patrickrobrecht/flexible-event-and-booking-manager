@@ -3,16 +3,11 @@
 namespace Tests\Feature\Http;
 
 use App\Enums\Ability;
-use App\Http\Controllers\ApiDocumentationController;
-use App\Listeners\CacheOpenApiDocListener;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
-#[CoversClass(ApiDocumentationController::class)]
-#[CoversClass(CacheOpenApiDocListener::class)]
 class ApiDocumentationControllerTest extends TestCase
 {
     public function testUserCanViewApiDocumentationOnlyWithCorrectAbility(): void

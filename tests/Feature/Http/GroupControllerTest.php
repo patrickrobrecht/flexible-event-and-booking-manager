@@ -5,36 +5,14 @@ namespace Tests\Feature\Http;
 use App\Enums\Ability;
 use App\Enums\GroupGenerationMethod;
 use App\Enums\Visibility;
-use App\Exports\GroupsExportSpreadsheet;
-use App\GroupGenerationMethods\AgeBasedGroupGenerationMethod;
-use App\GroupGenerationMethods\GeneralGroupGenerationMethod;
-use App\GroupGenerationMethods\RandomizedAgeBasedGroupGenerationMethod;
-use App\GroupGenerationMethods\RandomizedGroupGenerationMethod;
-use App\Http\Controllers\GroupController;
-use App\Http\Requests\Filters\GroupFilterRequest;
-use App\Http\Requests\GenerateGroupsRequest;
 use App\Models\Booking;
 use App\Models\Event;
 use App\Models\Group;
-use App\Policies\GroupPolicy;
 use Closure;
 use Illuminate\Support\Str;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
-#[CoversClass(AgeBasedGroupGenerationMethod::class)]
-#[CoversClass(Event::class)]
-#[CoversClass(GeneralGroupGenerationMethod::class)]
-#[CoversClass(GenerateGroupsRequest::class)]
-#[CoversClass(Group::class)]
-#[CoversClass(GroupController::class)]
-#[CoversClass(GroupFilterRequest::class)]
-#[CoversClass(GroupPolicy::class)]
-#[CoversClass(GroupGenerationMethod::class)]
-#[CoversClass(GroupsExportSpreadsheet::class)]
-#[CoversClass(RandomizedAgeBasedGroupGenerationMethod::class)]
-#[CoversClass(RandomizedGroupGenerationMethod::class)]
 class GroupControllerTest extends TestCase
 {
     public function testUserCanViewGroupsOnlyWithCorrectAbility(): void

@@ -4,38 +4,17 @@ namespace Tests\Feature\Http;
 
 use App\Enums\Ability;
 use App\Enums\ActiveStatus;
-use App\Enums\ApprovalStatus;
-use App\Enums\DocumentReferenceType;
 use App\Enums\FileType;
-use App\Enums\FilterValue;
-use App\Http\Controllers\UserController;
-use App\Http\Requests\Filters\UserFilterRequest;
-use App\Http\Requests\UserRequest;
-use App\Models\Document;
 use App\Models\User;
 use App\Models\UserRole;
 use App\Notifications\AccountCreatedNotification;
 use App\Policies\DocumentPolicy;
-use App\Policies\UserPolicy;
 use Closure;
 use Illuminate\Support\Facades\Notification;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Feature\Http\Traits\FiltersUsers;
 use Tests\TestCase;
 
-#[CoversClass(AccountCreatedNotification::class)]
-#[CoversClass(ActiveStatus::class)]
-#[CoversClass(ApprovalStatus::class)]
-#[CoversClass(Document::class)]
-#[CoversClass(DocumentReferenceType::class)]
-#[CoversClass(FilterValue::class)]
-#[CoversClass(User::class)]
-#[CoversClass(UserController::class)]
-#[CoversClass(UserFilterRequest::class)]
-#[CoversClass(UserPolicy::class)]
-#[CoversClass(UserRequest::class)]
-#[CoversClass(UserRole::class)]
 class UserControllerTest extends TestCase
 {
     use FiltersUsers;

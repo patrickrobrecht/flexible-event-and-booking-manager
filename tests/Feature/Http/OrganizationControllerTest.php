@@ -3,30 +3,15 @@
 namespace Tests\Feature\Http;
 
 use App\Enums\Ability;
-use App\Enums\FilterValue;
-use App\Http\Controllers\OrganizationController;
-use App\Http\Requests\Filters\OrganizationFilterRequest;
-use App\Http\Requests\OrganizationRequest;
 use App\Models\BookingOption;
-use App\Models\Document;
 use App\Models\Event;
 use App\Models\Location;
 use App\Models\Organization;
-use App\Policies\OrganizationPolicy;
 use Closure;
 use Database\Factories\OrganizationFactory;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
-#[CoversClass(Document::class)]
-#[CoversClass(Event::class)]
-#[CoversClass(FilterValue::class)]
-#[CoversClass(Organization::class)]
-#[CoversClass(OrganizationController::class)]
-#[CoversClass(OrganizationFilterRequest::class)]
-#[CoversClass(OrganizationPolicy::class)]
-#[CoversClass(OrganizationRequest::class)]
 class OrganizationControllerTest extends TestCase
 {
     public function testUserCanViewOrganizationsOnlyWithCorrectAbility(): void

@@ -3,27 +3,11 @@
 namespace Tests\Feature\Http;
 
 use App\Enums\Ability;
-use App\Enums\FilterValue;
-use App\Http\Controllers\LocationController;
-use App\Http\Requests\Filters\LocationFilterRequest;
-use App\Http\Requests\LocationRequest;
-use App\Models\Event;
 use App\Models\Location;
-use App\Models\Organization;
-use App\Policies\LocationPolicy;
 use Closure;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
-#[CoversClass(Event::class)]
-#[CoversClass(FilterValue::class)]
-#[CoversClass(Location::class)]
-#[CoversClass(LocationController::class)]
-#[CoversClass(LocationFilterRequest::class)]
-#[CoversClass(LocationPolicy::class)]
-#[CoversClass(LocationRequest::class)]
-#[CoversClass(Organization::class)]
 class LocationControllerTest extends TestCase
 {
     public function testUserCanViewLocationsOnlyWithCorrectAbility(): void

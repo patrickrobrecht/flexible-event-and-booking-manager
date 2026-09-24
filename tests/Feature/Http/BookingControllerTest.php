@@ -4,53 +4,24 @@ namespace Tests\Feature\Http;
 
 use App\Enums\Ability;
 use App\Enums\BookingStatus;
-use App\Enums\DeletedFilter;
-use App\Enums\FilterValue;
 use App\Enums\FormElementType;
-use App\Enums\PaymentStatus;
 use App\Enums\Visibility;
 use App\Events\BookingCompleted;
-use App\Exports\BookingsExportSpreadsheet;
-use App\Http\Controllers\BookingController;
-use App\Http\Requests\BookingPaymentRequest;
-use App\Http\Requests\BookingRequest;
-use App\Http\Requests\Filters\BookingFilterRequest;
 use App\Listeners\SendBookingConfirmation;
 use App\Models\Booking;
 use App\Models\BookingOption;
-use App\Models\FormField;
 use App\Models\FormFieldValue;
 use App\Models\User;
 use App\Notifications\BookingConfirmation;
-use App\Policies\BookingPolicy;
 use Carbon\Carbon;
 use Illuminate\Notifications\AnonymousNotifiable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Feature\Http\Traits\FiltersUsers;
 use Tests\TestCase;
 
-#[CoversClass(Booking::class)]
-#[CoversClass(BookingConfirmation::class)]
-#[CoversClass(BookingCompleted::class)]
-#[CoversClass(BookingController::class)]
-#[CoversClass(BookingFilterRequest::class)]
-#[CoversClass(BookingOption::class)]
-#[CoversClass(BookingPaymentRequest::class)]
-#[CoversClass(BookingPolicy::class)]
-#[CoversClass(BookingRequest::class)]
-#[CoversClass(BookingStatus::class)]
-#[CoversClass(BookingsExportSpreadsheet::class)]
-#[CoversClass(DeletedFilter::class)]
-#[CoversClass(FilterValue::class)]
-#[CoversClass(FormElementType::class)]
-#[CoversClass(FormField::class)]
-#[CoversClass(FormFieldValue::class)]
-#[CoversClass(PaymentStatus::class)]
-#[CoversClass(SendBookingConfirmation::class)]
 class BookingControllerTest extends TestCase
 {
     use FiltersUsers;

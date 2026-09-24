@@ -4,26 +4,13 @@ namespace Tests\Feature\Http;
 
 use App\Enums\Ability;
 use App\Enums\ApprovalStatus;
-use App\Enums\DocumentReferenceType;
-use App\Http\Controllers\DashboardController;
 use App\Models\Booking;
 use App\Models\BookingOption;
-use App\Models\Document;
 use App\Models\Event;
-use App\Models\Location;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
-use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 
-#[CoversClass(ApprovalStatus::class)]
-#[CoversClass(Booking::class)]
-#[CoversClass(BookingOption::class)]
-#[CoversClass(Document::class)]
-#[CoversClass(DocumentReferenceType::class)]
-#[CoversClass(DashboardController::class)]
-#[CoversClass(Event::class)]
-#[CoversClass(Location::class)]
 class DashboardControllerTest extends TestCase
 {
     public function testGuestCanViewTheDashboard(): void

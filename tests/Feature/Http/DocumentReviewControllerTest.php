@@ -3,25 +3,13 @@
 namespace Tests\Feature\Http;
 
 use App\Enums\Ability;
-use App\Enums\ApprovalStatus;
 use App\Enums\Visibility;
-use App\Http\Controllers\DocumentReviewController;
-use App\Http\Requests\DocumentReviewRequest;
-use App\Models\Document;
 use App\Models\DocumentReview;
 use App\Policies\DocumentPolicy;
-use App\Policies\DocumentReviewPolicy;
 use Closure;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
-#[CoversClass(ApprovalStatus::class)]
-#[CoversClass(Document::class)]
-#[CoversClass(DocumentReview::class)]
-#[CoversClass(DocumentReviewController::class)]
-#[CoversClass(DocumentReviewPolicy::class)]
-#[CoversClass(DocumentReviewRequest::class)]
 class DocumentReviewControllerTest extends TestCase
 {
     #[DataProvider('referenceClasses')]

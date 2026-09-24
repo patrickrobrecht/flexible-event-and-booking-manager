@@ -3,13 +3,8 @@
 namespace Tests\Feature\Http;
 
 use App\Enums\Ability;
-use App\Enums\ApprovalStatus;
-use App\Enums\DocumentReferenceType;
 use App\Enums\FileType;
 use App\Enums\Visibility;
-use App\Http\Controllers\DocumentController;
-use App\Http\Requests\DocumentRequest;
-use App\Http\Requests\Filters\DocumentFilterRequest;
 use App\Models\Document;
 use App\Models\Event;
 use App\Models\EventSeries;
@@ -20,20 +15,11 @@ use Closure;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Tests\TestCase;
 
-#[CoversClass(ApprovalStatus::class)]
-#[CoversClass(Document::class)]
-#[CoversClass(DocumentController::class)]
-#[CoversClass(DocumentFilterRequest::class)]
-#[CoversClass(DocumentPolicy::class)]
-#[CoversClass(DocumentReferenceType::class)]
-#[CoversClass(DocumentRequest::class)]
-#[CoversClass(FileType::class)]
 class DocumentControllerTest extends TestCase
 {
     public function testUserCanViewAllDocumentsWithCorrectAbility(): void

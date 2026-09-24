@@ -3,20 +3,10 @@
 namespace Tests\Feature\Http;
 
 use App\Enums\Ability;
-use App\Enums\ApprovalStatus;
-use App\Http\Controllers\AccountController;
-use App\Http\Requests\UserRequest;
 use App\Models\User;
-use App\Policies\UserPolicy;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
-#[CoversClass(ApprovalStatus::class)]
-#[CoversClass(AccountController::class)]
-#[CoversClass(User::class)]
-#[CoversClass(UserPolicy::class)]
-#[CoversClass(UserRequest::class)]
 class AccountControllerTest extends TestCase
 {
     public function testUserCanViewAccountOnlyWithCorrectAbility(): void

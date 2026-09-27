@@ -37,7 +37,6 @@ class ManageGroupsTest extends TestCase
 
         $testComponent = Livewire::test(ManageGroups::class, ['event' => $event])
             ->assertOk()
-            /** @phpstan-ignore method.notFound */
             ->assertSet('sort', 'name')
             ->assertSet('bookingOptionIds', $event->bookingOptions->pluck('id')->toArray())
             ->assertSet('showBookingData', ['booked_at'])
@@ -66,7 +65,6 @@ class ManageGroupsTest extends TestCase
 
         $testComponent = Livewire::test(ManageGroups::class, ['event' => $event])
             ->assertOk()
-            /** @phpstan-ignore method.notFound */
             ->assertSet('sort', 'date_of_birth')
             ->assertSet('bookingOptionIds', $selectedBookingOptionIds)
             ->assertSet('showBookingData', ['comment', 'email'])

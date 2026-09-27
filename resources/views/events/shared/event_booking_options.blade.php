@@ -14,11 +14,11 @@
             </x-bs::badge>
         </div>
         @isset($bookingOption->description)
-            <p class="lead">{{ $bookingOption->description }}</p>
+            <p class="lead mb-1">{{ $bookingOption->description }}</p>
         @endisset
         @include('booking_options.shared.booking_option_period')
         @canany(['book', 'viewBookings', 'update'], $bookingOption)
-            <div class="d-flex flex-wrap gap-1 mt-3 d-print-none">
+            <div class="d-flex flex-wrap gap-1 mt-2 d-print-none">
                 @can('book', $bookingOption)
                     <x-bs::button.link href="{{ route('booking-options.show', [$event, $bookingOption]) }}">
                         <i class="fa fa-fw fa-plus"></i> {{ __('Book') }}

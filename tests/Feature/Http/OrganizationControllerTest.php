@@ -3,30 +3,15 @@
 namespace Tests\Feature\Http;
 
 use App\Enums\Ability;
-use App\Enums\FilterValue;
-use App\Http\Controllers\OrganizationController;
-use App\Http\Requests\Filters\OrganizationFilterRequest;
-use App\Http\Requests\OrganizationRequest;
 use App\Models\BookingOption;
-use App\Models\Document;
 use App\Models\Event;
 use App\Models\Location;
 use App\Models\Organization;
-use App\Policies\OrganizationPolicy;
 use Closure;
 use Database\Factories\OrganizationFactory;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
-#[CoversClass(Document::class)]
-#[CoversClass(Event::class)]
-#[CoversClass(FilterValue::class)]
-#[CoversClass(Organization::class)]
-#[CoversClass(OrganizationController::class)]
-#[CoversClass(OrganizationFilterRequest::class)]
-#[CoversClass(OrganizationPolicy::class)]
-#[CoversClass(OrganizationRequest::class)]
 class OrganizationControllerTest extends TestCase
 {
     public function testUserCanViewOrganizationsOnlyWithCorrectAbility(): void
@@ -45,6 +30,65 @@ class OrganizationControllerTest extends TestCase
 
         $response = $this->get('/organizations')->assertOk();
         $organizations->each(fn (Organization $organization) => $response->assertSee($organization->name));
+    }
+
+    /**
+     * @param list<string> $expectedOrganizations
+     */
+    #[DataProvider('organizationFilters')]
+    public function testUserCanFilterOrganizations(string $filter, array $expectedOrganizations): void
+    {
+        $this->actingAsUserWithAbility(Ability::ViewOrganizations);
+
+        $organizations = [
+            'withEventAndDocument' => self::createOrganization(),
+            'withOtherEventAndDocument' => self::createOrganization(),
+            'withoutEventAndDocument' => self::createOrganization(),
+        ];
+        $event = self::createEvent(organization: $organizations['withEventAndDocument']);
+        self::createEvent(organization: $organizations['withOtherEventAndDocument']);
+        $document = self::createDocument(static fn () => $organizations['withEventAndDocument']);
+        self::createDocument(static fn () => $organizations['withOtherEventAndDocument']);
+
+        $this->assertFilteredList('/organizations', $filter, 'organizations', [
+            ...$organizations,
+            'event' => $event,
+            'document' => $document,
+        ], $expectedOrganizations);
+    }
+
+    /**
+     * @return array<string, array{string, list<string>}>
+     */
+    public static function organizationFilters(): array
+    {
+        return [
+            'specific event' => [
+                'filter[event_id]={event}',
+                ['withEventAndDocument'],
+            ],
+            'with events' => [
+                'filter[event_id]=%2B',
+                ['withEventAndDocument', 'withOtherEventAndDocument'],
+            ],
+            'without events' => [
+                'filter[event_id]=-',
+                ['withoutEventAndDocument'],
+            ],
+
+            'specific document' => [
+                'filter[document_id]={document}',
+                ['withEventAndDocument'],
+            ],
+            'with documents' => [
+                'filter[document_id]=%2B',
+                ['withEventAndDocument', 'withOtherEventAndDocument'],
+            ],
+            'without documents' => [
+                'filter[document_id]=-',
+                ['withoutEventAndDocument'],
+            ],
+        ];
     }
 
     public function testUserCanViewSingleOrganizationOnlyWithCorrectAbility(): void

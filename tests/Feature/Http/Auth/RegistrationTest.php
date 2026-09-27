@@ -2,17 +2,12 @@
 
 namespace Tests\Feature\Http\Auth;
 
-use App\Http\Controllers\Auth\RegisteredUserController;
-use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
-use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 
-#[CoversClass(RegisteredUserController::class)]
-#[CoversClass(RegisterRequest::class)]
 class RegistrationTest extends TestCase
 {
     use RefreshDatabase;

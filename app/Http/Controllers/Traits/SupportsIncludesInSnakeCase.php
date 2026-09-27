@@ -104,12 +104,11 @@ trait SupportsIncludesInSnakeCase
 
         $builder = QueryBuilder::for($model::class)
             ->allowedIncludes(
-                Collection::make($this->allowedIncludeRelationsToSnake())
-                    ->flatten()
-                    ->filter(
-                        // Don't allow _count includes here.
-                        static fn (AllowedInclude $allowedInclude) => !str_ends_with($allowedInclude->getName(), '_count')
-                    )
+                ...array_filter(
+                    $this->allowedIncludeRelationsToSnake(),
+                    // Don't allow _count includes here.
+                    static fn (AllowedInclude $allowedInclude) => !str_ends_with($allowedInclude->getName(), '_count')
+                )
             );
 
         // Load custom includes.

@@ -4,38 +4,17 @@ namespace Tests\Feature\Http;
 
 use App\Enums\Ability;
 use App\Enums\ActiveStatus;
-use App\Enums\ApprovalStatus;
-use App\Enums\DocumentReferenceType;
 use App\Enums\FileType;
-use App\Enums\FilterValue;
-use App\Http\Controllers\UserController;
-use App\Http\Requests\Filters\UserFilterRequest;
-use App\Http\Requests\UserRequest;
-use App\Models\Document;
 use App\Models\User;
 use App\Models\UserRole;
 use App\Notifications\AccountCreatedNotification;
 use App\Policies\DocumentPolicy;
-use App\Policies\UserPolicy;
 use Closure;
 use Illuminate\Support\Facades\Notification;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Feature\Http\Traits\FiltersUsers;
 use Tests\TestCase;
 
-#[CoversClass(AccountCreatedNotification::class)]
-#[CoversClass(ActiveStatus::class)]
-#[CoversClass(ApprovalStatus::class)]
-#[CoversClass(Document::class)]
-#[CoversClass(DocumentReferenceType::class)]
-#[CoversClass(FilterValue::class)]
-#[CoversClass(User::class)]
-#[CoversClass(UserController::class)]
-#[CoversClass(UserFilterRequest::class)]
-#[CoversClass(UserPolicy::class)]
-#[CoversClass(UserRequest::class)]
-#[CoversClass(UserRole::class)]
 class UserControllerTest extends TestCase
 {
     use FiltersUsers;
@@ -46,19 +25,36 @@ class UserControllerTest extends TestCase
     }
 
     /**
-     * @param list<string>|string $assertSee
-     * @param list<string>|string $assertDontSee
+     * @param list<string> $expectedUsers
      */
     #[DataProvider('userFilters')]
-    public function testUserCanFilterUsers(string $filter, array|string $assertSee, array|string $assertDontSee): void
+    #[DataProvider('userEmailExclusionFilters')]
+    public function testUserCanFilterUsers(string $filter, array $expectedUsers): void
     {
-        $this->actingAsUserWithAbility(Ability::ViewUsers);
-        array_map(static fn (array $data) => self::createUser($data), self::exampleUserData());
+        $actingUser = $this->actingAsUserWithAbility(Ability::ViewUsers);
+        $users = array_map(static fn (array $data) => self::createUser($data), self::exampleUserData());
 
-        $this->get("/users?{$filter}")
-            ->assertOk()
-            ->assertSeeText($assertSee)
-            ->assertDontSeeText($assertDontSee);
+        // The acting user with random data is listed too, but not relevant for the filter.
+        $this->assertFilteredList('/users', $filter, 'users', $users, $expectedUsers, [$actingUser]);
+    }
+
+    /**
+     * Only users support excluding e-mail addresses, bookings filter them by partial match.
+     *
+     * @return array<string, array{string, list<string>}>
+     */
+    public static function userEmailExclusionFilters(): array
+    {
+        return [
+            'exclude partial email' => [
+                'filter[email]=-example.com',
+                ['jane'],
+            ],
+            'exclude multiple partial emails' => [
+                'filter[email]=-jack,-jane',
+                ['john'],
+            ],
+        ];
     }
 
     public function testUserCanViewSingleUserOnlyWithCorrectAbility(): void

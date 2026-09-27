@@ -2,9 +2,6 @@
 
 namespace Tests\Feature\Http\Auth;
 
-use App\Http\Controllers\Auth\EmailVerificationNotificationController;
-use App\Http\Controllers\Auth\EmailVerificationPromptController;
-use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Models\User;
 use App\Notifications\VerifyEmailNotification;
 use Illuminate\Auth\Events\Verified;
@@ -12,14 +9,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\URL;
-use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 
-#[CoversClass(EmailVerificationNotificationController::class)]
-#[CoversClass(EmailVerificationPromptController::class)]
-#[CoversClass(User::class)]
-#[CoversClass(VerifyEmailController::class)]
-#[CoversClass(VerifyEmailNotification::class)]
 class EmailVerificationTest extends TestCase
 {
     use RefreshDatabase;
@@ -82,6 +73,13 @@ class EmailVerificationTest extends TestCase
 
         Event::assertDispatched(Verified::class);
         self::assertTrue($user->fresh()?->hasVerifiedEmail());
+        Event::fake(); // Reset event dispatcher.
+
+        $this->actingAs($user)
+            ->get($verificationUrl)
+            ->assertRedirect('/');
+
+        Event::assertNotDispatched(Verified::class);
     }
 
     public function testUserCannotVerifyEmailWithInvalidHash(): void

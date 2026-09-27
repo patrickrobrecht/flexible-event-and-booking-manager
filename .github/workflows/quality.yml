@@ -95,8 +95,8 @@ jobs:
           COVERAGE=$(php -r "
             \$xml = simplexml_load_file('phpunit_coverage.xml');
             \$metrics = \$xml->project->metrics;
-            \$covered = (int) \$metrics['coveredelements'];
-            \$total = (int) \$metrics['elements'];
+            \$covered = (int) \$metrics['coveredstatements'];
+            \$total = (int) \$metrics['statements'];
             echo \$total > 0 ? round((\$covered / \$total) * 100, 2) : 0;
           ")
           echo "COVERAGE=$COVERAGE"

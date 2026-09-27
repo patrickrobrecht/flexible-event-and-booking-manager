@@ -80,9 +80,9 @@ class Location extends Model
         return $this->scopeRelation($query, $eventId, 'events', fn (Builder $q) => $q->where('id', '=', $eventId));
     }
 
-    public function scopeOrganization(Builder $query, int|string $eventId): Builder
+    public function scopeOrganization(Builder $query, int|string $organizationId): Builder
     {
-        return $this->scopeRelation($query, $eventId, 'organizations', fn (Builder $q) => $q->where('organization_id', '=', $eventId));
+        return $this->scopeRelation($query, $organizationId, 'organizations', fn (Builder $q) => $q->where('id', '=', $organizationId));
     }
 
     /**

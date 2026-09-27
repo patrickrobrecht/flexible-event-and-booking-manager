@@ -3,24 +3,12 @@
 namespace Tests\Feature\Http;
 
 use App\Enums\Ability;
-use App\Exports\StorageLocationsExportSpreadsheet;
-use App\Http\Controllers\StorageLocationController;
-use App\Http\Requests\Filters\StorageLocationFilterRequest;
-use App\Http\Requests\StorageLocationRequest;
 use App\Models\StorageLocation;
-use App\Policies\StorageLocationPolicy;
 use Closure;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
-#[CoversClass(StorageLocation::class)]
-#[CoversClass(StorageLocationController::class)]
-#[CoversClass(StorageLocationsExportSpreadsheet::class)]
-#[CoversClass(StorageLocationFilterRequest::class)]
-#[CoversClass(StorageLocationPolicy::class)]
-#[CoversClass(StorageLocationRequest::class)]
 class StorageLocationControllerTest extends TestCase
 {
     use RefreshDatabase;

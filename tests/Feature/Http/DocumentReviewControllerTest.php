@@ -3,25 +3,13 @@
 namespace Tests\Feature\Http;
 
 use App\Enums\Ability;
-use App\Enums\ApprovalStatus;
 use App\Enums\Visibility;
-use App\Http\Controllers\DocumentReviewController;
-use App\Http\Requests\DocumentReviewRequest;
-use App\Models\Document;
 use App\Models\DocumentReview;
 use App\Policies\DocumentPolicy;
-use App\Policies\DocumentReviewPolicy;
 use Closure;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
-#[CoversClass(ApprovalStatus::class)]
-#[CoversClass(Document::class)]
-#[CoversClass(DocumentReview::class)]
-#[CoversClass(DocumentReviewController::class)]
-#[CoversClass(DocumentReviewPolicy::class)]
-#[CoversClass(DocumentReviewRequest::class)]
 class DocumentReviewControllerTest extends TestCase
 {
     #[DataProvider('referenceClasses')]
@@ -93,6 +81,67 @@ class DocumentReviewControllerTest extends TestCase
             [fn () => self::createLocation(), Ability::CommentOnDocumentsOfLocations, Ability::ChangeApprovalStatusOfDocumentsOfLocations],
             [fn () => self::createOrganization(), Ability::CommentOnDocumentsOfOrganizations, Ability::ChangeApprovalStatusOfDocumentsOfOrganizations],
         ];
+    }
+
+    #[DataProvider('referenceClasses')]
+    public function testDocumentUploaderCanAddCommentWithoutCommentAbility(Closure $referenceProvider, Ability $commentAbility): void
+    {
+        $reference = $referenceProvider();
+        $viewAbility = DocumentPolicy::VIEW_DOCUMENTS_ABILITIES[$reference::class];
+        $user = $this->actingAsUserWithAbility($viewAbility);
+        $document = self::createDocument(static fn () => $reference, $user);
+
+        $this->get("documents/{$document->id}")
+            ->assertOk()
+            ->assertSee('Kommentar hinzufügen');
+
+        $data = DocumentReview::factory()->makeOne()->toArray();
+        $this->post("documents/{$document->id}/reviews", $data)
+            ->assertRedirect($document->getRouteForComments())
+            ->assertSessionHasNoErrors();
+    }
+
+    #[DataProvider('responsibleReferenceClasses')]
+    public function testResponsibleUserCanAddCommentWithoutAnyAbility(Closure $referenceProvider): void
+    {
+        $reference = $referenceProvider();
+        $user = self::createUserResponsibleFor($reference);
+        $this->actingAs($user);
+        $document = self::createDocument(static fn () => $reference);
+
+        $this->get("documents/{$document->id}")
+            ->assertOk()
+            ->assertSee('Kommentar hinzufügen');
+
+        $data = DocumentReview::factory()->makeOne()->toArray();
+        $this->post("documents/{$document->id}/reviews", $data)
+            ->assertRedirect($document->getRouteForComments())
+            ->assertSessionHasNoErrors();
+    }
+
+    /**
+     * @return array<int, array{Closure}>
+     */
+    public static function responsibleReferenceClasses(): array
+    {
+        return [
+            [fn () => self::createEvent(Visibility::Public)],
+            [fn () => self::createEvent(Visibility::Private)],
+            [fn () => self::createEventSeries(Visibility::Public)],
+            [fn () => self::createEventSeries(Visibility::Private)],
+            [fn () => self::createOrganization()],
+        ];
+    }
+
+    public function testUserCannotUpdateAnotherUsersDocumentReview(): void
+    {
+        $author = self::createUser();
+        $documentReview = self::createDocumentWithReview(fn () => self::createEvent(Visibility::Public), $author);
+
+        $this->actingAsUserWithAbility(Ability::CommentOnDocumentsOfEvents);
+        $data = DocumentReview::factory()->makeOne()->toArray();
+        $this->put("documents/{$documentReview->document->id}/reviews/{$documentReview->id}", $data)
+            ->assertForbidden();
     }
 
     #[DataProvider('referenceClasses')]

@@ -4,53 +4,26 @@ namespace Tests\Feature\Http;
 
 use App\Enums\Ability;
 use App\Enums\BookingStatus;
-use App\Enums\DeletedFilter;
-use App\Enums\FilterValue;
 use App\Enums\FormElementType;
 use App\Enums\PaymentStatus;
 use App\Enums\Visibility;
 use App\Events\BookingCompleted;
-use App\Exports\BookingsExportSpreadsheet;
-use App\Http\Controllers\BookingController;
-use App\Http\Requests\BookingPaymentRequest;
-use App\Http\Requests\BookingRequest;
-use App\Http\Requests\Filters\BookingFilterRequest;
 use App\Listeners\SendBookingConfirmation;
 use App\Models\Booking;
 use App\Models\BookingOption;
-use App\Models\FormField;
 use App\Models\FormFieldValue;
+use App\Models\Group;
 use App\Models\User;
 use App\Notifications\BookingConfirmation;
-use App\Policies\BookingPolicy;
 use Carbon\Carbon;
 use Illuminate\Notifications\AnonymousNotifiable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Feature\Http\Traits\FiltersUsers;
 use Tests\TestCase;
 
-#[CoversClass(Booking::class)]
-#[CoversClass(BookingConfirmation::class)]
-#[CoversClass(BookingCompleted::class)]
-#[CoversClass(BookingController::class)]
-#[CoversClass(BookingFilterRequest::class)]
-#[CoversClass(BookingOption::class)]
-#[CoversClass(BookingPaymentRequest::class)]
-#[CoversClass(BookingPolicy::class)]
-#[CoversClass(BookingRequest::class)]
-#[CoversClass(BookingStatus::class)]
-#[CoversClass(BookingsExportSpreadsheet::class)]
-#[CoversClass(DeletedFilter::class)]
-#[CoversClass(FilterValue::class)]
-#[CoversClass(FormElementType::class)]
-#[CoversClass(FormField::class)]
-#[CoversClass(FormFieldValue::class)]
-#[CoversClass(PaymentStatus::class)]
-#[CoversClass(SendBookingConfirmation::class)]
 class BookingControllerTest extends TestCase
 {
     use FiltersUsers;
@@ -73,20 +46,80 @@ class BookingControllerTest extends TestCase
     }
 
     /**
-     * @param list<string>|string $assertSee
-     * @param list<string>|string $assertDontSee
+     * @param list<string> $expectedBookings
      */
     #[DataProvider('userFilters')]
-    public function testUserCanFilterBookings(string $filter, array|string $assertSee, array|string $assertDontSee): void
+    public function testUserCanFilterBookings(string $filter, array $expectedBookings): void
     {
         $this->actingAsUserWithAbility(Ability::ViewBookingsOfEvent);
         $bookingOption = self::createBookingOptionForEvent();
-        array_map(static fn (array $data) => self::createBooking($bookingOption, $data), self::exampleUserData());
+        $bookings = array_map(static fn (array $data) => self::createBooking($bookingOption, $data), self::exampleUserData());
 
-        $this->get("/events/{$bookingOption->event->slug}/{$bookingOption->slug}/bookings?{$filter}")
-            ->assertOk()
-            ->assertSeeText($assertSee)
-            ->assertDontSeeText($assertDontSee);
+        $this->assertFilteredList("/events/{$bookingOption->event->slug}/{$bookingOption->slug}/bookings", $filter, 'bookings', $bookings, $expectedBookings);
+    }
+
+    /**
+     * @param list<string> $expectedBookings
+     */
+    #[DataProvider('bookingFilters')]
+    public function testUserCanFilterBookingsByGroupAndPaymentStatus(string $filter, array $expectedBookings): void
+    {
+        $this->actingAsUserWithAbility(Ability::ViewBookingsOfEvent);
+
+        $bookingOption = self::createBookingOptionForEvent(attributes: ['price' => 10]);
+        [$paidBooking, $notPaidBooking, $freeBooking] = self::createBookings($bookingOption, 3)->all();
+        $paidBooking->update(['paid_at' => Carbon::now()]);
+        $notPaidBooking->update(['paid_at' => null]);
+        $freeBooking->forceFill(['price' => null, 'paid_at' => null])->save();
+
+        [$group, $otherGroup] = Group::factory()->for($bookingOption->event)->count(2)->create()->all();
+        $paidBooking->groups()->attach($group);
+        $notPaidBooking->groups()->attach($otherGroup);
+
+        // Bookings of another booking option must not be included, despite being free.
+        self::createBookings(self::createBookingOptionForEvent(attributes: ['price' => null]), 2);
+
+        $this->assertFilteredList("/events/{$bookingOption->event->slug}/{$bookingOption->slug}/bookings", $filter, 'bookings', [
+            'paidInGroup' => $paidBooking,
+            'notPaidInOtherGroup' => $notPaidBooking,
+            'freeWithoutGroup' => $freeBooking,
+            'group' => $group,
+            'otherGroup' => $otherGroup,
+        ], $expectedBookings);
+    }
+
+    /**
+     * @return array<string, array{string, list<string>}>
+     */
+    public static function bookingFilters(): array
+    {
+        return [
+            'all groups' => [
+                'filter[group_id]=*',
+                ['paidInGroup', 'notPaidInOtherGroup', 'freeWithoutGroup'],
+            ],
+            'specific group' => [
+                'filter[group_id]={group}',
+                ['paidInGroup'],
+            ],
+            'other group' => [
+                'filter[group_id]={otherGroup}',
+                ['notPaidInOtherGroup'],
+            ],
+
+            'all payment status' => [
+                'filter[payment_status]=*',
+                ['paidInGroup', 'notPaidInOtherGroup', 'freeWithoutGroup'],
+            ],
+            'paid or free' => [
+                'filter[payment_status]=' . PaymentStatus::Paid->value,
+                ['paidInGroup', 'freeWithoutGroup'],
+            ],
+            'not paid' => [
+                'filter[payment_status]=' . PaymentStatus::NotPaid->value,
+                ['notPaidInOtherGroup'],
+            ],
+        ];
     }
 
     public function testUserCanExportBookingsOfEventOnlyWithCorrectAbility(): void
@@ -154,6 +187,46 @@ class BookingControllerTest extends TestCase
             $formFieldValue = $booking->formFieldValues->firstWhere('form_field_id', $formFieldForFile->id);
             $this->assertUserCanGetOnlyWithAbility("bookings/{$booking->id}/file/{$formFieldValue->id}", Ability::ViewBookingsOfEvent);
         }
+
+        // Cleanup generated files.
+        self::assertTrue(Storage::disk('local')->deleteDirectory($bookingOption->getFilePath()));
+    }
+
+    public function testDownloadFileReturnsNotFoundForNonFileFormField(): void
+    {
+        $this->actingAsUserWithAbility(Ability::ViewBookingsOfEvent);
+
+        $bookingOption = self::createBookingOptionForEventWithCustomFormFields()->refresh();
+        $booking = self::createBooking($bookingOption)->refresh();
+
+        /** @var FormFieldValue $formFieldValue */
+        $formFieldValue = $booking->formFieldValues->first(
+            fn (FormFieldValue $formFieldValue) => $formFieldValue->formField->type !== FormElementType::File
+        );
+
+        $this->get("bookings/{$booking->id}/file/{$formFieldValue->id}")
+            ->assertNotFound();
+
+        // Cleanup generated files.
+        self::assertTrue(Storage::disk('local')->deleteDirectory($bookingOption->getFilePath()));
+    }
+
+    public function testDownloadFileReturnsNotFoundForFormFieldValueOfAnotherBooking(): void
+    {
+        $this->actingAsUserWithAbility(Ability::ViewBookingsOfEvent);
+
+        $bookingOption = self::createBookingOptionForEventWithCustomFormFields()->refresh();
+        $booking = self::createBooking($bookingOption)->refresh();
+        $anotherBooking = self::createBooking($bookingOption)->refresh();
+
+        $formFieldForFile = $bookingOption->formFieldsForFiles->first();
+        self::assertNotNull($formFieldForFile);
+
+        /** @var FormFieldValue $formFieldValue */
+        $formFieldValue = $anotherBooking->formFieldValues->firstWhere('form_field_id', $formFieldForFile->id);
+
+        $this->get("bookings/{$booking->id}/file/{$formFieldValue->id}")
+            ->assertNotFound();
 
         // Cleanup generated files.
         self::assertTrue(Storage::disk('local')->deleteDirectory($bookingOption->getFilePath()));

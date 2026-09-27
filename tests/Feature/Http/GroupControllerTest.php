@@ -5,36 +5,14 @@ namespace Tests\Feature\Http;
 use App\Enums\Ability;
 use App\Enums\GroupGenerationMethod;
 use App\Enums\Visibility;
-use App\Exports\GroupsExportSpreadsheet;
-use App\GroupGenerationMethods\AgeBasedGroupGenerationMethod;
-use App\GroupGenerationMethods\GeneralGroupGenerationMethod;
-use App\GroupGenerationMethods\RandomizedAgeBasedGroupGenerationMethod;
-use App\GroupGenerationMethods\RandomizedGroupGenerationMethod;
-use App\Http\Controllers\GroupController;
-use App\Http\Requests\Filters\GroupFilterRequest;
-use App\Http\Requests\GenerateGroupsRequest;
 use App\Models\Booking;
 use App\Models\Event;
 use App\Models\Group;
-use App\Policies\GroupPolicy;
 use Closure;
 use Illuminate\Support\Str;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
-#[CoversClass(AgeBasedGroupGenerationMethod::class)]
-#[CoversClass(Event::class)]
-#[CoversClass(GeneralGroupGenerationMethod::class)]
-#[CoversClass(GenerateGroupsRequest::class)]
-#[CoversClass(Group::class)]
-#[CoversClass(GroupController::class)]
-#[CoversClass(GroupFilterRequest::class)]
-#[CoversClass(GroupPolicy::class)]
-#[CoversClass(GroupGenerationMethod::class)]
-#[CoversClass(GroupsExportSpreadsheet::class)]
-#[CoversClass(RandomizedAgeBasedGroupGenerationMethod::class)]
-#[CoversClass(RandomizedGroupGenerationMethod::class)]
 class GroupControllerTest extends TestCase
 {
     public function testUserCanViewGroupsOnlyWithCorrectAbility(): void
@@ -98,6 +76,69 @@ class GroupControllerTest extends TestCase
     public static function groupGenerationMethods(): array
     {
         return array_map(static fn (GroupGenerationMethod $method) => [$method], GroupGenerationMethod::cases());
+    }
+
+    public function testUserCanGenerateGroupsForChildEventExcludingParentGroupMembers(): void
+    {
+        $parentEvent = self::createEventWithBookingOptions(Visibility::Private, bookingOptionCount: 1);
+        $bookings = $parentEvent->getBookings();
+        self::assertGreaterThanOrEqual(2, $bookings->count());
+
+        $excludedGroup = $parentEvent->findOrCreateGroup(1, 2);
+        $excludedBooking = $bookings->first();
+        self::assertNotNull($excludedBooking);
+        $excludedBooking->groups()->attach($excludedGroup);
+
+        $includedGroup = $parentEvent->findOrCreateGroup(2, 2);
+        $includedBooking = $bookings->last();
+        self::assertNotNull($includedBooking);
+        $includedBooking->groups()->attach($includedGroup);
+
+        $childEvent = self::createChildEvent(Visibility::Private, $parentEvent);
+
+        $this->actingAsUserWithAbility(Ability::ManageGroupsOfEvent);
+        $formData = [
+            'method' => GroupGenerationMethod::Randomized->value,
+            'groups_count' => 1,
+            'booking_option_id' => $parentEvent->bookingOptions->pluck('id')->toArray(),
+            'exclude_parent_group_id' => [$excludedGroup->id],
+        ];
+        $this->post("/events/{$childEvent->slug}/groups/generate", $formData)
+            ->assertSessionDoesntHaveErrors()
+            ->assertRedirect();
+
+        // The booking whose parent-event group was excluded must not be assigned to the newly generated group.
+        self::assertNull($excludedBooking->refresh()->getGroup($childEvent));
+        // Other bookings must still be assigned to the newly generated group.
+        self::assertNotNull($includedBooking->refresh()->getGroup($childEvent));
+    }
+
+    public function testUserCanRegenerateGroupsDetachingPreviousGroupMembership(): void
+    {
+        $event = self::createEventWithBookingOptions(Visibility::Private, bookingOptionCount: 1);
+        $bookings = $event->getBookings();
+        self::assertGreaterThanOrEqual(1, $bookings->count());
+
+        // Simulate a previous group generation run with more groups than generated in the second run.
+        $staleGroup = $event->findOrCreateGroup(3);
+        $bookings->each(fn (Booking $booking) => $booking->groups()->attach($staleGroup));
+
+        $this->actingAsUserWithAbility(Ability::ManageGroupsOfEvent);
+        $formData = [
+            'method' => GroupGenerationMethod::Randomized->value,
+            'groups_count' => 2,
+            'booking_option_id' => $event->bookingOptions->pluck('id')->toArray(),
+        ];
+        $this->post("/events/{$event->slug}/groups/generate", $formData)
+            ->assertSessionDoesntHaveErrors()
+            ->assertRedirect();
+
+        // The stale group must be empty again since every booking was moved to the newly generated group.
+        self::assertCount(0, $staleGroup->refresh()->bookings);
+        $bookings->each(function (Booking $booking) use ($event) {
+            // Each booking must belong to exactly one group of this event, not both the stale and the new one.
+            self::assertCount(1, $booking->refresh()->groups()->where('event_id', $event->id)->get());
+        });
     }
 
     #[DataProvider('findOrCreateGroupTestCases')]

@@ -4,35 +4,97 @@ namespace Tests\Feature\Http;
 
 use App\Enums\Ability;
 use App\Enums\EventSeriesType;
-use App\Enums\FilterValue;
 use App\Enums\Visibility;
-use App\Http\Controllers\EventSeriesController;
-use App\Http\Requests\EventSeriesRequest;
-use App\Http\Requests\Filters\EventSeriesFilterRequest;
-use App\Models\Document;
 use App\Models\Event;
 use App\Models\EventSeries;
-use App\Policies\EventSeriesPolicy;
 use Closure;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
-#[CoversClass(Document::class)]
-#[CoversClass(Event::class)]
-#[CoversClass(EventSeries::class)]
-#[CoversClass(EventSeriesController::class)]
-#[CoversClass(EventSeriesFilterRequest::class)]
-#[CoversClass(EventSeriesPolicy::class)]
-#[CoversClass(EventSeriesRequest::class)]
-#[CoversClass(EventSeriesType::class)]
-#[CoversClass(FilterValue::class)]
-#[CoversClass(Visibility::class)]
 class EventSeriesControllerTest extends TestCase
 {
     public function testUserCanViewEventSeriesOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('/event-series', Ability::ViewEventSeries);
+    }
+
+    /**
+     * @param list<string> $expectedEventSeries
+     */
+    #[DataProvider('eventSeriesFilters')]
+    public function testUserCanFilterEventSeries(string $filter, array $expectedEventSeries): void
+    {
+        $this->actingAsUserWithAbility(Ability::ViewEventSeries);
+
+        $eventSeries = [
+            'withEventAndDocumentAndPart' => self::createEventSeries(Visibility::Public, 1, 1),
+            'withEventAndDocument' => self::createEventSeries(Visibility::Public, 1),
+            'withoutEventAndDocument' => self::createEventSeries(Visibility::Public, 0),
+        ];
+        /** @var EventSeries $partOfEventSeries */
+        $partOfEventSeries = $eventSeries['withEventAndDocumentAndPart']->subEventSeries->firstOrFail();
+        $partOfEventSeries->update(['visibility' => Visibility::Public]);
+        $eventSeries['part'] = $partOfEventSeries;
+
+        $document = self::createDocument(fn () => $eventSeries['withEventAndDocumentAndPart']);
+        self::createDocument(static fn () => $eventSeries['withEventAndDocument']);
+
+        $this->assertFilteredList('/event-series', $filter, 'eventSeries', [
+            ...$eventSeries,
+            'event' => $eventSeries['withEventAndDocumentAndPart']->events->firstOrFail(),
+            'document' => $document,
+        ], $expectedEventSeries);
+    }
+
+    /**
+     * @return array<string, array{string, list<string>}>
+     */
+    public static function eventSeriesFilters(): array
+    {
+        return [
+            'specific event' => [
+                'filter[event_id]={event}',
+                ['withEventAndDocumentAndPart'],
+            ],
+            'with events' => [
+                'filter[event_id]=%2B',
+                ['withEventAndDocumentAndPart', 'withEventAndDocument'],
+            ],
+            'without events' => [
+                'filter[event_id]=-',
+                ['withoutEventAndDocument'],
+            ],
+
+            'specific document' => [
+                'filter[document_id]={document}',
+                ['withEventAndDocumentAndPart'],
+            ],
+            'with documents' => [
+                'filter[document_id]=%2B',
+                ['withEventAndDocumentAndPart', 'withEventAndDocument'],
+            ],
+            'without documents' => [
+                'filter[document_id]=-',
+                ['withoutEventAndDocument'],
+            ],
+
+            'main event series' => [
+                'filter[event_series_type]=' . EventSeriesType::MainEventSeries->value,
+                ['withEventAndDocumentAndPart', 'withEventAndDocument', 'withoutEventAndDocument'],
+            ],
+            'parts of event series' => [
+                'filter[event_series_type]=' . EventSeriesType::PartOfEventSeries->value,
+                ['part'],
+            ],
+            'event series with parts' => [
+                'filter[event_series_type]=' . EventSeriesType::EventSeriesWithParts->value,
+                ['withEventAndDocumentAndPart'],
+            ],
+            'event series without parts' => [
+                'filter[event_series_type]=' . EventSeriesType::EventSeriesWithoutParts->value,
+                ['withEventAndDocument', 'withoutEventAndDocument', 'part'],
+            ],
+        ];
     }
 
     public function testGuestCanViewPublicEventSeries(): void
@@ -60,7 +122,7 @@ class EventSeriesControllerTest extends TestCase
 
     public function testUserCanStoreEventSeriesOnlyWithCorrectAbility(): void
     {
-        $data = $this->generateRandomEventSeriesData();
+        $data = self::generateRandomEventSeriesData();
 
         $this->assertUserCanPostOnlyWithAbility('event-series', $data, Ability::CreateEventSeries, null);
     }
@@ -75,7 +137,7 @@ class EventSeriesControllerTest extends TestCase
     {
         $eventSeries = self::createEventSeries();
         /** @var array{slug: string} $data */
-        $data = $this->generateRandomEventSeriesData();
+        $data = self::generateRandomEventSeriesData();
 
         $this->assertUserCanPutOnlyWithAbility(
             "/event-series/{$eventSeries->slug}",
@@ -84,6 +146,38 @@ class EventSeriesControllerTest extends TestCase
             "/event-series/{$eventSeries->slug}/edit",
             "/event-series/{$data['slug']}"
         );
+    }
+
+    public function testEventSeriesCannotHaveItselfAsParent(): void
+    {
+        $eventSeries = self::createEventSeries(eventsCount: 0);
+        $data = array_merge(self::generateRandomEventSeriesData(), [
+            'organization_id' => $eventSeries->organization_id,
+            'parent_event_series_id' => $eventSeries->id,
+        ]);
+
+        $this->actingAsUserWithAbility(Ability::EditEventSeries);
+        $this->put("/event-series/{$eventSeries->slug}", $data)
+            ->assertSessionHasErrors([
+                'parent_event_series_id' => 'Der gewählte Wert für Teil der Veranstaltungsreihe ist ungültig.',
+            ]);
+    }
+
+    public function testEventSeriesParentMustBelongToSameOrganizationAsSubmittedEventSeries(): void
+    {
+        $parentEventSeries = self::createEventSeries(eventsCount: 0);
+        $otherOrganization = self::createOrganization();
+
+        $data = array_merge(self::generateRandomEventSeriesData(), [
+            'organization_id' => $otherOrganization->id,
+            'parent_event_series_id' => $parentEventSeries->id,
+        ]);
+
+        $this->actingAsUserWithAbility(Ability::CreateEventSeries);
+        $this->post('event-series', $data)
+            ->assertSessionHasErrors([
+                'parent_event_series_id' => "Teil der Veranstaltungsreihe muss zur Organisation {$otherOrganization->name} gehören.",
+            ]);
     }
 
     public function testUserCanDeleteEventSeriesOnlyWithCorrectAbility(): void
@@ -121,7 +215,7 @@ class EventSeriesControllerTest extends TestCase
     /**
      * @return array<string, mixed>
      */
-    private function generateRandomEventSeriesData(): array
+    private static function generateRandomEventSeriesData(): array
     {
         $eventData = Event::factory()->makeOne();
         return [

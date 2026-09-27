@@ -3,21 +3,10 @@
 namespace Tests\Feature\Http;
 
 use App\Enums\Ability;
-use App\Http\Controllers\PersonalAccessTokenController;
-use App\Http\Requests\PersonalAccessTokenRequest;
 use App\Models\PersonalAccessToken;
 use App\Models\User;
-use App\Policies\PersonalAccessTokenPolicy;
-use App\Providers\AppServiceProvider;
-use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\TestCase;
 
-#[CoversClass(Ability::class)]
-#[CoversClass(AppServiceProvider::class)]
-#[CoversClass(PersonalAccessToken::class)]
-#[CoversClass(PersonalAccessTokenController::class)]
-#[CoversClass(PersonalAccessTokenPolicy::class)]
-#[CoversClass(PersonalAccessTokenRequest::class)]
 class PersonalAccessTokenControllerTest extends TestCase
 {
     public function testUserCanViewOwnPersonalAccessTokensOnlyWithCorrectAbility(): void

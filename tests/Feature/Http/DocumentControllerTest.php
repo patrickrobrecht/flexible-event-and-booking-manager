@@ -3,13 +3,9 @@
 namespace Tests\Feature\Http;
 
 use App\Enums\Ability;
-use App\Enums\ApprovalStatus;
 use App\Enums\DocumentReferenceType;
 use App\Enums\FileType;
 use App\Enums\Visibility;
-use App\Http\Controllers\DocumentController;
-use App\Http\Requests\DocumentRequest;
-use App\Http\Requests\Filters\DocumentFilterRequest;
 use App\Models\Document;
 use App\Models\Event;
 use App\Models\EventSeries;
@@ -20,20 +16,11 @@ use Closure;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Tests\TestCase;
 
-#[CoversClass(ApprovalStatus::class)]
-#[CoversClass(Document::class)]
-#[CoversClass(DocumentController::class)]
-#[CoversClass(DocumentFilterRequest::class)]
-#[CoversClass(DocumentPolicy::class)]
-#[CoversClass(DocumentReferenceType::class)]
-#[CoversClass(DocumentRequest::class)]
-#[CoversClass(FileType::class)]
 class DocumentControllerTest extends TestCase
 {
     public function testUserCanViewAllDocumentsWithCorrectAbility(): void
@@ -57,6 +44,65 @@ class DocumentControllerTest extends TestCase
                 ->assertDontSee(array_map($toTitle, $otherDocuments));
         }
         $this->assertUserCannotGetDespiteAbility('/documents', Ability::casesExcept(DocumentPolicy::VIEW_DOCUMENTS_ABILITIES));
+    }
+
+    /**
+     * @param list<string> $expectedDocuments
+     */
+    #[DataProvider('documentFilters')]
+    public function testUserCanFilterDocuments(string $filter, array $expectedDocuments): void
+    {
+        $this->actingAsUserWithAbility(DocumentPolicy::VIEW_DOCUMENTS_ABILITIES);
+
+        $documents = [
+            'packingList' => self::createDocument(static fn () => self::createEvent(Visibility::Public), attributes: [
+                'title' => 'Packing list',
+            ]),
+            'checklist' => self::createDocument(static fn () => self::createEventSeries(Visibility::Public, 0), attributes: [
+                'title' => 'Checklist',
+                'description' => 'What to pack',
+            ]),
+            'programme' => self::createDocument(static fn () => self::createLocation(), attributes: [
+                'title' => 'Programme',
+                'description' => 'Schedule',
+            ]),
+            'contacts' => self::createDocument(static fn () => self::createOrganization(), attributes: [
+                'title' => 'Contacts',
+                'description' => 'Phone numbers',
+            ]),
+        ];
+
+        $this->assertFilteredList('/documents', $filter, 'documents', $documents, $expectedDocuments);
+    }
+
+    /**
+     * @return array<string, array{string, list<string>}>
+     */
+    public static function documentFilters(): array
+    {
+        return [
+            'search in title and description' => [
+                'filter[search]=pack',
+                ['packingList', 'checklist'],
+            ],
+
+            'documents of events' => [
+                'filter[reference_type]=' . DocumentReferenceType::Event->value,
+                ['packingList'],
+            ],
+            'documents of event series' => [
+                'filter[reference_type]=' . DocumentReferenceType::EventSeries->value,
+                ['checklist'],
+            ],
+            'documents of locations' => [
+                'filter[reference_type]=' . DocumentReferenceType::Location->value,
+                ['programme'],
+            ],
+            'documents of organizations' => [
+                'filter[reference_type]=' . DocumentReferenceType::Organization->value,
+                ['contacts'],
+            ],
+        ];
     }
 
     #[DataProvider('referenceClassesWithViewAbility')]

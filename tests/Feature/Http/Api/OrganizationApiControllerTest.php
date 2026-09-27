@@ -3,24 +3,12 @@
 namespace Tests\Feature\Http\Api;
 
 use App\Enums\Ability;
-use App\Exceptions\Handler;
-use App\Http\Controllers\Api\OrganizationApiController;
-use App\Http\Requests\Filters\OrganizationFilterRequest;
-use App\Http\Resources\OrganizationResource;
 use App\Models\Organization;
-use App\Models\QueryBuilder\SortOptions;
-use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
 use Tests\Traits\ActsWithToken;
 use Tests\Traits\GeneratesTestData;
 
-#[CoversClass(Organization::class)]
-#[CoversClass(OrganizationApiController::class)]
-#[CoversClass(OrganizationFilterRequest::class)]
-#[CoversClass(OrganizationResource::class)]
-#[CoversClass(Handler::class)]
-#[CoversClass(SortOptions::class)]
 class OrganizationApiControllerTest extends TestCase
 {
     use ActsWithToken;
@@ -38,6 +26,16 @@ class OrganizationApiControllerTest extends TestCase
         $organization = self::createOrganization();
 
         $this->assertTokenCanGetOnlyWithAbility("api/organizations/{$organization->slug}", Ability::ViewOrganizations);
+    }
+
+    public function testSingleOrganizationCanBeRequestedWithIncludes(): void
+    {
+        $organization = self::createOrganization();
+
+        $this->withHeadersForApiRequestWithAbility(Ability::ViewOrganizations)
+            ->getJson("api/organizations/{$organization->slug}?include=location")
+            ->assertOk()
+            ->assertJsonPath('data.location.street', $organization->location->street);
     }
 
     public function testNotExistingOrganisationSlugResultsInNotFound(): void

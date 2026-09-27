@@ -3,32 +3,93 @@
 namespace Tests\Feature\Http;
 
 use App\Enums\Ability;
-use App\Enums\FilterValue;
-use App\Http\Controllers\LocationController;
-use App\Http\Requests\Filters\LocationFilterRequest;
-use App\Http\Requests\LocationRequest;
 use App\Models\Event;
 use App\Models\Location;
 use App\Models\Organization;
-use App\Policies\LocationPolicy;
 use Closure;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
-#[CoversClass(Event::class)]
-#[CoversClass(FilterValue::class)]
-#[CoversClass(Location::class)]
-#[CoversClass(LocationController::class)]
-#[CoversClass(LocationFilterRequest::class)]
-#[CoversClass(LocationPolicy::class)]
-#[CoversClass(LocationRequest::class)]
-#[CoversClass(Organization::class)]
 class LocationControllerTest extends TestCase
 {
     public function testUserCanViewLocationsOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('/locations', Ability::ViewLocations);
+    }
+
+    /**
+     * @param list<string> $expectedLocations
+     */
+    #[DataProvider('locationFilters')]
+    public function testUserCanFilterLocations(string $filter, array $expectedLocations): void
+    {
+        $this->actingAsUserWithAbility(Ability::ViewLocations);
+
+        $locations = [
+            'withOrganization' => self::createLocation(),
+            'withEvent' => self::createLocation(),
+            'withOtherEvent' => self::createLocation(),
+        ];
+        $locations['withOrganization']->update(['street' => 'Qwertzstraße']);
+        $locations['withEvent']->update(['city' => 'Qwertzhausen']);
+
+        $organization = Organization::factory()->for($locations['withOrganization'])->create();
+        $event = Event::factory()->for($locations['withEvent'])->for($organization)->create();
+        Event::factory()->for($locations['withOtherEvent'])->for($organization)->create();
+
+        $this->assertFilteredList('/locations', $filter, 'locations', [
+            ...$locations,
+            'event' => $event,
+            'organization' => $organization,
+        ], $expectedLocations);
+    }
+
+    /**
+     * @return array<string, array{string, list<string>}>
+     */
+    public static function locationFilters(): array
+    {
+        return [
+            'no filter' => [
+                '',
+                ['withOrganization', 'withEvent', 'withOtherEvent'],
+            ],
+
+            'partial address in multiple fields' => [
+                'filter[address]=qwertz',
+                ['withOrganization', 'withEvent'],
+            ],
+            'exact city' => [
+                'filter[address]=qwertzhausen',
+                ['withEvent'],
+            ],
+
+            'specific event' => [
+                'filter[event_id]={event}',
+                ['withEvent'],
+            ],
+            'with events' => [
+                'filter[event_id]=%2B',
+                ['withEvent', 'withOtherEvent'],
+            ],
+            'without events' => [
+                'filter[event_id]=-',
+                ['withOrganization'],
+            ],
+
+            'specific organization' => [
+                'filter[organization_id]={organization}',
+                ['withOrganization'],
+            ],
+            'with organizations' => [
+                'filter[organization_id]=%2B',
+                ['withOrganization'],
+            ],
+            'without organizations' => [
+                'filter[organization_id]=-',
+                ['withEvent', 'withOtherEvent'],
+            ],
+        ];
     }
 
     public function testUserCanViewCreateLocationFormOnlyWithCorrectAbility(): void

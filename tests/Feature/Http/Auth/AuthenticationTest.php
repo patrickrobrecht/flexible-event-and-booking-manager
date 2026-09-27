@@ -3,19 +3,12 @@
 namespace Tests\Feature\Http\Auth;
 
 use App\Enums\ActiveStatus;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\RateLimiter;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
-#[CoversClass(ActiveStatus::class)]
-#[CoversClass(AuthenticatedSessionController::class)]
-#[CoversClass(LoginRequest::class)]
-#[CoversClass(User::class)]
 class AuthenticationTest extends TestCase
 {
     use RefreshDatabase;

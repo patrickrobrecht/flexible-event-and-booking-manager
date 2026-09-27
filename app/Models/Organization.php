@@ -91,7 +91,7 @@ class Organization extends Model
 
     public function scopeEvent(Builder $query, int|string $eventId): Builder
     {
-        return $this->scopeRelation($query, $eventId, 'events', fn (Builder $q) => $q->where('event_id', '=', $eventId));
+        return $this->scopeRelation($query, $eventId, 'events', fn (Builder $q) => $q->where('id', '=', $eventId));
     }
 
     /**

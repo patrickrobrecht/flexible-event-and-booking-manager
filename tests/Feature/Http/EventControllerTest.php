@@ -3,6 +3,7 @@
 namespace Tests\Feature\Http;
 
 use App\Enums\Ability;
+use App\Enums\EventType;
 use App\Enums\Visibility;
 use App\Models\Event;
 use Closure;
@@ -14,6 +15,124 @@ class EventControllerTest extends TestCase
     public function testUserCanViewEventsOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('/events', Ability::ViewEvents);
+    }
+
+    /**
+     * @param list<string> $expectedEvents
+     */
+    #[DataProvider('eventFilters')]
+    public function testUserCanFilterEvents(string $filter, array $expectedEvents): void
+    {
+        $this->actingAsUserWithAbility(Ability::ViewEvents);
+
+        $eventSeries = self::createEventSeries(Visibility::Public, 0);
+        $events = [
+            'summer' => self::createEvent(Visibility::Public, attributes: [
+                'name' => 'Summer Camp',
+                'description' => 'Fun in the sun',
+                'started_at' => '2026-01-01 10:00',
+                'finished_at' => '2026-01-02 18:00',
+                'event_series_id' => $eventSeries->id,
+            ]),
+            'autumn' => self::createEvent(Visibility::Public, attributes: [
+                'name' => 'Autumn Trip',
+                'description' => 'A camp in autumn',
+                'started_at' => '2026-03-01 10:00',
+                'finished_at' => '2026-03-10 18:00',
+                'event_series_id' => self::createEventSeries(Visibility::Public, 0)->id,
+            ]),
+            'winter' => self::createEvent(Visibility::Public, attributes: [
+                'name' => 'Winter Party',
+                'description' => 'A party in winter',
+                'started_at' => '2026-06-01 10:00',
+                'finished_at' => '2026-06-02 18:00',
+            ]),
+        ];
+        $events['part'] = self::createChildEvent(Visibility::Public, $events['autumn']);
+        $events['part']->update(['name' => 'Autumn Hike', 'description' => 'Hiking', 'started_at' => '2026-03-02 10:00', 'finished_at' => '2026-03-02 18:00']);
+
+        $document = self::createDocument(static fn () => $events['summer']);
+        self::createDocument(static fn () => $events['autumn']);
+
+        $this->assertFilteredList('/events', $filter, 'events', [
+            ...$events,
+            'eventSeries' => $eventSeries,
+            'document' => $document,
+        ], $expectedEvents);
+    }
+
+    /**
+     * @return array<string, array{string, list<string>}>
+     */
+    public static function eventFilters(): array
+    {
+        return [
+            'search in name and description' => [
+                'filter[search]=camp', ['summer', 'autumn'],
+            ],
+
+            'date from during event' => [
+                'filter[date_from]=2026-03-05',
+                ['autumn', 'winter'],
+            ],
+            'date from on start of event' => [
+                'filter[date_from]=2026-03-01',
+                ['autumn', 'winter'],
+            ],
+            'date until during event' => [
+                'filter[date_until]=2026-03-05',
+                ['summer', 'autumn'],
+            ],
+            'date until on end of event' => [
+                'filter[date_until]=2026-03-10',
+                ['summer', 'autumn'],
+            ],
+            'date from and until during event' => [
+                'filter[date_from]=2026-03-05&filter[date_until]=2026-03-06',
+                ['autumn'],
+            ],
+
+            'specific event series' => [
+                'filter[event_series_id]={eventSeries}',
+                ['summer'],
+            ],
+            'with event series' => [
+                'filter[event_series_id]=%2B',
+                ['summer', 'autumn'],
+            ],
+            'without event series' => [
+                'filter[event_series_id]=-',
+                ['winter'],
+            ],
+
+            'specific document' => [
+                'filter[document_id]={document}',
+                ['summer']],
+            'with documents' => [
+                'filter[document_id]=%2B',
+                ['summer', 'autumn']],
+            'without documents' => [
+                'filter[document_id]=-',
+                ['winter'],
+            ],
+
+            'main events' => [
+                'filter[event_type]=' . EventType::MainEvent->value,
+                ['summer', 'autumn', 'winter'],
+            ],
+            'parts of events' => [
+                'filter[event_type]=' . EventType::PartOfEvent->value,
+                ['part'],
+            ],
+            'events with parts' => [
+                'filter[event_type]=' . EventType::EventWithParts->value,
+                ['autumn'],
+            ],
+            'events without parts' => [
+                'filter[event_type]=' . EventType::EventWithoutParts->value,
+                ['summer', 'winter', 'part'],
+            ],
+        ];
     }
 
     public function testGuestCanViewPublicEvent(): void

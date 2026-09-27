@@ -5,7 +5,9 @@ namespace Tests\Feature\Http;
 use App\Enums\Ability;
 use App\Enums\MaterialStatus;
 use App\Models\Material;
+use App\Models\StorageLocation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class MaterialControllerTest extends TestCase
@@ -15,6 +17,52 @@ class MaterialControllerTest extends TestCase
     public function testUserCanViewMaterialsOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('/materials', Ability::ViewMaterials);
+    }
+
+    /**
+     * @param list<string> $expectedMaterials
+     */
+    #[DataProvider('materialFilters')]
+    public function testUserCanFilterMaterials(string $filter, array $expectedMaterials): void
+    {
+        $this->actingAsUserWithAbility(Ability::ViewMaterials);
+
+        $organization = self::createOrganization();
+        $createMaterialWithStatus = static fn (MaterialStatus $materialStatus) => Material::factory()
+            ->forOrganization($organization)
+            ->hasAttached(StorageLocation::factory(), ['material_status' => $materialStatus])
+            ->create();
+        $materials = [
+            'checked' => $createMaterialWithStatus(MaterialStatus::Checked),
+            'missing' => $createMaterialWithStatus(MaterialStatus::Missing),
+        ];
+
+        $this->assertFilteredList('/materials', $filter, 'materials', $materials, $expectedMaterials);
+    }
+
+    /**
+     * @return array<string, array{string, list<string>}>
+     */
+    public static function materialFilters(): array
+    {
+        return [
+            'all' => [
+                'filter[material_status]=*',
+                ['checked', 'missing'],
+            ],
+            'checked' => [
+                'filter[material_status]=' . MaterialStatus::Checked->value,
+                ['checked'],
+            ],
+            'missing' => [
+                'filter[material_status]=' . MaterialStatus::Missing->value,
+                ['missing'],
+            ],
+            'lent out' => [
+                'filter[material_status]=' . MaterialStatus::LentOut->value,
+                [],
+            ],
+        ];
     }
 
     public function testUserCanExportMaterialsOnlyWithCorrectAbility(): void

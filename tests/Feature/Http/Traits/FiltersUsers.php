@@ -5,26 +5,26 @@ namespace Tests\Feature\Http\Traits;
 trait FiltersUsers
 {
     /**
-     * @return list<array<string, string>>
+     * @return array<string, array<string, string>>
      */
     public static function exampleUserData(): array
     {
         return [
-            [
+            'john' => [
                 'first_name' => 'John',
                 'last_name' => 'Doe',
                 'phone' => '123456789',
                 'email' => 'john@example.com',
                 'postal_code' => '01234',
             ],
-            [
+            'jack' => [
                 'first_name' => 'Jack',
                 'last_name' => 'Doe',
                 'phone' => '123555555',
                 'email' => 'jack@example.com',
                 'postal_code' => '56789',
             ],
-            [
+            'jane' => [
                 'first_name' => 'Jane',
                 'last_name' => 'Smith',
                 'phone' => '987654321',
@@ -35,23 +35,58 @@ trait FiltersUsers
     }
 
     /**
-     * @return list<array{string, list<string>|string, list<string>|string}>
+     * @return array<string, array{string, list<string>}>
      */
     public static function userFilters(): array
     {
         return [
-            ['filter[name]=Jane', ['Jane Smith'], ['John Doe', 'Jack Doe']], // exact first name
-            ['filter[name]=Doe', ['John Doe', 'Jack Doe'], ['Jane Smith']], // exact last name
-            ['filter[name]=Joh', ['John Doe'], ['Jane Smith', 'Jack Doe']], // partial first name
+            'exact first name' => [
+                'filter[name]=Jane',
+                ['jane'],
+            ],
+            'exact last name' => [
+                'filter[name]=Doe',
+                ['john', 'jack'],
+            ],
+            'partial first name' => [
+                'filter[name]=Joh',
+                ['john'],
+            ],
 
-            ['filter[phone]=123', ['John Doe', 'Jack Doe'], ['Jane']], // partial phone
-            ['filter[phone]=987654321', ['Jane Smith'], ['John Doe', 'Jack Doe']], // exact phone
+            'partial phone' => [
+                'filter[phone]=123',
+                ['john', 'jack'],
+            ],
+            'exact phone' => [
+                'filter[phone]=987654321',
+                ['jane'],
+            ],
 
-            ['filter[email]=example.com', ['John Doe', 'Jack Doe'], ['Jane Smith']], // partial email
-            ['filter[email]=jane@test.com', ['Jane Smith'], ['John Doe', 'Jack Doe']], // exact email
+            'partial email' => [
+                'filter[email]=example.com',
+                ['john', 'jack'],
+            ],
+            'exact email' => [
+                'filter[email]=jane@test.com',
+                ['jane'],
+            ],
 
-            ['filter[postal_code]=56789', ['Jack Doe'], ['John Doe', 'Jane Smith']], // postal code
-            ['filter[postal_code]=-56789', ['John Doe', 'Jane Smith'], ['Jack Doe']], // exclude postal code
+            'postal code' => [
+                'filter[postal_code]=56789',
+                ['jack'],
+            ],
+            'exclude postal code' => [
+                'filter[postal_code]=-56789',
+                ['john', 'jane'],
+            ],
+            'multiple postal codes' => [
+                'filter[postal_code]=01234,56789',
+                ['john', 'jack'],
+            ],
+            'exclude multiple postal codes' => [
+                'filter[postal_code]=-01234,-56789',
+                ['jane'],
+            ],
         ];
     }
 }

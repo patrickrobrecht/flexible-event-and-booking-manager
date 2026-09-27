@@ -25,19 +25,36 @@ class UserControllerTest extends TestCase
     }
 
     /**
-     * @param list<string>|string $assertSee
-     * @param list<string>|string $assertDontSee
+     * @param list<string> $expectedUsers
      */
     #[DataProvider('userFilters')]
-    public function testUserCanFilterUsers(string $filter, array|string $assertSee, array|string $assertDontSee): void
+    #[DataProvider('userEmailExclusionFilters')]
+    public function testUserCanFilterUsers(string $filter, array $expectedUsers): void
     {
-        $this->actingAsUserWithAbility(Ability::ViewUsers);
-        array_map(static fn (array $data) => self::createUser($data), self::exampleUserData());
+        $actingUser = $this->actingAsUserWithAbility(Ability::ViewUsers);
+        $users = array_map(static fn (array $data) => self::createUser($data), self::exampleUserData());
 
-        $this->get("/users?{$filter}")
-            ->assertOk()
-            ->assertSeeText($assertSee)
-            ->assertDontSeeText($assertDontSee);
+        // The acting user with random data is listed too, but not relevant for the filter.
+        $this->assertFilteredList('/users', $filter, 'users', $users, $expectedUsers, [$actingUser]);
+    }
+
+    /**
+     * Only users support excluding e-mail addresses, bookings filter them by partial match.
+     *
+     * @return array<string, array{string, list<string>}>
+     */
+    public static function userEmailExclusionFilters(): array
+    {
+        return [
+            'exclude partial email' => [
+                'filter[email]=-example.com',
+                ['jane'],
+            ],
+            'exclude multiple partial emails' => [
+                'filter[email]=-jack,-jane',
+                ['john'],
+            ],
+        ];
     }
 
     public function testUserCanViewSingleUserOnlyWithCorrectAbility(): void

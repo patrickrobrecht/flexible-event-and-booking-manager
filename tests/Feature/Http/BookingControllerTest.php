@@ -5,12 +5,14 @@ namespace Tests\Feature\Http;
 use App\Enums\Ability;
 use App\Enums\BookingStatus;
 use App\Enums\FormElementType;
+use App\Enums\PaymentStatus;
 use App\Enums\Visibility;
 use App\Events\BookingCompleted;
 use App\Listeners\SendBookingConfirmation;
 use App\Models\Booking;
 use App\Models\BookingOption;
 use App\Models\FormFieldValue;
+use App\Models\Group;
 use App\Models\User;
 use App\Notifications\BookingConfirmation;
 use Carbon\Carbon;
@@ -44,20 +46,80 @@ class BookingControllerTest extends TestCase
     }
 
     /**
-     * @param list<string>|string $assertSee
-     * @param list<string>|string $assertDontSee
+     * @param list<string> $expectedBookings
      */
     #[DataProvider('userFilters')]
-    public function testUserCanFilterBookings(string $filter, array|string $assertSee, array|string $assertDontSee): void
+    public function testUserCanFilterBookings(string $filter, array $expectedBookings): void
     {
         $this->actingAsUserWithAbility(Ability::ViewBookingsOfEvent);
         $bookingOption = self::createBookingOptionForEvent();
-        array_map(static fn (array $data) => self::createBooking($bookingOption, $data), self::exampleUserData());
+        $bookings = array_map(static fn (array $data) => self::createBooking($bookingOption, $data), self::exampleUserData());
 
-        $this->get("/events/{$bookingOption->event->slug}/{$bookingOption->slug}/bookings?{$filter}")
-            ->assertOk()
-            ->assertSeeText($assertSee)
-            ->assertDontSeeText($assertDontSee);
+        $this->assertFilteredList("/events/{$bookingOption->event->slug}/{$bookingOption->slug}/bookings", $filter, 'bookings', $bookings, $expectedBookings);
+    }
+
+    /**
+     * @param list<string> $expectedBookings
+     */
+    #[DataProvider('bookingFilters')]
+    public function testUserCanFilterBookingsByGroupAndPaymentStatus(string $filter, array $expectedBookings): void
+    {
+        $this->actingAsUserWithAbility(Ability::ViewBookingsOfEvent);
+
+        $bookingOption = self::createBookingOptionForEvent(attributes: ['price' => 10]);
+        [$paidBooking, $notPaidBooking, $freeBooking] = self::createBookings($bookingOption, 3)->all();
+        $paidBooking->update(['paid_at' => Carbon::now()]);
+        $notPaidBooking->update(['paid_at' => null]);
+        $freeBooking->forceFill(['price' => null, 'paid_at' => null])->save();
+
+        [$group, $otherGroup] = Group::factory()->for($bookingOption->event)->count(2)->create()->all();
+        $paidBooking->groups()->attach($group);
+        $notPaidBooking->groups()->attach($otherGroup);
+
+        // Bookings of another booking option must not be included, despite being free.
+        self::createBookings(self::createBookingOptionForEvent(attributes: ['price' => null]), 2);
+
+        $this->assertFilteredList("/events/{$bookingOption->event->slug}/{$bookingOption->slug}/bookings", $filter, 'bookings', [
+            'paidInGroup' => $paidBooking,
+            'notPaidInOtherGroup' => $notPaidBooking,
+            'freeWithoutGroup' => $freeBooking,
+            'group' => $group,
+            'otherGroup' => $otherGroup,
+        ], $expectedBookings);
+    }
+
+    /**
+     * @return array<string, array{string, list<string>}>
+     */
+    public static function bookingFilters(): array
+    {
+        return [
+            'all groups' => [
+                'filter[group_id]=*',
+                ['paidInGroup', 'notPaidInOtherGroup', 'freeWithoutGroup'],
+            ],
+            'specific group' => [
+                'filter[group_id]={group}',
+                ['paidInGroup'],
+            ],
+            'other group' => [
+                'filter[group_id]={otherGroup}',
+                ['notPaidInOtherGroup'],
+            ],
+
+            'all payment status' => [
+                'filter[payment_status]=*',
+                ['paidInGroup', 'notPaidInOtherGroup', 'freeWithoutGroup'],
+            ],
+            'paid or free' => [
+                'filter[payment_status]=' . PaymentStatus::Paid->value,
+                ['paidInGroup', 'freeWithoutGroup'],
+            ],
+            'not paid' => [
+                'filter[payment_status]=' . PaymentStatus::NotPaid->value,
+                ['notPaidInOtherGroup'],
+            ],
+        ];
     }
 
     public function testUserCanExportBookingsOfEventOnlyWithCorrectAbility(): void

@@ -3,6 +3,7 @@
 namespace Tests\Feature\Http;
 
 use App\Enums\Ability;
+use App\Enums\DocumentReferenceType;
 use App\Enums\FileType;
 use App\Enums\Visibility;
 use App\Models\Document;
@@ -43,6 +44,65 @@ class DocumentControllerTest extends TestCase
                 ->assertDontSee(array_map($toTitle, $otherDocuments));
         }
         $this->assertUserCannotGetDespiteAbility('/documents', Ability::casesExcept(DocumentPolicy::VIEW_DOCUMENTS_ABILITIES));
+    }
+
+    /**
+     * @param list<string> $expectedDocuments
+     */
+    #[DataProvider('documentFilters')]
+    public function testUserCanFilterDocuments(string $filter, array $expectedDocuments): void
+    {
+        $this->actingAsUserWithAbility(DocumentPolicy::VIEW_DOCUMENTS_ABILITIES);
+
+        $documents = [
+            'packingList' => self::createDocument(static fn () => self::createEvent(Visibility::Public), attributes: [
+                'title' => 'Packing list',
+            ]),
+            'checklist' => self::createDocument(static fn () => self::createEventSeries(Visibility::Public, 0), attributes: [
+                'title' => 'Checklist',
+                'description' => 'What to pack',
+            ]),
+            'programme' => self::createDocument(static fn () => self::createLocation(), attributes: [
+                'title' => 'Programme',
+                'description' => 'Schedule',
+            ]),
+            'contacts' => self::createDocument(static fn () => self::createOrganization(), attributes: [
+                'title' => 'Contacts',
+                'description' => 'Phone numbers',
+            ]),
+        ];
+
+        $this->assertFilteredList('/documents', $filter, 'documents', $documents, $expectedDocuments);
+    }
+
+    /**
+     * @return array<string, array{string, list<string>}>
+     */
+    public static function documentFilters(): array
+    {
+        return [
+            'search in title and description' => [
+                'filter[search]=pack',
+                ['packingList', 'checklist'],
+            ],
+
+            'documents of events' => [
+                'filter[reference_type]=' . DocumentReferenceType::Event->value,
+                ['packingList'],
+            ],
+            'documents of event series' => [
+                'filter[reference_type]=' . DocumentReferenceType::EventSeries->value,
+                ['checklist'],
+            ],
+            'documents of locations' => [
+                'filter[reference_type]=' . DocumentReferenceType::Location->value,
+                ['programme'],
+            ],
+            'documents of organizations' => [
+                'filter[reference_type]=' . DocumentReferenceType::Organization->value,
+                ['contacts'],
+            ],
+        ];
     }
 
     #[DataProvider('referenceClassesWithViewAbility')]

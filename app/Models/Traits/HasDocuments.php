@@ -37,7 +37,7 @@ trait HasDocuments
 
     public function scopeDocument(Builder $query, int|string $documentId): Builder
     {
-        return $this->scopeRelation($query, $documentId, 'documents', fn (Builder $q) => $q->where('document_id', '=', $documentId));
+        return $this->scopeRelation($query, $documentId, 'documents', fn (Builder $q) => $q->where('id', '=', $documentId));
     }
 
     public function getDocumentStoragePath(): string

@@ -3,6 +3,7 @@
 namespace Tests\Feature\Http;
 
 use App\Enums\Ability;
+use App\Enums\EventSeriesType;
 use App\Enums\Visibility;
 use App\Models\Event;
 use App\Models\EventSeries;
@@ -15,6 +16,85 @@ class EventSeriesControllerTest extends TestCase
     public function testUserCanViewEventSeriesOnlyWithCorrectAbility(): void
     {
         $this->assertUserCanGetOnlyWithAbility('/event-series', Ability::ViewEventSeries);
+    }
+
+    /**
+     * @param list<string> $expectedEventSeries
+     */
+    #[DataProvider('eventSeriesFilters')]
+    public function testUserCanFilterEventSeries(string $filter, array $expectedEventSeries): void
+    {
+        $this->actingAsUserWithAbility(Ability::ViewEventSeries);
+
+        $eventSeries = [
+            'withEventAndDocumentAndPart' => self::createEventSeries(Visibility::Public, 1, 1),
+            'withEventAndDocument' => self::createEventSeries(Visibility::Public, 1),
+            'withoutEventAndDocument' => self::createEventSeries(Visibility::Public, 0),
+        ];
+        /** @var EventSeries $partOfEventSeries */
+        $partOfEventSeries = $eventSeries['withEventAndDocumentAndPart']->subEventSeries->firstOrFail();
+        $partOfEventSeries->update(['visibility' => Visibility::Public]);
+        $eventSeries['part'] = $partOfEventSeries;
+
+        $document = self::createDocument(fn () => $eventSeries['withEventAndDocumentAndPart']);
+        self::createDocument(static fn () => $eventSeries['withEventAndDocument']);
+
+        $this->assertFilteredList('/event-series', $filter, 'eventSeries', [
+            ...$eventSeries,
+            'event' => $eventSeries['withEventAndDocumentAndPart']->events->firstOrFail(),
+            'document' => $document,
+        ], $expectedEventSeries);
+    }
+
+    /**
+     * @return array<string, array{string, list<string>}>
+     */
+    public static function eventSeriesFilters(): array
+    {
+        return [
+            'specific event' => [
+                'filter[event_id]={event}',
+                ['withEventAndDocumentAndPart'],
+            ],
+            'with events' => [
+                'filter[event_id]=%2B',
+                ['withEventAndDocumentAndPart', 'withEventAndDocument'],
+            ],
+            'without events' => [
+                'filter[event_id]=-',
+                ['withoutEventAndDocument'],
+            ],
+
+            'specific document' => [
+                'filter[document_id]={document}',
+                ['withEventAndDocumentAndPart'],
+            ],
+            'with documents' => [
+                'filter[document_id]=%2B',
+                ['withEventAndDocumentAndPart', 'withEventAndDocument'],
+            ],
+            'without documents' => [
+                'filter[document_id]=-',
+                ['withoutEventAndDocument'],
+            ],
+
+            'main event series' => [
+                'filter[event_series_type]=' . EventSeriesType::MainEventSeries->value,
+                ['withEventAndDocumentAndPart', 'withEventAndDocument', 'withoutEventAndDocument'],
+            ],
+            'parts of event series' => [
+                'filter[event_series_type]=' . EventSeriesType::PartOfEventSeries->value,
+                ['part'],
+            ],
+            'event series with parts' => [
+                'filter[event_series_type]=' . EventSeriesType::EventSeriesWithParts->value,
+                ['withEventAndDocumentAndPart'],
+            ],
+            'event series without parts' => [
+                'filter[event_series_type]=' . EventSeriesType::EventSeriesWithoutParts->value,
+                ['withEventAndDocument', 'withoutEventAndDocument', 'part'],
+            ],
+        ];
     }
 
     public function testGuestCanViewPublicEventSeries(): void

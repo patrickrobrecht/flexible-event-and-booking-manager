@@ -227,9 +227,16 @@ trait GeneratesTestData
             ->create();
     }
 
-    protected static function createEvent(?Visibility $visibility = null, int $subEventsCount = 0): Event
-    {
-        $organization = self::createOrganization();
+    /**
+     * @param array<string, mixed> $attributes
+     */
+    protected static function createEvent(
+        ?Visibility $visibility = null,
+        ?Organization $organization = null,
+        int $subEventsCount = 0,
+        array $attributes = []
+    ): Event {
+        $organization ??= self::createOrganization();
         return Event::factory()
             ->visibility($visibility)
             ->for(self::createLocation())
@@ -241,7 +248,7 @@ trait GeneratesTestData
                     ->count($subEventsCount),
                 'subEvents'
             )
-            ->create();
+            ->create($attributes);
     }
 
     protected static function createEventWithBookingOptions(?Visibility $visibility = null, ?int $bookingOptionCount = null): Event

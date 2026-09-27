@@ -45,6 +45,20 @@
                             <a href="{{ $event->website_url }}" target="_blank">{{ __('Website') }}</a>
                         </div>
                     @endisset
+                    @if($event->started_at?->isFuture())
+                        @foreach($event->bookingOptions as $bookingOption)
+                            <div class="mt-2">
+                                <a href="{{ route('booking-options.show', [$event, $bookingOption]) }}" class="fw-bold">{{ $bookingOption->name }}</a>
+                                <x-bs::badge variant="primary">
+                                    @isset($bookingOption->price)
+                                        {{ formatDecimal($bookingOption->price) }}&nbsp;€
+                                    @else
+                                        {{ __('free of charge') }}
+                                    @endisset
+                                </x-bs::badge>
+                            </div>
+                        @endforeach
+                    @endif
                     @canany(['update', 'viewGroups'], $event)
                         <div class="d-flex flex-wrap gap-1 mt-3 d-print-none">
                             @can('update', $event)

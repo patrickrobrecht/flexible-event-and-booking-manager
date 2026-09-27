@@ -34,6 +34,9 @@
             @include('events.shared.event_details')
         </div>
         <div class="col-12 col-lg-8 pt-3 pt-lg-0">
+            @include('booking_options.shared.booking_option_period', [
+                'class' => 'alert alert-primary fs-5 mb-3',
+            ])
             @php
                 $canBookResponse = \Illuminate\Support\Facades\Gate::inspect('book', $bookingOption);
                 $canUpdate = \Illuminate\Support\Facades\Auth::user()?->can('update', $bookingOption);

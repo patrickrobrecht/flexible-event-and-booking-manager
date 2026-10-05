@@ -4,6 +4,7 @@ namespace Tests\Feature\Http;
 
 use App\Enums\Ability;
 use App\Models\User;
+use Database\Factories\UserFactory;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
@@ -121,18 +122,18 @@ class AccountControllerTest extends TestCase
     public static function sensitiveAccountChanges(): array
     {
         $changedEmail = ['email' => 'new-address@example.com'];
-        $changedPassword = ['password' => 'new-password', 'password_confirmation' => 'new-password'];
+        $changedPassword = ['password' => 'New-password-123!', 'password_confirmation' => 'New-password-123!'];
 
         return [
             // Changed email address.
             [$changedEmail, null, 'Derzeitiges Passwort muss ausgefüllt werden.'],
             [$changedEmail, 'wrong-password', 'Das Passwort ist falsch.'],
-            [$changedEmail, 'password', null],
+            [$changedEmail, UserFactory::DEFAULT_PASSWORD, null],
 
             // Changed password.
             [$changedPassword, null, 'Derzeitiges Passwort muss ausgefüllt werden, wenn Passwort ausgefüllt wurde.'],
             [$changedPassword, 'wrong-password', 'Das Passwort ist falsch.'],
-            [$changedPassword, 'password', null],
+            [$changedPassword, UserFactory::DEFAULT_PASSWORD, null],
         ];
     }
 

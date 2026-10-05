@@ -4,6 +4,7 @@ namespace Tests\Feature\Http\Auth;
 
 use App\Models\User;
 use Carbon\Carbon;
+use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Tests\TestCase;
@@ -84,8 +85,8 @@ class RegistrationTest extends TestCase
             'first_name' => $user->first_name,
             'last_name' => $user->last_name,
             'email' => $user->email,
-            'password' => 'password',
-            'password_confirmation' => 'password',
+            'password' => UserFactory::DEFAULT_PASSWORD,
+            'password_confirmation' => UserFactory::DEFAULT_PASSWORD,
         ];
     }
 }

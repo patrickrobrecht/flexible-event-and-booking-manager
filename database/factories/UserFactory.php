@@ -7,6 +7,7 @@ namespace Database\Factories;
 use App\Enums\ActiveStatus;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 /**
@@ -14,6 +15,13 @@ use Illuminate\Support\Str;
  */
 class UserFactory extends Factory
 {
+    public const string DEFAULT_PASSWORD = 'Password-123456!';
+
+    /**
+     * The current password being used by the factory.
+     */
+    protected static ?string $password;
+
     public function definition(): array
     {
         $firstName = fake()->firstName();
@@ -30,7 +38,7 @@ class UserFactory extends Factory
             'phone' => fake()->phoneNumber(),
             'email' => sprintf('%s.%s@%s', Str::slug($firstName), Str::slug($lastName), fake()->unique()->domainName()),
             'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'password' => static::$password ??= Hash::make(self::DEFAULT_PASSWORD),
             'remember_token' => Str::random(10),
             'status' => ActiveStatus::Active,
         ];

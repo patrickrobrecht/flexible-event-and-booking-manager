@@ -4,6 +4,7 @@ namespace Tests\Feature\Http\Auth;
 
 use App\Enums\ActiveStatus;
 use App\Models\User;
+use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\RateLimiter;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -24,7 +25,7 @@ class AuthenticationTest extends TestCase
 
         $response = $this->post('/login', [
             'email' => $user->email,
-            'password' => 'password',
+            'password' => UserFactory::DEFAULT_PASSWORD,
         ]);
 
         $this->assertAuthenticated();
@@ -40,7 +41,7 @@ class AuthenticationTest extends TestCase
 
         $this->post('/login', [
             'email' => $user->email,
-            'password' => 'password',
+            'password' => UserFactory::DEFAULT_PASSWORD,
         ]);
 
         $this->assertGuest();

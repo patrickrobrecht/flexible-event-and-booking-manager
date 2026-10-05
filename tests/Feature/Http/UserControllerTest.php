@@ -10,6 +10,7 @@ use App\Models\UserRole;
 use App\Notifications\AccountCreatedNotification;
 use App\Policies\DocumentPolicy;
 use Closure;
+use Database\Factories\UserFactory;
 use Illuminate\Support\Facades\Notification;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Feature\Http\Traits\FiltersUsers;
@@ -144,8 +145,8 @@ class UserControllerTest extends TestCase
             'first_name' => 'Test',
             'last_name' => 'User',
             'email' => 'test@example.com',
-            'password' => 'password',
-            'password_confirmation' => 'password',
+            'password' => UserFactory::DEFAULT_PASSWORD,
+            'password_confirmation' => UserFactory::DEFAULT_PASSWORD,
             'status' => ActiveStatus::Active->value,
         ]);
         $response->assertFound();

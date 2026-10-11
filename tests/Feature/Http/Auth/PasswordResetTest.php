@@ -4,6 +4,7 @@ namespace Tests\Feature\Http\Auth;
 
 use App\Models\User;
 use App\Notifications\ResetPasswordNotification;
+use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
@@ -42,8 +43,8 @@ class PasswordResetTest extends TestCase
             $response = $this->post('/reset-password', [
                 'token' => $notification->token,
                 'email' => $user->email,
-                'password' => 'password',
-                'password_confirmation' => 'password',
+                'password' => UserFactory::DEFAULT_PASSWORD,
+                'password_confirmation' => UserFactory::DEFAULT_PASSWORD,
             ]);
 
             $response->assertSessionHasNoErrors();
@@ -59,8 +60,8 @@ class PasswordResetTest extends TestCase
             ->post('/reset-password', [
                 'token' => 'wrong-token',
                 'email' => $user->email,
-                'password' => 'password',
-                'password_confirmation' => 'password',
+                'password' => UserFactory::DEFAULT_PASSWORD,
+                'password_confirmation' => UserFactory::DEFAULT_PASSWORD,
             ])
             ->assertSessionHasErrors()
             ->assertRedirect();

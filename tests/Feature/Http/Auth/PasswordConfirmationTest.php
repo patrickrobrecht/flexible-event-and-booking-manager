@@ -3,6 +3,7 @@
 namespace Tests\Feature\Http\Auth;
 
 use App\Models\User;
+use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -26,7 +27,7 @@ class PasswordConfirmationTest extends TestCase
         /** @noinspection PhpUnhandledExceptionInspection */
         $this->actingAs($user)
             ->post('/confirm-password', [
-                'password' => 'password',
+                'password' => UserFactory::DEFAULT_PASSWORD,
             ])
             ->assertRedirect()
             ->assertSessionHasNoErrors();

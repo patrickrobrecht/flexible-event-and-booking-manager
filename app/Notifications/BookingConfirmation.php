@@ -4,13 +4,14 @@ namespace App\Notifications;
 
 use App\Enums\BookingStatus;
 use App\Models\Booking;
-use Illuminate\Bus\Queueable;
+use App\Notifications\Traits\RetriesMailDelivery;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class BookingConfirmation extends Notification
+class BookingConfirmation extends Notification implements ShouldQueue
 {
-    use Queueable;
+    use RetriesMailDelivery;
 
     public function __construct(private readonly Booking $booking)
     {

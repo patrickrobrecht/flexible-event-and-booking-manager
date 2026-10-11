@@ -4,11 +4,13 @@ namespace App\Listeners;
 
 use App\Events\BookingCompleted;
 use App\Notifications\BookingConfirmation;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 
-class SendBookingConfirmation implements ShouldQueue
+/**
+ * Queues the {@see BookingConfirmation} which is then sent asynchronously (with retries in case of errors).
+ */
+class SendBookingConfirmation
 {
     /**
      * Handle the event.
@@ -21,7 +23,7 @@ class SendBookingConfirmation implements ShouldQueue
         );
         Log::info(
             sprintf(
-                'Sent mail notification for booking %s to %s and %s',
+                'Queued mail notification for booking %s to %s and %s',
                 $event->booking->id,
                 $event->booking->email,
                 $event->booking->bookedByUser->email ?? '-'

@@ -107,6 +107,7 @@ Use `composer translate` to extract them to `lang/de.json`.
 - Create/update the `.env` configuration if necessary.
 - Run `php artisan migrate` to migrate the database to the latest version.
 - Optimize performance with caching for config, events, routes, views by running `php artisan optimize`.
+- If you use Supervisor for the mail queue, run `php artisan queue:restart` so that the workers use the updated code.
 
 
 ## Configuration
@@ -115,3 +116,20 @@ Use `composer translate` to extract them to `lang/de.json`.
 - `APP_URL_LEGAL_NOTICE`, `APP_URL_PRIVACY_STATEMENT`, and `APP_URL_TERMS_AND_CONDITIONS` can be set to URLs 
   for the respective pages which show up in the footer of the webpages and of the emails.
 - `REGISTRATION_ENABLED=true` enables registration which is disabled by default.
+- `DB_*` settings define the connection to the database.
+- `MAIL_*` settings define the service/account used for sending mails.
+  - `MAIL_TIMEOUT` limits how long to wait for the mail server. It must be lower than `DB_QUEUE_RETRY_AFTER`,
+    as otherwise another worker may send the same e-mail again while the first one is still waiting.
+- `QUEUE_CONNECTION` defines how e-mails are sent:
+  - `QUEUE_CONNECTION=database` (recommended): E-mails are sent asynchronously via the queue in the `jobs` table.
+    If sending fails, it is retried several times.
+    Finally failed e-mails are stored in the `failed_jobs` table and can be retried via `php artisan queue:retry all`.
+    A queue worker is required to process the queue:
+    - Preferably, keep `php artisan queue:work` running permanently
+      via [Supervisor](https://laravel.com/framework/docs/13.x/queues#supervisor-configuration).
+      Do not pass `--tries` to the worker, as the e-mails define their own retries.
+    - If Supervisor is not available (e.g. on shared hosting), add a cron job which runs every minute
+      and processes the queue until it is empty (but at most 50 seconds):
+      `* * * * * cd /path/to/app && php artisan queue:work --stop-when-empty --max-time=50 >> /dev/null 2>&1`
+  - `QUEUE_CONNECTION=sync`: E-mails are sent immediately within the request, so no worker is required.
+    However, if the mail server is unavailable, the request fails with an error and the e-mail is not sent again.

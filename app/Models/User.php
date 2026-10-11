@@ -366,19 +366,19 @@ class User extends Authenticatable implements MustVerifyEmail
     public function sendAccountCreatedNotification(): void
     {
         $this->notify(new AccountCreatedNotification($this));
-        Log::info("Account created email sent to {$this->email}");
+        Log::info("Account created email queued for {$this->email}");
     }
 
     public function sendEmailVerificationNotification(): void
     {
         $this->notify(new VerifyEmailNotification($this));
-        Log::info("Verification email sent to {$this->email}");
+        Log::info("Verification email queued for {$this->email}");
     }
 
     public function sendPasswordResetNotification($token): void
     {
         $this->notify(new ResetPasswordNotification($this, $token));
-        Log::info("Reset password email sent to {$this->email}");
+        Log::info("Reset password email queued for {$this->email}");
     }
 
     /**

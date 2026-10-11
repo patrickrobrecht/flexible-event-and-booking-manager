@@ -3,11 +3,15 @@
 namespace App\Notifications;
 
 use App\Models\User;
+use App\Notifications\Traits\RetriesMailDelivery;
 use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class VerifyEmailNotification extends VerifyEmail
+class VerifyEmailNotification extends VerifyEmail implements ShouldQueue
 {
+    use RetriesMailDelivery;
+
     public function __construct(
         private User $user
     ) {

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Validation\Rules\Password;
 use Laravel\Sanctum\Sanctum;
 
 class AppServiceProvider extends ServiceProvider
@@ -26,6 +27,15 @@ class AppServiceProvider extends ServiceProvider
     {
         // Use Bootstrap framework for pagination rendering
         Paginator::useBootstrapFive();
+
+        // Set password requirements.
+        Password::defaults(
+            static fn () => Password::min(16)
+                ->letters()
+                ->mixedCase()
+                ->numbers()
+                ->symbols()
+        );
 
         // Use custom PersonalAccessToken implementation.
         Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);

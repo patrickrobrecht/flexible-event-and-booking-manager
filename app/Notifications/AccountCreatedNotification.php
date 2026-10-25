@@ -3,20 +3,32 @@
 namespace App\Notifications;
 
 use App\Models\User;
+use App\Notifications\Traits\RetriesMailDelivery;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
 
-class AccountCreatedNotification extends Notification
+class AccountCreatedNotification extends Notification implements ShouldQueue
 {
+    use RetriesMailDelivery;
+
+    /**
+     * The user who created the account (captured at creation, because there is no logged-in user in the queue worker).
+     */
+    private readonly ?User $adminUser;
+
     public function __construct(
         private readonly User $user
     ) {
+        /** @var ?User $adminUser */
+        $adminUser = Auth::user();
+        $this->adminUser = $adminUser;
     }
 
     public function toMail(): MailMessage
     {
-        $adminUser = Auth::user();
+        $adminUser = $this->adminUser;
 
         $mailMessage = (new MailMessage())
             /** @phpstan-ignore binaryOp.invalid */

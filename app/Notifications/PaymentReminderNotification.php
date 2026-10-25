@@ -3,14 +3,14 @@
 namespace App\Notifications;
 
 use App\Models\Booking;
-use Illuminate\Bus\Queueable;
+use App\Notifications\Traits\RetriesMailDelivery;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class PaymentReminderNotification extends Notification implements ShouldQueue
 {
-    use Queueable;
+    use RetriesMailDelivery;
 
     public function __construct(public readonly Booking $booking)
     {

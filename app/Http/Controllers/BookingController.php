@@ -39,7 +39,6 @@ class BookingController extends Controller
 
         /** @var \Illuminate\Database\Eloquent\Builder<Booking> $bookingsQuery */
         $bookingsQuery = Booking::buildQueryFromRequest($bookingOption->bookings())
-            /** @phpstan-ignore argument.type */
             ->with([
                 'bookedByUser',
                 'groups' => fn (BelongsToMany $groups) => $groups->where('event_id', '=', $event->id),

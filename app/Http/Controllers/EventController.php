@@ -24,7 +24,6 @@ class EventController extends Controller
         return view('events.event_index', [
             ...$this->formValuesForFilter(),
             'events' => Event::buildQueryFromRequest()
-                /** @phpstan-ignore argument.type */
                 ->with([
                     'bookingOptions' => static fn (HasMany $query) => $query->withCount([
                         'bookingsConfirmed',

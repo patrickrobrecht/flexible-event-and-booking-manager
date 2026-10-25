@@ -92,13 +92,13 @@ class GroupsExportSpreadsheet extends Spreadsheet
             /** @var string[] $groupMembers */
             $groupMembers = Booking::sort($group->bookings, $this->sort)
                 ->map(
-                    function (Booking $booking) use ($group, $parentEvent) {
+                    function (Booking $booking) use ($parentEvent) {
                         $name = $booking->first_name . ' ' . $booking->last_name;
 
                         if (isset($parentEvent)) {
-                            $group = $booking->getGroup($parentEvent);
-                            if (isset($group)) {
-                                $name .= ' (' . $group->name . ')';
+                            $groupInParentEvent = $booking->getGroup($parentEvent);
+                            if (isset($groupInParentEvent)) {
+                                $name .= ' (' . $groupInParentEvent->name . ')';
                             }
                         }
 

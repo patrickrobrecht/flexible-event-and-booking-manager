@@ -25,6 +25,7 @@ class ApiDocumentationControllerTest extends TestCase
         $this->actingAsUserWithAbility(Ability::ViewApiDocumentation);
         $this->get('api-docs/spec')
             ->assertOk()
+            ->assertHeader('Content-Type', 'text/yaml; charset=utf-8')
             ->assertSeeText('Test App')
             ->assertSeeText('staging environment');
     }

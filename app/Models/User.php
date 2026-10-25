@@ -325,7 +325,6 @@ class User extends Authenticatable implements MustVerifyEmail
                     'reference',
                 ]),
             'responsibleForEvents' => fn (MorphToMany $events) => $events
-                /** @phpstan-ignore argument.type */
                 ->with([
                     'bookingOptions' => fn (HasMany $bookingOptions) => $bookingOptions
                         ->withCount([

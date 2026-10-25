@@ -40,6 +40,7 @@ trait BuildsResource
             $this->resource->attributesToArray(),
             static function ($value, $key) {
                 if (str_ends_with($key, '_count')) {
+                    /** @phpstan-ignore cast.int */
                     return (int) $value;
                 }
 

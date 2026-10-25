@@ -223,7 +223,6 @@ class ManageGroups extends Component
     {
         $bookings = $this->event->getBookings();
         if (count($this->showFields) > 0) {
-            /** @phpstan-ignore argument.type */
             $bookings->load([
                 'formFieldValues' => fn (HasMany $formFieldValues) => $formFieldValues
                     ->whereIn('form_field_id', $this->showFields),

@@ -18,7 +18,7 @@
         "bootstrap": "^5.3.8",
         "eslint": "^10.13.0",
         "laravel-vite-plugin": "^3.2.0",
-        "rapidoc": "^9.3.8",
+        "rapidoc": "^11.0.1",
         "sass": "^1.106.1",
         "stylelint": "^17.16.0",
         "stylelint-config-recommended-scss": "^17.0.1",
@@ -26,12 +26,7 @@
         "vite-plugin-static-copy": "^4.1.1"
     },
     "allowScripts": {
-        "@parcel/watcher": false,
-        "@scarf/scarf": false,
-        "@tree-sitter-grammars/tree-sitter-yaml": false,
-        "tree-sitter": false,
-        "core-js-pure": false,
-        "tree-sitter-json": false
+        "@parcel/watcher": false
     },
     "stylelint": {
         "extends": "stylelint-config-recommended-scss",

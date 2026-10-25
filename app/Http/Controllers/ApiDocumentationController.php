@@ -23,7 +23,7 @@ class ApiDocumentationController extends Controller
         $this->authorize('viewDocumentation', PersonalAccessToken::class);
 
         return response()->make(self::getYamlFileContents(), SymfonyResponse::HTTP_OK, [
-            'Content-Type: text/yaml',
+            'Content-Type' => 'text/yaml',
         ]);
     }
 

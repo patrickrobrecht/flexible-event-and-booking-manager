@@ -23,7 +23,9 @@ class ApiDocumentationController extends Controller
         $this->authorize('viewDocumentation', PersonalAccessToken::class);
 
         return response()->make(self::getYamlFileContents(), SymfonyResponse::HTTP_OK, [
-            'Content-Type: text/yaml',
+            'Content-Type' => 'text/yaml',
+            // File name for downloads, RapiDoc would use "openapi-spec" without extension otherwise.
+            'Content-Disposition' => 'inline; filename="open-api.yaml"',
         ]);
     }
 

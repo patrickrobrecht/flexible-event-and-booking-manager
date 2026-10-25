@@ -806,8 +806,7 @@ components:
                     type: string
                   active:
                     description: a bool determining if the URL is active
-                    type:
-                      - boolean
+                    type: boolean
             path:
               description: the base path of the API endpoint
               type: string
@@ -1009,8 +1008,7 @@ components:
       properties:
         event_series:
           description: the event series of the event (loaded via `include=event_series`)
-          allOf:
-            - $ref: '#/components/schemas/model.event_series_or_null'
+          $ref: '#/components/schemas/model.event_series_or_null'
     include.event_series_count_of_organization:
       type: object
       properties:
@@ -1044,15 +1042,13 @@ components:
       properties:
         location:
           description: the location of the event (loaded via `include=location`)
-          allOf:
-            - $ref: '#/components/schemas/model.location'
+          $ref: '#/components/schemas/model.location'
     include.location_of_organization:
       type: object
       properties:
         location:
           description: the location of the organization (loaded via `include=location`)
-          allOf:
-            - $ref: '#/components/schemas/model.location'
+          $ref: '#/components/schemas/model.location'
     include.organization_of_event:
       type: object
       properties:
@@ -1082,8 +1078,9 @@ components:
       properties:
         organizations:
           description: the organizations located in the location (loaded via `include=organizations`)
-          allOf:
-            - $ref: '#/components/schemas/model.organization'
+          type: array
+          items:
+            $ref: '#/components/schemas/model.organization'
     include.organizations_count_of_location:
       type: object
       properties:
@@ -1096,15 +1093,13 @@ components:
       properties:
         parent_event:
           description: the parent event of the event (loaded via `include=parent_event`)
-          allOf:
-            - $ref: '#/components/schemas/model.event_or_null'
+          $ref: '#/components/schemas/model.event_or_null'
     include.parent_event_series:
       type: object
       properties:
         parent_event_series:
           description: the parent event series of the event series (loaded via `include=parent_event_series`)
-          allOf:
-            - $ref: '#/components/schemas/model.event_series_or_null'
+          $ref: '#/components/schemas/model.event_series_or_null'
     include.sub_event_series_count:
       type: object
       properties:
@@ -1119,8 +1114,7 @@ components:
           description: the sub event series of the event series (loaded via `include=sub_event_series`)
           type: array
           items:
-            allOf:
-              - $ref: '#/components/schemas/model.event_series'
+            $ref: '#/components/schemas/model.event_series'
     include.sub_events:
       type: object
       properties:
@@ -1128,8 +1122,7 @@ components:
           description: the sub events of the event (loaded via `include=sub_events`)
           type: array
           items:
-            allOf:
-              - $ref: '#/components/schemas/model.event'
+            $ref: '#/components/schemas/model.event'
     include.sub_events_count:
       type: object
       properties:

@@ -58,7 +58,7 @@ To get started, you need to install the following software:
 - [Laravel Sluggable](https://github.com/spatie/laravel-sluggable) to autogenerate slugs
 - [Laravel Zipstream](https://github.com/stechstudio/laravel-zipstream) to create and stream zip files
 - [PhpSpreadsheet](https://phpspreadsheet.readthedocs.io/en/stable/) for Excel exports
-- [RapiDoc](https://github.com/rapi-doc/RapiDoc) for Open API documentation
+- [RapiDoc](https://rapidocui.com/docs/) for Open API documentation
 
 ### How to develop
 To setup/update your development environment:

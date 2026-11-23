@@ -6,8 +6,12 @@
 
 @section('main')
     <rapi-doc spec-url="{{ route('api-docs.spec') }}"
-              mono-font="var(--bs-font-monospace)" load-fonts="false" regular-font="var(--bs-body-font-family)"
-              render-style="read" show-header="false">
+              color-scheme="system"
+              default-schema-tab="schema"
+              show-header="false"
+              show-method-in-nav-bar="as-colored-block"
+              show-curl-before-try="true"
+              allow-spec-file-download="true">
     </rapi-doc>
 @endsection
 

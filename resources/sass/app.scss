@@ -14,6 +14,22 @@
 @import '@fortawesome/fontawesome-free/scss/fontawesome';
 @import '@fortawesome/fontawesome-free/scss/solid';
 
+/**
+ * RapiDoc using Bootstrap colors and fonts.
+ */
+rapi-doc {
+    --font-mono: var(--bs-font-monospace);
+    --font-sans: var(--bs-font-sans-serif);
+    --primary: var(--bs-primary);
+    --primary-foreground: var(--bs-white);
+    // RapiDoc's default theme preset hardcodes these for links etc., so --primary alone has no effect on them.
+    --primary-text-dark: var(--bs-primary);
+    --primary-text-light: var(--bs-primary);
+    // Enable scrollable sidebar.
+    display: block;
+    height: calc(100vh - 9rem);
+}
+
 /*
  * Classes for column-count
  */
